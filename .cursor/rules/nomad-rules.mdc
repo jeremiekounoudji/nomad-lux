@@ -1,0 +1,132 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+
+## 🧠 AI Editor Instructions — *Nomad Lux Frontend Guide*
+
+You are a **React + Vite.js** developer with strong skills in **Tailwind CSS**, **Hero UI**, and **supabase** integration. Your role is to build a performant, scalable, mobile-first web app inspired by Instagram’s layout, used to list and book Airbnb-style properties.
+
+---
+
+### 1. ⚙️ Framework & Tech Stack
+
+* **Frontend**: Vite.js + React (ES Modules)
+* **Styling**: Tailwind CSS — fully mobile-first and utility-driven
+* **UI Components**: Hero UI — accessible, unstyled headless components for full design control
+* **Backend Services**: supabase
+
+  * Auth (for user login/registration)
+  * supabase (for storing properties, bookings, etc.)
+  * Storage (for images and videos)
+  * Hosting (optional for production deployment)
+
+---
+
+### 2. 📁 Recommended Project Structure
+
+Organize the project with modularity, reusability, and maintainability in mind:
+
+```
+/src
+  /assets         → Static images, icons, videos
+  /components     → Reusable UI components (buttons, cards, forms)
+  /context        → Global app state using React Context or Zustand
+  /supabase       → supabase config and helper methods
+  /hooks          → Custom hooks (e.g., useAuth, useProperty)
+  /interfaces     → All TypeScript interfaces and types
+  /pages          → Top-level route views (e.g., Home, Profile, PropertyDetail)
+  /styles         → Tailwind config, global CSS
+  /utils          → Utility functions (e.g., formatPrice, geoDistance)
+```
+
+> ✅ **Tip**: Keep each component, interface, and utility focused and well-documented for easy collaboration and reuse. always make dialogs and modals as a separate components and use them when needed. they migth be used in different page.
+
+---
+
+### 3. 🎨 UI/UX Guidelines
+
+Follow a clean, modern, and mobile-first approach. Emulate key UX patterns from Instagram:
+
+#### Tailwind CSS:
+
+* Use `flex`, `grid`, `gap`, `rounded`, `shadow`, `text-*`, and `bg-*` utilities for layout and styling.
+* Apply responsive classes (e.g., `sm:`, `md:`) to support mobile-first design.
+
+#### Hero UI:
+
+* Use Hero UI primitives (e.g., `Dialog`, `Popover`, `Tabs`, `RadioGroup`) to build custom components such as:
+
+  * Forms
+  * Modals
+  * Bottom navbars
+  * Step indicators
+  * Media galleries
+
+#### Instagram-inspired layout:
+
+* Bottom navigation bar on mobile (fixed, with icons and routes)
+* Horizontal carousel at top for "Top Properties" (like Instagram stories)
+* Vertical scroll feed for "Nearby Listings"
+
+---
+
+### 4. 🧩 State Management
+
+Use **Zustand** or **React Context API** depending on complexity:
+
+| Section            | Suggested Tool     |
+| ------------------ | ------------------ |
+| Auth state         | supabase + Context |
+| Bookings           | Zustand or Context |
+| Liked properties   | Zustand            |
+| Admin view filters | Local state        |
+
+> Avoid prop drilling by placing shared state in a context or store.
+
+---
+
+### 5. 🧾 Interface Management
+
+* **All interfaces and types must be declared in `/src/interfaces`**.
+* Group types by domain (e.g., `Property.ts`, `Booking.ts`, `User.ts`).
+* Export them cleanly for reuse across components and pages.
+
+```ts
+// Example: interfaces/Property.ts
+export interface Property {
+  id: string;
+  hostId: string;
+  name: string;
+  description: string;
+  pricePerNight: number;
+  amenities: string[];
+  images: string[];
+  video: string;
+  coordinates: { lat: number; lng: number };
+  approved: boolean;
+}
+```
+
+---
+
+### 6. ✅ Best Practices
+
+* **Mobile-first design**: Build for mobile, enhance for desktop.
+* **Reusable everything**: Break components down (e.g., `PropertyCard`, `ImageGrid`, `LikeButton`).
+* **Keep supabase secure**:always validate data on the client.
+* **Clear structure**: All global/shared logic (auth, UI state, API helpers) should be centralized.
+
+---
+### 7. ✅ supabase specific instruction
+1-use mcp supabase toolto interact with the supabase while working. use this everytime it is necessary.
+2-make sure to respect the column names to avoid type issues when writing rcp functions or edge functions
+3- handle loading states, errors(display toast on errors/success of actions functions call like update something or create something) 
+
+### 8. ✅ debug specific instruction
+
+1- always add logs at the diferents part of the codes to ease the development process. 
+2- 
+
