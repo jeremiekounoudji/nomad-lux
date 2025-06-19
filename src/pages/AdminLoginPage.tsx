@@ -1,33 +1,49 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Input, Button, Link } from '@heroui/react'
 import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
-
+import { useAdminAuth } from '../hooks/useAdminAuth'
+import { useAuthStore } from '../lib/stores/authStore'
 import { AdminLoginPageProps } from '../interfaces'
 
 export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isVisible, setIsVisible] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  
+  const { signInAdmin, isLoading } = useAdminAuth()
+  const { isAuthenticated, isAdmin } = useAuthStore()
+
+  // Auto-redirect if already authenticated as admin
+  useEffect(() => {
+    if (isAuthenticated && isAdmin) {
+      console.log('✅ Already authenticated as admin - redirecting to dashboard')
+      onPageChange?.('admin')
+    }
+  }, [isAuthenticated, isAdmin, onPageChange])
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
   const handleSubmit = async () => {
-    setIsLoading(true)
     setError('')
+    
+    console.log('🔑 Admin attempting to sign in:', email)
 
-    // Simulate admin login
-    if (email === 'admin@nomadlux.com' && password === 'admin123') {
-      setTimeout(() => {
-        setIsLoading(false)
-        onPageChange?.('admin')
-      }, 1000)
-    } else {
-      setTimeout(() => {
-        setIsLoading(false)
-        setError('Invalid admin credentials')
-      }, 1000)
+    try {
+      const result = await signInAdmin(email, password)
+      
+      if (result.error) {
+        console.error('❌ Admin sign in failed:', result.error)
+        setError(result.error)
+        return
+      }
+
+      console.log('✅ Admin sign in initiated - waiting for auth state update')
+      // The redirect will happen automatically via useEffect when auth state updates
+      
+    } catch (err: any) {
+      console.error('❌ Exception during admin sign in:', err)
+      setError(err.message || 'An unexpected error occurred')
     }
   }
 
@@ -137,17 +153,17 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
               className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
               onPress={handleSubmit}
               isLoading={isLoading}
+              isDisabled={!email || !password}
             >
               {isLoading ? 'Signing In...' : 'Sign In to Admin Panel'}
             </Button>
           </div>
 
           {/* Development Note */}
-          <div className="mt-6 p-4 bg-yellow-500/20 backdrop-blur-md border border-yellow-400/30 rounded-lg">
-            <p className="text-sm text-yellow-100">
-              <strong>Development Access:</strong><br />
-              Email: admin@nomadlux.com<br />
-              Password: admin123
+          <div className="mt-6 p-4 bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-lg">
+            <p className="text-sm text-blue-100">
+              <strong>Admin Access:</strong><br />
+              Only accounts with admin or super_admin roles can access the admin panel.
             </p>
           </div>
 

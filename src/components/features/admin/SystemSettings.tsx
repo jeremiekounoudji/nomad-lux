@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { 
   Card, 
   CardBody, 
@@ -19,8 +19,10 @@ import {
   ModalFooter,
   useDisclosure,
   Slider,
-  Badge
+  Badge,
+  Spinner
 } from '@heroui/react'
+import { toast } from 'react-hot-toast'
 import { 
   Settings, 
   Save, 
@@ -47,6 +49,14 @@ import {
   Download,
   Calendar
 } from 'lucide-react'
+import { useAdminSettings } from '../../../hooks/useAdminSettings'
+import { 
+  PlatformSettings, 
+  BookingSettings, 
+  NotificationSettings, 
+  SecuritySettings, 
+  PaymentSettings 
+} from '../../../interfaces/Settings'
 
 interface SettingChange {
   id: string
@@ -69,79 +79,22 @@ interface NotificationTemplate {
 
 export const SystemSettings: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('general')
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
   const [showPasswords, setShowPasswords] = useState(false)
   
-  // General Settings
-  const [platformSettings, setPlatformSettings] = useState({
-    siteName: 'Nomad Lux',
-    siteDescription: 'Premium property rental platform',
-    contactEmail: 'admin@nomadlux.com',
-    supportEmail: 'support@nomadlux.com',
-    maintenanceMode: false,
-    registrationEnabled: true,
-    maxFileSize: 10,
-    allowedImageFormats: ['jpg', 'jpeg', 'png', 'webp'],
-    defaultLanguage: 'en',
-    timezone: 'UTC'
-  })
-
-  // Booking Settings
-  const [bookingSettings, setBookingSettings] = useState({
-    commissionRate: 10,
-    maxAdvanceBooking: 365,
-    minAdvanceBooking: 1,
-    cancellationGracePeriod: 24,
-    autoApprovalEnabled: false,
-    instantBookingEnabled: true,
-    minimumStay: 1,
-    maximumStay: 30,
-    paymentProcessingFee: 2.9,
-    hostPayoutDelay: 1
-  })
-
-  // Notification Settings
-  const [notificationSettings, setNotificationSettings] = useState({
-    emailNotifications: true,
-    smsNotifications: false,
-    pushNotifications: true,
-    marketingEmails: true,
-    bookingConfirmations: true,
-    paymentNotifications: true,
-    disputeAlerts: true,
-    systemAlerts: true,
-    weeklyReports: true,
-    monthlyReports: true
-  })
-
-  // Security Settings
-  const [securitySettings, setSecuritySettings] = useState({
-    twoFactorRequired: false,
-    passwordMinLength: 8,
-    passwordRequireSpecialChars: true,
-    sessionTimeout: 60,
-    maxLoginAttempts: 5,
-    ipWhitelist: '',
-    apiRateLimit: 1000,
-    enableAuditLog: true,
-    dataRetentionPeriod: 365,
-    encryptUserData: true
-  })
-
-  // Payment Settings
-  const [paymentSettings, setPaymentSettings] = useState({
-    stripePublicKey: 'pk_test_...',
-    stripeSecretKey: '••••••••••••••••',
-    paypalClientId: '••••••••••••••••',
-    paypalClientSecret: '••••••••••••••••',
-    defaultCurrency: 'USD',
-    supportedCurrencies: ['USD', 'EUR', 'GBP', 'CAD'],
-    autoPayoutEnabled: true,
-    minimumPayoutAmount: 50,
-    payoutSchedule: 'weekly',
-    chargeTaxes: true,
-    taxRate: 8.5
-  })
+  // Use the admin settings hook
+  const {
+    settings,
+    isLoading,
+    error,
+    hasUnsavedChanges,
+    saveAllChanges,
+    resetDrafts,
+    updatePlatformSettings,
+    updateBookingSettings,
+    updateNotificationSettings,
+    updateSecuritySettings,
+    updatePaymentSettings
+  } = useAdminSettings()
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { 
@@ -160,6 +113,14 @@ export const SystemSettings: React.FC = () => {
     name: '',
     subject: '',
     type: 'email' as 'email' | 'sms' | 'push'
+  })
+
+  console.log('🔧 SystemSettings rendered with:', {
+    hasSettings: !!settings,
+    selectedTab,
+    isLoading,
+    error,
+    hasUnsavedChanges
   })
 
   const mockSettingChanges: SettingChange[] = [
@@ -219,48 +180,88 @@ export const SystemSettings: React.FC = () => {
     }
   ]
 
-  const handleSaveSettings = (category: string) => {
-    console.log(`Saving ${category} settings`)
-    setHasUnsavedChanges(false)
-    // TODO: Implement save logic
-  }
-
-  const handleResetSettings = (category: string) => {
-    console.log(`Resetting ${category} settings`)
-    setHasUnsavedChanges(false)
-    // TODO: Implement reset logic
-  }
-
-  const handleSettingChange = (category: string, setting: string, value: any) => {
-    console.log('Setting change:', { category, setting, value })
-    setHasUnsavedChanges(true)
-    
-    switch (category) {
-      case 'general':
-        setPlatformSettings(prev => {
-          const updated = { ...prev, [setting]: value }
-          console.log('Updated general settings:', updated)
-          return updated
-        })
-        break
-      case 'booking':
-        setBookingSettings(prev => {
-          const updated = { ...prev, [setting]: value }
-          console.log('Updated booking settings:', updated)
-          return updated
-        })
-        break
-      case 'notifications':
-        setNotificationSettings(prev => ({ ...prev, [setting]: value }))
-        break
-      case 'security':
-        setSecuritySettings(prev => ({ ...prev, [setting]: value }))
-        break
-      case 'payment':
-        setPaymentSettings(prev => ({ ...prev, [setting]: value }))
-        break
+  const handleSaveSettings = async () => {
+    try {
+      console.log('💾 Saving all settings changes')
+      await saveAllChanges()
+      toast.success('Settings saved successfully!')
+      console.log('✅ Settings saved successfully')
+    } catch (error) {
+      console.error('❌ Failed to save settings:', error)
+      toast.error('Failed to save settings. Please try again.')
     }
   }
+
+  const handleResetSettings = () => {
+    console.log('🔄 Resetting all settings to original values')
+    resetDrafts()
+  }
+
+    // Handle platform settings changes
+  const handlePlatformSettingChange = useCallback(async (setting: string, value: any) => {
+    console.log('🔧 Platform setting change:', { setting, value })
+    try {
+      updatePlatformSettings({ [setting]: value })
+    } catch (error) {
+      console.error('❌ Failed to update platform setting:', error)
+    }
+  }, [updatePlatformSettings])
+
+  // Handle booking settings changes
+  const handleBookingSettingChange = useCallback(async (setting: string, value: any) => {
+    console.log('📅 Booking setting change:', { setting, value })
+    try {
+      updateBookingSettings({ [setting]: value })
+    } catch (error) {
+      console.error('❌ Failed to update booking setting:', error)
+    }
+  }, [updateBookingSettings])
+
+  // Handle notification settings changes
+  const handleNotificationSettingChange = useCallback(async (setting: string, value: any) => {
+    console.log('🔔 Notification setting change:', { setting, value })
+    try {
+      updateNotificationSettings({ [setting]: value })
+    } catch (error) {
+      console.error('❌ Failed to update notification setting:', error)
+    }
+  }, [updateNotificationSettings])
+
+  // Handle security settings changes
+  const handleSecuritySettingChange = useCallback(async (setting: string, value: any) => {
+    console.log('🛡️ Security setting change:', { setting, value })
+    try {
+      updateSecuritySettings({ [setting]: value })
+    } catch (error) {
+      console.error('❌ Failed to update security setting:', error)
+    }
+  }, [updateSecuritySettings])
+
+  // Handle payment settings changes
+  const handlePaymentSettingChange = useCallback(async (setting: string, value: any) => {
+    console.log('💳 Payment setting change:', { setting, value })
+    try {
+      updatePaymentSettings({ [setting]: value })
+    } catch (error) {
+      console.error('❌ Failed to update payment setting:', error)
+    }
+  }, [updatePaymentSettings])
+
+  // Slider onChange handlers with useCallback to prevent ref warnings
+  const handleFileSizeChange = useCallback((value: number | number[]) => {
+    const newValue = Array.isArray(value) ? value[0] : value
+    handlePlatformSettingChange('maxFileSize', newValue)
+  }, [handlePlatformSettingChange])
+
+  const handleCommissionRateChange = useCallback((value: number | number[]) => {
+    const newValue = Array.isArray(value) ? value[0] : value
+    handleBookingSettingChange('commissionRate', newValue)
+  }, [handleBookingSettingChange])
+
+  const handlePaymentFeeChange = useCallback((value: number | number[]) => {
+    const newValue = Array.isArray(value) ? value[0] : value
+    handleBookingSettingChange('paymentProcessingFee', newValue)
+  }, [handleBookingSettingChange])
 
   const handleEditTemplate = (template: NotificationTemplate) => {
     setEditingTemplate(template)
@@ -276,7 +277,6 @@ export const SystemSettings: React.FC = () => {
     if (editingTemplate) {
       console.log('Saving template:', templateForm)
       // Here you would update the template in your backend
-      setHasUnsavedChanges(true)
       onEditTemplateClose()
     }
   }
@@ -284,8 +284,37 @@ export const SystemSettings: React.FC = () => {
   const handleDeleteTemplate = (templateId: string) => {
     console.log('Deleting template:', templateId)
     // Here you would delete the template from your backend
-    setHasUnsavedChanges(true)
   }
+
+  // Show loading spinner if settings are not loaded yet
+  if (isLoading && !settings) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Spinner size="lg" color="primary" />
+        <span className="ml-3">Loading admin settings...</span>
+      </div>
+    )
+  }
+
+  // Show error if settings failed to load
+  if (error && !settings) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <p className="text-red-600 font-medium">Failed to load admin settings</p>
+          <p className="text-gray-600 text-sm mt-2">{error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Default to empty settings if not loaded yet
+  const platformSettings = settings?.platform || {} as PlatformSettings
+  const bookingSettings = settings?.booking || {} as BookingSettings
+  const notificationSettings = settings?.notification || {} as NotificationSettings
+  const securitySettings = settings?.security || {} as SecuritySettings
+  const paymentSettings = settings?.payment || {} as PaymentSettings
 
   return (
     <div className="space-y-6">
@@ -311,9 +340,10 @@ export const SystemSettings: React.FC = () => {
           </Button>
           <Button 
             color="primary"
-            startContent={<Save className="w-4 h-4" />}
-            isDisabled={!hasUnsavedChanges}
-            onPress={() => handleSaveSettings(selectedTab)}
+            startContent={!isLoading ? <Save className="w-4 h-4" /> : undefined}
+            isDisabled={!hasUnsavedChanges || isLoading}
+            isLoading={isLoading}
+            onPress={() => handleSaveSettings()}
           >
             Save Changes
           </Button>
@@ -355,51 +385,51 @@ export const SystemSettings: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Input
                   label="Site Name"
-                  value={platformSettings.siteName}
-                  onChange={(e) => handleSettingChange('general', 'siteName', e.target.value)}
+                  value={platformSettings.siteName || ''}
+                  onChange={(e) => handlePlatformSettingChange('siteName', e.target.value)}
                 />
                 
                 <Input
                   label="Contact Email"
                   type="email"
-                  value={platformSettings.contactEmail}
-                  onChange={(e) => handleSettingChange('general', 'contactEmail', e.target.value)}
+                  value={platformSettings.contactEmail || ''}
+                  onChange={(e) => handlePlatformSettingChange('contactEmail', e.target.value)}
                 />
                 
                 <Input
                   label="Support Email"
                   type="email"
-                  value={platformSettings.supportEmail}
-                  onChange={(e) => handleSettingChange('general', 'supportEmail', e.target.value)}
+                  value={platformSettings.supportEmail || ''}
+                  onChange={(e) => handlePlatformSettingChange('supportEmail', e.target.value)}
                 />
                 
                 <Select
                   label="Default Language"
-                  selectedKeys={[platformSettings.defaultLanguage]}
-                  onSelectionChange={(keys) => handleSettingChange('general', 'defaultLanguage', Array.from(keys)[0])}
+                  selectedKeys={platformSettings.defaultLanguage ? [platformSettings.defaultLanguage] : []}
+                  onSelectionChange={(keys) => handlePlatformSettingChange('defaultLanguage', Array.from(keys)[0])}
                 >
-                  <SelectItem key="en" value="en">English</SelectItem>
-                  <SelectItem key="es" value="es">Spanish</SelectItem>
-                  <SelectItem key="fr" value="fr">French</SelectItem>
-                  <SelectItem key="de" value="de">German</SelectItem>
+                  <SelectItem key="en">English</SelectItem>
+                  <SelectItem key="es">Spanish</SelectItem>
+                  <SelectItem key="fr">French</SelectItem>
+                  <SelectItem key="de">German</SelectItem>
                 </Select>
                 
                 <Select
                   label="Timezone"
-                  selectedKeys={[platformSettings.timezone]}
-                  onSelectionChange={(keys) => handleSettingChange('general', 'timezone', Array.from(keys)[0])}
+                  selectedKeys={platformSettings.timezone ? [platformSettings.timezone] : []}
+                  onSelectionChange={(keys) => handlePlatformSettingChange('timezone', Array.from(keys)[0])}
                 >
-                  <SelectItem key="UTC" value="UTC">UTC</SelectItem>
-                  <SelectItem key="EST" value="EST">Eastern Time</SelectItem>
-                  <SelectItem key="PST" value="PST">Pacific Time</SelectItem>
-                  <SelectItem key="GMT" value="GMT">GMT</SelectItem>
+                  <SelectItem key="UTC">UTC</SelectItem>
+                  <SelectItem key="EST">Eastern Time</SelectItem>
+                  <SelectItem key="PST">Pacific Time</SelectItem>
+                  <SelectItem key="GMT">GMT</SelectItem>
                 </Select>
                 
                 <div className="md:col-span-2">
                   <Textarea
                     label="Site Description"
-                    value={platformSettings.siteDescription}
-                    onChange={(e) => handleSettingChange('general', 'siteDescription', e.target.value)}
+                    value={platformSettings.siteDescription || ''}
+                    onChange={(e) => handlePlatformSettingChange('siteDescription', e.target.value)}
                     minRows={3}
                   />
                 </div>
@@ -416,8 +446,8 @@ export const SystemSettings: React.FC = () => {
                     <div className="text-sm text-gray-600">Temporarily disable public access</div>
                   </div>
                   <Switch
-                    isSelected={platformSettings.maintenanceMode}
-                    onValueChange={(value) => handleSettingChange('general', 'maintenanceMode', value)}
+                    isSelected={platformSettings.maintenanceMode || false}
+                    onValueChange={(value) => handlePlatformSettingChange('maintenanceMode', value)}
                     color="danger"
                     classNames={{
                       wrapper: "group-data-[selected=true]:bg-danger-500",
@@ -432,8 +462,8 @@ export const SystemSettings: React.FC = () => {
                     <div className="text-sm text-gray-600">Allow new users to register</div>
                   </div>
                   <Switch
-                    isSelected={platformSettings.registrationEnabled}
-                    onValueChange={(value) => handleSettingChange('general', 'registrationEnabled', value)}
+                    isSelected={platformSettings.registrationEnabled || false}
+                    onValueChange={(value) => handlePlatformSettingChange('registrationEnabled', value)}
                     color="success"
                     classNames={{
                       wrapper: "group-data-[selected=true]:bg-success-500",
@@ -458,17 +488,8 @@ export const SystemSettings: React.FC = () => {
                     Maximum File Size (MB)
                   </label>
                   <Slider
-                    value={[platformSettings.maxFileSize]}
-                    onValueChange={(value) => {
-                      console.log('File size slider changed:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('general', 'maxFileSize', newValue)
-                    }}
-                    onChange={(value) => {
-                      console.log('File size slider onChange:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('general', 'maxFileSize', newValue)
-                    }}
+                    value={[platformSettings.maxFileSize || 10]}
+                    onChange={handleFileSizeChange}
                     maxValue={50}
                     minValue={1}
                     step={1}
@@ -485,7 +506,7 @@ export const SystemSettings: React.FC = () => {
                     ]}
                   />
                   <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {platformSettings.maxFileSize} MB
+                    Current: {platformSettings.maxFileSize || 10} MB
                   </div>
                 </div>
                 
@@ -495,7 +516,8 @@ export const SystemSettings: React.FC = () => {
                   </label>
                   <div className="flex flex-wrap gap-3">
                     {['jpg', 'jpeg', 'png', 'webp', 'svg'].map((format, index) => {
-                      const isSelected = platformSettings.allowedImageFormats.includes(format)
+                      const allowedFormats = platformSettings.allowedImageFormats || []
+                      const isSelected = allowedFormats.includes(format)
                       const colors = [
                         'from-blue-500 to-blue-600',
                         'from-green-500 to-green-600', 
@@ -513,10 +535,10 @@ export const SystemSettings: React.FC = () => {
                               : 'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 hover:text-gray-900 border border-gray-300'
                           }`}
                           onClick={() => {
-                            const newFormats = platformSettings.allowedImageFormats.includes(format)
-                              ? platformSettings.allowedImageFormats.filter(f => f !== format)
-                              : [...platformSettings.allowedImageFormats, format]
-                            handleSettingChange('general', 'allowedImageFormats', newFormats)
+                            const newFormats = allowedFormats.includes(format)
+                              ? allowedFormats.filter(f => f !== format)
+                              : [...allowedFormats, format]
+                            handlePlatformSettingChange('allowedImageFormats', newFormats)
                           }}
                           aria-label={`${isSelected ? 'Disable' : 'Enable'} ${format.toUpperCase()} format`}
                           size="lg"
@@ -549,17 +571,8 @@ export const SystemSettings: React.FC = () => {
                     Commission Rate (%)
                   </label>
                   <Slider
-                    value={[bookingSettings.commissionRate]}
-                    onValueChange={(value) => {
-                      console.log('Commission rate slider changed:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('booking', 'commissionRate', newValue)
-                    }}
-                    onChange={(value) => {
-                      console.log('Commission rate slider onChange:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('booking', 'commissionRate', newValue)
-                    }}
+                    value={[bookingSettings.commissionRate || 10]}
+                    onChange={handleCommissionRateChange}
                     maxValue={20}
                     minValue={0}
                     step={0.5}
@@ -576,7 +589,7 @@ export const SystemSettings: React.FC = () => {
                     ]}
                   />
                   <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {bookingSettings.commissionRate}%
+                    Current: {bookingSettings.commissionRate || 10}%
                   </div>
                 </div>
                 
@@ -585,17 +598,8 @@ export const SystemSettings: React.FC = () => {
                     Payment Processing Fee (%)
                   </label>
                   <Slider
-                    value={[bookingSettings.paymentProcessingFee]}
-                    onValueChange={(value) => {
-                      console.log('Payment fee slider changed:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('booking', 'paymentProcessingFee', newValue)
-                    }}
-                    onChange={(value) => {
-                      console.log('Payment fee slider onChange:', value)
-                      const newValue = Array.isArray(value) ? value[0] : value
-                      handleSettingChange('booking', 'paymentProcessingFee', newValue)
-                    }}
+                    value={[bookingSettings.paymentProcessingFee || 2.9]}
+                    onChange={handlePaymentFeeChange}
                     maxValue={5}
                     minValue={0}
                     step={0.1}
@@ -612,50 +616,50 @@ export const SystemSettings: React.FC = () => {
                     ]}
                   />
                   <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {bookingSettings.paymentProcessingFee}%
+                    Current: {bookingSettings.paymentProcessingFee || 2.9}%
                   </div>
                 </div>
                 
                 <Input
                   label="Maximum Advance Booking (days)"
                   type="number"
-                  value={bookingSettings.maxAdvanceBooking.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'maxAdvanceBooking', parseInt(e.target.value))}
+                  value={bookingSettings.maxAdvanceBooking?.toString() || '365'}
+                  onChange={(e) => handleBookingSettingChange('maxAdvanceBooking', parseInt(e.target.value))}
                 />
                 
                 <Input
                   label="Minimum Advance Booking (days)"
                   type="number"
-                  value={bookingSettings.minAdvanceBooking.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'minAdvanceBooking', parseInt(e.target.value))}
+                  value={bookingSettings.minAdvanceBooking?.toString() || '1'}
+                  onChange={(e) => handleBookingSettingChange('minAdvanceBooking', parseInt(e.target.value))}
                 />
                 
                 <Input
                   label="Cancellation Grace Period (hours)"
                   type="number"
-                  value={bookingSettings.cancellationGracePeriod.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'cancellationGracePeriod', parseInt(e.target.value))}
+                  value={bookingSettings.cancellationGracePeriod?.toString() || '24'}
+                  onChange={(e) => handleBookingSettingChange('cancellationGracePeriod', parseInt(e.target.value))}
                 />
                 
                 <Input
                   label="Host Payout Delay (days)"
                   type="number"
-                  value={bookingSettings.hostPayoutDelay.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'hostPayoutDelay', parseInt(e.target.value))}
+                  value={bookingSettings.hostPayoutDelay?.toString() || '1'}
+                  onChange={(e) => handleBookingSettingChange('hostPayoutDelay', parseInt(e.target.value))}
                 />
                 
                 <Input
                   label="Minimum Stay (nights)"
                   type="number"
-                  value={bookingSettings.minimumStay.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'minimumStay', parseInt(e.target.value))}
+                  value={bookingSettings.minimumStay?.toString() || '1'}
+                  onChange={(e) => handleBookingSettingChange('minimumStay', parseInt(e.target.value))}
                 />
                 
                 <Input
                   label="Maximum Stay (nights)"
                   type="number"
-                  value={bookingSettings.maximumStay.toString()}
-                  onChange={(e) => handleSettingChange('booking', 'maximumStay', parseInt(e.target.value))}
+                  value={bookingSettings.maximumStay?.toString() || '30'}
+                  onChange={(e) => handleBookingSettingChange('maximumStay', parseInt(e.target.value))}
                 />
               </div>
               
@@ -670,8 +674,8 @@ export const SystemSettings: React.FC = () => {
                     <div className="text-sm text-gray-600">Automatically approve eligible bookings</div>
                   </div>
                   <Switch
-                    isSelected={bookingSettings.autoApprovalEnabled}
-                    onValueChange={(value) => handleSettingChange('booking', 'autoApprovalEnabled', value)}
+                    isSelected={bookingSettings.autoApprovalEnabled || false}
+                    onValueChange={(value) => handleBookingSettingChange('autoApprovalEnabled', value)}
                     color="success"
                     classNames={{
                       wrapper: "group-data-[selected=true]:bg-success-500",
@@ -686,8 +690,8 @@ export const SystemSettings: React.FC = () => {
                     <div className="text-sm text-gray-600">Allow guests to book instantly without host approval</div>
                   </div>
                   <Switch
-                    isSelected={bookingSettings.instantBookingEnabled}
-                    onValueChange={(value) => handleSettingChange('booking', 'instantBookingEnabled', value)}
+                    isSelected={bookingSettings.instantBookingEnabled || false}
+                    onValueChange={(value) => handleBookingSettingChange('instantBookingEnabled', value)}
                     color="primary"
                     classNames={{
                       wrapper: "group-data-[selected=true]:bg-primary-500",
@@ -717,14 +721,14 @@ export const SystemSettings: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       label="Stripe Public Key"
-                      value={paymentSettings.stripePublicKey}
-                      onChange={(e) => handleSettingChange('payment', 'stripePublicKey', e.target.value)}
+                      value={paymentSettings.stripePublicKey || ''}
+                      onChange={(e) => handlePaymentSettingChange('stripePublicKey', e.target.value)}
                     />
                     <Input
                       label="Stripe Secret Key"
                       type={showPasswords ? 'text' : 'password'}
-                      value={paymentSettings.stripeSecretKey}
-                      onChange={(e) => handleSettingChange('payment', 'stripeSecretKey', e.target.value)}
+                      value={paymentSettings.stripeSecretKey || ''}
+                      onChange={(e) => handlePaymentSettingChange('stripeSecretKey', e.target.value)}
                       endContent={
                         <Button
                           isIconOnly
@@ -748,14 +752,14 @@ export const SystemSettings: React.FC = () => {
                     <Input
                       label="PayPal Client ID"
                       type={showPasswords ? 'text' : 'password'}
-                      value={paymentSettings.paypalClientId}
-                      onChange={(e) => handleSettingChange('payment', 'paypalClientId', e.target.value)}
+                      value={paymentSettings.paypalClientId || ''}
+                      onChange={(e) => handlePaymentSettingChange('paypalClientId', e.target.value)}
                     />
                     <Input
                       label="PayPal Client Secret"
                       type={showPasswords ? 'text' : 'password'}
-                      value={paymentSettings.paypalClientSecret}
-                      onChange={(e) => handleSettingChange('payment', 'paypalClientSecret', e.target.value)}
+                      value={paymentSettings.paypalClientSecret || ''}
+                      onChange={(e) => handlePaymentSettingChange('paypalClientSecret', e.target.value)}
                     />
                   </div>
                 </div>
@@ -767,38 +771,38 @@ export const SystemSettings: React.FC = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Select
                       label="Default Currency"
-                      selectedKeys={[paymentSettings.defaultCurrency]}
-                      onSelectionChange={(keys) => handleSettingChange('payment', 'defaultCurrency', Array.from(keys)[0])}
+                      selectedKeys={paymentSettings.defaultCurrency ? [paymentSettings.defaultCurrency] : []}
+                      onSelectionChange={(keys) => handlePaymentSettingChange('defaultCurrency', Array.from(keys)[0])}
                     >
-                      <SelectItem key="USD" value="USD">USD - US Dollar</SelectItem>
-                      <SelectItem key="EUR" value="EUR">EUR - Euro</SelectItem>
-                      <SelectItem key="GBP" value="GBP">GBP - British Pound</SelectItem>
-                      <SelectItem key="CAD" value="CAD">CAD - Canadian Dollar</SelectItem>
+                      <SelectItem key="USD">USD - US Dollar</SelectItem>
+                      <SelectItem key="EUR">EUR - Euro</SelectItem>
+                      <SelectItem key="GBP">GBP - British Pound</SelectItem>
+                      <SelectItem key="CAD">CAD - Canadian Dollar</SelectItem>
                     </Select>
                     
                     <Select
                       label="Payout Schedule"
-                      selectedKeys={[paymentSettings.payoutSchedule]}
-                      onSelectionChange={(keys) => handleSettingChange('payment', 'payoutSchedule', Array.from(keys)[0])}
+                      selectedKeys={paymentSettings.payoutSchedule ? [paymentSettings.payoutSchedule] : []}
+                      onSelectionChange={(keys) => handlePaymentSettingChange('payoutSchedule', Array.from(keys)[0])}
                     >
-                      <SelectItem key="daily" value="daily">Daily</SelectItem>
-                      <SelectItem key="weekly" value="weekly">Weekly</SelectItem>
-                      <SelectItem key="monthly" value="monthly">Monthly</SelectItem>
+                      <SelectItem key="daily">Daily</SelectItem>
+                      <SelectItem key="weekly">Weekly</SelectItem>
+                      <SelectItem key="monthly">Monthly</SelectItem>
                     </Select>
                     
                     <Input
                       label="Minimum Payout Amount"
                       type="number"
-                      value={paymentSettings.minimumPayoutAmount.toString()}
-                      onChange={(e) => handleSettingChange('payment', 'minimumPayoutAmount', parseFloat(e.target.value))}
+                      value={paymentSettings.minimumPayoutAmount?.toString() || '50'}
+                      onChange={(e) => handlePaymentSettingChange('minimumPayoutAmount', parseFloat(e.target.value))}
                       startContent={<DollarSign className="w-4 h-4" />}
                     />
                     
                     <Input
                       label="Tax Rate (%)"
                       type="number"
-                      value={paymentSettings.taxRate.toString()}
-                      onChange={(e) => handleSettingChange('payment', 'taxRate', parseFloat(e.target.value))}
+                      value={paymentSettings.taxRate?.toString() || '0'}
+                      onChange={(e) => handlePaymentSettingChange('taxRate', parseFloat(e.target.value))}
                       step="0.1"
                     />
                   </div>
@@ -815,8 +819,8 @@ export const SystemSettings: React.FC = () => {
                       <div className="text-sm text-gray-600">Automatically process host payouts</div>
                     </div>
                     <Switch
-                      isSelected={paymentSettings.autoPayoutEnabled}
-                      onValueChange={(value) => handleSettingChange('payment', 'autoPayoutEnabled', value)}
+                      isSelected={paymentSettings.autoPayoutEnabled || false}
+                      onValueChange={(value) => handlePaymentSettingChange('autoPayoutEnabled', value)}
                       color="success"
                       classNames={{
                         wrapper: "group-data-[selected=true]:bg-success-500",
@@ -831,8 +835,8 @@ export const SystemSettings: React.FC = () => {
                       <div className="text-sm text-gray-600">Automatically calculate and charge taxes</div>
                     </div>
                     <Switch
-                      isSelected={paymentSettings.chargeTaxes}
-                      onValueChange={(value) => handleSettingChange('payment', 'chargeTaxes', value)}
+                      isSelected={paymentSettings.chargeTaxes || false}
+                      onValueChange={(value) => handlePaymentSettingChange('chargeTaxes', value)}
                       color="primary"
                       classNames={{
                         wrapper: "group-data-[selected=true]:bg-primary-500",
@@ -867,8 +871,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Send notifications via email</div>
                       </div>
                       <Switch
-                        isSelected={notificationSettings.emailNotifications}
-                        onValueChange={(value) => handleSettingChange('notifications', 'emailNotifications', value)}
+                        isSelected={notificationSettings.emailNotifications || false}
+                        onValueChange={(value) => handleNotificationSettingChange('emailNotifications', value)}
                         color="primary"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-primary-500",
@@ -883,8 +887,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Send notifications via SMS</div>
                       </div>
                       <Switch
-                        isSelected={notificationSettings.smsNotifications}
-                        onValueChange={(value) => handleSettingChange('notifications', 'smsNotifications', value)}
+                        isSelected={notificationSettings.smsNotifications || false}
+                        onValueChange={(value) => handleNotificationSettingChange('smsNotifications', value)}
                         color="success"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-success-500",
@@ -899,8 +903,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Send browser push notifications</div>
                       </div>
                       <Switch
-                        isSelected={notificationSettings.pushNotifications}
-                        onValueChange={(value) => handleSettingChange('notifications', 'pushNotifications', value)}
+                        isSelected={notificationSettings.pushNotifications || false}
+                        onValueChange={(value) => handleNotificationSettingChange('pushNotifications', value)}
                         color="warning"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-warning-500",
@@ -931,7 +935,7 @@ export const SystemSettings: React.FC = () => {
                         </div>
                         <Switch
                           isSelected={notificationSettings[item.key as keyof typeof notificationSettings] as boolean}
-                          onValueChange={(value) => handleSettingChange('notifications', item.key, value)}
+                          onValueChange={(value) => handleNotificationSettingChange(item.key, value)}
                           size="sm"
                           color="primary"
                           classNames={{
@@ -1027,29 +1031,29 @@ export const SystemSettings: React.FC = () => {
                     <Input
                       label="Minimum Password Length"
                       type="number"
-                      value={securitySettings.passwordMinLength.toString()}
-                      onChange={(e) => handleSettingChange('security', 'passwordMinLength', parseInt(e.target.value))}
+                      value={securitySettings.passwordMinLength?.toString() || '8'}
+                      onChange={(e) => handleSecuritySettingChange('passwordMinLength', parseInt(e.target.value))}
                     />
                     
                     <Input
                       label="Session Timeout (minutes)"
                       type="number"
-                      value={securitySettings.sessionTimeout.toString()}
-                      onChange={(e) => handleSettingChange('security', 'sessionTimeout', parseInt(e.target.value))}
+                      value={securitySettings.sessionTimeout?.toString() || '60'}
+                      onChange={(e) => handleSecuritySettingChange('sessionTimeout', parseInt(e.target.value))}
                     />
                     
                     <Input
                       label="Max Login Attempts"
                       type="number"
-                      value={securitySettings.maxLoginAttempts.toString()}
-                      onChange={(e) => handleSettingChange('security', 'maxLoginAttempts', parseInt(e.target.value))}
+                      value={securitySettings.maxLoginAttempts?.toString() || '5'}
+                      onChange={(e) => handleSecuritySettingChange('maxLoginAttempts', parseInt(e.target.value))}
                     />
                     
                     <Input
                       label="API Rate Limit (per hour)"
                       type="number"
-                      value={securitySettings.apiRateLimit.toString()}
-                      onChange={(e) => handleSettingChange('security', 'apiRateLimit', parseInt(e.target.value))}
+                      value={securitySettings.apiRateLimit?.toString() || '1000'}
+                      onChange={(e) => handleSecuritySettingChange('apiRateLimit', parseInt(e.target.value))}
                     />
                   </div>
                 </div>
@@ -1065,8 +1069,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Require 2FA for all admin accounts</div>
                       </div>
                       <Switch
-                        isSelected={securitySettings.twoFactorRequired}
-                        onValueChange={(value) => handleSettingChange('security', 'twoFactorRequired', value)}
+                        isSelected={securitySettings.twoFactorRequired || false}
+                        onValueChange={(value) => handleSecuritySettingChange('twoFactorRequired', value)}
                         color="success"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-success-500",
@@ -1081,8 +1085,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Passwords must contain special characters</div>
                       </div>
                       <Switch
-                        isSelected={securitySettings.passwordRequireSpecialChars}
-                        onValueChange={(value) => handleSettingChange('security', 'passwordRequireSpecialChars', value)}
+                        isSelected={securitySettings.passwordRequireSpecialChars || false}
+                        onValueChange={(value) => handleSecuritySettingChange('passwordRequireSpecialChars', value)}
                         color="primary"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-primary-500",
@@ -1097,8 +1101,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Log all admin actions and changes</div>
                       </div>
                       <Switch
-                        isSelected={securitySettings.enableAuditLog}
-                        onValueChange={(value) => handleSettingChange('security', 'enableAuditLog', value)}
+                        isSelected={securitySettings.enableAuditLog || false}
+                        onValueChange={(value) => handleSecuritySettingChange('enableAuditLog', value)}
                         color="warning"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-warning-500",
@@ -1113,8 +1117,8 @@ export const SystemSettings: React.FC = () => {
                         <div className="text-sm text-gray-600">Encrypt sensitive user information</div>
                       </div>
                       <Switch
-                        isSelected={securitySettings.encryptUserData}
-                        onValueChange={(value) => handleSettingChange('security', 'encryptUserData', value)}
+                        isSelected={securitySettings.encryptUserData || false}
+                        onValueChange={(value) => handleSecuritySettingChange('encryptUserData', value)}
                         color="success"
                         classNames={{
                           wrapper: "group-data-[selected=true]:bg-success-500",
@@ -1133,8 +1137,8 @@ export const SystemSettings: React.FC = () => {
                     <Textarea
                       label="IP Whitelist"
                       placeholder="Enter IP addresses (one per line)"
-                      value={securitySettings.ipWhitelist}
-                      onChange={(e) => handleSettingChange('security', 'ipWhitelist', e.target.value)}
+                      value={securitySettings.ipWhitelist || ''}
+                      onChange={(e) => handleSecuritySettingChange('ipWhitelist', e.target.value)}
                       minRows={3}
                       description="Restrict admin access to specific IP addresses"
                     />
@@ -1142,8 +1146,8 @@ export const SystemSettings: React.FC = () => {
                     <Input
                       label="Data Retention Period (days)"
                       type="number"
-                      value={securitySettings.dataRetentionPeriod.toString()}
-                      onChange={(e) => handleSettingChange('security', 'dataRetentionPeriod', parseInt(e.target.value))}
+                      value={securitySettings.dataRetentionPeriod?.toString() || '30'}
+                      onChange={(e) => handleSecuritySettingChange('dataRetentionPeriod', parseInt(e.target.value))}
                       description="How long to keep user data after account deletion"
                     />
                   </div>
@@ -1209,7 +1213,7 @@ export const SystemSettings: React.FC = () => {
       <div className="flex justify-between items-center">
         <Button
           variant="flat"
-          onPress={() => handleResetSettings(selectedTab)}
+          onPress={() => handleResetSettings()}
           startContent={<RotateCcw className="w-4 h-4" />}
           className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-0"
           size="lg"
@@ -1228,11 +1232,12 @@ export const SystemSettings: React.FC = () => {
           </Button>
           <Button
             color="primary"
-            onPress={() => handleSaveSettings(selectedTab)}
-            isDisabled={!hasUnsavedChanges}
-            startContent={<Save className="w-4 h-4" />}
+            onPress={() => handleSaveSettings()}
+            isDisabled={!hasUnsavedChanges || isLoading}
+            isLoading={isLoading}
+            startContent={!isLoading ? <Save className="w-4 h-4" /> : undefined}
             className={`font-semibold px-6 py-3 shadow-lg hover:shadow-xl transform transition-all duration-200 ${
-              hasUnsavedChanges 
+              hasUnsavedChanges && !isLoading
                 ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:scale-105' 
                 : 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-500 cursor-not-allowed'
             }`}
@@ -1314,9 +1319,9 @@ export const SystemSettings: React.FC = () => {
                 label="Template Type"
                 placeholder="Select template type"
               >
-                <SelectItem key="email" value="email">Email</SelectItem>
-                <SelectItem key="sms" value="sms">SMS</SelectItem>
-                <SelectItem key="push" value="push">Push Notification</SelectItem>
+                <SelectItem key="email">Email</SelectItem>
+                <SelectItem key="sms">SMS</SelectItem>
+                <SelectItem key="push">Push Notification</SelectItem>
               </Select>
               
               <Textarea
@@ -1377,9 +1382,9 @@ export const SystemSettings: React.FC = () => {
                 selectedKeys={[templateForm.type]}
                 onSelectionChange={(keys) => setTemplateForm(prev => ({ ...prev, type: Array.from(keys)[0] as 'email' | 'sms' | 'push' }))}
               >
-                <SelectItem key="email" value="email">Email</SelectItem>
-                <SelectItem key="sms" value="sms">SMS</SelectItem>
-                <SelectItem key="push" value="push">Push Notification</SelectItem>
+                <SelectItem key="email">Email</SelectItem>
+                <SelectItem key="sms">SMS</SelectItem>
+                <SelectItem key="push">Push Notification</SelectItem>
               </Select>
               
               <Textarea

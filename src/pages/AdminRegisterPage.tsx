@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Card, CardBody, Input, Button, Link, Select, SelectItem, Textarea } from '@heroui/react'
-import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone, Building2 } from 'lucide-react'
-
+import { Card, CardBody, Input, Button, Textarea } from '@heroui/react'
+import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone } from 'lucide-react'
+import { useAdminAuth } from '../hooks/useAdminAuth'
+import { useAuthStore } from '../lib/stores/authStore'
 import { AdminRegisterPageProps } from '../interfaces'
 
 export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChange }) => {
@@ -9,99 +10,79 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
     name: '',
     email: '',
     phone: '',
-    company: '',
-    role: '',
     reason: '',
     password: '',
     confirmPassword: ''
   })
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
 
-  const roles = [
-    { key: 'property-manager', label: 'Property Manager' },
-    { key: 'operations-manager', label: 'Operations Manager' },
-    { key: 'customer-support', label: 'Customer Support' },
-    { key: 'marketing-manager', label: 'Marketing Manager' },
-    { key: 'business-development', label: 'Business Development' },
-    { key: 'other', label: 'Other' },
-  ]
+  const { registerAdmin, isLoading } = useAdminAuth()
+  const { isAdmin } = useAuthStore()
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
   const handleSubmit = async () => {
-    setIsLoading(true)
     setError('')
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
-      setIsLoading(false)
       return
     }
 
-    // Simulate admin registration request
-    setTimeout(() => {
-      setIsLoading(false)
-      setIsSubmitted(true)
-    }, 2000)
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.password || !formData.reason) {
+      setError('Please fill in all required fields')
+      return
+    }
+
+    console.log('📝 Creating admin account for:', formData.email)
+
+    try {
+      console.log("data flow start to call register admin");
+      
+      const result = await registerAdmin({
+        email: formData.email,
+        password: formData.password,
+        displayName: formData.name,
+        bio: formData.reason,
+        phone: formData.phone.trim() || undefined
+      })
+
+      if (result.error) {
+        console.error('❌ Admin registration failed:', result.error)
+        setError(result.error)
+        return
+      }
+
+      if (!result.user) {
+        console.error('❌ No user data received')
+        setError('Registration failed - no user data received')
+        return
+      }
+
+      console.log('✅ Admin account created successfully:', {
+        email: result.user.email,
+        role: result.user.user_role,
+        id: result.user.id
+      })
+
+      // Redirect to admin dashboard
+      console.log('🚀 Redirecting to admin dashboard')
+      onPageChange?.('admin')
+
+    } catch (err: any) {
+      console.error('❌ Exception during admin registration:', err)
+      setError(err.message || 'An unexpected error occurred')
+    }
   }
 
   const handleBackToLogin = () => {
     onPageChange?.('admin-login')
-  }
-
-  if (isSubmitted) {
-    return (
-      <div 
-        className="fixed inset-0 w-screen h-screen flex items-center justify-center p-4"
-        style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&h=1080&fit=crop)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        {/* Background Overlay */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
-        
-        <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
-          <CardBody className="p-8 text-center">
-            <div className="w-16 h-16 bg-green-500/80 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-              <Crown className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-4">Request Submitted</h1>
-            <p className="text-white/80 mb-6 text-sm">
-              Thank you for requesting admin access. Your application has been submitted and will be reviewed by our team.
-              You will receive an email notification once your request has been processed.
-            </p>
-            <div className="space-y-3">
-              <Button
-                color="primary"
-                size="lg"
-                className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
-                onPress={() => onPageChange?.('admin-login')}
-              >
-                Back to Admin Login
-              </Button>
-              <Button
-                variant="flat"
-                size="lg"
-                className="w-full bg-primary-500/20 backdrop-blur-md border border-primary-400/30 text-white hover:bg-primary-500/30"
-                onPress={() => onPageChange?.('home')}
-              >
-                Back to Home
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    )
   }
 
   return (
@@ -135,7 +116,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
             <div className="w-16 h-16 bg-primary-600/80 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
               <Crown className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Request Admin Access</h1>
+            <h1 className="text-2xl font-bold text-white mb-2">Create Admin Account</h1>
             <p className="text-white/80 text-sm font-script text-lg">
               Nomad Lux Administration
             </p>
@@ -163,12 +144,12 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
               />
 
               <Input
-                type="tel"
-                label="Phone Number"
-                placeholder="+1 (555) 123-4567"
-                value={formData.phone}
-                onValueChange={(value) => handleInputChange('phone', value)}
-                startContent={<Phone className="w-4 h-4 text-white/60" />}
+                type="email"
+                label="Email Address"
+                placeholder="admin@nomadlux.com"
+                value={formData.email}
+                onValueChange={(value) => handleInputChange('email', value)}
+                startContent={<Mail className="w-4 h-4 text-white/60" />}
                 classNames={{
                   base: "max-w-full",
                   mainWrapper: "h-full",
@@ -180,14 +161,13 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
               />
             </div>
 
-            {/* Email Field */}
             <Input
-              type="email"
-              label="Email Address"
-              placeholder="your.email@company.com"
-              value={formData.email}
-              onValueChange={(value) => handleInputChange('email', value)}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              type="tel"
+              label="Phone Number (Optional)"
+              placeholder="+1 (555) 123-4567"
+              value={formData.phone}
+              onValueChange={(value) => handleInputChange('phone', value)}
+              startContent={<Phone className="w-4 h-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -195,73 +175,13 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
                 inputWrapper: "h-12 bg-white/10 backdrop-blur-md border border-white/20 data-[hover=true]:bg-white/20 group-data-[focus=true]:bg-white/20",
                 label: "text-white/80"
               }}
-              isRequired
-            />
-
-            {/* Company Information */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                type="text"
-                label="Company/Organization"
-                placeholder="Your company"
-                value={formData.company}
-                onValueChange={(value) => handleInputChange('company', value)}
-                startContent={<Building2 className="w-4 h-4 text-white/60" />}
-                classNames={{
-                  base: "max-w-full",
-                  mainWrapper: "h-full",
-                  input: "text-white placeholder:text-white/60",
-                  inputWrapper: "h-12 bg-white/10 backdrop-blur-md border border-white/20 data-[hover=true]:bg-white/20 group-data-[focus=true]:bg-white/20",
-                  label: "text-white/80"
-                }}
-                isRequired
-              />
-
-              <Select
-                label="Role/Position"
-                placeholder="Select role"
-                selectedKeys={formData.role ? [formData.role] : []}
-                onSelectionChange={(keys) => handleInputChange('role', Array.from(keys)[0] as string)}
-                classNames={{
-                  base: "max-w-full",
-                  mainWrapper: "h-full",
-                  trigger: "h-12 bg-white/10 backdrop-blur-md border border-white/20 data-[hover=true]:bg-white/20 data-[open=true]:bg-white/20",
-                  label: "text-white/80",
-                  value: "text-white",
-                  selectorIcon: "text-white/60"
-                }}
-                isRequired
-              >
-                {roles.map((role) => (
-                  <SelectItem key={role.key} value={role.key}>
-                    {role.label}
-                  </SelectItem>
-                ))}
-              </Select>
-            </div>
-
-            {/* Reason for Access */}
-            <Textarea
-              label="Reason for Admin Access"
-              placeholder="Please explain why you need admin access to the platform..."
-              value={formData.reason}
-              onValueChange={(value) => handleInputChange('reason', value)}
-              rows={3}
-              classNames={{
-                base: "max-w-full",
-                mainWrapper: "h-full",
-                input: "text-white placeholder:text-white/60",
-                inputWrapper: "bg-white/10 backdrop-blur-md border border-white/20 data-[hover=true]:bg-white/20 group-data-[focus=true]:bg-white/20",
-                label: "text-white/80"
-              }}
-              isRequired
             />
 
             {/* Password Fields */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Password"
-                placeholder="Create password"
+                placeholder="Create a password"
                 value={formData.password}
                 onValueChange={(value) => handleInputChange('password', value)}
                 startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -291,7 +211,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
 
               <Input
                 label="Confirm Password"
-                placeholder="Confirm password"
+                placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onValueChange={(value) => handleInputChange('confirmPassword', value)}
                 startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -320,6 +240,22 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
               />
             </div>
 
+            {/* Reason for Admin Access */}
+            <Textarea
+              label="Reason for Admin Access"
+              placeholder="Please explain why you need admin access to Nomad Lux..."
+              value={formData.reason}
+              onValueChange={(value) => handleInputChange('reason', value)}
+              minRows={3}
+              classNames={{
+                base: "max-w-full",
+                input: "text-white placeholder:text-white/60",
+                inputWrapper: "bg-white/10 backdrop-blur-md border border-white/20 data-[hover=true]:bg-white/20 group-data-[focus=true]:bg-white/20",
+                label: "text-white/80"
+              }}
+              isRequired
+            />
+
             {/* Error Message */}
             {error && (
               <div className="text-red-300 text-sm text-center bg-red-500/20 backdrop-blur-md p-3 rounded-lg border border-red-400/30">
@@ -334,22 +270,33 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
               className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
               onPress={handleSubmit}
               isLoading={isLoading}
+              isDisabled={!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.reason}
             >
-              {isLoading ? 'Submitting Request...' : 'Submit Access Request'}
+              {isLoading ? 'Creating Admin Account...' : 'Create Admin Account'}
             </Button>
           </div>
 
+          {/* Additional Info */}
+          <div className="mt-6 p-4 bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-lg">
+            <p className="text-sm text-blue-100">
+              <strong>Admin Registration:</strong><br />
+              Your account will be created with full administrative privileges and immediate access to the admin panel.
+            </p>
+          </div>
+
           {/* Back to Login Link */}
-          <div className="mt-6 text-center">
-            <span className="text-white/80 text-sm">
-              Already have admin credentials?{' '}
-              <Link 
-                className="text-white font-semibold hover:text-white/80"
-                onPress={() => onPageChange?.('admin-login')}
+          <div className="text-center mt-6">
+            <p className="text-white/60 text-sm">
+              Already have an admin account?{' '}
+              <Button
+                variant="light"
+                size="sm"
+                className="text-primary-300 hover:text-primary-200 p-0 h-auto min-w-0"
+                onPress={handleBackToLogin}
               >
-                Sign In Here
-              </Link>
-            </span>
+                Sign in here
+              </Button>
+            </p>
           </div>
         </CardBody>
       </Card>

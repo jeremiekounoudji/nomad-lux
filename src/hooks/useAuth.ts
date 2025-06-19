@@ -3,11 +3,15 @@ import { User as SupabaseUser } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { User, UserRole } from '../interfaces/User'
 import { AuthApiResponse } from '../interfaces/Auth'
+import { useUserProfile } from './useUserProfile'
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null)
   const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+
+  // Use user profile management hook
+  const {fetchUserProfile, createUserProfile, updateUserProfile} = useUserProfile()
 
   console.log('🔐 useAuth hook initialized', { timestamp: new Date().toISOString() })
 
@@ -16,84 +20,10 @@ export const useAuth = () => {
   const isAdmin = user?.user_role === 'admin' || user?.user_role === 'super_admin'
   const isSuperAdmin = user?.user_role === 'super_admin'
 
-  // Fetch user profile from database
-  const fetchUserProfile = async (authId: string): Promise<User | null> => {
-    try {
-      console.log('🔍 Fetching user profile for auth_id:', authId)
-      
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('auth_id', authId)
-        .single()
+  // Use fetchUserProfile from userProfileHook
+  // const fetchUserProfile = userProfileHook.fetchUserProfile
 
-      if (error) {
-        console.error('❌ Error fetching user profile:', error)
-        return null
-      }
-
-      console.log('✅ User profile fetched successfully:', { 
-        id: data.id, 
-        email: data.email,
-        user_role: data.user_role
-      })
-      
-      return data as User
-    } catch (error) {
-      console.error('❌ Exception in fetchUserProfile:', error)
-      return null
-    }
-  }
-
-  // Create user profile in database after signup
-  const createUserProfile = async (supabaseUser: SupabaseUser, displayName: string): Promise<User | null> => {
-    try {
-      console.log('👤 Creating user profile for:', supabaseUser.email)
-      
-      const newUser: Partial<User> = {
-        auth_id: supabaseUser.id,
-        email: supabaseUser.email!,
-        display_name: displayName,
-        user_role: 'guest' as UserRole,
-        account_status: 'active',
-        is_phone_verified: false,
-        is_email_verified: !!supabaseUser.email_confirmed_at,
-        is_identity_verified: false,
-        is_host: false,
-        response_rate: 0,
-        guest_rating: 0,
-        host_rating: 0,
-        total_guest_reviews: 0,
-        total_host_reviews: 0,
-        total_bookings: 0,
-        total_properties: 0,
-        total_revenue: 0,
-        preferred_currency: 'USD',
-        language_preference: 'en'
-      }
-
-      const { data, error } = await supabase
-        .from('users')
-        .insert([newUser])
-        .select()
-        .single()
-
-      if (error) {
-        console.error('❌ Error creating user profile:', error)
-        throw error
-      }
-
-      console.log('✅ User profile created successfully:', { 
-        id: data.id, 
-        email: data.email 
-      })
-      
-      return data as User
-    } catch (error) {
-      console.error('❌ Exception in createUserProfile:', error)
-      throw error
-    }
-  }
+  // Use createUserProfile from userProfileHook
 
   // Sign in function
   const signIn = async (email: string, password: string): Promise<{ user: User | null; error: string | null }> => {
@@ -249,14 +179,10 @@ export const useAuth = () => {
         return { error: 'No user logged in' }
       }
 
-      const { error } = await supabase
-        .from('users')
-        .update(updates)
-        .eq('id', user.id)
-
-      if (error) {
-        console.error('❌ Profile update error:', error.message)
-        return { error: error.message }
+      const updatedUser = await updateUserProfile(user.id, updates)
+      
+      if (!updatedUser) {
+        return { error: 'Failed to update profile' }
       }
 
       // Refresh user data
@@ -272,55 +198,87 @@ export const useAuth = () => {
   }
 
   // Initialize auth state on mount
-  useEffect(() => {
-    console.log('🔄 Initializing auth state')
+  // useEffect(() => {
+  //   console.log('🔄 Initializing auth state')
+  //   let mounted = true
     
-    const getSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
+  //   const getSession = async () => {
+  //     try {
+  //       console.log('🔍 Getting initial session...')
+  //       const { data: { session }, error } = await supabase.auth.getSession()
         
-        if (session?.user) {
-          console.log('✅ Active session found for:', session.user.email)
-          const userProfile = await fetchUserProfile(session.user.id)
-          if (userProfile) {
-            setSupabaseUser(session.user)
-            setUser(userProfile)
-          }
-        } else {
-          console.log('ℹ️ No active session found')
-        }
-      } catch (error) {
-        console.error('❌ Error getting session:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  //       if (error) {
+  //         console.error('❌ Error getting session:', error)
+  //         if (mounted) {
+  //           setIsLoading(false)
+  //         }
+  //         return
+  //       }
+        
+  //       if (session?.user) {
+  //         console.log('✅ Active session found for:', session.user.email)
+  //         const userProfile = await fetchUserProfile(session.user.id)
+  //         if (userProfile && mounted) {
+  //           setSupabaseUser(session.user)
+  //           setUser(userProfile)
+  //         }
+  //       } else {
+  //         console.log('ℹ️ No active session found')
+  //       }
+  //     } catch (error) {
+  //       console.error('❌ Exception getting session:', error)
+  //     } finally {
+  //       if (mounted) {
+  //         console.log('🔄 Setting loading to false after session check')
+  //         setIsLoading(false)
+  //       }
+  //     }
+  //   }
 
-    getSession()
+  //   // Set a timeout to ensure loading doesn't get stuck
+  //   const timeoutId = setTimeout(() => {
+  //     if (mounted) {
+  //       console.log('⏰ Timeout reached, forcing loading to false')
+  //       setIsLoading(false)
+  //     }
+  //   }, 5000) // 5 second timeout
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 Auth state change:', event)
+  //   getSession()
+
+  //   // Listen for auth changes
+  //   console.log('📡 Setting up auth state change listener')
+  //   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+  //     console.log('🔄 Auth state change event:', event, session ? 'with session' : 'no session')
       
-      if (session?.user) {
-        const userProfile = await fetchUserProfile(session.user.id)
-        if (userProfile) {
-          setSupabaseUser(session.user)
-          setUser(userProfile)
-        }
-      } else {
-        setSupabaseUser(null)
-        setUser(null)
-      }
-      
-      setIsLoading(false)
-    })
+  //     try {
+  //       if (session?.user) {
+  //         const userProfile = await fetchUserProfile(session.user.id)
+  //         if (userProfile && mounted) {
+  //           setSupabaseUser(session.user)
+  //           setUser(userProfile)
+  //         }
+  //       } else {
+  //         if (mounted) {
+  //           setSupabaseUser(null)
+  //           setUser(null)
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('❌ Error in auth state change handler:', error)
+  //     } finally {
+  //       if (mounted) {
+  //         setIsLoading(false)
+  //       }
+  //     }
+  //   })
 
-    return () => {
-      console.log('🧹 Cleaning up auth subscription')
-      subscription.unsubscribe()
-    }
-  }, [])
+  //   return () => {
+  //     console.log('🧹 Cleaning up auth subscription and timeout')
+  //     mounted = false
+  //     clearTimeout(timeoutId)
+  //     subscription.unsubscribe()
+  //   }
+  // }, [])
 
   return {
     // State

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AdminLayout } from '../components/features/admin/AdminLayout'
 import { AdminDashboard } from '../components/features/admin/AdminDashboard'
 import { UserManagement } from '../components/features/admin/UserManagement'
@@ -7,30 +7,57 @@ import { BookingManagement } from '../components/features/admin/BookingManagemen
 import { AnalyticsDashboard } from '../components/features/admin/AnalyticsDashboard'
 import { SystemSettings } from '../components/features/admin/SystemSettings'
 import { ActivityLog } from '../components/features/admin/ActivityLog'
+import { useAuthStore } from '../lib/stores/authStore'
+import { useAdminAuth } from '../hooks/useAdminAuth'
 
 import { AdminPageProps } from '../interfaces'
 
 export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
   const [currentSection, setCurrentSection] = useState('dashboard')
+  
+  const { isAuthenticated, isAdmin, user } = useAuthStore()
+  const { signOut } = useAdminAuth()
 
-  // Admin authentication check (in real app, this would check JWT token, etc.)
-  const isAdminAuthenticated = () => {
-    // For demo purposes, we'll assume user is authenticated
-    // In real app, check localStorage token, session, etc.
-    return true
+  console.log('🏛️ AdminPage loaded:', {
+    isAuthenticated,
+    isAdmin,
+    userEmail: user?.email || 'null',
+    userRole: user?.user_role || 'null'
+  })
+
+  // Check admin authentication
+  useEffect(() => {
+    if (!isAuthenticated || !isAdmin) {
+      console.log('❌ Admin access denied - redirecting to login')
+      onPageChange?.('admin-login')
+      return
+    }
+
+    console.log('✅ Admin authenticated successfully:', user?.email)
+  }, [isAuthenticated, isAdmin, user, onPageChange])
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      console.log('🚪 Admin logout initiated')
+      await signOut()
+      console.log('🚀 Redirecting to admin login')
+      
+      // Small delay to ensure auth state is cleared
+      setTimeout(() => {
+        onPageChange?.('admin-login')
+      }, 100)
+    } catch (error) {
+      console.error('❌ Logout error:', error)
+      // Force redirect even if logout fails
+      setTimeout(() => {
+        onPageChange?.('admin-login')
+      }, 100)
+    }
   }
 
-  // Handle logout and redirect to admin login
-  const handleLogout = () => {
-    // Clear admin session/token
-    localStorage.removeItem('adminToken')
-    // Redirect to admin login
-    onPageChange?.('admin-login')
-  }
-
-  // If not authenticated, redirect to admin login
-  if (!isAdminAuthenticated()) {
-    onPageChange?.('admin-login')
+  // If not authenticated, don't render admin content
+  if (!isAuthenticated || !isAdmin) {
     return null
   }
 

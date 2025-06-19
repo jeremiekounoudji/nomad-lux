@@ -18,7 +18,7 @@ import { AdminRegisterPage } from './AdminRegisterPage'
 import { AdminPage } from './AdminPage'
 import { Property } from '../interfaces'
 import { mockProperties } from '../lib/mockData'
-import { AuthTest } from '../components/shared/AuthTest'
+// import { AuthTest } from '../components/shared/AuthTest'
 
 const HomePage: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
@@ -104,7 +104,7 @@ const HomePage: React.FC = () => {
     case 'admin-register':
       return <AdminRegisterPage onPageChange={handlePageChange} />
     case 'admin':
-      return <AdminPage />
+      return <AdminPage onPageChange={handlePageChange} />
     default:
       break
   }
@@ -113,10 +113,10 @@ const HomePage: React.FC = () => {
   return (
     <>
       <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
-        {/* AUTH TEST COMPONENT - TEMPORARY FOR TESTING */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+        {/* AUTH TEST COMPONENT - TEMPORARILY DISABLED DUE TO CONTEXT ISSUES */}
+        {/* <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
           <AuthTest />
-        </div>
+        </div> */}
 
         {/* Popular Places Section - Full width across all columns */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4 mb-6">

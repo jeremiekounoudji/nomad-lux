@@ -1,5 +1,6 @@
 import React from 'react'
 import { Search, Bell, Settings, LogOut, Menu, Crown } from 'lucide-react'
+import { useAuthStore } from '../../../lib/stores/authStore'
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void
@@ -12,6 +13,8 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   onLogout, 
   onSectionChange 
 }) => {
+  const { user } = useAuthStore()
+
   const handleLogout = () => {
     if (onLogout) {
       onLogout()
@@ -23,6 +26,36 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
       onSectionChange('activities')
     }
   }
+
+  // Get user initials for avatar
+  const getUserInitials = (displayName?: string, email?: string) => {
+    if (displayName) {
+      return displayName.split(' ').map(name => name[0]).join('').substring(0, 2).toUpperCase()
+    }
+    if (email) {
+      return email.substring(0, 2).toUpperCase()
+    }
+    return 'AD'
+  }
+
+  // Get role display name
+  const getRoleDisplayName = (role?: string) => {
+    switch (role) {
+      case 'super_admin':
+        return 'Super Administrator'
+      case 'admin':
+        return 'Administrator'
+      case 'host':
+        return 'Host'
+      case 'guest':
+        return 'Guest'
+      default:
+        return 'User'
+    }
+  }
+
+  const userInitials = getUserInitials(user?.display_name, user?.email)
+  const roleDisplay = getRoleDisplayName(user?.user_role)
 
   return (
     <header className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between sticky top-0 z-30">
@@ -107,11 +140,13 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
         {/* Admin Profile */}
         <div className="flex items-center gap-3 pl-3 border-l border-gray-200">
           <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-gray-900">Admin User</p>
-            <p className="text-xs text-gray-500">Administrator</p>
+            <p className="text-sm font-medium text-gray-900">
+              {user?.display_name || user?.email?.split('@')[0] || 'Admin User'}
+            </p>
+            <p className="text-xs text-gray-500">{roleDisplay}</p>
           </div>
           <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-semibold">A</span>
+            <span className="text-white text-sm font-semibold">{userInitials}</span>
           </div>
         </div>
       </div>

@@ -1,275 +1,228 @@
-import { useState, useCallback } from 'react'
+import { useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { useAuthContext } from '../context/AuthContext'
-
-// Admin settings interfaces
-interface AdminSetting {
-  category: string
-  setting_key: string
-  setting_value: any
-  data_type: string
-  description?: string
-  is_encrypted: boolean
-  updated_at: string
-}
-
-interface AdminSettingsResponse {
-  [category: string]: {
-    [key: string]: any
-  }
-}
-
-interface UpdateSettingParams {
-  category: string
-  settingKey: string
-  newValue: any
-  description?: string
-}
+import { useAdminSettingsStore, groupSettingsByCategory } from '../lib/stores/adminSettingsStore'
+import { 
+  AdminSettings, 
+  AdminSettingRecord,
+  PlatformSettings, 
+  BookingSettings, 
+  NotificationSettings, 
+  SecuritySettings, 
+  PaymentSettings 
+} from '../interfaces/Settings'
 
 export const useAdminSettings = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const { isAdmin, isSuperAdmin } = useAuthContext()
+  const {
+    settings,
+    draftSettings,
+    isLoading,
+    error,
+    hasUnsavedChanges,
+    setSettings,
+    setLoading,
+    setError,
+    clearError,
+    updateDraftPlatformSettings,
+    updateDraftBookingSettings,
+    updateDraftNotificationSettings,
+    updateDraftSecuritySettings,
+    updateDraftPaymentSettings,
+    resetDrafts,
+    clearDrafts,
+    getCurrentSettings,
+    shouldRefresh,
+    invalidateCache
+  } = useAdminSettingsStore()
 
-  console.log('⚙️ useAdminSettings hook initialized', { 
-    isAdmin, 
-    isSuperAdmin,
-    timestamp: new Date().toISOString() 
-  })
+  // Fetch settings from database
+  const fetchSettings = async (): Promise<AdminSettings> => {
+    // Return cached data if it's still fresh
+    if (settings && !shouldRefresh()) {
+      console.log('📋 Using cached admin settings')
+      return settings
+    }
 
-  // Get all admin settings
-  const getSettings = useCallback(async (categoryFilter?: string): Promise<AdminSettingsResponse | null> => {
+    console.log('📥 Fetching admin settings from database...')
+    setLoading(true)
+    clearError()
+    
     try {
-      console.log('📥 Fetching admin settings', { categoryFilter })
-      setIsLoading(true)
-      setError(null)
-
-      if (!isAdmin) {
-        throw new Error('Admin access required')
-      }
-
-      const { data, error } = await supabase.rpc('get_admin_settings', {
-        category_filter: categoryFilter || null,
-        include_encrypted: false
-      })
+      const { data, error } = await supabase
+        .from('admin_settings')
+        .select('*')
+        .order('category', { ascending: true })
+        .order('setting_key', { ascending: true })
 
       if (error) {
-        console.error('❌ Error fetching admin settings:', error)
-        throw error
+        console.error('❌ Supabase error fetching settings:', error)
+        throw new Error(`Failed to fetch settings: ${error.message}`)
       }
 
-      console.log('✅ Admin settings fetched successfully:', Object.keys(data || {}))
-      return data || {}
+      if (!data) {
+        console.warn('⚠️ No settings data returned')
+        const emptySettings = {} as AdminSettings
+        setSettings(emptySettings)
+        setLoading(false)
+        return emptySettings
+      }
 
-    } catch (err: any) {
-      console.error('❌ Exception in getSettings:', err)
-      setError(err.message || 'Failed to fetch settings')
-      return null
-    } finally {
-      setIsLoading(false)
+      console.log('✅ Raw settings data fetched:', data)
+      
+      const groupedSettings = groupSettingsByCategory(data as AdminSettingRecord[])
+      console.log('✅ Settings grouped and cached successfully')
+      
+      setSettings(groupedSettings)
+      setLoading(false)
+      
+      return groupedSettings
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      console.error('❌ Failed to fetch settings:', error)
+      setError(errorMessage)
+      throw error
     }
-  }, [isAdmin])
+  }
 
-  // Update a single setting
-  const updateSetting = useCallback(async ({ 
-    category, 
-    settingKey, 
-    newValue, 
-    description 
-  }: UpdateSettingParams): Promise<boolean> => {
+  // Save all draft changes to database
+  const saveAllChanges = async (): Promise<void> => {
+    if (!draftSettings || !settings) {
+      console.warn('⚠️ No draft settings or original settings available')
+      return
+    }
+
+    // Ensure we have valid settings objects
+    if (typeof draftSettings !== 'object' || typeof settings !== 'object') {
+      console.warn('⚠️ Invalid settings objects')
+      return
+    }
+
+    console.log('💾 Saving all draft changes to database...')
+    setLoading(true)
+    clearError()
+
     try {
-      console.log('📝 Updating admin setting:', { category, settingKey, newValue })
-      setIsLoading(true)
-      setError(null)
+      // Compare draft with original and collect changes
+      const updates: Array<{
+        category: string,
+        setting_key: string,
+        setting_value: any,
+        data_type: string
+      }> = []
 
-      if (!isAdmin) {
-        throw new Error('Admin access required')
+      for (const [categoryKey, categorySettings] of Object.entries(draftSettings)) {
+        if (!categorySettings || typeof categorySettings !== 'object') continue
+
+        // Map interface categories back to database categories
+        let dbCategory: string
+        switch (categoryKey) {
+          case 'platform':
+            dbCategory = 'general'
+            break
+          case 'notification':
+            dbCategory = 'notifications'
+            break
+          default:
+            dbCategory = categoryKey
+        }
+
+        for (const [settingKey, value] of Object.entries(categorySettings)) {
+          // Skip null/undefined values
+          if (value === null || value === undefined) {
+            continue
+          }
+          
+          // Check if value changed
+          const originalValue = (settings[categoryKey as keyof AdminSettings] as any)?.[settingKey]
+          if (JSON.stringify(originalValue) !== JSON.stringify(value)) {
+            let dataType: string = 'string'
+            
+            if (typeof value === 'number') dataType = 'number'
+            else if (typeof value === 'boolean') dataType = 'boolean'
+            else if (Array.isArray(value)) dataType = 'array'
+            else if (typeof value === 'object') dataType = 'object'
+
+            updates.push({
+              category: dbCategory,
+              setting_key: settingKey,
+              setting_value: value,
+              data_type: dataType
+            })
+          }
+        }
       }
 
-      const { data, error } = await supabase.rpc('update_admin_setting', {
-        setting_category: category,
-        setting_key: settingKey,
-        new_value: newValue,
-        setting_description: description || null
-      })
+      console.log(`💾 Saving ${updates.length} changed settings:`, updates)
+
+      // Only proceed if there are actual changes
+      if (updates.length === 0) {
+        console.log('ℹ️ No changes to save')
+        setLoading(false)
+        return
+      }
+
+      // Batch update all changes
+      const { error } = await supabase
+        .from('admin_settings')
+        .upsert(
+          updates.map(update => ({
+            ...update,
+            updated_at: new Date().toISOString()
+          })), 
+          {
+            onConflict: 'category,setting_key'
+          }
+        )
 
       if (error) {
-        console.error('❌ Error updating admin setting:', error)
-        throw error
+        console.error('❌ Failed to save settings:', error)
+        throw new Error(`Failed to save settings: ${error.message}`)
       }
 
-      console.log('✅ Admin setting updated successfully:', data)
-      return true
+      console.log('✅ All settings saved successfully')
 
-    } catch (err: any) {
-      console.error('❌ Exception in updateSetting:', err)
-      setError(err.message || 'Failed to update setting')
-      return false
-    } finally {
-      setIsLoading(false)
+      // Refresh settings from database to ensure consistency
+      await fetchSettings()
+      
+      // Note: clearDrafts is automatically handled by setSettings in the store
+      setLoading(false)
+      
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
+      console.error('❌ Error saving settings:', error)
+      setError(errorMessage)
+      setLoading(false)
+      throw error
     }
-  }, [isAdmin])
+  }
 
-  // Update multiple settings at once
-  const updateSettingsBulk = useCallback(async (settingsData: any): Promise<boolean> => {
-    try {
-      console.log('📝 Bulk updating admin settings:', Object.keys(settingsData))
-      setIsLoading(true)
-      setError(null)
-
-      if (!isAdmin) {
-        throw new Error('Admin access required')
-      }
-
-      const { data, error } = await supabase.rpc('update_admin_settings_bulk', {
-        settings_data: settingsData
-      })
-
-      if (error) {
-        console.error('❌ Error bulk updating admin settings:', error)
-        throw error
-      }
-
-      if (!data.success) {
-        console.error('❌ Bulk update had errors:', data.errors)
-        throw new Error(`Bulk update failed: ${data.errors?.join(', ')}`)
-      }
-
-      console.log('✅ Admin settings bulk updated successfully:', data)
-      return true
-
-    } catch (err: any) {
-      console.error('❌ Exception in updateSettingsBulk:', err)
-      setError(err.message || 'Failed to bulk update settings')
-      return false
-    } finally {
-      setIsLoading(false)
+  // Auto-fetch settings on mount
+  useEffect(() => {
+    if (!settings) {
+      fetchSettings().catch(console.error)
     }
-  }, [isAdmin])
+  }, [settings])
 
-  // Reset settings to default (super admin only)
-  const resetSettings = useCallback(async (categoryFilter?: string): Promise<boolean> => {
-    try {
-      console.log('🔄 Resetting admin settings to default:', { categoryFilter })
-      setIsLoading(true)
-      setError(null)
-
-      if (!isSuperAdmin) {
-        throw new Error('Super admin access required for reset operations')
-      }
-
-      const { data, error } = await supabase.rpc('reset_admin_settings', {
-        category_filter: categoryFilter || null,
-        confirm_reset: true
-      })
-
-      if (error) {
-        console.error('❌ Error resetting admin settings:', error)
-        throw error
-      }
-
-      console.log('✅ Admin settings reset successfully:', data)
-      return true
-
-    } catch (err: any) {
-      console.error('❌ Exception in resetSettings:', err)
-      setError(err.message || 'Failed to reset settings')
-      return false
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isSuperAdmin])
-
-  // Get settings change history
-  const getSettingsHistory = useCallback(async (
-    categoryFilter?: string,
-    limit: number = 50,
-    offset: number = 0
-  ): Promise<any[] | null> => {
-    try {
-      console.log('📜 Fetching settings change history', { categoryFilter, limit, offset })
-      setIsLoading(true)
-      setError(null)
-
-      if (!isAdmin) {
-        throw new Error('Admin access required')
-      }
-
-      const { data, error } = await supabase.rpc('get_admin_settings_history', {
-        category_filter: categoryFilter || null,
-        limit_count: limit,
-        offset_count: offset
-      })
-
-      if (error) {
-        console.error('❌ Error fetching settings history:', error)
-        throw error
-      }
-
-      console.log('✅ Settings history fetched successfully:', data?.data?.length || 0, 'entries')
-      return data?.data || []
-
-    } catch (err: any) {
-      console.error('❌ Exception in getSettingsHistory:', err)
-      setError(err.message || 'Failed to fetch settings history')
-      return null
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isAdmin])
-
-  // Validate current settings
-  const validateSettings = useCallback(async (): Promise<{ valid: boolean; errors: string[] } | null> => {
-    try {
-      console.log('✔️ Validating admin settings')
-      setIsLoading(true)
-      setError(null)
-
-      if (!isAdmin) {
-        throw new Error('Admin access required')
-      }
-
-      const { data, error } = await supabase.rpc('validate_admin_settings')
-
-      if (error) {
-        console.error('❌ Error validating admin settings:', error)
-        throw error
-      }
-
-      console.log('✅ Settings validation completed:', data)
-      return data
-
-    } catch (err: any) {
-      console.error('❌ Exception in validateSettings:', err)
-      setError(err.message || 'Failed to validate settings')
-      return null
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isAdmin])
-
-  // Clear error
-  const clearError = useCallback(() => {
-    setError(null)
-  }, [])
+  // Return current settings (draft if available, otherwise original)
+  const currentSettings = getCurrentSettings()
 
   return {
     // State
+    settings: currentSettings,
     isLoading,
     error,
+    hasUnsavedChanges,
     
     // Actions
-    getSettings,
-    updateSetting,
-    updateSettingsBulk,
-    resetSettings,
-    getSettingsHistory,
-    validateSettings,
-    clearError,
+    fetchSettings,
+    saveAllChanges,
+    resetDrafts,
+    invalidateCache,
     
-    // Permissions
-    canRead: isAdmin,
-    canWrite: isAdmin,
-    canReset: isSuperAdmin
+    // Convenience methods for updating settings
+    updatePlatformSettings: updateDraftPlatformSettings,
+    updateBookingSettings: updateDraftBookingSettings,
+    updateNotificationSettings: updateDraftNotificationSettings,
+    updateSecuritySettings: updateDraftSecuritySettings,
+    updatePaymentSettings: updateDraftPaymentSettings,
   }
 } 
