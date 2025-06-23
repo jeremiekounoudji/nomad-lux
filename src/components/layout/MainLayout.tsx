@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Home, Heart, Plus, Calendar, User, Settings, Menu, Search, Bell, ClipboardList, X, LogOut, Bookmark, HelpCircle, Shield, LogIn, UserPlus, Crown } from 'lucide-react'
 import { mockCurrentUser } from '../../lib/mockData'
+import { useAuth } from '../../hooks/useAuth'
+import { useAuthStore } from '../../lib/stores/authStore'
 import Sidebar from './Sidebar'
+import toast from 'react-hot-toast'
 
 import { MainLayoutProps } from '../../interfaces'
 
@@ -12,6 +15,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 }) => {
   const [activePage, setActivePage] = useState(currentPage)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
+  const { signOut } = useAuth()
+  const { isAuthenticated, user } = useAuthStore()
   
   // Sync activePage with currentPage prop
   useEffect(() => {
@@ -58,6 +64,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen)
+  }
+
+  const handleLogout = async () => {
+    try {
+      console.log('🚪 User logout initiated')
+      await signOut()
+      toast.success('Logged out successfully')
+      
+      // Close drawer and redirect to login
+      setIsDrawerOpen(false)
+      if (onPageChange) {
+        onPageChange('login')
+      }
+    } catch (error) {
+      console.error('❌ Logout error:', error)
+      toast.error('Failed to logout')
+    }
   }
 
   return (
@@ -139,17 +162,41 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             </div>
             
             {/* Profile Section */}
-            <div className="flex items-center gap-3 min-w-0">
-              <img
-                src={mockCurrentUser.avatar_url}
-                alt={mockCurrentUser.display_name}
-                className="w-12 h-12 rounded-full ring-2 ring-secondary-200 flex-shrink-0"
-              />
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 truncate">{mockCurrentUser.display_name}</h3>
-                <p className="text-sm text-gray-500 truncate">@{mockCurrentUser.username}</p>
+            {isAuthenticated && user ? (
+              <div className="flex items-center gap-3 min-w-0">
+                <img
+                  src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
+                  alt={user.display_name}
+                  className="w-12 h-12 rounded-full ring-2 ring-secondary-200 flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 truncate">{user.display_name}</h3>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <span className="truncate">@{user.username || user.email.split('@')[0]}</span>
+                    {user.is_email_verified && (
+                      <span className="text-green-500 text-xs">✓</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
+                    <span className="capitalize">{user.user_role === 'both' ? 'Host & Guest' : user.user_role}</span>
+                    <span>⭐ {user.guest_rating.toFixed(1)}</span>
+                    {user.is_host && (
+                      <span>🏠 {user.total_properties}</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-12 h-12 bg-gray-200 rounded-full ring-2 ring-secondary-200 flex-shrink-0 flex items-center justify-center">
+                  <User className="w-6 h-6 text-gray-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-gray-900 truncate">Guest User</h3>
+                  <p className="text-sm text-gray-500 truncate">Not signed in</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Drawer Navigation */}
@@ -174,12 +221,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             </nav>
 
             {/* Logout */}
-            <div className="mt-8 pt-4 border-t border-gray-100 px-3">
-              <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600 min-w-0">
-                <LogOut className="w-5 h-5 flex-shrink-0" />
-                <span className="text-base truncate">Logout</span>
-              </button>
-            </div>
+            {isAuthenticated && (
+              <div className="mt-8 pt-4 border-t border-gray-100 px-3">
+                <button 
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600 min-w-0"
+                >
+                  <LogOut className="w-5 h-5 flex-shrink-0" />
+                  <span className="text-base truncate">Logout</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -219,18 +271,40 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             >
               Create Post
             </button>
-            <button 
-              onClick={() => handlePageChange('login')}
-              className="bg-secondary-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-secondary-700 transition-colors duration-200 shadow-sm"
-            >
-              Login
-            </button>
-            <img
-              src={mockCurrentUser.avatar_url}
-              alt={mockCurrentUser.display_name}
-              className="w-10 h-10 rounded-full cursor-pointer ring-2 ring-secondary-200"
-              onClick={() => handlePageChange('profile')}
-            />
+            {isAuthenticated && user ? (
+              <>
+                {/* User Profile Button */}
+                <div className="flex items-center gap-3 cursor-pointer group" onClick={() => handlePageChange('profile')}>
+                  <img
+                    src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
+                    alt={user.display_name}
+                    className="w-10 h-10 rounded-full ring-2 ring-secondary-200 group-hover:ring-primary-300 transition-all"
+                  />
+                  <div className="hidden xl:block text-right">
+                    <p className="text-sm font-medium text-gray-900 truncate max-w-32">{user.display_name}</p>
+                    <p className="text-xs text-gray-500 truncate max-w-32">
+                      {user.user_role === 'host' || user.user_role === 'both' ? 'Host' : 'Guest'} • ⭐ {user.guest_rating.toFixed(1)}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Logout Button */}
+                <button 
+                  onClick={handleLogout}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5 text-gray-600 group-hover:text-red-600" />
+                </button>
+              </>
+            ) : (
+              <button 
+                onClick={() => handlePageChange('login')}
+                className="bg-secondary-600 text-white px-6 py-2 rounded-full text-sm font-medium hover:bg-secondary-700 transition-colors duration-200 shadow-sm"
+              >
+                Login
+              </button>
+            )}
           </div>
         </div>
 

@@ -2,8 +2,30 @@ import React from 'react'
 import { Home, Search, Heart, Plus, Calendar, User, Settings, LogOut, Bookmark, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus } from 'lucide-react'
 import { mockCurrentUser } from '../../lib/mockData'
 import { SidebarProps } from '../../interfaces'
+import { useAuthStore } from '../../lib/stores/authStore'
+import { useAuth } from '../../hooks/useAuth'
+import toast from 'react-hot-toast'
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
+  const { isAuthenticated, user } = useAuthStore()
+  const { signOut } = useAuth()
+
+  const handleLogout = async () => {
+    try {
+      console.log('🚪 User logout initiated from sidebar')
+      await signOut()
+      toast.success('Logged out successfully')
+      
+      // Redirect to login
+      if (onPageChange) {
+        onPageChange('login')
+      }
+    } catch (error) {
+      console.error('❌ Logout error:', error)
+      toast.error('Failed to logout')
+    }
+  }
+
   const navigationItems = [
     { key: 'home', label: 'Home', icon: Home },
     { key: 'search', label: 'Search', icon: Search },
@@ -21,8 +43,10 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
     { key: 'settings', label: 'Settings', icon: Settings },
     { key: 'help', label: 'Help', icon: HelpCircle },
     { key: 'privacy', label: 'Privacy', icon: Shield },
-    { key: 'login', label: 'Login', icon: LogIn },
-    { key: 'register', label: 'Register', icon: UserPlus },
+    ...(isAuthenticated ? [] : [
+      { key: 'login', label: 'Login', icon: LogIn },
+      { key: 'register', label: 'Register', icon: UserPlus },
+    ])
   ]
 
   return (
@@ -41,27 +65,89 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
 
       {/* Profile Section */}
       <div className="p-6 border-b border-gray-100">
-        <div className="flex items-center gap-4">
-          <img
-            src={mockCurrentUser.avatar_url}
-            alt={mockCurrentUser.display_name}
-            className="w-16 h-16 rounded-full ring-2 ring-secondary-200"
-          />
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900">{mockCurrentUser.display_name}</h3>
-            <p className="text-sm text-gray-500">@{mockCurrentUser.username}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm">
-              <div>
-                <span className="font-semibold text-gray-900">472</span>
-                <span className="text-gray-500 ml-1">Posts</span>
+        {isAuthenticated && user ? (
+          <div className="flex flex-col items-center text-center">
+            {/* Avatar at top */}
+            <div className="relative mb-4">
+              <img
+                src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
+                alt={user.display_name}
+                className="w-20 h-20 rounded-full ring-4 ring-primary-100 shadow-lg cursor-pointer hover:ring-primary-200 transition-all"
+                onClick={() => onPageChange('profile')}
+              />
+              {user.is_email_verified && (
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
+                  <span className="text-white text-xs font-bold">✓</span>
+                </div>
+              )}
+            </div>
+            
+            {/* User info column */}
+            <div className="w-full">
+              <h3 className="font-bold text-lg text-gray-900 mb-1">{user.display_name}</h3>
+              <p className="text-sm text-gray-500 mb-3">@{user.username || user.email.split('@')[0]}</p>
+              
+              {/* Role badge */}
+              <div className="mb-4">
+                <span className="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+                  {user.user_role === 'both' ? 'Host & Guest' : user.user_role.charAt(0).toUpperCase() + user.user_role.slice(1)}
+                </span>
               </div>
-              <div>
-                <span className="font-semibold text-gray-900">12.4K</span>
-                <span className="text-gray-500 ml-1">Followers</span>
+              
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-lg font-bold text-gray-900">{user.total_properties}</div>
+                  <div className="text-xs text-gray-500">Properties</div>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="text-lg font-bold text-gray-900">{user.total_bookings}</div>
+                  <div className="text-xs text-gray-500">Bookings</div>
+                </div>
+              </div>
+              
+              {/* Ratings */}
+              <div className="flex justify-center gap-4 text-xs">
+                <div className="flex items-center gap-1">
+                  <span>⭐</span>
+                  <span className="font-medium">{user.guest_rating.toFixed(1)}</span>
+                  <span className="text-gray-500">Guest</span>
+                </div>
+                {user.is_host && user.host_rating > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span>🏠</span>
+                    <span className="font-medium">{user.host_rating.toFixed(1)}</span>
+                    <span className="text-gray-500">Host</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-gray-200 rounded-full ring-4 ring-gray-100 flex items-center justify-center mb-4">
+              <User className="w-10 h-10 text-gray-500" />
+            </div>
+            <div className="w-full">
+              <h3 className="font-bold text-lg text-gray-900 mb-1">Guest User</h3>
+              <p className="text-sm text-gray-500 mb-4">Please sign in to access all features</p>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => onPageChange('login')}
+                  className="w-full bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => onPageChange('register')}
+                  className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
@@ -103,12 +189,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
       </div>
 
       {/* Logout */}
-      <div className="p-4 border-t border-gray-100">
-        <button className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600">
-          <LogOut className="w-5 h-5" />
-          <span className="text-sm">Logout</span>
-        </button>
-      </div>
+      {isAuthenticated && (
+        <div className="p-4 border-t border-gray-100">
+          <button 
+            onClick={handleLogout}
+            className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="text-sm">Logout</span>
+          </button>
+        </div>
+      )}
     </div>
   )
 }

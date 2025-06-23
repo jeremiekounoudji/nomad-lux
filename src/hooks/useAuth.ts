@@ -1,299 +1,313 @@
-import { useState, useEffect } from 'react'
-import { User as SupabaseUser } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabase'
-import { User, UserRole } from '../interfaces/User'
-import { AuthApiResponse } from '../interfaces/Auth'
-import { useUserProfile } from './useUserProfile'
+import { useState } from "react";
+import { User as SupabaseUser } from "@supabase/supabase-js";
+import { supabase } from "../lib/supabase";
+import { User, UserRole } from "../interfaces/User";
+import { useUser } from "./useUser";
+import { useAuthStore } from "../lib/stores/authStore";
+
+interface UserRegistrationData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+interface AuthResponse {
+  user: User | null;
+  error: string | null;
+}
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null)
-  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Use user profile management hook
-  const {fetchUserProfile, createUserProfile, updateUserProfile} = useUserProfile()
+  const { createUser, fetchUserByAuthId } = useUser();
+  const { setAuthData, clearAuth, setLoading } = useAuthStore();
 
-  console.log('🔐 useAuth hook initialized', { timestamp: new Date().toISOString() })
+  console.log("🔐 useAuth hook initialized", {
+    timestamp: new Date().toISOString(),
+  });
 
-  // Computed properties
-  const isAuthenticated = !!user && !!supabaseUser
-  const isAdmin = user?.user_role === 'admin' || user?.user_role === 'super_admin'
-  const isSuperAdmin = user?.user_role === 'super_admin'
-
-  // Use fetchUserProfile from userProfileHook
-  // const fetchUserProfile = userProfileHook.fetchUserProfile
-
-  // Use createUserProfile from userProfileHook
-
-  // Sign in function
-  const signIn = async (email: string, password: string): Promise<{ user: User | null; error: string | null }> => {
+  // Register new user
+  const signUp = async ({
+    email,
+    password,
+    firstName,
+    lastName,
+  }: UserRegistrationData): Promise<AuthResponse> => {
     try {
-      console.log('🔑 Attempting sign in for:', email)
-      setIsLoading(true)
+      console.log("📝 Starting user registration for:", email);
+      setIsLoading(true);
+      setLoading(true);
+      setError(null);
 
-      const { data, error } = await supabase.auth.signInWithPassword({
+      // Step 1: Create Supabase auth user
+      console.log("🔐 Step 1: Creating Supabase auth user...");
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
-        password
-      })
+        password,
+      });
 
-      if (error) {
-        console.error('❌ Sign in error:', error.message)
-        return { user: null, error: error.message }
+      if (authError) {
+        console.error("❌ Supabase auth failed:", authError.message);
+        throw new Error(authError.message);
       }
 
-      if (!data.user) {
-        console.error('❌ No user returned from sign in')
-        return { user: null, error: 'No user data received' }
+      if (!authData?.user) {
+        console.error("❌ No auth user returned");
+        throw new Error("Registration failed - no user created");
       }
 
-      console.log('✅ Supabase auth successful for:', data.user.email)
+      console.log(
+        "✅ Step 1 complete: Supabase auth user created:",
+        authData.user.email
+      );
 
-      // Fetch user profile
-      const userProfile = await fetchUserProfile(data.user.id)
-      if (!userProfile) {
-        console.error('❌ Failed to fetch user profile after sign in')
-        return { user: null, error: 'Failed to load user profile' }
+      // Step 2: Create user in database using useUser hook
+      console.log("👤 Step 2: Creating user in database...");
+      const userData: Partial<User> = {
+        auth_id: authData.user.id,
+        email: authData.user.email || "",
+        display_name: `${firstName} ${lastName}`,
+        user_role: "both",
+        account_status: "active",
+        is_phone_verified: false,
+        is_email_verified: true,
+        is_identity_verified: false,
+        is_host: true,
+        response_rate: 0,
+        guest_rating: 0.0,
+        host_rating: 0.0,
+        total_guest_reviews: 0,
+        total_host_reviews: 0,
+        total_bookings: 0,
+        total_properties: 0,
+        total_revenue: 0.0,
+        preferred_currency: "USD",
+        language_preference: "en",
+      };
+      console.log("👤 Step 2: Creating user in database starting...", userData);
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
+      const createdUser = await createUser(userData);
+
+      if (!createdUser) {
+        console.error("❌ Failed to create user in database");
+        throw new Error("Failed to create user profile");
       }
 
-      // Update last login
-      await supabase
-        .from('users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('auth_id', data.user.id)
+      console.log(
+        "✅ Step 2 complete: User created in database:",
+        createdUser.email
+      );
 
-      setSupabaseUser(data.user)
-      setUser(userProfile)
-      
-      console.log('✅ Sign in completed successfully for:', userProfile.email)
-      return { user: userProfile, error: null }
+      // Step 3: Wait a moment to ensure database user is created
+      console.log("⏳ Step 3: Waiting for database user creation...");
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
 
+      // Step 4: Verify user was created in database
+      console.log("🔍 Step 4: Verifying user creation...");
+      const verifyUser = await fetchUserByAuthId(authData.user.id);
+      if (!verifyUser) {
+        console.error("❌ User verification failed - database user not found");
+        throw new Error("Failed to create user profile");
+      }
+
+      // Step 5: Sign out user after confirmation (they need to login manually)
+      console.log("🚪 Step 5: Signing out user after registration...");
+      await supabase.auth.signOut();
+      clearAuth();
+
+      console.log(
+        "✅ User registration completed successfully! User must now login."
+      );
+      return { user: createdUser, error: null };
     } catch (error: any) {
-      console.error('❌ Exception in signIn:', error)
-      return { user: null, error: error.message || 'An unexpected error occurred' }
+      console.error("❌ User registration failed:", error);
+      const errorMessage = error.message || "Registration failed";
+      setError(errorMessage);
+      return { user: null, error: errorMessage };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
+      setLoading(false);
     }
-  }
+  };
 
-  // Sign up function
-  const signUp = async (email: string, password: string, displayName: string): Promise<{ user: User | null; error: string | null }> => {
+  // Sign in user
+  const signIn = async (
+    email: string,
+    password: string
+  ): Promise<AuthResponse> => {
     try {
-      console.log('📝 Attempting sign up for:', email)
-      setIsLoading(true)
+      console.log("🔑 Starting user sign in for:", email);
+      setIsLoading(true);
+      setLoading(true);
+      setError(null);
 
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password
-      })
+      // Step 1: Sign in with Supabase
+      console.log("🔐 Step 1: Signing in with Supabase...");
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
-      if (error) {
-        console.error('❌ Sign up error:', error.message)
-        return { user: null, error: error.message }
+      if (authError) {
+        console.error("❌ Supabase sign in failed:", authError.message);
+        throw new Error(authError.message);
       }
 
-      if (!data.user) {
-        console.error('❌ No user returned from sign up')
-        return { user: null, error: 'No user data received' }
+      if (!authData.user) {
+        console.error("❌ No auth user returned");
+        throw new Error("Sign in failed - no user data");
       }
 
-      console.log('✅ Supabase auth signup successful for:', data.user.email)
+      console.log(
+        "✅ Step 1 complete: Supabase sign in successful:",
+        authData.user.email
+      );
 
-      // Create user profile
-      const userProfile = await createUserProfile(data.user, displayName)
-      if (!userProfile) {
-        console.error('❌ Failed to create user profile after sign up')
-        return { user: null, error: 'Failed to create user profile' }
-      }
-
-      setSupabaseUser(data.user)
-      setUser(userProfile)
-      
-      console.log('✅ Sign up completed successfully for:', userProfile.email)
-      return { user: userProfile, error: null }
-
+      // Step 2: The user will be fetched and set by useAuthInit automatically
+      console.log("✅ User sign in completed successfully!");
+      return { user: null, error: null }; // User will be set by auth listener
     } catch (error: any) {
-      console.error('❌ Exception in signUp:', error)
-      return { user: null, error: error.message || 'An unexpected error occurred' }
+      console.error("❌ User sign in failed:", error);
+      const errorMessage = error.message || "Sign in failed";
+      setError(errorMessage);
+      return { user: null, error: errorMessage };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
+      setLoading(false);
     }
-  }
+  };
 
-  // Sign out function
+  // Sign out user
   const signOut = async (): Promise<{ error: string | null }> => {
     try {
-      console.log('🚪 Attempting sign out')
-      setIsLoading(true)
+      console.log("🚪 Signing out user...");
+      setIsLoading(true);
+      setLoading(true);
 
-      const { error } = await supabase.auth.signOut()
-      
+      // Clear auth state immediately to prevent UI issues
+      clearAuth();
+
+      const { error } = await supabase.auth.signOut();
+
       if (error) {
-        console.error('❌ Sign out error:', error.message)
-        return { error: error.message }
+        console.error("❌ Sign out error:", error);
+        console.log("⚠️ Supabase signOut had error but continuing with logout");
       }
 
-      setUser(null)
-      setSupabaseUser(null)
-      
-      console.log('✅ Sign out completed successfully')
-      return { error: null }
-
+      console.log("✅ User signed out successfully");
+      return { error: null };
     } catch (error: any) {
-      console.error('❌ Exception in signOut:', error)
-      return { error: error.message || 'An unexpected error occurred' }
+      console.error("❌ Sign out failed:", error);
+      // Even if there's an error, clear the auth state
+      clearAuth();
+      const errorMessage = error.message || "Sign out failed";
+      setError(errorMessage);
+      return { error: errorMessage };
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
+      setLoading(false);
     }
-  }
+  };
 
   // Refresh user data
-  const refreshUser = async (): Promise<void> => {
+  const refreshUser = async (): Promise<{ error: string | null }> => {
     try {
-      console.log('🔄 Refreshing user data')
-      
-      const { data: { user: currentUser } } = await supabase.auth.getUser()
-      
-      if (currentUser) {
-        const userProfile = await fetchUserProfile(currentUser.id)
-        if (userProfile) {
-          setUser(userProfile)
-          setSupabaseUser(currentUser)
-          console.log('✅ User data refreshed successfully')
-        }
-      } else {
-        setUser(null)
-        setSupabaseUser(null)
-        console.log('ℹ️ No current user found during refresh')
+      console.log("🔄 Refreshing user data...");
+      setIsLoading(true);
+      setError(null);
+
+      const {
+        data: { user: supabaseUser },
+      } = await supabase.auth.getUser();
+
+      if (!supabaseUser) {
+        console.log("ℹ️ No authenticated user found");
+        clearAuth();
+        return { error: null };
       }
-    } catch (error) {
-      console.error('❌ Error refreshing user:', error)
+
+      const userData = await fetchUserByAuthId(supabaseUser.id);
+
+      if (userData) {
+        setAuthData(userData, supabaseUser);
+        console.log("✅ User data refreshed successfully");
+        return { error: null };
+      } else {
+        console.log("❌ User not found in database");
+        clearAuth();
+        return { error: "User not found" };
+      }
+    } catch (error: any) {
+      console.error("❌ Exception in refreshUser:", error);
+      const errorMessage = error.message || "Failed to refresh user data";
+      setError(errorMessage);
+      return { error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   // Update user profile
-  const updateProfile = async (updates: Partial<User>): Promise<{ error: string | null }> => {
+  const updateProfile = async (
+    updates: Partial<User>
+  ): Promise<{ error: string | null }> => {
     try {
-      console.log('📝 Updating user profile:', Object.keys(updates))
-      
-      if (!user) {
-        return { error: 'No user logged in' }
+      console.log("📝 Updating user profile:", Object.keys(updates));
+      setIsLoading(true);
+      setError(null);
+
+      const {
+        data: { user: supabaseUser },
+      } = await supabase.auth.getUser();
+
+      if (!supabaseUser) {
+        return { error: "No user logged in" };
       }
 
-      const updatedUser = await updateUserProfile(user.id, updates)
-      
-      if (!updatedUser) {
-        return { error: 'Failed to update profile' }
+      // Update user in database
+      const { data, error } = await supabase
+        .from("users")
+        .update(updates)
+        .eq("auth_id", supabaseUser.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("❌ Profile update failed:", error);
+        throw new Error(error.message);
       }
 
       // Refresh user data
-      await refreshUser()
-      
-      console.log('✅ Profile updated successfully')
-      return { error: null }
+      await refreshUser();
 
+      console.log("✅ Profile updated successfully");
+      return { error: null };
     } catch (error: any) {
-      console.error('❌ Exception in updateProfile:', error)
-      return { error: error.message || 'An unexpected error occurred' }
+      console.error("❌ Exception in updateProfile:", error);
+      const errorMessage = error.message || "Failed to update profile";
+      setError(errorMessage);
+      return { error: errorMessage };
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
-  // Initialize auth state on mount
-  // useEffect(() => {
-  //   console.log('🔄 Initializing auth state')
-  //   let mounted = true
-    
-  //   const getSession = async () => {
-  //     try {
-  //       console.log('🔍 Getting initial session...')
-  //       const { data: { session }, error } = await supabase.auth.getSession()
-        
-  //       if (error) {
-  //         console.error('❌ Error getting session:', error)
-  //         if (mounted) {
-  //           setIsLoading(false)
-  //         }
-  //         return
-  //       }
-        
-  //       if (session?.user) {
-  //         console.log('✅ Active session found for:', session.user.email)
-  //         const userProfile = await fetchUserProfile(session.user.id)
-  //         if (userProfile && mounted) {
-  //           setSupabaseUser(session.user)
-  //           setUser(userProfile)
-  //         }
-  //       } else {
-  //         console.log('ℹ️ No active session found')
-  //       }
-  //     } catch (error) {
-  //       console.error('❌ Exception getting session:', error)
-  //     } finally {
-  //       if (mounted) {
-  //         console.log('🔄 Setting loading to false after session check')
-  //         setIsLoading(false)
-  //       }
-  //     }
-  //   }
-
-  //   // Set a timeout to ensure loading doesn't get stuck
-  //   const timeoutId = setTimeout(() => {
-  //     if (mounted) {
-  //       console.log('⏰ Timeout reached, forcing loading to false')
-  //       setIsLoading(false)
-  //     }
-  //   }, 5000) // 5 second timeout
-
-  //   getSession()
-
-  //   // Listen for auth changes
-  //   console.log('📡 Setting up auth state change listener')
-  //   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-  //     console.log('🔄 Auth state change event:', event, session ? 'with session' : 'no session')
-      
-  //     try {
-  //       if (session?.user) {
-  //         const userProfile = await fetchUserProfile(session.user.id)
-  //         if (userProfile && mounted) {
-  //           setSupabaseUser(session.user)
-  //           setUser(userProfile)
-  //         }
-  //       } else {
-  //         if (mounted) {
-  //           setSupabaseUser(null)
-  //           setUser(null)
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('❌ Error in auth state change handler:', error)
-  //     } finally {
-  //       if (mounted) {
-  //         setIsLoading(false)
-  //       }
-  //     }
-  //   })
-
-  //   return () => {
-  //     console.log('🧹 Cleaning up auth subscription and timeout')
-  //     mounted = false
-  //     clearTimeout(timeoutId)
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
+  const clearError = () => setError(null);
 
   return {
     // State
-    user,
-    supabaseUser,
     isLoading,
-    isAuthenticated,
-    isAdmin,
-    isSuperAdmin,
-    
+    error,
+
     // Actions
-    signIn,
     signUp,
+    signIn,
     signOut,
     refreshUser,
-    updateProfile
-  }
-} 
+    updateProfile,
+    clearError,
+  };
+};

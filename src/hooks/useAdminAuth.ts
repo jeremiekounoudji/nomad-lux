@@ -94,6 +94,8 @@ export const useAdminAuth = () => {
       }
 
       console.log('📊 Using useUser.createUser with data:', adminUserData)
+      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 second delay
+
       const createdUser = await createUser(adminUserData)
 
       if (!createdUser) {
