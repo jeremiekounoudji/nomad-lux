@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MainLayout from '../components/layout/MainLayout'
 import PopularPlaces from '../components/shared/PopularPlaces'
 import PropertyCard from '../components/shared/PropertyCard'
@@ -16,18 +16,63 @@ import SearchPage from './SearchPage'
 import { AdminLoginPage } from './AdminLoginPage'
 import { AdminRegisterPage } from './AdminRegisterPage'
 import { AdminPage } from './AdminPage'
+import { useAuthStore } from '../lib/stores/authStore'
 import { Property } from '../interfaces'
 import { mockProperties } from '../lib/mockData'
-// import { AuthTest } from '../components/shared/AuthTest'
+import toast from 'react-hot-toast'
 
 const HomePage: React.FC = () => {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [currentPage, setCurrentPage] = useState('home')
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
-  console.log('🏠 HomePage rendered', { currentPage, timestamp: new Date().toISOString() })
+  const { isAuthenticated, isLoading, user } = useAuthStore()
+
+  console.log('🏠 HomePage rendered', { 
+    currentPage, 
+    isAuthenticated, 
+    isLoading,
+    userEmail: user?.email,
+    timestamp: new Date().toISOString() 
+  })
+
+  // Protected pages that require authentication
+  const protectedPages = [
+    'home', 'create', 'liked', 'bookings', 'listings', 
+    'notifications', 'requests', 'search', 'profile'
+  ]
+
+  // Check authentication for protected routes
+  useEffect(() => {
+    // Add a small delay to prevent flashing during auth initialization
+    const timeoutId = setTimeout(() => {
+      if (!isLoading) {
+        // If user is not authenticated and trying to access a protected page
+        if (!isAuthenticated && protectedPages.includes(currentPage)) {
+          console.log('🔒 Protected page access denied - redirecting to login')
+          toast.error('Please sign in to access this feature')
+          setCurrentPage('login')
+          return
+        }
+
+        // If user is authenticated and on login/register page, redirect to home
+        if (isAuthenticated && (currentPage === 'login' || currentPage === 'register')) {
+          console.log('✅ User already authenticated - redirecting to home')
+          setCurrentPage('home')
+          return
+        }
+      }
+    }, 100) // Small delay to prevent flashing
+
+    return () => clearTimeout(timeoutId)
+  }, [isAuthenticated, isLoading, currentPage])
 
   const handleLike = (propertyId: string) => {
+    if (!isAuthenticated) {
+      toast.error('Please sign in to like properties')
+      setCurrentPage('login')
+      return
+    }
     console.log('Liked property:', propertyId)
   }
 
@@ -36,6 +81,11 @@ const HomePage: React.FC = () => {
   }
 
   const handleBook = (property: Property) => {
+    if (!isAuthenticated) {
+      toast.error('Please sign in to book properties')
+      setCurrentPage('login')
+      return
+    }
     console.log('Book property:', property.title)
   }
 
@@ -49,24 +99,71 @@ const HomePage: React.FC = () => {
   }
 
   const handlePageChange = (page: string) => {
+    console.log('🔄 Page change requested:', page)
+
+    // Handle profile modal
     if (page === 'profile') {
+      if (!isAuthenticated) {
+        toast.error('Please sign in to access your profile')
+        setCurrentPage('login')
+        return
+      }
       setIsProfileModalOpen(true)
-      // Don't change currentPage for profile modal
+      return
+    }
+
+    // Check if page requires authentication
+    if (protectedPages.includes(page) && !isAuthenticated && !isLoading) {
+      console.log('🔒 Protected page access denied:', page)
+      toast.error('Please sign in to access this feature')
+      setCurrentPage('login')
       return
     }
     
     setCurrentPage(page)
     setSelectedProperty(null)
-    // Close profile modal if it's open when navigating to other pages
     setIsProfileModalOpen(false)
+  }
+
+  const handleLogin = () => {
+    console.log('✅ User logged in successfully')
+    setCurrentPage('home')
+  }
+
+  const handleRegister = () => {
+    console.log('✅ User registered successfully')
+    setCurrentPage('home')
   }
 
   const handleProfileModalClose = () => {
     setIsProfileModalOpen(false)
-    // Reset to ensure it can be opened again
-    setTimeout(() => {
-      // Small delay to ensure state is properly reset
-    }, 100)
+  }
+
+  // Show loading state during authentication initialization
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <span className="text-white font-bold text-xl">NL</span>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading...</h2>
+          <p className="text-gray-600 mb-4">Setting up your experience</p>
+          
+          {/* Emergency override button */}
+          <button
+            onClick={() => {
+              console.log('🚨 Emergency loading override activated')
+              const { setLoading } = useAuthStore.getState()
+              setLoading(false)
+            }}
+            className="text-sm text-gray-500 hover:text-primary-600 underline"
+          >
+            Taking too long? Click here to continue
+          </button>
+        </div>
+      </div>
+    )
   }
 
   // Handle different page views
@@ -94,9 +191,9 @@ const HomePage: React.FC = () => {
     case 'requests':
       return <BookingRequestsPage onPageChange={handlePageChange} />
     case 'login':
-      return <LoginPage onPageChange={handlePageChange} />
+      return <LoginPage onPageChange={handlePageChange} onLogin={handleLogin} />
     case 'register':
-      return <RegisterPage onPageChange={handlePageChange} />
+      return <RegisterPage onPageChange={handlePageChange} onRegister={handleRegister} />
     case 'search':
       return <SearchPage onPageChange={handlePageChange} />
     case 'admin-login':
@@ -109,14 +206,23 @@ const HomePage: React.FC = () => {
       break
   }
 
-  // Default home page view
+  // Default home page view (protected)
   return (
     <>
       <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
-        {/* AUTH TEST COMPONENT - TEMPORARILY DISABLED DUE TO CONTEXT ISSUES */}
-        {/* <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
-          <AuthTest />
-        </div> */}
+        {/* Welcome message for authenticated users */}
+        {isAuthenticated && user && (
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+            <div className="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl p-6 text-white">
+              <h2 className="text-2xl font-bold mb-2">
+                Welcome back, {user.display_name}! 👋
+              </h2>
+              <p className="text-white/90">
+                Ready to discover your next adventure?
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Popular Places Section - Full width across all columns */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4 mb-6">

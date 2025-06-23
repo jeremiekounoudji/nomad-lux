@@ -49,25 +49,12 @@ export const useUser = () => {
 
       console.log('🔍 Starting database query...')
       
-      // Create a promise for the query
-      const queryPromise = supabase
+      // Query with proper error handling
+      const { data, error } = await supabase
         .from('users')
         .select('*')
         .eq('auth_id', authId)
         .single()
-      
-      // Create a timeout promise
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => {
-          reject(new Error('Query timeout after 10 seconds'))
-        }, 10000)
-      })
-
-      // Race between query and timeout
-      const { data, error } = await Promise.race([
-        queryPromise,
-        timeoutPromise
-      ]) as any
 
       console.log('📊 Query completed with result:', {
         hasData: !!data,
@@ -80,9 +67,7 @@ export const useUser = () => {
       if (error) {
         if (error.code === 'PGRST116') {
           console.log('ℹ️ User not found in database (normal for new users)')
-        } else if (error.message?.includes('timeout')) {
-          console.error('⏰ Query timeout:', error)
-          setError('Database query timed out. Please try again.')
+          return null
         } else {
           console.error('❌ Database error:', error)
           console.error('Error details:', {
@@ -91,9 +76,9 @@ export const useUser = () => {
             details: error.details,
             hint: error.hint
           })
+          setError(error.message)
+          return null
         }
-        setError(error.message)
-        return null
       }
 
       if (data) {
