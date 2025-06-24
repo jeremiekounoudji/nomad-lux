@@ -2,10 +2,12 @@
 
 // Property-related components
 export { default as PropertyCard } from './PropertyCard'
+export { default as HomePagePropertyCard } from './HomePagePropertyCard'
 export { default as PopularPlaces } from './PopularPlaces'
 
 // UI components
 export { default as ProfileModal } from './ProfileModal'
+export { default as PropertyListingSkeleton, PropertyCardSkeleton, HeaderSkeleton, TabsSkeleton } from './LoadingSkeleton'
 
 // Modals
 export * from './modals'

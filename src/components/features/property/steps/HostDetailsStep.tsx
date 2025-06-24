@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from '@heroui/react';
-import type { PropertySubmissionData } from '../PropertySubmissionForm';
+import type { PropertySubmissionData } from '../../../../interfaces';
 
 interface HostDetailsStepProps {
   formData: PropertySubmissionData;
@@ -8,10 +8,10 @@ interface HostDetailsStepProps {
 }
 
 const HostDetailsStep: React.FC<HostDetailsStepProps> = ({ formData, setFormData }) => {
-  const handleInputChange = (field: keyof typeof formData.host) => (
+  const handleInputChange = (field: string) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       host: {
         ...prev.host,
@@ -35,7 +35,7 @@ const HostDetailsStep: React.FC<HostDetailsStepProps> = ({ formData, setFormData
           label="Full Name"
           placeholder="Enter your full name"
           value={formData.host.display_name}
-          onChange={handleInputChange('name')}
+          onChange={handleInputChange('display_name')}
           required
         />
 

@@ -1,20 +1,36 @@
 // Property-related interfaces
 
-import { User, HostSubmissionData } from './User'
+// Property status type
+export type PropertyStatus = 'approved' | 'pending' | 'paused' | 'rejected'
 
 // Simplified host interface for property listings
 export interface PropertyHost {
   id: string
   name: string
   username: string
-  avatar: string
-  isVerified: boolean
+  avatar_url: string
+  display_name: string
+  is_identity_verified: boolean
+  is_email_verified: boolean
   email: string
   phone: string
   rating: number
-  responseRate: number
-  responseTime: string
+  response_rate: number
+  response_time: string
+  bio?: string
+  experience?: number
 }
+
+// Property statistics interface
+export interface PropertyStats {
+  view_count: number
+  booking_count: number
+  total_revenue: number
+  rating: number
+  rating_count: number
+}
+
+// Property submission data interface is now in PropertySubmissionData.ts
 
 export interface Property {
   id: string
@@ -32,21 +48,27 @@ export interface Property {
     }
   }
   images: string[]
-  videos?: string[]
+  videos: string[]
   host: PropertyHost
   rating: number
-  reviewCount: number
-  propertyType: string
+  review_count: number
+  view_count: number
+  booking_count: number
+  total_revenue: number
+  property_type: string
   amenities: string[]
-  maxGuests: number
+  max_guests: number
   bedrooms: number
   bathrooms: number
-  isLiked: boolean
-  distance?: string
-  createdAt: string
-  cleaningFee?: number
-  serviceFee?: number
-  totalBeforeTaxes?: number
+  cleaning_fee: number
+  service_fee: number
+  is_liked: boolean
+  instant_book: boolean
+  additional_fees: any[]
+  distance: string
+  created_at: string
+  total_before_taxes?: number
+  status?: PropertyStatus
 }
 
 // Admin property interface
@@ -69,23 +91,13 @@ export interface AdminProperty {
     joinDate: string
   }
   submittedDate: string
-  status: 'pending' | 'approved' | 'rejected'
+  status: 'pending' | 'approved' | 'rejected' | 'paused'
   amenities: string[]
   propertyType: string
   bedrooms: number
   bathrooms: number
   maxGuests: number
 }
-
-// Property submission data type - allows File objects during submission
-export type PropertySubmissionData = Omit<
-  Property,
-  'id' | 'rating' | 'reviewCount' | 'isLiked' | 'distance' | 'createdAt' | 'totalBeforeTaxes' | 'host' | 'images' | 'videos'
-> & {
-  host: HostSubmissionData;
-  images: (File | string)[]; // Allow both File objects and URLs
-  videos?: (File | string)[]; // Allow both File objects and URLs
-};
 
 export interface PopularPlace {
   id: string
@@ -100,7 +112,7 @@ export interface ListingStats {
   bookings: number
   revenue: number
   rating: number
-  status: 'active' | 'pending' | 'paused' | 'rejected'
+  status: 'approved' | 'pending' | 'paused' | 'rejected'
 }
 
 export interface TopProperty {
@@ -112,4 +124,59 @@ export interface TopProperty {
   bookings: number
   rating: number
   host: string
+}
+
+// Database property interface - matches Supabase schema
+export interface DatabaseProperty {
+  id: string
+  host_id: string
+  title: string
+  description: string
+  price_per_night: number
+  currency: string
+  location: {
+    address: string
+    city: string
+    country: string
+    coordinates: {
+      lat: number
+      lng: number
+    }
+  }
+  amenities: string[]
+  images: string[]
+  video?: string
+  property_type: string
+  max_guests: number
+  bedrooms: number
+  bathrooms: number
+  cleaning_fee?: number
+  service_fee?: number
+  status: PropertyStatus
+  created_at: string
+  updated_at: string
+  approved_at?: string
+  approved_by?: string
+  rejection_reason?: string
+  rejected_at?: string
+  rejected_by?: string
+  rating: number
+  review_count: number
+  view_count: number
+  booking_count: number
+  total_revenue: number
+  status_counts?: {
+    pending: number
+    approved: number
+    rejected: number
+    paused: number
+  }
+  total_count?: number
+}
+
+// Property edit confirmation interface
+export interface PropertyEditConfirmation {
+  property: DatabaseProperty
+  willResetToPending: boolean
+  currentStatus: string
 } 

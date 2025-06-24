@@ -154,7 +154,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                     startContent={<Users className="w-4 h-4 text-gray-400" />}
                     isRequired
                   >
-                    {Array.from({ length: property.maxGuests }, (_, i) => (
+                    {Array.from({ length: property.max_guests }, (_, i) => (
                       <SelectItem key={`${i + 1}`} value={`${i + 1}`}>
                         {i + 1} guest{i > 0 ? 's' : ''}
                       </SelectItem>

@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import { Button, Card, Chip } from '@heroui/react';
 import type { PropertySubmissionData } from '../../../../interfaces';
 import { useAdminSettingsStore } from '../../../../lib/stores/adminSettingsStore';
 import { useProperty } from '../../../../hooks/useProperty';
 import FileProgressCard from '../../../shared/FileProgressCard';
+import { Upload, Image, Video, X } from 'lucide-react';
 
 interface MediaUploadStepProps {
   formData: PropertySubmissionData;
@@ -13,6 +14,9 @@ interface MediaUploadStepProps {
 const MIN_IMAGES = 4;
 
 const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData }) => {
+  // Track if video was intentionally removed to prevent old video from reappearing
+  const [videoRemovedByUser, setVideoRemovedByUser] = useState(false);
+  
   const { settings } = useAdminSettingsStore();
   const { uploadProgress } = useProperty();
   
@@ -32,7 +36,8 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
     maxFileSize: settings?.platform?.maxFileSize,
     allowedImageFormats,
     allowedVideoFormats,
-    hasSettings: !!settings
+    hasSettings: !!settings,
+    videoRemovedByUser
   });
   
   // Convert format arrays to MIME types
@@ -55,6 +60,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
       default: return `video/${format}`;
     }
   });
+
   const handleImageUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
@@ -81,10 +87,12 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
         ACCEPTED_VIDEO_TYPES.includes(file.type) &&
         file.size <= MAX_FILE_SIZE
       ) {
+        console.log('🎥 New video file selected:', file.name);
         setFormData((prev: PropertySubmissionData) => ({
           ...prev,
           videos: [file], // Store as array to match PropertySubmissionData interface
         }));
+        setVideoRemovedByUser(false); // Reset removal flag when new video is added
       }
     },
     [setFormData, ACCEPTED_VIDEO_TYPES, MAX_FILE_SIZE]
@@ -101,11 +109,19 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
   );
 
   const removeVideo = useCallback(() => {
+    console.log('🗑️ User intentionally removed video');
+    setVideoRemovedByUser(true); // Mark that user intentionally removed video
     setFormData((prev: PropertySubmissionData) => ({
       ...prev,
-      videos: [], // Clear the videos array
+      videos: [], // Clear the videos array completely
     }));
   }, [setFormData]);
+
+  // Check if we should show video upload card or current video
+  const shouldShowVideoUploadCard = () => {
+    const hasVideo = (formData.videos?.length ?? 0) > 0;
+    return !hasVideo || videoRemovedByUser;
+  };
 
   return (
     <div className="space-y-6">
@@ -202,31 +218,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
 
         <div>
           <label className="block text-sm font-medium mb-4">Property Video</label>
-          {formData.videos && formData.videos.length > 0 ? (
-            <div className="flex justify-start mb-4">
-              {(() => {
-                const video = formData.videos[0];
-                const fileName = typeof video === 'string' ? video.split('/').pop() || 'Unknown' : video.name;
-                const progress = uploadProgress.find(p => p.fileName === fileName);
-                
-                // Debug logging for video
-                console.log(`🎥 Video [${fileName}]:`, {
-                  hasProgress: !!progress,
-                  progressStatus: progress?.status,
-                  progressValue: progress?.progress
-                });
-                
-                return (
-                  <FileProgressCard
-                    file={video}
-                    progress={progress}
-                    onRemove={removeVideo}
-                    type="video"
-                  />
-                );
-              })()}
-            </div>
-          ) : (
+          {shouldShowVideoUploadCard() ? (
             <Card className="border-2 border-dashed border-gray-300 hover:border-secondary-400 transition-colors duration-200">
               <label className="w-full flex flex-col items-center justify-center px-6 py-8 cursor-pointer group">
                 <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-secondary-200 transition-colors duration-200">
@@ -260,6 +252,51 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                 />
               </label>
             </Card>
+          ) : (
+            <div className="flex justify-start mb-4">
+              {formData.videos && formData.videos.length > 0 && (() => {
+                const video = formData.videos[0];
+                const fileName = typeof video === 'string' ? video.split('/').pop() || 'Unknown' : video.name;
+                const progress = uploadProgress.find(p => p.fileName === fileName);
+                
+                return (
+                  <div key={fileName} className="relative">
+                    <Card className="p-4 bg-gray-50">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-5 h-5 text-blue-500" />
+                          <span className="text-sm text-gray-700 truncate max-w-[150px]">
+                            {fileName}
+                          </span>
+                        </div>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="light"
+                          onClick={removeVideo}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      {progress && (
+                        <div className="mt-2">
+                          <div className="flex justify-between text-xs text-gray-600 mb-1">
+                            <span>{progress.status}</span>
+                            <span>{progress.progress}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                            <div 
+                              className="bg-blue-500 h-1.5 rounded-full transition-all duration-300" 
+                              style={{ width: `${progress.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </Card>
+                  </div>
+                );
+              })()}
+            </div>
           )}
         </div>
       </div>

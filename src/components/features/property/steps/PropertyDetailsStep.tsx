@@ -1,7 +1,7 @@
 import React from 'react';
-import { Input, Select, SelectItem, Textarea, Checkbox, Button, Card, CardBody } from '@heroui/react';
+import { Input, Select, SelectItem, Textarea, Button, Card, CardBody } from '@heroui/react';
 import { Wifi, Car, Utensils, Waves, Shield, Dumbbell, TreePine, Home, Flame, Heart, Tv, Gamepad2, Wind, Coffee, WashingMachine, Sparkles } from 'lucide-react';
-import type { PropertySubmissionData } from '../PropertySubmissionForm';
+import type { PropertySubmissionData } from '../../../../interfaces';
 
 interface PropertyDetailsStepProps {
   formData: PropertySubmissionData;
@@ -59,14 +59,14 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   const handleInputChange = (field: keyof PropertySubmissionData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       [field]: e.target.value,
     }));
   };
 
   const handleSelectChange = (field: keyof PropertySubmissionData) => (value: string) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       [field]: value,
     }));
@@ -75,7 +75,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   const handleLocationChange = (field: keyof typeof formData.location) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       location: {
         ...prev.location,
@@ -87,7 +87,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   const handleCoordinatesChange = (field: 'lat' | 'lng') => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       location: {
         ...prev.location,
@@ -102,19 +102,17 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   const handleNumberInput = (field: keyof PropertySubmissionData) => (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
       [field]: Number(e.target.value),
     }));
   };
 
-
-
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setFormData((prev) => ({
+          setFormData((prev: PropertySubmissionData) => ({
             ...prev,
             location: {
               ...prev.location,
@@ -153,14 +151,14 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
         <Select
           label="Property Type"
           placeholder="Select property type"
-          selectedKeys={formData.propertyType ? [formData.propertyType] : []}
+          selectedKeys={formData.property_type ? [formData.property_type] : []}
           onSelectionChange={(keys) => {
             const selectedKey = Array.from(keys)[0] as string;
-            handleSelectChange('propertyType')(selectedKey);
+            handleSelectChange('property_type')(selectedKey);
           }}
         >
           {PROPERTY_TYPES.map((type) => (
-            <SelectItem key={type.value} value={type.value}>
+            <SelectItem key={type.value}>
               {type.label}
             </SelectItem>
           ))}
@@ -186,7 +184,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
             }}
           >
             {CURRENCIES.map((currency) => (
-              <SelectItem key={currency.value} value={currency.value}>
+              <SelectItem key={currency.value}>
                 {currency.label}
               </SelectItem>
             ))}
@@ -198,16 +196,16 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
             type="number"
             label="Cleaning Fee"
             placeholder="Enter cleaning fee"
-            value={formData.cleaningFee?.toString() || '0'}
-            onChange={handleNumberInput('cleaningFee')}
+            value={formData.cleaning_fee?.toString() || '0'}
+            onChange={handleNumberInput('cleaning_fee')}
             min={0}
           />
           <Input
             type="number"
             label="Service Fee"
             placeholder="Enter service fee"
-            value={formData.serviceFee?.toString() || '0'}
-            onChange={handleNumberInput('serviceFee')}
+            value={formData.service_fee?.toString() || '0'}
+            onChange={handleNumberInput('service_fee')}
             min={0}
           />
         </div>
@@ -232,8 +230,8 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
           <Input
             type="number"
             label="Max Guests"
-            value={formData.maxGuests.toString()}
-            onChange={handleNumberInput('maxGuests')}
+            value={formData.max_guests.toString()}
+            onChange={handleNumberInput('max_guests')}
             min={1}
             required
           />
@@ -329,12 +327,12 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
                       isPressable
                       onPress={() => {
                         if (formData.amenities.includes(id)) {
-                          setFormData((prev) => ({
+                          setFormData((prev: PropertySubmissionData) => ({
                             ...prev,
-                            amenities: prev.amenities.filter((amenityId) => amenityId !== id),
+                            amenities: prev.amenities.filter((amenityId: string) => amenityId !== id),
                           }));
                         } else {
-                          setFormData((prev) => ({
+                          setFormData((prev: PropertySubmissionData) => ({
                             ...prev,
                             amenities: [...prev.amenities, id],
                           }));

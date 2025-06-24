@@ -18,6 +18,52 @@ export const useProperty = () => {
 
   console.log('🏠 useProperty hook initialized')
 
+  // Transform database data to frontend format (used in multiple places)
+  const transformDatabaseToProperty = (data: any): Property => ({
+    id: data.id,
+    title: data.title,
+    description: data.description,
+    price: data.price,
+    currency: data.currency,
+    location: data.location,
+    images: data.images,
+    videos: data.videos,
+    host: {
+      id: data.host.id,
+      name: data.host.name,
+      username: data.host.username,
+      avatar_url: data.host.avatar_url,
+      display_name: data.host.display_name,
+      is_identity_verified: data.host.is_identity_verified,
+      is_email_verified: data.host.is_email_verified,
+      email: data.host.email,
+      phone: data.host.phone,
+      rating: data.host.rating,
+      response_rate: data.host.response_rate,
+      response_time: data.host.response_time,
+      bio: data.host.bio,
+      experience: data.host.experience
+    },
+    rating: data.rating || 0,
+    review_count: data.review_count || 0,
+    view_count: data.view_count || 0,
+    booking_count: data.booking_count || 0,
+    total_revenue: data.total_revenue || 0,
+    amenities: data.amenities,
+    max_guests: data.max_guests,
+    bedrooms: data.bedrooms,
+    bathrooms: data.bathrooms,
+    property_type: data.property_type,
+    status: data.status,
+    is_liked: data.is_liked,
+    created_at: data.created_at,
+    cleaning_fee: data.cleaning_fee,
+    service_fee: data.service_fee,
+    instant_book: data.instant_book || false,
+    additional_fees: data.additional_fees || [],
+    distance: data.distance || '0 km away'
+  })
+
   // Submit a new property
   const submitProperty = async (propertyData: PropertySubmissionData): Promise<Property | null> => {
     if (!user) {
@@ -72,18 +118,28 @@ export const useProperty = () => {
       // Upload images with validation
       let imageUrls: string[] = []
       if (propertyData.images && propertyData.images.length > 0) {
-        const imageFiles = propertyData.images.filter(img => img instanceof File) as File[]
-        if (imageFiles.length > 0) {
-          console.log(`📸 Uploading ${imageFiles.length} images...`)
+        // Separate existing URLs from new files
+        const existingImageUrls = propertyData.images.filter(img => typeof img === 'string') as string[]
+        const newImageFiles = propertyData.images.filter(img => img instanceof File) as File[]
+        
+        console.log(`📸 Images to process: ${existingImageUrls.length} existing URLs, ${newImageFiles.length} new files`)
+        
+        // Start with existing URLs
+        imageUrls = [...existingImageUrls]
+        
+        // Upload new files if any
+        if (newImageFiles.length > 0) {
+          console.log(`📤 Uploading ${newImageFiles.length} new images...`)
           try {
             // Use limited parallel uploads for better speed (concurrency = 2)
-            const imageResults = await uploadMultipleFiles(imageFiles, 'properties', 'images', handleProgress, 2)
-            imageUrls = imageResults.map(result => result.url)
-            console.log('✅ Images uploaded successfully:', imageUrls.length)
+            const imageResults = await uploadMultipleFiles(newImageFiles, 'properties', 'images', handleProgress, 2)
+            const newImageUrls = imageResults.map(result => result.url)
+            imageUrls = [...imageUrls, ...newImageUrls]
+            console.log('✅ New images uploaded successfully:', newImageUrls.length)
             
-            // Validate that all images were uploaded
-            if (imageUrls.length !== imageFiles.length) {
-              throw new Error(`Only ${imageUrls.length} of ${imageFiles.length} images were uploaded successfully`)
+            // Validate that all new images were uploaded
+            if (newImageUrls.length !== newImageFiles.length) {
+              throw new Error(`Only ${newImageUrls.length} of ${newImageFiles.length} new images were uploaded successfully`)
             }
           } catch (error) {
             console.error('❌ Image upload failed:', error)
@@ -94,15 +150,24 @@ export const useProperty = () => {
 
       // Upload video with validation
       let videoUrl: string | null = null
-      if (propertyData.videos && propertyData.videos.length > 0 && propertyData.videos[0] instanceof File) {
-        console.log('🎥 Uploading video...')
-        try {
-          const videoResult = await uploadFile(propertyData.videos[0] as File, 'properties', 'videos', handleProgress)
-          videoUrl = videoResult.url
-          console.log('✅ Video uploaded successfully:', videoUrl)
-        } catch (error) {
-          console.error('❌ Video upload failed:', error)
-          throw new Error(`Failed to upload video: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      if (propertyData.videos && propertyData.videos.length > 0) {
+        const video = propertyData.videos[0]
+        
+        if (typeof video === 'string') {
+          // Existing video URL - keep it as is
+          videoUrl = video
+          console.log('📹 Using existing video URL:', videoUrl)
+        } else if (video instanceof File) {
+          // New video file - upload it
+          console.log('🎥 Uploading new video file...')
+          try {
+            const videoResult = await uploadFile(video, 'properties', 'videos', handleProgress)
+            videoUrl = videoResult.url
+            console.log('✅ New video uploaded successfully:', videoUrl)
+          } catch (error) {
+            console.error('❌ Video upload failed:', error)
+            throw new Error(`Failed to upload video: ${error instanceof Error ? error.message : 'Unknown error'}`)
+          }
         }
       }
 
@@ -120,7 +185,7 @@ export const useProperty = () => {
         host_id: user.id,
         title: propertyData.title,
         description: propertyData.description,
-        price_per_night: propertyData.price,
+        price: propertyData.price,
         currency: propertyData.currency || 'USD',
         location: {
           city: propertyData.location.city,
@@ -131,22 +196,22 @@ export const useProperty = () => {
             lng: propertyData.location.coordinates.lng
           }
         },
-        amenities: propertyData.amenities,
         images: imageUrls, // Use uploaded URLs instead of File objects
-        video: videoUrl, // Use uploaded URL instead of File object
-        property_type: propertyData.propertyType,
-        max_guests: propertyData.maxGuests,
+        videos: videoUrl, // Use uploaded URL instead of File object
+        property_type: propertyData.property_type,
+        max_guests: propertyData.max_guests,
         bedrooms: propertyData.bedrooms,
         bathrooms: propertyData.bathrooms,
-        cleaning_fee: propertyData.cleaningFee || 0,
-        service_fee: propertyData.serviceFee || 0,
+        amenities: propertyData.amenities,
+        cleaning_fee: propertyData.cleaning_fee || 0,
+        service_fee: propertyData.service_fee || 0,
         status: 'pending'
       }
 
       console.log('💾 Step 3: Inserting property data into database:', {
         title: dbPropertyData.title,
         imageCount: dbPropertyData.images.length,
-        hasVideo: !!dbPropertyData.video,
+        hasVideo: !!dbPropertyData.videos,
         propertyType: dbPropertyData.property_type
       })
 
@@ -180,40 +245,7 @@ export const useProperty = () => {
       console.log('✅ Property submitted successfully:', data.id)
 
       // Transform database data to frontend format
-      const transformedProperty: Property = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        price: data.price_per_night,
-        currency: data.currency,
-        location: data.location,
-        images: data.images,
-        videos: data.video ? [data.video] : [],
-        host: {
-          id: data.host.id,
-          name: data.host.display_name,
-          username: data.host.username || '',
-          avatar: data.host.avatar_url || '',
-          isVerified: data.host.is_identity_verified || false,
-          email: '', // Not exposed for privacy
-          phone: '', // Not exposed for privacy
-          rating: data.host.host_rating || 0,
-          responseRate: data.host.response_rate || 0,
-          responseTime: data.host.response_time || 'Unknown'
-        },
-        rating: 0, // New property, no ratings yet
-        reviewCount: 0, // New property, no reviews yet
-        propertyType: data.property_type,
-        amenities: data.amenities,
-        maxGuests: data.max_guests,
-        bedrooms: data.bedrooms,
-        bathrooms: data.bathrooms,
-        isLiked: false,
-        createdAt: data.created_at,
-        cleaningFee: data.cleaning_fee,
-        serviceFee: data.service_fee,
-        totalBeforeTaxes: data.price_per_night + (data.cleaning_fee || 0) + (data.service_fee || 0)
-      }
+      const transformedProperty = transformDatabaseToProperty(data)
 
       // Add to store
       addProperty(transformedProperty)
@@ -254,18 +286,18 @@ export const useProperty = () => {
       
       if (updates.title) dbUpdates.title = updates.title
       if (updates.description) dbUpdates.description = updates.description
-      if (updates.price) dbUpdates.price_per_night = updates.price
+      if (updates.price) dbUpdates.price = updates.price
       if (updates.currency) dbUpdates.currency = updates.currency
       if (updates.location) dbUpdates.location = updates.location
-      if (updates.amenities) dbUpdates.amenities = updates.amenities
       if (updates.images) dbUpdates.images = updates.images
-      if (updates.videos && updates.videos.length > 0) dbUpdates.video = updates.videos[0]
-      if (updates.propertyType) dbUpdates.property_type = updates.propertyType
-      if (updates.maxGuests) dbUpdates.max_guests = updates.maxGuests
+      if (updates.videos) dbUpdates.videos = updates.videos
+      if (updates.property_type) dbUpdates.property_type = updates.property_type
+      if (updates.max_guests) dbUpdates.max_guests = updates.max_guests
       if (updates.bedrooms) dbUpdates.bedrooms = updates.bedrooms
       if (updates.bathrooms) dbUpdates.bathrooms = updates.bathrooms
-      if (updates.cleaningFee !== undefined) dbUpdates.cleaning_fee = updates.cleaningFee
-      if (updates.serviceFee !== undefined) dbUpdates.service_fee = updates.serviceFee
+      if (updates.amenities) dbUpdates.amenities = updates.amenities
+      if (updates.cleaning_fee !== undefined) dbUpdates.cleaning_fee = updates.cleaning_fee
+      if (updates.service_fee !== undefined) dbUpdates.service_fee = updates.service_fee
 
       const { data, error } = await supabase
         .from('properties')
@@ -298,42 +330,10 @@ export const useProperty = () => {
 
       console.log('✅ Property updated successfully:', data.id)
 
-      // Transform and update in store
-      const transformedProperty: Property = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        price: data.price_per_night,
-        currency: data.currency,
-        location: data.location,
-        images: data.images,
-        videos: data.video ? [data.video] : [],
-        host: {
-          id: data.host.id,
-          name: data.host.display_name,
-          username: data.host.username || '',
-          avatar: data.host.avatar_url || '',
-          isVerified: data.host.is_identity_verified || false,
-          email: '',
-          phone: '',
-          rating: data.host.host_rating || 0,
-          responseRate: data.host.response_rate || 0,
-          responseTime: data.host.response_time || 'Unknown'
-        },
-        rating: 0,
-        reviewCount: 0,
-        propertyType: data.property_type,
-        amenities: data.amenities,
-        maxGuests: data.max_guests,
-        bedrooms: data.bedrooms,
-        bathrooms: data.bathrooms,
-        isLiked: false,
-        createdAt: data.created_at,
-        cleaningFee: data.cleaning_fee,
-        serviceFee: data.service_fee,
-        totalBeforeTaxes: data.price_per_night + (data.cleaning_fee || 0) + (data.service_fee || 0)
-      }
+      // Transform database data to frontend format
+      const transformedProperty = transformDatabaseToProperty(data)
 
+      // Update in store
       updatePropertyInStore(transformedProperty)
       toast.success('Property updated successfully!')
       setIsLoading(false)
@@ -386,40 +386,7 @@ export const useProperty = () => {
       console.log('✅ Property fetched successfully:', data.id)
 
       // Transform database data to frontend format
-      const transformedProperty: Property = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        price: data.price_per_night,
-        currency: data.currency,
-        location: data.location,
-        images: data.images,
-        videos: data.video ? [data.video] : [],
-        host: {
-          id: data.host.id,
-          name: data.host.display_name,
-          username: data.host.username || '',
-          avatar: data.host.avatar_url || '',
-          isVerified: data.host.is_identity_verified || false,
-          email: '',
-          phone: '',
-          rating: data.host.host_rating || 0,
-          responseRate: data.host.response_rate || 0,
-          responseTime: data.host.response_time || 'Unknown'
-        },
-        rating: 0,
-        reviewCount: 0,
-        propertyType: data.property_type,
-        amenities: data.amenities,
-        maxGuests: data.max_guests,
-        bedrooms: data.bedrooms,
-        bathrooms: data.bathrooms,
-        isLiked: false,
-        createdAt: data.created_at,
-        cleaningFee: data.cleaning_fee,
-        serviceFee: data.service_fee,
-        totalBeforeTaxes: data.price_per_night + (data.cleaning_fee || 0) + (data.service_fee || 0)
-      }
+      const transformedProperty = transformDatabaseToProperty(data)
 
       setIsLoading(false)
       return transformedProperty
@@ -477,40 +444,7 @@ export const useProperty = () => {
       console.log('✅ Properties search completed:', data.total_count, 'results')
 
       // Transform search results
-      const transformedProperties: Property[] = data.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        price: item.price_per_night,
-        currency: item.currency,
-        location: item.location,
-        images: item.images,
-        videos: item.video ? [item.video] : [],
-        host: {
-          id: item.host_id,
-          name: item.host_name,
-          username: '',
-          avatar: item.host_avatar || '',
-          isVerified: false,
-          email: '',
-          phone: '',
-          rating: item.host_rating || 0,
-          responseRate: item.host_response_rate || 0,
-          responseTime: item.host_response_time || 'Unknown'
-        },
-        rating: 0,
-        reviewCount: 0,
-        propertyType: item.property_type,
-        amenities: item.amenities,
-        maxGuests: item.max_guests,
-        bedrooms: item.bedrooms,
-        bathrooms: item.bathrooms,
-        isLiked: false,
-        createdAt: item.created_at,
-        cleaningFee: item.cleaning_fee,
-        serviceFee: item.service_fee,
-        totalBeforeTaxes: item.price_per_night + (item.cleaning_fee || 0) + (item.service_fee || 0)
-      }))
+      const transformedProperties: Property[] = data.data.map((item: any) => transformDatabaseToProperty(item))
 
       // Update store with search results
       setProperties(transformedProperties)
@@ -570,40 +504,7 @@ export const useProperty = () => {
       console.log('✅ Host properties fetched successfully:', data?.length || 0, 'properties')
 
       // Transform database data to frontend format
-      const transformedProperties: Property[] = (data || []).map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        price: item.price_per_night,
-        currency: item.currency,
-        location: item.location,
-        images: item.images,
-        videos: item.video ? [item.video] : [],
-        host: {
-          id: item.host.id,
-          name: item.host.display_name,
-          username: item.host.username || '',
-          avatar: item.host.avatar_url || '',
-          isVerified: item.host.is_identity_verified || false,
-          email: '',
-          phone: '',
-          rating: item.host.host_rating || 0,
-          responseRate: item.host.response_rate || 0,
-          responseTime: item.host.response_time || 'Unknown'
-        },
-        rating: 0,
-        reviewCount: 0,
-        propertyType: item.property_type,
-        amenities: item.amenities,
-        maxGuests: item.max_guests,
-        bedrooms: item.bedrooms,
-        bathrooms: item.bathrooms,
-        isLiked: false,
-        createdAt: item.created_at,
-        cleaningFee: item.cleaning_fee,
-        serviceFee: item.service_fee,
-        totalBeforeTaxes: item.price_per_night + (item.cleaning_fee || 0) + (item.service_fee || 0)
-      }))
+      const transformedProperties: Property[] = (data || []).map((item: any) => transformDatabaseToProperty(item))
 
       setIsLoading(false)
       return transformedProperties

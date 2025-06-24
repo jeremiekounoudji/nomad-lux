@@ -55,8 +55,21 @@ export interface User {
 }
 
 // Extended host interface for form submission
-export interface HostSubmissionData extends User {
-  // Additional fields can be added here if needed
+export interface HostSubmissionData {
+  id: string
+  name: string
+  username: string
+  avatar_url: string
+  display_name: string
+  is_identity_verified: boolean
+  is_email_verified: boolean
+  email: string
+  phone: string
+  rating: number
+  response_rate: number
+  response_time: string
+  bio?: string
+  experience?: number
 }
 
 // Admin user interface (simplified view for admin panels)

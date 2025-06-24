@@ -31,8 +31,17 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
   property,
   stats
 }) => {
-  const occupancyRate = (stats.bookings / 30) * 100 // Assuming 30 days in a month
-  const averageNightlyRevenue = stats.revenue / (stats.bookings || 1)
+  // Provide default values if stats is undefined
+  const safeStats = stats || {
+    views: 0,
+    bookings: 0,
+    revenue: 0,
+    rating: 0,
+    status: 'pending' as const
+  }
+  
+  const occupancyRate = (safeStats.bookings / 30) * 100 // Assuming 30 days in a month
+  const averageNightlyRevenue = safeStats.revenue / (safeStats.bookings || 1)
 
   return (
     <Modal 
@@ -67,16 +76,16 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                         <p className="text-sm text-gray-600 line-clamp-2">{property.description}</p>
                         <div className="flex items-center gap-4 mt-2">
                           <Chip 
-                            color={stats.status === 'active' ? 'success' : 
-                                   stats.status === 'pending' ? 'warning' : 'default'}
+                            color={safeStats.status === 'approved' ? 'success' : 
+                                   safeStats.status === 'pending' ? 'warning' : 'default'}
                             variant="flat"
                             size="sm"
                           >
-                            {stats.status.charAt(0).toUpperCase() + stats.status.slice(1)}
+                            {safeStats.status.charAt(0).toUpperCase() + safeStats.status.slice(1)}
                           </Chip>
                           <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span className="text-sm font-medium">{stats.rating}</span>
+                            <span className="text-sm font-medium">{safeStats.rating}</span>
                           </div>
                         </div>
                       </div>
@@ -91,7 +100,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-center w-12 h-12 bg-secondary-100 rounded-full mx-auto mb-2">
                         <Eye className="w-6 h-6 text-secondary-600" />
                       </div>
-                      <p className="text-2xl font-bold text-secondary-600">{stats.views}</p>
+                      <p className="text-2xl font-bold text-secondary-600">{safeStats.views}</p>
                       <p className="text-sm text-gray-600">Total Views</p>
                     </CardBody>
                   </Card>
@@ -101,7 +110,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mx-auto mb-2">
                         <Calendar className="w-6 h-6 text-green-600" />
                       </div>
-                      <p className="text-2xl font-bold text-green-600">{stats.bookings}</p>
+                      <p className="text-2xl font-bold text-green-600">{safeStats.bookings}</p>
                       <p className="text-sm text-gray-600">Total Bookings</p>
                     </CardBody>
                   </Card>
@@ -111,7 +120,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-center w-12 h-12 bg-primary-100 rounded-full mx-auto mb-2">
                         <DollarSign className="w-6 h-6 text-primary-600" />
                       </div>
-                      <p className="text-2xl font-bold text-primary-600">${stats.revenue}</p>
+                      <p className="text-2xl font-bold text-primary-600">${safeStats.revenue}</p>
                       <p className="text-sm text-gray-600">Total Revenue</p>
                     </CardBody>
                   </Card>
@@ -121,7 +130,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-center w-12 h-12 bg-yellow-100 rounded-full mx-auto mb-2">
                         <Star className="w-6 h-6 text-yellow-600" />
                       </div>
-                      <p className="text-2xl font-bold text-yellow-600">{stats.rating}</p>
+                      <p className="text-2xl font-bold text-yellow-600">{safeStats.rating}</p>
                       <p className="text-sm text-gray-600">Average Rating</p>
                     </CardBody>
                   </Card>
@@ -159,11 +168,11 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                     <div>
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-medium">Guest Satisfaction</span>
-                        <span className="text-sm text-gray-600">{((stats.rating / 5) * 100).toFixed(0)}%</span>
+                        <span className="text-sm text-gray-600">{((safeStats.rating / 5) * 100).toFixed(0)}%</span>
                       </div>
                       <Progress 
-                        value={(stats.rating / 5) * 100} 
-                        color={stats.rating >= 4.5 ? 'success' : stats.rating >= 4 ? 'warning' : 'danger'}
+                        value={(safeStats.rating / 5) * 100} 
+                        color={safeStats.rating >= 4.5 ? 'success' : safeStats.rating >= 4 ? 'warning' : 'danger'}
                         className="w-full"
                       />
                     </div>
@@ -182,7 +191,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                           <Eye className="w-4 h-4 text-gray-500" />
                           <span className="text-sm">Views this month</span>
                         </div>
-                        <span className="font-medium">{Math.floor(stats.views * 0.3)}</span>
+                        <span className="font-medium">{Math.floor(safeStats.views * 0.3)}</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -190,7 +199,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                           <Heart className="w-4 h-4 text-gray-500" />
                           <span className="text-sm">Favorites</span>
                         </div>
-                        <span className="font-medium">{Math.floor(stats.views * 0.1)}</span>
+                        <span className="font-medium">{Math.floor(safeStats.views * 0.1)}</span>
                       </div>
                       
                       <div className="flex items-center justify-between">
@@ -198,7 +207,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                           <MessageCircle className="w-4 h-4 text-gray-500" />
                           <span className="text-sm">Inquiries</span>
                         </div>
-                        <span className="font-medium">{Math.floor(stats.bookings * 2.5)}</span>
+                        <span className="font-medium">{Math.floor(safeStats.bookings * 2.5)}</span>
                       </div>
                     </div>
                   </div>
@@ -227,7 +236,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                           <Users className="w-4 h-4 text-gray-500" />
                           <span className="text-sm">Repeat guests</span>
                         </div>
-                        <span className="font-medium">{Math.floor(stats.bookings * 0.2)}</span>
+                        <span className="font-medium">{Math.floor(safeStats.bookings * 0.2)}</span>
                       </div>
                     </div>
                   </div>
@@ -238,8 +247,8 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                   <h4 className="font-semibold text-primary-800 mb-2">Tips to Improve Performance</h4>
                   <ul className="text-sm text-primary-700 space-y-1">
                     {occupancyRate < 50 && <li>• Consider adjusting your pricing to attract more bookings</li>}
-                    {stats.rating < 4.5 && <li>• Focus on guest communication and property cleanliness</li>}
-                    {stats.views < 100 && <li>• Add more high-quality photos to increase visibility</li>}
+                    {safeStats.rating < 4.5 && <li>• Focus on guest communication and property cleanliness</li>}
+                    {safeStats.views < 100 && <li>• Add more high-quality photos to increase visibility</li>}
                     <li>• Update your property description with recent amenities</li>
                     <li>• Respond quickly to guest inquiries to improve response rate</li>
                   </ul>

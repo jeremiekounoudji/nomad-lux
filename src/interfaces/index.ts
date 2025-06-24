@@ -3,6 +3,7 @@
 
 export * from './User'
 export * from './Property'
+export * from './PropertySubmissionData'
 export * from './Booking'
 export * from './Admin'
 export * from './Component'
