@@ -3,7 +3,12 @@ import { Button, Card, Progress } from '@heroui/react';
 import HostDetailsStep from './steps/HostDetailsStep';
 import PropertyDetailsStep from './steps/PropertyDetailsStep';
 import MediaUploadStep from './steps/MediaUploadStep';
+
 import { Property, User, HostSubmissionData, PropertySubmissionData, PropertySubmissionFormProps } from '../../../interfaces';
+import { useProperty } from '../../../hooks/useProperty';
+import { useAuthStore } from '../../../lib/stores/authStore';
+import { useAdminSettingsStore } from '../../../lib/stores/adminSettingsStore';
+import toast from 'react-hot-toast';
 
 const INITIAL_FORM_DATA: PropertySubmissionData = {
   title: '',
@@ -99,6 +104,18 @@ const CustomStepper: React.FC<{
 const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initialData, isEditMode }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PropertySubmissionData>(INITIAL_FORM_DATA);
+  
+  // Hooks
+  const { submitProperty, isLoading, error, uploadProgress } = useProperty();
+  const { user } = useAuthStore();
+  const { settings } = useAdminSettingsStore();
+
+  console.log('📋 PropertySubmissionForm rendered', { 
+    isEditMode, 
+    currentStep, 
+    hasUser: !!user,
+    hasSettings: !!settings 
+  });
 
   const steps = [
     {
@@ -127,22 +144,179 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   };
 
   const handleSubmit = async () => {
+    console.log('🚀 Submit button clicked')
+    
+    if (!user) {
+      toast.error('Please sign in to submit a property');
+      return;
+    }
+    
+    // Debug current upload progress
+    console.log('📊 Current upload progress:', uploadProgress)
+
+    // Validate form data
+    if (!formData.title.trim()) {
+      toast.error('Please enter a property title');
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      toast.error('Please enter a property description');
+      return;
+    }
+
+    if (formData.price <= 0) {
+      toast.error('Please enter a valid price');
+      return;
+    }
+
+    if (!formData.location.city.trim() || !formData.location.country.trim()) {
+      toast.error('Please enter complete location information');
+      return;
+    }
+
+    if (formData.images.length < 4) {
+      toast.error('Please upload at least 4 images');
+      return;
+    }
+
+    if (!formData.videos || formData.videos.length === 0) {
+      toast.error('Please upload a video');
+      return;
+    }
+
+    if (!formData.propertyType) {
+      toast.error('Please select a property type');
+      return;
+    }
+
+    // Validate file formats against admin settings
+    const allowedImageFormats = settings?.platform?.allowedImageFormats || ['jpg', 'jpeg', 'png', 'webp'];
+    const allowedVideoFormats = settings?.platform?.allowedVideoFormats || ['mp4', 'webm', 'mov', 'avi'];
+    const maxFileSize = settings?.platform?.maxFileSize || 50; // MB
+
+    // Validate video format if uploaded
+    if (formData.videos && formData.videos.length > 0) {
+      const videoFile = formData.videos[0];
+      if (videoFile instanceof File) {
+        const videoExtension = videoFile.name.split('.').pop()?.toLowerCase();
+        const isValidVideoFormat = allowedVideoFormats.includes(videoExtension || '') || 
+                                 allowedVideoFormats.some(format => videoFile.type.includes(format));
+        
+        if (!isValidVideoFormat) {
+          toast.error(`Video format not supported. Please upload: ${allowedVideoFormats.join(', ')}`);
+          return;
+        }
+
+        console.log('✅ Video format validation passed:', {
+          fileName: videoFile.name,
+          fileType: videoFile.type,
+          fileSize: `${(videoFile.size / (1024 * 1024)).toFixed(2)}MB`
+        });
+      }
+    }
+
+    console.log('🔍 Validating files against admin settings:', {
+      allowedImageFormats,
+      allowedVideoFormats,
+      maxFileSize,
+      imageCount: formData.images.length,
+      videoCount: formData.videos.length
+    });
+
     try {
-      // TODO: Implement submission logic to Firebase
-      // 1. Upload images and videos to Firebase Storage
-      // 2. Get the download URLs
-      // 3. Create the property document in Firestore
-      console.log('Form submitted:', formData);
+      console.log('📤 Submitting property with data:', formData);
+      
+      // Set host information from current user
+      const submissionData: PropertySubmissionData = {
+        ...formData,
+        host: {
+          id: user.id,
+          name: user.display_name || '',
+          username: user.username || '',
+          avatar: user.avatar_url || '',
+          isVerified: user.is_identity_verified || false,
+          email: user.email || '',
+          phone: user.phone || '',
+        }
+      };
+
+      // Add timeout to prevent hanging submissions
+      const submissionTimeout = 5 * 60 * 1000; // 5 minutes
+      const submissionPromise = submitProperty(submissionData);
+      
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        setTimeout(() => {
+          reject(new Error('Submission timeout - please try again'))
+        }, submissionTimeout)
+      });
+
+      const result = await Promise.race([submissionPromise, timeoutPromise]);
+      
+      if (result) {
+        console.log('✅ Property submission successful:', result.id);
+        toast.success('Property submitted successfully! 🎉');
+        // Reset form after successful submission
+        setFormData(INITIAL_FORM_DATA);
+        setCurrentStep(0);
+      }
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error('❌ Error submitting property:', error);
+      
+      // Provide more specific error messages
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      
+      if (errorMessage.includes('timeout')) {
+        toast.error('Submission took too long. Please check your internet connection and try again.');
+      } else if (errorMessage.includes('upload')) {
+        toast.error('File upload failed. Please check your files and try again.');
+      } else if (errorMessage.includes('network')) {
+        toast.error('Network error. Please check your connection and try again.');
+      } else {
+        toast.error(`Submission failed: ${errorMessage}`);
+      }
     }
   };
 
+  // Effect to handle initial data and admin settings
   useEffect(() => {
     if (initialData) {
       setFormData(initialData as PropertySubmissionData);
     }
   }, [initialData]);
+
+  // Effect to log admin settings (for reference, but no auto-calculation)
+  useEffect(() => {
+    if (settings && user) {
+      const commissionRate = settings.booking?.commissionRate || 6;
+      const paymentProcessingFee = settings.booking?.paymentProcessingFee || 2.4;
+
+      console.log('📋 Admin settings available for reference:', {
+        commissionRate: `${commissionRate}%`,
+        paymentProcessingFee: `${paymentProcessingFee}%`,
+        note: 'Service fee will be manually set by host'
+      });
+    }
+  }, [settings, user]);
+
+  // Effect to set user information when user is available
+  useEffect(() => {
+    if (user && formData.host.id === '') {
+      console.log('👤 Setting user information in form data');
+      setFormData(prev => ({
+        ...prev,
+        host: {
+          id: user.id,
+          name: user.display_name || '',
+          username: user.username || '',
+          avatar: user.avatar_url || '',
+          isVerified: user.is_identity_verified || false,
+          email: user.email || '',
+          phone: user.phone || '',
+        }
+      }));
+    }
+  }, [user, formData.host.id]);
 
   return (
     <div className="max-w-4xl mx-auto p-4">
@@ -162,11 +336,22 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
           </Button>
 
           {currentStep === steps.length - 1 ? (
-            <Button color="primary" onClick={handleSubmit} className="min-w-[140px] bg-primary-600 hover:bg-primary-700">
-              {isEditMode ? 'Update Property' : 'Submit Property'}
+            <Button 
+              color="primary" 
+              onClick={handleSubmit} 
+              className="min-w-[140px] bg-primary-600 hover:bg-primary-700"
+              isLoading={isLoading}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Submitting...' : (isEditMode ? 'Update Property' : 'Submit Property')}
             </Button>
           ) : (
-            <Button color="primary" onClick={handleNext} className="min-w-[100px] bg-primary-600 hover:bg-primary-700">
+            <Button 
+              color="primary" 
+              onClick={handleNext} 
+              className="min-w-[100px] bg-primary-600 hover:bg-primary-700"
+              disabled={isLoading}
+            >
               Next Step
             </Button>
           )}

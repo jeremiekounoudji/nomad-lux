@@ -2,6 +2,20 @@
 
 import { User, HostSubmissionData } from './User'
 
+// Simplified host interface for property listings
+export interface PropertyHost {
+  id: string
+  name: string
+  username: string
+  avatar: string
+  isVerified: boolean
+  email: string
+  phone: string
+  rating: number
+  responseRate: number
+  responseTime: string
+}
+
 export interface Property {
   id: string
   title: string
@@ -19,7 +33,7 @@ export interface Property {
   }
   images: string[]
   videos?: string[]
-  host: User
+  host: PropertyHost
   rating: number
   reviewCount: number
   propertyType: string
@@ -63,12 +77,14 @@ export interface AdminProperty {
   maxGuests: number
 }
 
-// Property submission data type
+// Property submission data type - allows File objects during submission
 export type PropertySubmissionData = Omit<
   Property,
-  'id' | 'rating' | 'reviewCount' | 'isLiked' | 'distance' | 'createdAt' | 'totalBeforeTaxes' | 'host'
+  'id' | 'rating' | 'reviewCount' | 'isLiked' | 'distance' | 'createdAt' | 'totalBeforeTaxes' | 'host' | 'images' | 'videos'
 > & {
   host: HostSubmissionData;
+  images: (File | string)[]; // Allow both File objects and URLs
+  videos?: (File | string)[]; // Allow both File objects and URLs
 };
 
 export interface PopularPlace {
