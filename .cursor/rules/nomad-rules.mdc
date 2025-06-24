@@ -114,11 +114,17 @@ export interface Property {
 
 ---
 ### 7. ✅ supabase specific instruction
-1-use mcp supabase toolto interact with the supabase while working. use this everytime it is necessary.
+1-use mcp supabase tool to interact with the supabase while working. use this everytime it is necessary.
+
 2-make sure to respect the column names to avoid type issues when writing rcp functions or edge functions
+
 3- handle loading states, errors(display toast on errors/success of actions functions call like update something or create something) 
+
 4-always save fetch results in a zustand instance for easy access and to avoid repetitive data load
+
 5-NEVER make a query in the zustand store. they should be pure. all database call should pass througth the hooks and the store will just save the data.The store should be pure and only manage state. Database calls should be handled in hooks. 
+
+6-Never use rcp functions for insert/update/delete. only use it for complex get queries with filters
 
 ### 8. ✅ debug specific instruction
 

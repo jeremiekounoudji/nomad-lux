@@ -9,6 +9,7 @@ export interface PlatformSettings {
   registrationEnabled?: boolean
   maxFileSize?: number
   allowedImageFormats?: string[]
+  allowedVideoFormats?: string[]
 }
 
 export interface BookingSettings {

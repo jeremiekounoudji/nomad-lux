@@ -17,6 +17,7 @@ import { AdminLoginPage } from './AdminLoginPage'
 import { AdminRegisterPage } from './AdminRegisterPage'
 import { AdminPage } from './AdminPage'
 import { useAuthStore } from '../lib/stores/authStore'
+import { useAdminSettings } from '../hooks/useAdminSettings'
 import { Property } from '../interfaces'
 import { mockProperties } from '../lib/mockData'
 import toast from 'react-hot-toast'
@@ -27,12 +28,15 @@ const HomePage: React.FC = () => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
 
   const { isAuthenticated, isLoading, user } = useAuthStore()
+  const { settings, isLoading: settingsLoading, fetchSettings } = useAdminSettings()
 
   console.log('🏠 HomePage rendered', { 
     currentPage, 
     isAuthenticated, 
     isLoading,
+    settingsLoading,
     userEmail: user?.email,
+    hasSettings: !!settings,
     timestamp: new Date().toISOString() 
   })
 
@@ -41,6 +45,14 @@ const HomePage: React.FC = () => {
     'home', 'create', 'liked', 'bookings', 'listings', 
     'notifications', 'requests', 'search', 'profile'
   ]
+
+  // Fetch admin settings on mount
+  useEffect(() => {
+    if (!settings && !settingsLoading) {
+      console.log('📥 Fetching admin settings on HomePage mount')
+      fetchSettings().catch(console.error)
+    }
+  }, [settings, settingsLoading, fetchSettings])
 
   // Check authentication for protected routes
   useEffect(() => {

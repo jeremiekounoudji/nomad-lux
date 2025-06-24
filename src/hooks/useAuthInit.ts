@@ -105,7 +105,7 @@ export const useAuthInit = () => {
         // Add timeout for database query
         const fetchTimeout = setTimeout(() => {
           console.log('⏰ Database fetch timeout, proceeding with minimal user data')
-        }, 10000)
+        }, 10000*10000)
         
         const userData = await fetchUserByAuthId(authId)
         clearTimeout(fetchTimeout)

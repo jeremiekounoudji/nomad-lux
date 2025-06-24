@@ -1,5 +1,6 @@
 import React from 'react';
-import { Input, Select, SelectItem, Textarea, Checkbox, Button } from '@heroui/react';
+import { Input, Select, SelectItem, Textarea, Checkbox, Button, Card, CardBody } from '@heroui/react';
+import { Wifi, Car, Utensils, Waves, Shield, Dumbbell, TreePine, Home, Flame, Heart, Tv, Gamepad2, Wind, Coffee, WashingMachine, Sparkles } from 'lucide-react';
 import type { PropertySubmissionData } from '../PropertySubmissionForm';
 
 interface PropertyDetailsStepProps {
@@ -17,32 +18,41 @@ const PROPERTY_TYPES = [
 
 const AMENITIES = {
   basic: [
-    { id: 'wifi', label: 'WiFi' },
-    { id: 'ac', label: 'Air Conditioning' },
-    { id: 'kitchen', label: 'Kitchen' },
-    { id: 'parking', label: 'Parking' },
-    { id: 'tv', label: 'TV' },
+    { id: 'wifi', label: 'WiFi', icon: <Wifi className="w-5 h-5" />, description: 'High-speed internet' },
+    { id: 'ac', label: 'Air Conditioning', icon: <Wind className="w-5 h-5" />, description: 'Climate control' },
+    { id: 'kitchen', label: 'Kitchen', icon: <Utensils className="w-5 h-5" />, description: 'Fully equipped' },
+    { id: 'parking', label: 'Parking', icon: <Car className="w-5 h-5" />, description: 'Free parking space' },
+    { id: 'tv', label: 'TV', icon: <Tv className="w-5 h-5" />, description: 'Cable/Streaming' },
+    { id: 'washer', label: 'Washer', icon: <WashingMachine className="w-5 h-5" />, description: 'Laundry facilities' },
   ],
   comfort: [
-    { id: 'pool', label: 'Swimming Pool' },
-    { id: 'gym', label: 'Gym' },
-    { id: 'garden', label: 'Garden' },
-    { id: 'balcony', label: 'Balcony' },
-    { id: 'bbq', label: 'BBQ Area' },
+    { id: 'pool', label: 'Swimming Pool', icon: <Waves className="w-5 h-5" />, description: 'Private or shared pool' },
+    { id: 'gym', label: 'Gym', icon: <Dumbbell className="w-5 h-5" />, description: 'Fitness center' },
+    { id: 'garden', label: 'Garden', icon: <TreePine className="w-5 h-5" />, description: 'Outdoor space' },
+    { id: 'balcony', label: 'Balcony', icon: <Home className="w-5 h-5" />, description: 'Private balcony' },
+    { id: 'bbq', label: 'BBQ Area', icon: <Flame className="w-5 h-5" />, description: 'Outdoor grilling' },
+    { id: 'hot_tub', label: 'Hot Tub', icon: <Heart className="w-5 h-5" />, description: 'Relaxation area' },
   ],
   safety: [
-    { id: 'security', label: '24/7 Security' },
-    { id: 'cctv', label: 'CCTV' },
-    { id: 'fire_alarm', label: 'Fire Alarm' },
-    { id: 'first_aid', label: 'First Aid Kit' },
-    { id: 'safe', label: 'Safe Box' },
+    { id: 'security', label: '24/7 Security', icon: <Shield className="w-5 h-5" />, description: 'Round-the-clock security' },
+    { id: 'cctv', label: 'CCTV', icon: <Shield className="w-5 h-5" />, description: 'Video surveillance' },
+    { id: 'fire_alarm', label: 'Fire Alarm', icon: <Shield className="w-5 h-5" />, description: 'Fire safety system' },
+    { id: 'first_aid', label: 'First Aid Kit', icon: <Heart className="w-5 h-5" />, description: 'Emergency medical kit' },
+    { id: 'safe', label: 'Safe Box', icon: <Shield className="w-5 h-5" />, description: 'Secure storage' },
+  ],
+  entertainment: [
+    { id: 'gaming', label: 'Gaming Console', icon: <Gamepad2 className="w-5 h-5" />, description: 'PlayStation/Xbox' },
+    { id: 'coffee_machine', label: 'Coffee Machine', icon: <Coffee className="w-5 h-5" />, description: 'Fresh coffee daily' },
+    { id: 'cleaning_service', label: 'Cleaning Service', icon: <Sparkles className="w-5 h-5" />, description: 'Regular housekeeping' },
   ],
 };
 
 const CURRENCIES = [
-  { value: 'USD', label: 'USD' },
-  { value: 'EUR', label: 'EUR' },
-  { value: 'GBP', label: 'GBP' },
+  { value: 'USD', label: 'USD - US Dollar' },
+  { value: 'EUR', label: 'EUR - Euro' },
+  { value: 'GBP', label: 'GBP - British Pound' },
+  { value: 'XOF', label: 'XOF - West African CFA Franc' },
+  { value: 'XAF', label: 'XAF - Central African CFA Franc' },
 ];
 
 const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, setFormData }) => {
@@ -289,40 +299,73 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
           required
         />
 
-        <div className="space-y-4">
-          <label className="block text-sm font-medium">Amenities</label>
+        <div className="space-y-6">
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-semibold text-gray-900">Amenities</h3>
+            <span className="text-sm text-gray-500">({formData.amenities.length} selected)</span>
+          </div>
+          <p className="text-gray-600 text-sm">Select all amenities available at your property</p>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             {Object.entries(AMENITIES).map(([category, items]) => (
-              <div key={category} className="space-y-2">
-                <h3 className="text-lg font-medium capitalize">{category}</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {items.map(({ id, label }) => (
-                    <Checkbox
+              <div key={category} className="space-y-4">
+                <h4 className="text-lg font-medium text-gray-800 capitalize flex items-center gap-2">
+                  {category === 'basic' && <Home className="w-5 h-5 text-blue-600" />}
+                  {category === 'comfort' && <Heart className="w-5 h-5 text-purple-600" />}
+                  {category === 'safety' && <Shield className="w-5 h-5 text-green-600" />}
+                  {category === 'entertainment' && <Gamepad2 className="w-5 h-5 text-orange-600" />}
+                  {category} Amenities
+                </h4>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {items.map(({ id, label, icon, description }) => (
+                    <Card
                       key={id}
-                      isSelected={formData.amenities.includes(id)}
-                      onValueChange={(isSelected) => {
-                        if (isSelected) {
-                          setFormData((prev) => ({
-                            ...prev,
-                            amenities: [...prev.amenities, id],
-                          }));
-                        } else {
+                      className={`cursor-pointer transition-all duration-200 border-2 hover:shadow-md ${
+                        formData.amenities.includes(id)
+                          ? 'border-primary-500 bg-primary-50 shadow-sm'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      isPressable
+                      onPress={() => {
+                        if (formData.amenities.includes(id)) {
                           setFormData((prev) => ({
                             ...prev,
                             amenities: prev.amenities.filter((amenityId) => amenityId !== id),
                           }));
+                        } else {
+                          setFormData((prev) => ({
+                            ...prev,
+                            amenities: [...prev.amenities, id],
+                          }));
                         }
                       }}
-                      color="secondary"
-                      className="text-gray-700 hover:text-secondary-600"
-                      classNames={{
-                        base: "inline-flex max-w-md w-full bg-content1 m-0 hover:bg-secondary-50 items-center justify-start cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent data-[selected=true]:border-secondary-500",
-                        label: "w-full",
-                      }}
                     >
-                      {label}
-                    </Checkbox>
+                      <CardBody className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className={`p-2 rounded-lg ${
+                            formData.amenities.includes(id)
+                              ? 'bg-primary-100 text-primary-600'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}>
+                            {icon}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <h5 className="font-medium text-gray-900 truncate">{label}</h5>
+                              {formData.amenities.includes(id) && (
+                                <div className="w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
+                                  <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-600 mt-1">{description}</p>
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
                   ))}
                 </div>
               </div>

@@ -1,18 +1,60 @@
 import React, { useCallback } from 'react';
-import { Button, Card } from '@heroui/react';
-import type { PropertySubmissionData } from '../PropertySubmissionForm';
+import { Button, Card, Chip } from '@heroui/react';
+import type { PropertySubmissionData } from '../../../../interfaces';
+import { useAdminSettingsStore } from '../../../../lib/stores/adminSettingsStore';
+import { useProperty } from '../../../../hooks/useProperty';
+import FileProgressCard from '../../../shared/FileProgressCard';
 
 interface MediaUploadStepProps {
   formData: PropertySubmissionData;
   setFormData: React.Dispatch<React.SetStateAction<PropertySubmissionData>>;
 }
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 const MIN_IMAGES = 4;
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const ACCEPTED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime'];
 
 const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData }) => {
+  const { settings } = useAdminSettingsStore();
+  const { uploadProgress } = useProperty();
+  
+  // Debug logging for upload progress
+  React.useEffect(() => {
+    if (uploadProgress.length > 0) {
+      console.log('📊 MediaUploadStep - Upload Progress Updated:', uploadProgress);
+    }
+  }, [uploadProgress]);
+  
+  // Get settings with fallbacks
+  const MAX_FILE_SIZE = (settings?.platform?.maxFileSize || 100) * 1024 * 1024; // Convert MB to bytes
+  const allowedImageFormats = settings?.platform?.allowedImageFormats || ['jpg', 'jpeg', 'png', 'webp'];
+  const allowedVideoFormats = settings?.platform?.allowedVideoFormats || ['mp4', 'webm', 'mov', 'avi'];
+  
+  console.log('📋 MediaUploadStep - Admin settings loaded:', {
+    maxFileSize: settings?.platform?.maxFileSize,
+    allowedImageFormats,
+    allowedVideoFormats,
+    hasSettings: !!settings
+  });
+  
+  // Convert format arrays to MIME types
+  const ACCEPTED_IMAGE_TYPES = allowedImageFormats.map(format => {
+    switch(format.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg': return 'image/jpeg';
+      case 'png': return 'image/png';
+      case 'webp': return 'image/webp';
+      default: return `image/${format}`;
+    }
+  });
+  
+  const ACCEPTED_VIDEO_TYPES = allowedVideoFormats.map(format => {
+    switch(format.toLowerCase()) {
+      case 'mp4': return 'video/mp4';
+      case 'webm': return 'video/webm';
+      case 'mov': return 'video/quicktime';
+      case 'avi': return 'video/x-msvideo';
+      default: return `video/${format}`;
+    }
+  });
   const handleImageUpload = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(e.target.files || []);
@@ -22,13 +64,13 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
       );
 
       if (validFiles.length) {
-        setFormData((prev) => ({
+        setFormData((prev: PropertySubmissionData) => ({
           ...prev,
           images: [...prev.images, ...validFiles],
         }));
       }
     },
-    [setFormData]
+    [setFormData, ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE]
   );
 
   const handleVideoUpload = useCallback(
@@ -39,29 +81,29 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
         ACCEPTED_VIDEO_TYPES.includes(file.type) &&
         file.size <= MAX_FILE_SIZE
       ) {
-        setFormData((prev) => ({
+        setFormData((prev: PropertySubmissionData) => ({
           ...prev,
-          video: file,
+          videos: [file], // Store as array to match PropertySubmissionData interface
         }));
       }
     },
-    [setFormData]
+    [setFormData, ACCEPTED_VIDEO_TYPES, MAX_FILE_SIZE]
   );
 
   const removeImage = useCallback(
     (index: number) => {
-      setFormData((prev) => ({
+      setFormData((prev: PropertySubmissionData) => ({
         ...prev,
-        images: prev.images.filter((_, i) => i !== index),
+        images: prev.images.filter((_: File | string, i: number) => i !== index),
       }));
     },
     [setFormData]
   );
 
   const removeVideo = useCallback(() => {
-    setFormData((prev) => ({
+    setFormData((prev: PropertySubmissionData) => ({
       ...prev,
-      video: null,
+      videos: [], // Clear the videos array
     }));
   }, [setFormData]);
 
@@ -78,29 +120,28 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
       <div className="space-y-6">
         <div>
           <label className="block text-sm font-medium mb-4">Property Images</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            {formData.images.map((image, index) => (
-              <Card
-                key={index}
-                className="relative aspect-square overflow-hidden group"
-              >
-                <img
-                  src={typeof image === 'string' ? image : URL.createObjectURL(image)}
-                  alt={`Property ${index + 1}`}
-                  className="w-full h-full object-cover"
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
+            {formData.images.map((image: File | string, index: number) => {
+              const fileName = typeof image === 'string' ? image.split('/').pop() || 'Unknown' : image.name;
+              const progress = uploadProgress.find(p => p.fileName === fileName);
+              
+              // Debug logging for each image
+              console.log(`🖼️ Image ${index} [${fileName}]:`, {
+                hasProgress: !!progress,
+                progressStatus: progress?.status,
+                progressValue: progress?.progress
+              });
+              
+              return (
+                <FileProgressCard
+                  key={index}
+                  file={image}
+                  progress={progress}
+                  onRemove={() => removeImage(index)}
+                  type="image"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
-                  <Button
-                    color="danger"
-                    size="sm"
-                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                    onClick={() => removeImage(index)}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </Card>
-            ))}
+              );
+            })}
           </div>
           
           <Card className="border-2 border-dashed border-gray-300 hover:border-primary-400 transition-colors duration-200">
@@ -126,7 +167,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                 Click to browse or drag and drop your images here
               </p>
               <p className="text-xs text-gray-400 mt-2">
-                PNG, JPG, WEBP up to {MAX_FILE_SIZE / (1024 * 1024)}MB
+                {allowedImageFormats.map(f => f.toUpperCase()).join(', ')} up to {MAX_FILE_SIZE / (1024 * 1024)}MB
               </p>
               <input
                 type="file"
@@ -143,35 +184,48 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
               {formData.images.length} of {MIN_IMAGES} images uploaded
             </p>
             {formData.images.length >= MIN_IMAGES && (
-              <div className="flex items-center text-green-600">
-                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-sm font-medium">Minimum requirement met</span>
-              </div>
+              <Chip 
+                color="success" 
+                variant="flat" 
+                size="sm"
+                startContent={
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                }
+              >
+                Minimum requirement met
+              </Chip>
             )}
           </div>
         </div>
 
         <div>
           <label className="block text-sm font-medium mb-4">Property Video</label>
-          {formData.video ? (
-            <Card className="relative aspect-video overflow-hidden group">
-              <video
-                src={typeof formData.video === 'string' ? formData.video : URL.createObjectURL(formData.video)}
-                controls
-                className="w-full h-full object-contain bg-black"
-              />
-              <div className="absolute top-4 right-4">
-                <Button
-                  color="danger"
-                  size="sm"
-                  onClick={removeVideo}
-                >
-                  Remove
-                </Button>
-              </div>
-            </Card>
+          {formData.videos && formData.videos.length > 0 ? (
+            <div className="flex justify-start mb-4">
+              {(() => {
+                const video = formData.videos[0];
+                const fileName = typeof video === 'string' ? video.split('/').pop() || 'Unknown' : video.name;
+                const progress = uploadProgress.find(p => p.fileName === fileName);
+                
+                // Debug logging for video
+                console.log(`🎥 Video [${fileName}]:`, {
+                  hasProgress: !!progress,
+                  progressStatus: progress?.status,
+                  progressValue: progress?.progress
+                });
+                
+                return (
+                  <FileProgressCard
+                    file={video}
+                    progress={progress}
+                    onRemove={removeVideo}
+                    type="video"
+                  />
+                );
+              })()}
+            </div>
           ) : (
             <Card className="border-2 border-dashed border-gray-300 hover:border-secondary-400 transition-colors duration-200">
               <label className="w-full flex flex-col items-center justify-center px-6 py-8 cursor-pointer group">
@@ -196,7 +250,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                   Click to browse or drag and drop your video here
                 </p>
                 <p className="text-xs text-gray-400 mt-2">
-                  MP4, WEBM, MOV up to {MAX_FILE_SIZE / (1024 * 1024)}MB
+                  {allowedVideoFormats.map(f => f.toUpperCase()).join(', ')} up to {MAX_FILE_SIZE / (1024 * 1024)}MB
                 </p>
                 <input
                   type="file"
