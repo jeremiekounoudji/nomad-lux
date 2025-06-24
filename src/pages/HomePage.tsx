@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MainLayout from '../components/layout/MainLayout'
 import PopularPlaces from '../components/shared/PopularPlaces'
-import PropertyCard from '../components/shared/PropertyCard'
+import { HomePagePropertyCard } from '../components/shared'
 import ProfileModal from '../components/shared/ProfileModal'
 import PropertyDetailPage from './PropertyDetailPage'
 import CreatePropertyPage from './CreatePropertyPage'
@@ -244,12 +244,9 @@ const HomePage: React.FC = () => {
         {/* Property Cards - Each card takes one grid column */}
         {mockProperties.map((property) => (
           <div key={property.id} className="col-span-1">
-            <PropertyCard
+            <HomePagePropertyCard
               property={property}
-              variant="feed"
               onLike={handleLike}
-              onShare={handleShare}
-              onBook={handleBook}
               onClick={handlePropertyClick}
             />
           </div>

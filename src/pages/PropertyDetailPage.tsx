@@ -53,7 +53,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   const [checkOut, setCheckOut] = useState('')
   const [guests, setGuests] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
-  const [isLiked, setIsLiked] = useState(property.isLiked)
+  const [isLiked, setIsLiked] = useState(property.is_liked)
 
   // Modal states
   const { isOpen: isBookingOpen, onOpen: onBookingOpen, onClose: onBookingClose } = useDisclosure()
@@ -253,7 +253,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-semibold">{property.rating}</span>
-                      <span>({property.reviewCount} reviews)</span>
+                      <span>({property.review_count} reviews)</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
@@ -273,7 +273,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Users className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.maxGuests} guests</span>
+                  <span className="text-gray-900 font-medium text-sm">{property.max_guests} guests</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Bed className="w-4 h-4 text-gray-700" />
@@ -448,7 +448,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                     <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium text-gray-900">{property.rating}</span>
-                      <span className="text-gray-600 text-sm">({property.reviewCount})</span>
+                      <span className="text-gray-600 text-sm">({property.review_count} reviews)</span>
                     </div>
                   </div>
                 </CardHeader>
@@ -489,7 +489,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       onChange={(e) => setGuests(Number(e.target.value))}
                       className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
                     >
-                      {Array.from({ length: property.maxGuests }, (_, i) => (
+                      {Array.from({ length: property.max_guests }, (_, i) => (
                         <option key={i + 1} value={i + 1}>
                           {i + 1} guest{i > 0 ? 's' : ''}
                         </option>
@@ -600,7 +600,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       <div className="flex items-center gap-1 mt-1">
                         <Star className="w-4 h-4 text-yellow-500 fill-current" />
                         <span className="text-sm font-medium">{property.rating}</span>
-                        <span className="text-sm text-gray-500">({property.reviewCount} reviews)</span>
+                        <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
                       </div>
                     </div>
                   </div>

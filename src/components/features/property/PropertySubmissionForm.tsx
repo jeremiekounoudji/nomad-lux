@@ -4,7 +4,7 @@ import HostDetailsStep from './steps/HostDetailsStep';
 import PropertyDetailsStep from './steps/PropertyDetailsStep';
 import MediaUploadStep from './steps/MediaUploadStep';
 
-import { Property, User, HostSubmissionData, PropertySubmissionData, PropertySubmissionFormProps } from '../../../interfaces';
+import { HostSubmissionData, PropertySubmissionData, PropertySubmissionFormProps } from '../../../interfaces';
 import { useProperty } from '../../../hooks/useProperty';
 import { useAuthStore } from '../../../lib/stores/authStore';
 import { useAdminSettingsStore } from '../../../lib/stores/adminSettingsStore';
@@ -19,29 +19,35 @@ const INITIAL_FORM_DATA: PropertySubmissionData = {
     city: '',
     country: '',
     address: '',
-    coordinates: {
-      lat: 0,
-      lng: 0,
-    },
+    coordinates: { lat: 0, lng: 0 }
   },
   images: [],
   videos: [],
-  host: {
-    id: '', // Will be set from auth context
-    name: '',
-    username: '',
-    avatar: '',
-    isVerified: false,
-    email: '',
-    phone: '',
-  },
-  propertyType: '',
+  property_type: '',
   amenities: [],
-  maxGuests: 1,
+  max_guests: 1,
   bedrooms: 1,
   bathrooms: 1,
-  cleaningFee: 0,
-  serviceFee: 0,
+  cleaning_fee: 0,
+  service_fee: 0,
+  instant_book: false,
+  additional_fees: [],
+  host: {
+    id: '',
+    name: '',
+    username: '',
+    avatar_url: '',
+    display_name: '',
+    is_identity_verified: false,
+    is_email_verified: false,
+    email: '',
+    phone: '',
+    rating: 0,
+    response_rate: 0,
+    response_time: '',
+    bio: '',
+    experience: 0
+  }
 };
 
 // Custom Stepper Component
@@ -101,12 +107,12 @@ const CustomStepper: React.FC<{
   );
 };
 
-const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initialData, isEditMode }) => {
+const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initialData, isEditMode, onSubmitSuccess, externalLoading }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PropertySubmissionData>(INITIAL_FORM_DATA);
   
   // Hooks
-  const { submitProperty, isLoading, error, uploadProgress } = useProperty();
+  const { submitProperty, isLoading, uploadProgress } = useProperty();
   const { user } = useAuthStore();
   const { settings } = useAdminSettingsStore();
 
@@ -116,6 +122,14 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
     hasUser: !!user,
     hasSettings: !!settings 
   });
+
+  const handleNext = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, 2));
+  };
+
+  const handlePrevious = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
 
   const steps = [
     {
@@ -135,16 +149,8 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
     },
   ];
 
-  const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
-  };
-
-  const handlePrevious = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
-
   const handleSubmit = async () => {
-    console.log('🚀 Submit button clicked')
+    console.log('🚀 Submit button clicked', { isEditMode })
     
     if (!user) {
       toast.error('Please sign in to submit a property');
@@ -185,7 +191,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
       return;
     }
 
-    if (!formData.propertyType) {
+    if (!formData.property_type) {
       toast.error('Please select a property type');
       return;
     }
@@ -227,20 +233,20 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
     try {
       console.log('📤 Submitting property with data:', formData);
       
-      // Set host information from current user
       const submissionData: PropertySubmissionData = {
         ...formData,
-        host: {
-          id: user.id,
-          name: user.display_name || '',
-          username: user.username || '',
-          avatar: user.avatar_url || '',
-          isVerified: user.is_identity_verified || false,
-          email: user.email || '',
-          phone: user.phone || '',
-        }
       };
 
+      if (isEditMode && onSubmitSuccess) {
+        // Edit mode - call the callback instead of submitting new property
+        console.log('📝 Edit mode: calling onSubmitSuccess callback');
+        onSubmitSuccess(submissionData);
+        return;
+      }
+
+      // Create mode - submit new property
+      console.log('➕ Create mode: submitting new property');
+      
       // Add timeout to prevent hanging submissions
       const submissionTimeout = 5 * 60 * 1000; // 5 minutes
       const submissionPromise = submitProperty(submissionData);
@@ -280,10 +286,30 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
 
   // Effect to handle initial data and admin settings
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData as PropertySubmissionData);
+    if (initialData && isEditMode) {
+      // Convert Property to PropertySubmissionData for edit mode
+      const submissionData: PropertySubmissionData = {
+        title: initialData.title,
+        description: initialData.description,
+        price: initialData.price,
+        currency: initialData.currency,
+        location: initialData.location,
+        images: initialData.images,
+        videos: initialData.videos || [],
+        property_type: initialData.property_type,
+        amenities: initialData.amenities,
+        max_guests: initialData.max_guests,
+        bedrooms: initialData.bedrooms,
+        bathrooms: initialData.bathrooms,
+        cleaning_fee: initialData.cleaning_fee || 0,
+        service_fee: initialData.service_fee || 0,
+        instant_book: initialData.instant_book,
+        additional_fees: initialData.additional_fees,
+        host: {} as HostSubmissionData // Will be set when user is available
+      };
+      setFormData(submissionData);
     }
-  }, [initialData]);
+  }, [initialData, isEditMode]);
 
   // Effect to log admin settings (for reference, but no auto-calculation)
   useEffect(() => {
@@ -309,10 +335,17 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
           id: user.id,
           name: user.display_name || '',
           username: user.username || '',
-          avatar: user.avatar_url || '',
-          isVerified: user.is_identity_verified || false,
+          avatar_url: user.avatar_url || '',
+          display_name: user.display_name || '',
+          is_identity_verified: user.is_identity_verified || false,
+          is_email_verified: user.is_email_verified || false,
           email: user.email || '',
           phone: user.phone || '',
+          rating: user.host_rating || 0,
+          response_rate: user.response_rate || 0,
+          response_time: user.response_time || '',
+          bio: user.bio || '',
+          experience: 0
         }
       }));
     }
@@ -340,17 +373,17 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
               color="primary" 
               onClick={handleSubmit} 
               className="min-w-[140px] bg-primary-600 hover:bg-primary-700"
-              isLoading={isLoading}
-              disabled={isLoading}
+              isLoading={isEditMode ? externalLoading : isLoading}
+              disabled={isEditMode ? externalLoading : isLoading}
             >
-              {isLoading ? 'Submitting...' : (isEditMode ? 'Update Property' : 'Submit Property')}
+              {(isEditMode ? externalLoading : isLoading) ? 'Submitting...' : (isEditMode ? 'Update Property' : 'Submit Property')}
             </Button>
           ) : (
             <Button 
               color="primary" 
               onClick={handleNext} 
               className="min-w-[100px] bg-primary-600 hover:bg-primary-700"
-              disabled={isLoading}
+              disabled={isEditMode ? externalLoading : isLoading}
             >
               Next Step
             </Button>

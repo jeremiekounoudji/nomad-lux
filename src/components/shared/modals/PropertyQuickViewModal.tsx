@@ -67,7 +67,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-500 fill-current" />
                       <span className="text-sm font-medium">{property.rating}</span>
-                      <span className="text-sm text-gray-500">({property.reviewCount} reviews)</span>
+                      <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
                     </div>
                     <span className="text-sm text-gray-500">•</span>
                     <div className="flex items-center gap-1">
@@ -147,7 +147,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5 text-gray-500" />
                     <div>
-                      <p className="text-sm font-medium">{property.maxGuests} guests</p>
+                      <p className="text-sm font-medium">{property.max_guests} guests</p>
                       <p className="text-xs text-gray-500">Maximum</p>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     <Star className="w-5 h-5 text-yellow-500" />
                     <div>
                       <p className="text-sm font-medium">{property.rating} rating</p>
-                      <p className="text-xs text-gray-500">{property.reviewCount} reviews</p>
+                      <p className="text-xs text-gray-500">{property.review_count} reviews</p>
                     </div>
                   </div>
                 </div>

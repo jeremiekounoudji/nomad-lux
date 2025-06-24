@@ -92,23 +92,26 @@ export interface PopularPlacesProps {
 
 // Property form step props
 export interface PropertyDetailsStepProps {
-  formData: import('./Property').PropertySubmissionData
-  setFormData: (data: import('./Property').PropertySubmissionData) => void
+  formData: import('./PropertySubmissionData').PropertySubmissionData
+  setFormData: (data: import('./PropertySubmissionData').PropertySubmissionData) => void
 }
 
 export interface MediaUploadStepProps {
-  formData: import('./Property').PropertySubmissionData
-  setFormData: (data: import('./Property').PropertySubmissionData) => void
+  formData: import('./PropertySubmissionData').PropertySubmissionData
+  setFormData: (data: import('./PropertySubmissionData').PropertySubmissionData) => void
 }
 
 export interface HostDetailsStepProps {
-  formData: import('./Property').PropertySubmissionData
-  setFormData: (data: import('./Property').PropertySubmissionData) => void
+  formData: import('./PropertySubmissionData').PropertySubmissionData
+  setFormData: (data: import('./PropertySubmissionData').PropertySubmissionData) => void
 }
 
 export interface PropertySubmissionFormProps {
   initialData?: import('./Property').Property
   isEditMode?: boolean
+  onSubmitSuccess?: (propertyData: any) => void
+  onCancel?: () => void
+  externalLoading?: boolean
 }
 
 // Admin component props
@@ -311,4 +314,29 @@ export interface PropertyQuickViewModalProps {
   property: import('./Property').Property
   onBookNow?: () => void
   onLike?: () => void
+}
+
+// Pagination component props
+export interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  totalItems: number
+  pageSize: number
+  onPageChange: (page: number) => void
+  isLoading?: boolean
+  className?: string
+}
+
+// Skeleton component props
+export interface PropertyListingSkeletonProps {
+  count?: number
+  className?: string
+}
+
+export interface HeaderSkeletonProps {
+  className?: string
+}
+
+export interface TabsSkeletonProps {
+  className?: string
 } 

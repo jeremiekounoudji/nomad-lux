@@ -10,7 +10,7 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
   const [searchQuery, setSearchQuery] = useState('')
   
   // Filter only liked properties
-  const likedProperties = mockProperties.filter(property => property.isLiked)
+  const likedProperties = mockProperties.filter(property => property.is_liked)
   
   // Filter by search query
   const filteredProperties = likedProperties.filter(property =>
