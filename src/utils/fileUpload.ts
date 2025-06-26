@@ -67,7 +67,7 @@ export const uploadFile = async (
       const uploadPromise = supabase.storage
         .from(bucket)
         .upload(filePath, file, {
-          cacheControl: '3600',
+          cacheControl: '3600', // Keep long cache for uploaded files (they're immutable)
           upsert: false // Prevent overwrites to avoid conflicts
         })
 

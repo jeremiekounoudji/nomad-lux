@@ -3,6 +3,7 @@
 // Property-related components
 export { default as PropertyCard } from './PropertyCard'
 export { default as HomePagePropertyCard } from './HomePagePropertyCard'
+export { default as CityPropertyCard } from './CityPropertyCard'
 export { default as PopularPlaces } from './PopularPlaces'
 
 // UI components

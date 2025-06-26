@@ -63,12 +63,17 @@ export interface PaymentSettings {
   chargeTaxes?: boolean
 }
 
+export interface ContentSettings {
+  propertyTypes?: PropertyType[]
+}
+
 export interface AdminSettings {
   platform?: PlatformSettings
   booking?: BookingSettings
   notification?: NotificationSettings
   security?: SecuritySettings
   payment?: PaymentSettings
+  content?: ContentSettings
 }
 
 export interface AdminSettingRecord {
@@ -84,4 +89,10 @@ export interface AdminSettingRecord {
   updated_by?: string
   created_at?: string
   updated_at?: string
+}
+
+export interface PropertyType {
+  value: string
+  label: string
+  category: string
 } 

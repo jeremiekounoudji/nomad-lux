@@ -286,6 +286,46 @@ export const SystemSettings: React.FC = () => {
     // Here you would delete the template from your backend
   }
 
+  const handleClearCache = async () => {
+    try {
+      console.log('🗑️ Cache clearing is temporarily disabled')
+      toast.info('Cache clearing is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleClearAllCache = async () => {
+    try {
+      console.log('🗑️ Cache clearing is temporarily disabled')
+      toast.info('Cache clearing is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleForceRefresh = () => {
+    try {
+      console.log('🔄 Force refresh is temporarily disabled')
+      toast.info('Force refresh is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleCheckCacheHealth = () => {
+    try {
+      console.log('🔍 Cache health check is temporarily disabled')
+      toast.info('Cache health check is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
   // Show loading spinner if settings are not loaded yet
   if (isLoading && !settings) {
     return (
@@ -363,12 +403,13 @@ export const SystemSettings: React.FC = () => {
             tabContent: "group-data-[selected=true]:text-primary-600"
           }}
         >
-          <Tab key="general" title="General" />
-          <Tab key="booking" title="Booking" />
-          <Tab key="payment" title="Payment" />
-          <Tab key="notifications" title="Notifications" />
-          <Tab key="security" title="Security" />
-          <Tab key="content" title="Content" />
+                        <Tab key="general" title="General" />
+              <Tab key="booking" title="Booking" />
+              <Tab key="payment" title="Payment" />
+              <Tab key="notifications" title="Notifications" />
+              <Tab key="security" title="Security" />
+              <Tab key="content" title="Content" />
+              <Tab key="cache" title="Cache Management" />
         </Tabs>
       </div>
 
@@ -1207,7 +1248,199 @@ export const SystemSettings: React.FC = () => {
             </CardBody>
           </Card>
         </div>
-      )}
+              )}
+
+        {/* Cache Management Tab */}
+        {selectedTab === 'cache' && (
+          <div className="space-y-6">
+            <Card className="shadow-sm border border-gray-200">
+              <CardBody className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Cache Management</h3>
+                    <p className="text-gray-600">Manage application cache to resolve loading issues and improve performance</p>
+                  </div>
+                  <Database className="w-8 h-8 text-blue-500" />
+                </div>
+
+                {/* Cache Status */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <Card className="bg-blue-50 border border-blue-200">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-blue-700">Browser Cache</p>
+                          <p className="text-xs text-blue-600">HTTP cache and service workers</p>
+                        </div>
+                        <Activity className="w-5 h-5 text-blue-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <Card className="bg-green-50 border border-green-200">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-green-700">App Cache</p>
+                          <p className="text-xs text-green-600">Zustand stores and localStorage</p>
+                        </div>
+                        <Database className="w-5 h-5 text-green-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <Card className="bg-purple-50 border border-purple-200">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-purple-700">Supabase Cache</p>
+                          <p className="text-xs text-purple-600">API response cache</p>
+                        </div>
+                        <Globe className="w-5 h-5 text-purple-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+                </div>
+
+                {/* Cache Actions */}
+                <div className="space-y-4">
+                  <Divider />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      size="lg"
+                      startContent={<RefreshCw className="w-4 h-4" />}
+                      onPress={handleClearCache}
+                      className="h-16"
+                    >
+                      <div className="text-center">
+                        <div className="font-semibold">Clear App Cache</div>
+                        <div className="text-xs opacity-75">Clear Zustand stores & localStorage</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="danger"
+                      variant="flat"
+                      size="lg"
+                      startContent={<Trash2 className="w-4 h-4" />}
+                      onPress={handleClearAllCache}
+                      className="h-16"
+                    >
+                      <div className="text-center">
+                        <div className="font-semibold">Clear All Cache</div>
+                        <div className="text-xs opacity-75">Clear everything & restart</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      size="lg"
+                      startContent={<AlertCircle className="w-4 h-4" />}
+                      onPress={handleCheckCacheHealth}
+                      className="h-16"
+                    >
+                      <div className="text-center">
+                        <div className="font-semibold">Detect Issues</div>
+                        <div className="text-xs opacity-75">Check for cache problems</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="secondary"
+                      variant="flat"
+                      size="lg"
+                      startContent={<RotateCcw className="w-4 h-4" />}
+                      onPress={handleForceRefresh}
+                      className="h-16"
+                    >
+                      <div className="text-center">
+                        <div className="font-semibold">Force Refresh</div>
+                        <div className="text-xs opacity-75">Reload with cache busting</div>
+                      </div>
+                    </Button>
+                  </div>
+
+                  <Divider />
+
+                  {/* Cache Settings */}
+                  <div className="space-y-4">
+                    <h4 className="text-md font-semibold text-gray-900">Cache Settings</h4>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Cache Duration (minutes)</label>
+                        <Slider
+                          size="sm"
+                          step={5}
+                          minValue={0}
+                          maxValue={60}
+                          defaultValue={[5]}
+                          className="max-w-md"
+                          color="primary"
+                        />
+                        <p className="text-xs text-gray-500">How long to cache API responses</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">Auto-clear interval (hours)</label>
+                        <Slider
+                          size="sm"
+                          step={1}
+                          minValue={1}
+                          maxValue={24}
+                          defaultValue={[12]}
+                          className="max-w-md"
+                          color="secondary"
+                        />
+                        <p className="text-xs text-gray-500">Automatically clear stale cache</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <Switch 
+                        size="sm" 
+                        color="success"
+                        defaultSelected
+                        classNames={{
+                          wrapper: "group-data-[selected=true]:bg-success-500",
+                          thumb: "group-data-[selected=true]:bg-white"
+                        }}
+                      />
+                      <label className="text-sm text-gray-700">Enable cache busting in development</label>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <Switch 
+                        size="sm" 
+                        color="warning"
+                        classNames={{
+                          wrapper: "group-data-[selected=true]:bg-warning-500",
+                          thumb: "group-data-[selected=true]:bg-white"
+                        }}
+                      />
+                      <label className="text-sm text-gray-700">Show cache debug information</label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cache Information */}
+                <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                  <h5 className="text-sm font-semibold text-gray-700 mb-2">💡 When to Clear Cache</h5>
+                  <ul className="text-xs text-gray-600 space-y-1">
+                    <li>• GET requests not returning updated data</li>
+                    <li>• Properties or settings showing old values</li>
+                    <li>• App behaving unexpectedly after updates</li>
+                    <li>• Before reporting bugs to ensure it's not cache-related</li>
+                  </ul>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        )}
 
       {/* Action Buttons */}
       <div className="flex justify-between items-center">

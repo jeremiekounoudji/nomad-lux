@@ -7,6 +7,7 @@ import {
   NotificationSettings, 
   SecuritySettings, 
   PaymentSettings,
+  ContentSettings,
   AdminSettingRecord
 } from '../../interfaces/Settings'
 
@@ -41,6 +42,7 @@ interface AdminSettingsStore {
   updateDraftNotificationSettings: (updates: Partial<NotificationSettings>) => void
   updateDraftSecuritySettings: (updates: Partial<SecuritySettings>) => void
   updateDraftPaymentSettings: (updates: Partial<PaymentSettings>) => void
+  updateDraftContentSettings: (updates: Partial<ContentSettings>) => void
   
   // Cache management
   shouldRefresh: () => boolean
@@ -52,12 +54,15 @@ interface AdminSettingsStore {
 
 // Helper function to group database records by category
 const groupSettingsByCategory = (records: AdminSettingRecord[]): AdminSettings => {
+  console.log('🔄 [AdminSettings] Grouping settings by category:', records.length, 'records');
+  
   const grouped: AdminSettings = {
     platform: {} as PlatformSettings,
     booking: {} as BookingSettings,
     notification: {} as NotificationSettings,
     security: {} as SecuritySettings,
-    payment: {} as PaymentSettings
+    payment: {} as PaymentSettings,
+    content: {} as ContentSettings
   }
 
   records.forEach(record => {
@@ -71,15 +76,27 @@ const groupSettingsByCategory = (records: AdminSettingRecord[]): AdminSettings =
       case 'notifications':
         categoryKey = 'notification'
         break
+      case 'content':
+        categoryKey = 'content'
+        break
       default:
         categoryKey = record.category as keyof AdminSettings
     }
 
     if (grouped[categoryKey]) {
-      (grouped[categoryKey] as any)[record.setting_key] = record.setting_value
+      // Special handling for property types - convert snake_case to camelCase
+      if (record.setting_key === 'allowed_property_types' || record.setting_key === 'property_types') {
+        console.log('🏠 [AdminSettings] Processing property types:', record.setting_value);
+        (grouped[categoryKey] as any)['propertyTypes'] = record.setting_value
+      } else {
+        // Convert snake_case to camelCase for other settings
+        const camelCaseKey = record.setting_key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase())
+        ;(grouped[categoryKey] as any)[camelCaseKey] = record.setting_value
+      }
     }
   })
 
+  console.log('✅ [AdminSettings] Final grouped settings:', grouped);
   return grouped
 }
 
@@ -258,6 +275,15 @@ export const useAdminSettingsStore = create<AdminSettingsStore>()(
         
         for (const [key, value] of Object.entries(updates)) {
           get().updateDraftSetting('payment', key, value)
+        }
+      },
+
+      // Update multiple draft content settings
+      updateDraftContentSettings: (updates) => {
+        console.log('📝 Updating draft content settings:', updates)
+        
+        for (const [key, value] of Object.entries(updates)) {
+          get().updateDraftSetting('content', key, value)
         }
       },
     }),

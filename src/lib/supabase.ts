@@ -7,6 +7,16 @@ export const supabase = createClient(config.supabase.url, config.supabase.anonKe
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: true
+  },
+  global: {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10
+    }
   }
 })
 

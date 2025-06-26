@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Input, Select, SelectItem, Textarea, Button, Card, CardBody } from '@heroui/react';
 import { Wifi, Car, Utensils, Waves, Shield, Dumbbell, TreePine, Home, Flame, Heart, Tv, Gamepad2, Wind, Coffee, WashingMachine, Sparkles } from 'lucide-react';
 import type { PropertySubmissionData } from '../../../../interfaces';
+import type { PropertyType } from '../../../../interfaces/Settings';
+import { useAdminSettings } from '../../../../hooks/useAdminSettings';
 
 interface PropertyDetailsStepProps {
   formData: PropertySubmissionData;
   setFormData: React.Dispatch<React.SetStateAction<PropertySubmissionData>>;
 }
 
-const PROPERTY_TYPES = [
-  { value: 'apartment', label: 'Apartment' },
-  { value: 'house', label: 'House' },
-  { value: 'villa', label: 'Villa' },
-  { value: 'condo', label: 'Condominium' },
-  { value: 'studio', label: 'Studio' },
-];
+// Property types will be loaded from admin settings
 
 const AMENITIES = {
   basic: [
@@ -56,6 +52,34 @@ const CURRENCIES = [
 ];
 
 const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, setFormData }) => {
+  // Use admin settings hook to get property types
+  const { settings } = useAdminSettings();
+
+  // Get property types from admin settings, filtered for enabled ones
+  const propertyTypes = useMemo(() => {
+    console.log('🔍 [PropertyDetailsStep] Debugging admin settings:', {
+      settings: settings,
+      content: settings?.content,
+      propertyTypes: settings?.content?.propertyTypes,
+      settingsKeys: settings ? Object.keys(settings) : [],
+      contentKeys: settings?.content ? Object.keys(settings.content) : []
+    });
+
+    const allowedTypes = settings?.content?.propertyTypes;
+    if (!allowedTypes || !Array.isArray(allowedTypes)) {
+      console.log('❌ [PropertyDetailsStep] No property types found or not an array:', allowedTypes);
+      return [];
+    }
+    
+    const enabledTypes = allowedTypes
+      .map((type: PropertyType) => ({
+        value: type.value,
+        label: type.label
+      }));
+
+    console.log('✅ [PropertyDetailsStep] Found property types:', enabledTypes);
+    return enabledTypes;
+  }, [settings?.content?.propertyTypes]);
   const handleInputChange = (field: keyof PropertySubmissionData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -157,7 +181,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
             handleSelectChange('property_type')(selectedKey);
           }}
         >
-          {PROPERTY_TYPES.map((type) => (
+          {propertyTypes.map((type) => (
             <SelectItem key={type.value}>
               {type.label}
             </SelectItem>

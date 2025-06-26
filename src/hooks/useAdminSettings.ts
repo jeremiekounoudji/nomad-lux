@@ -8,7 +8,8 @@ import {
   BookingSettings, 
   NotificationSettings, 
   SecuritySettings, 
-  PaymentSettings 
+  PaymentSettings,
+  ContentSettings 
 } from '../interfaces/Settings'
 
 export const useAdminSettings = () => {
@@ -27,6 +28,7 @@ export const useAdminSettings = () => {
     updateDraftNotificationSettings,
     updateDraftSecuritySettings,
     updateDraftPaymentSettings,
+    updateDraftContentSettings,
     resetDrafts,
     clearDrafts,
     getCurrentSettings,
@@ -224,5 +226,8 @@ export const useAdminSettings = () => {
     updateNotificationSettings: updateDraftNotificationSettings,
     updateSecuritySettings: updateDraftSecuritySettings,
     updatePaymentSettings: updateDraftPaymentSettings,
+    updateContentSettings: updateDraftContentSettings,
   }
-} 
+}
+
+ 

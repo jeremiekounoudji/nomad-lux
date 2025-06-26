@@ -114,7 +114,7 @@ export interface Property {
 
 ---
 ### 7. ✅ supabase specific instruction
-1-use mcp supabase tool to interact with the supabase while working. use this everytime it is necessary.
+1-use mcp supabase tool to interact with the supabase while working. use this everytime it is necessary. when you cant access the database, suggest solutions so that the access will be gave to you. NEVER try an alternative
 
 2-make sure to respect the column names to avoid type issues when writing rcp functions or edge functions
 

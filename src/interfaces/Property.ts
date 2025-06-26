@@ -3,6 +3,20 @@
 // Property status type
 export type PropertyStatus = 'approved' | 'pending' | 'paused' | 'rejected'
 
+// City interface for property listings
+export interface City {
+  id: string
+  name: string
+  country: string
+  property_count: number
+  average_price: number
+  featured_image: string
+  coordinates: {
+    lat: number
+    lng: number
+  }
+}
+
 // Simplified host interface for property listings
 export interface PropertyHost {
   id: string

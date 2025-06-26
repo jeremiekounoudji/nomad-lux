@@ -101,4 +101,42 @@ export const TabsSkeleton: React.FC = () => {
   )
 }
 
+export const CityPropertySkeleton: React.FC = () => {
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden w-full">
+      <div className="flex h-32">
+        {/* Left side - Image skeleton */}
+        <div className="relative w-40 flex-shrink-0 m-2">
+          <div className="w-full h-full bg-gray-200 animate-pulse rounded-lg" />
+        </div>
+
+        {/* Right side - Details skeleton */}
+        <div className="flex-1 p-4 flex flex-col justify-between min-w-0">
+          {/* Top section */}
+          <div className="space-y-2">
+            {/* Title and location */}
+            <div>
+              <div className="h-4 w-3/4 bg-gray-200 animate-pulse rounded mb-2" />
+              <div className="h-3 w-1/2 bg-gray-200 animate-pulse rounded" />
+            </div>
+
+            {/* Property specs */}
+            <div className="flex items-center gap-3">
+              <div className="h-3 w-16 bg-gray-200 animate-pulse rounded" />
+              <div className="h-3 w-14 bg-gray-200 animate-pulse rounded" />
+              <div className="h-3 w-14 bg-gray-200 animate-pulse rounded" />
+            </div>
+          </div>
+
+          {/* Bottom section - Price and button */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="h-5 w-20 bg-gray-200 animate-pulse rounded" />
+            <div className="h-7 w-20 bg-gray-200 animate-pulse rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default PropertyListingSkeleton 

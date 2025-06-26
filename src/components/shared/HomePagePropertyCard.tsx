@@ -61,7 +61,7 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
         <img
           src={property.images[currentImageIndex]}
           alt={property.title}
-          className="w-full h-80 object-cover rounded-lg"
+          className="w-full h-40 object-cover rounded-lg"
           onClick={nextImage}
         />
         

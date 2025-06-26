@@ -10,6 +10,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        main: '#ec4899', // Pink main color (same as primary-500)
         primary: {
           25: '#fef7f7',
           50: '#fdf2f8',
