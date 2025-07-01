@@ -35,6 +35,7 @@ export interface DatabaseBooking {
   is_no_show: boolean
   special_requests?: string
   cancellation_reason?: string
+  reject_reason?: string
   host_notes?: string
   guest_notes?: string
   

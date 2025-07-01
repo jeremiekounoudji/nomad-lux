@@ -50,9 +50,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
   ]
 
   return (
-    <div className="hidden lg:flex lg:w-64 xl:w-72 bg-white border-r border-gray-200 flex-col h-screen sticky top-0">
+    <div className="hidden lg:flex lg:w-64 xl:w-72 bg-white border-r border-gray-200 flex-col h-screen">
       {/* Logo */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b border-gray-100 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
             <span className="text-white font-bold text-lg">NL</span>
@@ -64,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
       </div>
 
       {/* Profile Section */}
-      <div className="p-6 border-b border-gray-100">
+      <div className="p-6 border-b border-gray-100 flex-shrink-0">
         {isAuthenticated && user ? (
           <div className="flex flex-col items-center text-center">
             {/* Avatar at top */}
@@ -150,47 +150,50 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex-1 py-4">
-        <nav className="space-y-1 px-3">
-          {navigationItems.map((item) => (
-            <button
-              key={item.key}
-              onClick={() => onPageChange(item.key)}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
-                currentPage === item.key
-                  ? 'bg-primary-50 text-primary-700 font-medium'
-                  : 'text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <item.icon className={`w-6 h-6 ${
-                currentPage === item.key ? 'text-primary-600' : 'text-gray-500'
-              }`} />
-              <span className="text-base">{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* Secondary Navigation */}
-        <div className="mt-8 pt-4 border-t border-gray-100">
+      {/* Scrollable Navigation Section */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Navigation */}
+        <div className="py-4">
           <nav className="space-y-1 px-3">
-            {secondaryItems.map((item) => (
+            {navigationItems.map((item) => (
               <button
                 key={item.key}
                 onClick={() => onPageChange(item.key)}
-                className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-gray-50"
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
+                  currentPage === item.key
+                    ? 'bg-primary-50 text-primary-700 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
               >
-                <item.icon className="w-5 h-5 text-gray-500" />
-                <span className="text-sm">{item.label}</span>
+                <item.icon className={`w-6 h-6 ${
+                  currentPage === item.key ? 'text-primary-600' : 'text-gray-500'
+                }`} />
+                <span className="text-base">{item.label}</span>
               </button>
             ))}
           </nav>
+
+          {/* Secondary Navigation */}
+          <div className="mt-8 pt-4 border-t border-gray-100">
+            <nav className="space-y-1 px-3">
+              {secondaryItems.map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => onPageChange(item.key)}
+                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-gray-50"
+                >
+                  <item.icon className="w-5 h-5 text-gray-500" />
+                  <span className="text-sm">{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
 
-      {/* Logout */}
+      {/* Logout - Fixed at bottom */}
       {isAuthenticated && (
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 flex-shrink-0">
           <button 
             onClick={handleLogout}
             className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600"

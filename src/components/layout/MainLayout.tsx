@@ -84,7 +84,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex overflow-x-hidden">
+    <div className="h-screen bg-gray-50 flex overflow-hidden">
       {/* Desktop Sidebar */}
       <Sidebar currentPage={activePage} onPageChange={handlePageChange} />
 
@@ -309,15 +309,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         </div>
 
         {/* Main Content with Responsive Grid */}
-        <main className="flex-1 p-2 sm:p-4 lg:p-6 pb-20 lg:pb-6 overflow-x-hidden">
-          <div className="max-w-7xl mx-auto w-full">
-            {/* Content wrapper with responsive grid */}
-            <div className={`grid gap-2 sm:gap-4 lg:gap-6 w-full ${
-              activePage === 'create' 
-                ? 'grid-cols-1' // Full width for create property form on all screens
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' // Normal grid for other pages
-            }`}>
-              {children}
+        <main className="flex-1 overflow-y-auto">
+          <div className="h-full p-2 sm:p-4 lg:p-6 pb-20 lg:pb-6">
+            <div className="w-full h-full">
+              {/* Content wrapper with responsive grid */}
+              <div className={`grid gap-2 sm:gap-4 lg:gap-6 w-full h-full ${
+                activePage === 'create' 
+                  ? 'grid-cols-1' // Full width for create property form on all screens
+                  : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' // Normal grid for other pages
+              }`}>
+                {children}
+              </div>
             </div>
           </div>
         </main>

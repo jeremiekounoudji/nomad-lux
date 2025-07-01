@@ -48,7 +48,19 @@ export const useBookingManagement = () => {
       // Use direct API for simple query (following Nomad Lux rules)
       const { data, error } = await supabase
         .from('bookings')
-        .select('*, properties:properties(*)')
+        .select(`
+          *,
+          properties:properties(*),
+          hosts:users!bookings_host_id_fkey(
+            id,
+            display_name,
+            avatar_url,
+            email,
+            phone,
+            host_rating,
+            total_host_reviews
+          )
+        `)
         .eq('guest_id', userId)
         .order('created_at', { ascending: false })
 
@@ -298,11 +310,11 @@ export const useBookingManagement = () => {
         .update({
           status: 'rejected',
           cancelled_at: new Date().toISOString(),
-          cancellation_reason: reason,
+          reject_reason: reason,
           host_notes: reason
         })
         .eq('id', bookingId)
-        .select() // Remove .single()
+        .select()
 
       if (error) {
         throw new Error(`Failed to decline booking: ${error.message}`)

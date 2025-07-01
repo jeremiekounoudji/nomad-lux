@@ -47,6 +47,7 @@ const getStatusColor = (status: BookingStatus | 'no_shows') => {
 const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange }) => {
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedRequest, setSelectedRequest] = useState<BookingRequest | null>(null)
+  const [rejectReason, setRejectReason] = useState<string>('')
   const [paginationParamsByStatus, setPaginationParamsByStatus] = useState<Record<BookingStatus, PaginationParams>>(() => {
     const initial: Record<BookingStatus, PaginationParams> = {} as any
     ALL_STATUSES.forEach(status => {
@@ -188,12 +189,17 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     }
   }
 
-  const handleDecline = async (requestId: string, reason: string = 'Declined by host') => {
+  const handleDecline = async (requestId: string) => {
+    if (!rejectReason.trim()) {
+      toast.error('Please provide a reason for rejecting the booking')
+      return
+    }
+
     setUpdatingBookingId(requestId)
     setUpdatingAction('decline')
     try {
       console.log('🔄 Declining booking:', requestId)
-      await declineBooking(requestId, reason)
+      await declineBooking(requestId, rejectReason)
       toast.success('Booking declined')
       
       // Reload current page data
@@ -201,6 +207,8 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
         loadHostBookingRequestsByStatus(selectedTab, paginationParamsByStatus[selectedTab], user.id)
         loadBookingRequestsCounts(user.id).then(counts => setRequestCounts(counts))
       }
+      onClose() // Close the modal after successful decline
+      setRejectReason('') // Reset the reason
     } catch (error) {
       console.error('❌ Error declining booking:', error)
       toast.error('Failed to decline booking')
@@ -412,7 +420,10 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                                 color="danger"
                                 variant="flat"
                                 startContent={<X className="w-4 h-4" />}
-                                onPress={() => handleDecline(request.id, 'Declined by host')}
+                                onPress={() => {
+                                  setSelectedRequest(request)
+                                  onOpen()
+                                }}
                                 className="flex-1"
                             isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
                             disabled={updatingBookingId === request.id}
@@ -646,7 +657,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                       variant="flat"
                       startContent={<X className="w-4 h-4" />}
                       onPress={() => {
-                        handleDecline(selectedRequest.id, 'Declined by host')
+                        handleDecline(selectedRequest.id)
                         onClose()
                       }}
                       isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'decline'}
@@ -668,6 +679,59 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                     </Button>
                   </div>
                 )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Decline Booking Modal */}
+      <Modal 
+        isOpen={isOpen} 
+        onClose={() => {
+          onClose()
+          setRejectReason('')
+        }}
+        size="md"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="text-xl font-bold">Decline Booking Request</h2>
+              </ModalHeader>
+              <ModalBody>
+                <div className="space-y-4">
+                  <p className="text-gray-600">
+                    Please provide a reason for declining this booking request. This will be visible to the guest.
+                  </p>
+                  <textarea
+                    value={rejectReason}
+                    onChange={(e) => setRejectReason(e.target.value)}
+                    placeholder="Enter reason for declining..."
+                    className="w-full h-32 p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    maxLength={500}
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="light"
+                  onPress={() => {
+                    onClose()
+                    setRejectReason('')
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => selectedRequest && handleDecline(selectedRequest.id)}
+                  isLoading={updatingBookingId === selectedRequest?.id}
+                  disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
+                >
+                  Decline Booking
+                </Button>
               </ModalFooter>
             </>
           )}

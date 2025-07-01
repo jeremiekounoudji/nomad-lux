@@ -25,6 +25,15 @@ type GuestBookingWithProperties = DatabaseBooking & {
     }
     rating: number
   }
+  hosts?: {
+    id: string
+    display_name: string
+    avatar_url?: string
+    email: string
+    phone?: string
+    host_rating?: number
+    total_host_reviews: number
+  }
 }
 
 const ITEMS_PER_PAGE = 6
@@ -65,14 +74,19 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const totalPages = Math.ceil(filteredBookings.length / pageSize)
   const paginatedBookings = filteredBookings.slice((page - 1) * pageSize, page * pageSize)
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string): "default" | "primary" | "secondary" | "success" | "warning" | "danger" => {
     switch (status) {
-      case 'active':
+      case 'accepted-and-waiting-for-payment':
+        return 'primary'
+      case 'confirmed':
         return 'secondary'
       case 'completed':
         return 'success'
       case 'cancelled':
+      case 'rejected':
         return 'danger'
+      case 'payment-failed':
+        return 'warning'
       default:
         return 'default'
     }
@@ -160,87 +174,85 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   }
 
   return (
-    <>
-      <MainLayout currentPage="bookings" onPageChange={onPageChange}>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-          {/* Banner Header */}
-          <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-            <div className="text-left">
-              <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
-              <p className="text-primary-100 text-lg">Manage your property bookings and travel history</p>
-            </div>
-          </div>
-
-          {/* Tabs - use all statuses */}
-          <div className="w-full">
-            <Tabs
-              selectedKey={selectedTab}
-              onSelectionChange={handleTabChange}
-              variant="underlined"
-              classNames={{
-                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-                cursor: "w-full bg-primary-500",
-                tab: "max-w-fit px-0 h-12",
-                tabContent: "group-data-[selected=true]:text-primary-600"
-              }}
-            >
-              {ALL_STATUSES.map(status => (
-                <Tab key={status} title={`${status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ')} (${stats[status]})`} />
-              ))}
-            </Tabs>
+    <MainLayout currentPage="bookings" onPageChange={onPageChange}>
+      {/* Header Section - Full Width */}
+      <div className="col-span-full mb-6">
+        {/* Banner Header */}
+        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
+          <div className="text-left">
+            <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
+            <p className="text-primary-100 text-lg">Manage your property bookings and travel history</p>
           </div>
         </div>
 
-        {/* Loading/Error State */}
-        {isLoadingGuestBookings ? (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
-            <span className="text-lg text-gray-500">Loading bookings...</span>
-          </div>
-        ) : error ? (
-          <div className="col-span-1  text-center py-12 text-red-600">
-            {error}
-          </div>
-        ) : paginatedBookings.length > 0 ? (
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1 mt-6 justify-center sm:justify-start">
-            {paginatedBookings.map((booking) => (
-              <MyBookingCard
-                key={booking.id}
-                booking={booking}
-                onClick={handleBookingClick}
-                getStatusColor={getStatusColor}
-                getStatusActions={getStatusActions}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No {selectedTab} bookings
-            </h3>
-            <p className="text-gray-500">
-              {selectedTab === 'pending' && "You don't have any pending bookings at the moment."}
-              {selectedTab === 'confirmed' && "You don't have any confirmed bookings at the moment."}
-              {selectedTab === 'cancelled' && "You don't have any cancelled bookings."}
-              {selectedTab === 'completed' && "You haven't completed any bookings yet."}
-              {selectedTab === 'rejected' && "You don't have any rejected bookings."}
-              {selectedTab === 'accepted-and-waiting-for-payment' && "You don't have any bookings awaiting payment."}
-              {selectedTab === 'payment-failed' && "You don't have any bookings with failed payment."}
-            </p>
-          </div>
-        )}
+        {/* Tabs */}
+        <Tabs
+          selectedKey={selectedTab}
+          onSelectionChange={handleTabChange}
+          variant="underlined"
+          classNames={{
+            tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+            cursor: "w-full bg-primary-500",
+            tab: "max-w-fit px-0 h-12",
+            tabContent: "group-data-[selected=true]:text-primary-600"
+          }}
+        >
+          {ALL_STATUSES.map(status => (
+            <Tab key={status} title={`${status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ')} (${stats[status]})`} />
+          ))}
+        </Tabs>
+      </div>
 
-        {/* Pagination */}
-        {paginatedBookings.length > 0 && totalPages > 1 && (
-          <div className="flex justify-center mt-6">
-            <Pagination
-              total={totalPages}
-              page={page}
-              onChange={handlePageChange}
+      {/* Loading State */}
+      {isLoadingGuestBookings ? (
+        <div className="col-span-full text-center py-12">
+          <span className="text-lg text-gray-500">Loading bookings...</span>
+        </div>
+      ) : error ? (
+        <div className="col-span-full text-center py-12 text-red-600">
+          {error}
+        </div>
+      ) : paginatedBookings.length > 0 ? (
+        <>
+          {/* Booking Cards */}
+          {paginatedBookings.map((booking) => (
+            <MyBookingCard
+              key={booking.id}
+              booking={booking}
+              onClick={handleBookingClick}
+              getStatusColor={getStatusColor}
+              getStatusActions={getStatusActions}
             />
-          </div>
-        )}
-      </MainLayout>
+          ))}
+          
+          {/* Pagination - Full Width */}
+          {totalPages > 1 && (
+            <div className="col-span-full flex justify-center mt-6">
+              <Pagination
+                total={totalPages}
+                page={page}
+                onChange={handlePageChange}
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="col-span-full text-center py-12">
+          <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No {selectedTab} bookings
+          </h3>
+          <p className="text-gray-500">
+            {selectedTab === 'pending' && "You don't have any pending bookings at the moment."}
+            {selectedTab === 'confirmed' && "You don't have any confirmed bookings at the moment."}
+            {selectedTab === 'cancelled' && "You don't have any cancelled bookings."}
+            {selectedTab === 'completed' && "You haven't completed any bookings yet."}
+            {selectedTab === 'rejected' && "You don't have any rejected bookings."}
+            {selectedTab === 'accepted-and-waiting-for-payment' && "You don't have any bookings awaiting payment."}
+            {selectedTab === 'payment-failed' && "You don't have any bookings with failed payment."}
+          </p>
+        </div>
+      )}
 
       {/* Booking Details Modal */}
       <Modal 
@@ -303,12 +315,38 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                         Host Information
                       </h4>
                       <div className="flex items-center gap-3">
-                        <Avatar size="md" />
+                        <Avatar 
+                          size="md" 
+                          src={selectedBooking.hosts?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedBooking.hosts?.display_name || 'Host')}`}
+                          alt={selectedBooking.hosts?.display_name || 'Host'}
+                        />
                         <div className="flex-1">
-                          <p className="font-medium">Host</p>
+                          <p className="font-medium">{selectedBooking.hosts?.display_name || 'Host'}</p>
                           <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                            <span>Contact information not available</span>
+                            {selectedBooking.hosts ? (
+                              <>
+                                <div className="flex items-center gap-1">
+                                  <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                                  <span>{selectedBooking.hosts.host_rating?.toFixed(1) || 'N/A'}</span>
+                                </div>
+                                <span>{selectedBooking.hosts.total_host_reviews || 0} reviews</span>
+                              </>
+                            ) : (
+                              <span>Contact information not available</span>
+                            )}
                           </div>
+                          {selectedBooking.hosts?.email && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                              <Mail className="w-3 h-3" />
+                              <span>{selectedBooking.hosts.email}</span>
+                            </div>
+                          )}
+                          {selectedBooking.hosts?.phone && (
+                            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                              <Phone className="w-3 h-3" />
+                              <span>{selectedBooking.hosts.phone}</span>
+                            </div>
+                          )}
                         </div>
                         <Button
                           size="sm"
@@ -424,7 +462,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           onConfirmCancel={handleConfirmCancel}
         />
       )} */}
-    </>
+    </MainLayout>
   )
 }
 

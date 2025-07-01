@@ -141,7 +141,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
             <Button
               color="primary"
               variant="solid"
-              onPress={performSearch}
+              onPress={() => performSearch()}
               startContent={<RefreshCw className="w-4 h-4" />}
             >
               Try Again
