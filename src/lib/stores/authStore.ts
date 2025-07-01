@@ -64,12 +64,7 @@ export const useAuthStore = create<AuthState>()(
         })
         
         // Also clear from localStorage to prevent persistence issues
-        try {
-          localStorage.removeItem('nomad-lux-auth')
-          console.log('🧹 Cleared auth data from localStorage')
-        } catch (error) {
-          console.warn('⚠️ Could not clear localStorage:', error)
-        }
+        localStorage.removeItem('nomad-lux-auth')
       },
 
       setAuthData: (user, supabaseUser) => {

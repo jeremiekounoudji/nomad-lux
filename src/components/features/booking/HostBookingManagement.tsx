@@ -1,0 +1,617 @@
+import React, { useState, useEffect, useMemo } from 'react'
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Chip,
+  Avatar,
+  Divider,
+  Badge,
+  Tabs,
+  Tab,
+  Select,
+  SelectItem,
+  Input,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Spinner
+} from '@heroui/react'
+import {
+  Calendar,
+  Clock,
+  User,
+  MapPin,
+  DollarSign,
+  MessageCircle,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  Search,
+  Filter,
+  Eye,
+  Mail,
+  Phone
+} from 'lucide-react'
+import { useBookingManagement } from '../../../hooks/useBookingManagement'
+import { useAuthStore } from '../../../lib/stores/authStore'
+import { BookingRequest, BookingStatus } from '../../../interfaces'
+import toast from 'react-hot-toast'
+
+interface HostBookingManagementProps {
+  propertyId?: string // Optional: filter by specific property
+}
+
+const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyId }) => {
+  const [selectedTab, setSelectedTab] = useState<string>('pending')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<BookingStatus | 'all'>('all')
+  const [selectedBooking, setSelectedBooking] = useState<BookingRequest | null>(null)
+
+  // Modal states
+  const { isOpen: isDetailsOpen, onOpen: onDetailsOpen, onClose: onDetailsClose } = useDisclosure()
+  const { isOpen: isApproveOpen, onOpen: onApproveOpen, onClose: onApproveClose } = useDisclosure()
+  const { isOpen: isDeclineOpen, onOpen: onDeclineOpen, onClose: onDeclineClose } = useDisclosure()
+
+  // Hooks
+  const { user } = useAuthStore()
+  const {
+    hostBookings,
+    isLoadingBookings,
+    isUpdatingBooking,
+    loadHostBookings,
+    approveBooking,
+    declineBooking,
+    contactGuest
+  } = useBookingManagement()
+
+  // Load bookings on component mount
+  useEffect(() => {
+    if (user?.id) {
+      console.log('🔄 Loading host bookings...')
+      loadHostBookings(user.id, propertyId).catch(console.error)
+    }
+  }, [user?.id, propertyId, loadHostBookings])
+
+  // Filter bookings based on tab and search
+  const filteredBookings = useMemo(() => {
+    let filtered = hostBookings
+
+    // Filter by tab (status)
+    if (selectedTab !== 'all') {
+      filtered = filtered.filter(booking => booking.status === selectedTab)
+    }
+
+    // Filter by status dropdown
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(booking => booking.status === statusFilter)
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase()
+      filtered = filtered.filter(booking => 
+        booking.guest_name.toLowerCase().includes(searchLower) ||
+        booking.property_title.toLowerCase().includes(searchLower) ||
+        booking.id.toLowerCase().includes(searchLower)
+      )
+    }
+
+    return filtered
+  }, [hostBookings, selectedTab, statusFilter, searchTerm])
+
+  // Group bookings by status for tab counts
+  const bookingCounts = useMemo(() => {
+    const counts = {
+      all: hostBookings.length,
+      pending: 0,
+      approved: 0,
+      declined: 0,
+      confirmed: 0,
+      completed: 0,
+      cancelled: 0
+    }
+
+    hostBookings.forEach(booking => {
+      if (booking.status in counts) {
+        counts[booking.status as keyof typeof counts]++
+      }
+    })
+
+    return counts
+  }, [hostBookings])
+
+  const handleViewDetails = (booking: BookingRequest) => {
+    setSelectedBooking(booking)
+    onDetailsOpen()
+  }
+
+  const handleApproveBooking = async (bookingId: string) => {
+    try {
+      console.log('🔄 Approving booking:', bookingId)
+      await approveBooking(bookingId)
+      toast.success('Booking approved successfully!')
+      onApproveClose()
+    } catch (error) {
+      console.error('❌ Error approving booking:', error)
+      toast.error('Failed to approve booking')
+    }
+  }
+
+  const handleDeclineBooking = async (bookingId: string, reason?: string) => {
+    try {
+      console.log('🔄 Declining booking:', bookingId)
+      await declineBooking(bookingId, reason)
+      toast.success('Booking declined')
+      onDeclineClose()
+    } catch (error) {
+      console.error('❌ Error declining booking:', error)
+      toast.error('Failed to decline booking')
+    }
+  }
+
+  const handleContactGuest = async (booking: BookingRequest, message: string) => {
+    try {
+      console.log('🔄 Contacting guest for booking:', booking.id)
+      await contactGuest(booking.id, message)
+      toast.success('Message sent to guest!')
+    } catch (error) {
+      console.error('❌ Error contacting guest:', error)
+      toast.error('Failed to send message')
+    }
+  }
+
+  const getStatusColor = (status: BookingStatus) => {
+    switch (status) {
+      case 'pending': return 'warning'
+      case 'approved': return 'success'
+      case 'confirmed': return 'primary'
+      case 'completed': return 'success'
+      case 'declined': return 'danger'
+      case 'cancelled': return 'default'
+      default: return 'default'
+    }
+  }
+
+  const getStatusIcon = (status: BookingStatus) => {
+    switch (status) {
+      case 'pending': return <Clock className="w-4 h-4" />
+      case 'approved': return <CheckCircle className="w-4 h-4" />
+      case 'confirmed': return <CheckCircle className="w-4 h-4" />
+      case 'completed': return <CheckCircle className="w-4 h-4" />
+      case 'declined': return <XCircle className="w-4 h-4" />
+      case 'cancelled': return <XCircle className="w-4 h-4" />
+      default: return <AlertTriangle className="w-4 h-4" />
+    }
+  }
+
+  if (isLoadingBookings) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <Spinner size="lg" color="primary" />
+          <p className="text-gray-600 mt-4">Loading your bookings...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900">Booking Management</h2>
+          <p className="text-gray-600">Manage your property bookings and guest requests</p>
+        </div>
+        
+        <div className="flex items-center gap-3">
+          <Input
+            placeholder="Search bookings..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            startContent={<Search className="w-4 h-4 text-gray-400" />}
+            className="w-64"
+            size="sm"
+          />
+          
+          <Select
+            placeholder="Filter by status"
+            selectedKeys={statusFilter !== 'all' ? [statusFilter] : []}
+            onSelectionChange={(keys) => {
+              const status = Array.from(keys)[0] as BookingStatus | 'all'
+              setStatusFilter(status || 'all')
+            }}
+            className="w-48"
+            size="sm"
+            startContent={<Filter className="w-4 h-4" />}
+          >
+            <SelectItem key="all">All Statuses</SelectItem>
+            <SelectItem key="pending">Pending</SelectItem>
+            <SelectItem key="approved">Approved</SelectItem>
+            <SelectItem key="confirmed">Confirmed</SelectItem>
+            <SelectItem key="completed">Completed</SelectItem>
+            <SelectItem key="declined">Declined</SelectItem>
+            <SelectItem key="cancelled">Cancelled</SelectItem>
+          </Select>
+        </div>
+      </div>
+
+      {/* Status Tabs */}
+      <Card>
+        <CardBody className="p-0">
+          <Tabs
+            selectedKey={selectedTab}
+            onSelectionChange={(key) => setSelectedTab(key as string)}
+            classNames={{
+              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+              cursor: "w-full bg-primary-500",
+              tab: "max-w-fit px-4 py-3 h-12",
+            }}
+          >
+            <Tab
+              key="all"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>All Bookings</span>
+                  <Badge content={bookingCounts.all} color="default" size="sm" />
+                </div>
+              }
+            />
+            <Tab
+              key="pending"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>Pending</span>
+                  <Badge content={bookingCounts.pending} color="warning" size="sm" />
+                </div>
+              }
+            />
+            <Tab
+              key="approved"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>Approved</span>
+                  <Badge content={bookingCounts.approved} color="success" size="sm" />
+                </div>
+              }
+            />
+            <Tab
+              key="confirmed"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>Confirmed</span>
+                  <Badge content={bookingCounts.confirmed} color="primary" size="sm" />
+                </div>
+              }
+            />
+            <Tab
+              key="completed"
+              title={
+                <div className="flex items-center gap-2">
+                  <span>Completed</span>
+                  <Badge content={bookingCounts.completed} color="success" size="sm" />
+                </div>
+              }
+            />
+          </Tabs>
+        </CardBody>
+      </Card>
+
+      {/* Bookings List */}
+      <div className="space-y-4">
+        {filteredBookings.length === 0 ? (
+          <Card>
+            <CardBody className="text-center py-12">
+              <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
+              <p className="text-gray-600">
+                {searchTerm || statusFilter !== 'all' 
+                  ? 'Try adjusting your search or filter criteria'
+                  : 'You don\'t have any bookings yet'}
+              </p>
+            </CardBody>
+          </Card>
+        ) : (
+          filteredBookings.map((booking) => (
+            <Card key={booking.id} className="hover:shadow-md transition-shadow">
+              <CardBody className="p-6">
+                <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                  {/* Guest Info */}
+                  <div className="flex items-center gap-4 flex-1">
+                    <Avatar
+                      src={booking.guest_avatar}
+                      alt={booking.guest_name}
+                      size="lg"
+                      className="flex-shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-semibold text-lg text-gray-900">{booking.guest_name}</h3>
+                      <p className="text-gray-600">{booking.property_title}</p>
+                      <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+                        <MapPin className="w-3 h-3" />
+                        <span>{booking.property_location}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Booking Details */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-in</p>
+                      <p className="font-semibold">{new Date(booking.check_in).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-out</p>
+                      <p className="font-semibold">{new Date(booking.check_out).toLocaleDateString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Guests</p>
+                      <p className="font-semibold">{booking.guest_count}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                      <p className="font-semibold text-green-600">${booking.total_amount}</p>
+                    </div>
+                  </div>
+
+                  {/* Status & Actions */}
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4">
+                    <Chip
+                      color={getStatusColor(booking.status)}
+                      variant="flat"
+                      startContent={getStatusIcon(booking.status)}
+                      className="w-fit"
+                    >
+                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                    </Chip>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        variant="light"
+                        startContent={<Eye className="w-4 h-4" />}
+                        onPress={() => handleViewDetails(booking)}
+                      >
+                        Details
+                      </Button>
+
+                      {booking.status === 'pending' && (
+                        <>
+                          <Button
+                            size="sm"
+                            color="success"
+                            variant="light"
+                            startContent={<CheckCircle className="w-4 h-4" />}
+                            onPress={() => {
+                              setSelectedBooking(booking)
+                              onApproveOpen()
+                            }}
+                            isLoading={isUpdatingBooking}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            color="danger"
+                            variant="light"
+                            startContent={<XCircle className="w-4 h-4" />}
+                            onPress={() => {
+                              setSelectedBooking(booking)
+                              onDeclineOpen()
+                            }}
+                            isLoading={isUpdatingBooking}
+                          >
+                            Decline
+                          </Button>
+                        </>
+                      )}
+
+                      <Button
+                        size="sm"
+                        variant="light"
+                        startContent={<MessageCircle className="w-4 h-4" />}
+                        onPress={() => {
+                          setSelectedBooking(booking)
+                          // Open contact modal (you can implement this)
+                        }}
+                      >
+                        Contact
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Booking Details Modal */}
+      <Modal isOpen={isDetailsOpen} onClose={onDetailsClose} size="2xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="text-xl font-bold">Booking Details</h2>
+              </ModalHeader>
+              <ModalBody>
+                {selectedBooking && (
+                  <div className="space-y-6">
+                    {/* Guest Information */}
+                    <div>
+                      <h3 className="font-semibold text-lg mb-3">Guest Information</h3>
+                      <div className="flex items-center gap-4 mb-4">
+                        <Avatar
+                          src={selectedBooking.guest_avatar}
+                          alt={selectedBooking.guest_name}
+                          size="lg"
+                        />
+                        <div>
+                          <h4 className="font-semibold">{selectedBooking.guest_name}</h4>
+                          <p className="text-gray-600">{selectedBooking.guest_email}</p>
+                          {selectedBooking.guest_phone && (
+                            <p className="text-gray-600">{selectedBooking.guest_phone}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <Divider />
+
+                    {/* Booking Information */}
+                    <div>
+                      <h3 className="font-semibold text-lg mb-3">Booking Information</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Property</p>
+                          <p className="font-semibold">{selectedBooking.property_title}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Booking ID</p>
+                          <p className="font-mono text-sm">{selectedBooking.id}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Check-in</p>
+                          <p className="font-semibold">{new Date(selectedBooking.check_in).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Check-out</p>
+                          <p className="font-semibold">{new Date(selectedBooking.check_out).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Guests</p>
+                          <p className="font-semibold">{selectedBooking.guest_count}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Total Amount</p>
+                          <p className="font-semibold text-green-600">${selectedBooking.total_amount}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedBooking.special_requests && (
+                      <>
+                        <Divider />
+                        <div>
+                          <h3 className="font-semibold text-lg mb-3">Special Requests</h3>
+                          <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
+                            {selectedBooking.special_requests}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                {selectedBooking?.status === 'pending' && (
+                  <>
+                    <Button
+                      color="success"
+                      onPress={() => {
+                        if (selectedBooking) {
+                          handleApproveBooking(selectedBooking.id)
+                        }
+                      }}
+                      isLoading={isUpdatingBooking}
+                    >
+                      Approve Booking
+                    </Button>
+                    <Button
+                      color="danger"
+                      variant="light"
+                      onPress={() => {
+                        onClose()
+                        onDeclineOpen()
+                      }}
+                    >
+                      Decline Booking
+                    </Button>
+                  </>
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Approve Confirmation Modal */}
+      <Modal isOpen={isApproveOpen} onClose={onApproveClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="text-xl font-bold">Approve Booking</h2>
+              </ModalHeader>
+              <ModalBody>
+                <p>Are you sure you want to approve this booking? The guest will be notified and can proceed with payment.</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="success"
+                  onPress={() => {
+                    if (selectedBooking) {
+                      handleApproveBooking(selectedBooking.id)
+                    }
+                  }}
+                  isLoading={isUpdatingBooking}
+                >
+                  Approve Booking
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Decline Confirmation Modal */}
+      <Modal isOpen={isDeclineOpen} onClose={onDeclineClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="text-xl font-bold">Decline Booking</h2>
+              </ModalHeader>
+              <ModalBody>
+                <p className="mb-4">Are you sure you want to decline this booking? The guest will be notified.</p>
+                <Input
+                  label="Reason (Optional)"
+                  placeholder="Enter reason for declining..."
+                  className="w-full"
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  color="danger"
+                  onPress={() => {
+                    if (selectedBooking) {
+                      handleDeclineBooking(selectedBooking.id)
+                    }
+                  }}
+                  isLoading={isUpdatingBooking}
+                >
+                  Decline Booking
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </div>
+  )
+}
+
+export default HostBookingManagement 

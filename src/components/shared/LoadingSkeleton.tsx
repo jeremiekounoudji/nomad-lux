@@ -1,8 +1,7 @@
 import React from 'react'
 import { Card, CardBody } from '@heroui/react'
 
-export interface LoadingSkeletonProps {
-  count?: number
+interface LoadingSkeletonProps {
   className?: string
 }
 
@@ -65,12 +64,11 @@ export const PropertyCardSkeleton: React.FC = () => {
 }
 
 export const PropertyListingSkeleton: React.FC<LoadingSkeletonProps> = ({ 
-  count = 6, 
   className = "" 
 }) => {
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ${className}`}>
-      {Array.from({ length: count }, (_, i) => (
+      {Array.from({ length: 6 }, (_, i) => (
         <PropertyCardSkeleton key={i} />
       ))}
     </div>
@@ -132,6 +130,57 @@ export const CityPropertySkeleton: React.FC = () => {
           <div className="flex items-center justify-between mt-2">
             <div className="h-5 w-20 bg-gray-200 animate-pulse rounded" />
             <div className="h-7 w-20 bg-gray-200 animate-pulse rounded" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({ className = '' }) => {
+  return (
+    <div className={`animate-pulse bg-white rounded-lg overflow-hidden shadow ${className}`}>
+      <div className="p-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Property Image Skeleton */}
+          <div className="w-full sm:w-48 h-32 bg-gray-200 rounded-lg" />
+
+          {/* Content Skeleton */}
+          <div className="flex-1">
+            {/* Guest Info */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gray-200 rounded-full" />
+              <div>
+                <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+                <div className="h-3 w-24 bg-gray-200 rounded" />
+              </div>
+            </div>
+
+            {/* Booking Details */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="h-4 w-32 bg-gray-200 rounded" />
+              <div className="h-4 w-24 bg-gray-200 rounded" />
+              <div className="h-4 w-28 bg-gray-200 rounded" />
+              <div className="h-4 w-20 bg-gray-200 rounded" />
+            </div>
+
+            {/* Contact Info */}
+            <div className="flex gap-3 mt-4">
+              <div className="h-8 w-32 bg-gray-200 rounded" />
+              <div className="h-8 w-32 bg-gray-200 rounded" />
+            </div>
+
+            {/* Status */}
+            <div className="mt-4">
+              <div className="h-6 w-20 bg-gray-200 rounded" />
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-2 mt-4">
+              <div className="h-8 w-24 bg-gray-200 rounded" />
+              <div className="h-8 w-24 bg-gray-200 rounded" />
+              <div className="h-8 w-24 bg-gray-200 rounded" />
+            </div>
           </div>
         </div>
       </div>

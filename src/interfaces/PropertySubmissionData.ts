@@ -1,4 +1,5 @@
 import { HostSubmissionData } from './User'
+import { PropertySettingsFormData } from './PropertySettings'
 
 export interface PropertySubmissionData {
   title: string
@@ -27,4 +28,9 @@ export interface PropertySubmissionData {
   additional_fees: any[]
   host: HostSubmissionData
   is_liked?: boolean
+  
+  // NEW: Property settings (settings-first workflow)
+  property_settings?: PropertySettingsFormData
+  existing_settings_id?: string // Reference to existing settings
+  create_new_settings?: boolean // Whether to create new settings or use existing
 } 

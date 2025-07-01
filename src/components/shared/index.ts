@@ -6,6 +6,9 @@ export { default as HomePagePropertyCard } from './HomePagePropertyCard'
 export { default as CityPropertyCard } from './CityPropertyCard'
 export { default as PopularPlaces } from './PopularPlaces'
 
+// Booking components
+export { default as BookingCalendar } from './BookingCalendar'
+
 // UI components
 export { default as ProfileModal } from './ProfileModal'
 export { default as PropertyListingSkeleton, PropertyCardSkeleton, HeaderSkeleton, TabsSkeleton } from './LoadingSkeleton'

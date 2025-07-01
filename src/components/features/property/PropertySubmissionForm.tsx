@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Card, Progress } from '@heroui/react';
+import PropertySettingsStep from './steps/PropertySettingsStep';
 import HostDetailsStep from './steps/HostDetailsStep';
 import PropertyDetailsStep from './steps/PropertyDetailsStep';
 import MediaUploadStep from './steps/MediaUploadStep';
@@ -124,7 +125,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   });
 
   const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, 2));
+    setCurrentStep((prev) => Math.min(prev + 1, 3));
   };
 
   const handlePrevious = () => {
@@ -132,6 +133,11 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   };
 
   const steps = [
+    {
+      title: 'Property Settings',
+      description: 'Booking rules & preferences',
+      component: <PropertySettingsStep formData={formData} setFormData={setFormData} />,
+    },
     {
       title: 'Host Details',
       description: 'Provide contact information',
@@ -159,6 +165,17 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
     
     // Debug current upload progress
     console.log('📊 Current upload progress:', uploadProgress)
+
+    // Validate property settings (new first step)
+    if (!formData.existing_settings_id && !formData.create_new_settings) {
+      toast.error('Please select existing property settings or create new ones');
+      return;
+    }
+
+    if (formData.create_new_settings && (!formData.property_settings?.settings_name?.trim())) {
+      toast.error('Please complete the property settings form');
+      return;
+    }
 
     // Validate form data
     if (!formData.title.trim()) {

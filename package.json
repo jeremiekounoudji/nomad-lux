@@ -12,6 +12,7 @@
    "dependencies": {
       "@heroui/react": "^2.7.10",
       "@heroui/theme": "^2.4.17",
+      "@internationalized/date": "^3.8.2",
       "@supabase/supabase-js": "^2.50.0",
       "framer-motion": "^11.18.2",
       "lucide-react": "^0.514.0",

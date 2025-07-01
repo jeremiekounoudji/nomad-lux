@@ -83,6 +83,10 @@ export interface Property {
   created_at: string
   total_before_taxes?: number
   status?: PropertyStatus
+  
+  // New availability management fields
+  unavailable_dates?: string[]
+  timezone?: string
 }
 
 // Admin property interface
@@ -144,6 +148,7 @@ export interface TopProperty {
 export interface DatabaseProperty {
   id: string
   host_id: string
+  property_settings_id?: string // Reference to host_property_settings
   title: string
   description: string
   price_per_night: number
@@ -167,6 +172,11 @@ export interface DatabaseProperty {
   cleaning_fee?: number
   service_fee?: number
   status: PropertyStatus
+  
+  // New availability management fields
+  unavailable_dates?: string[] // Array of ISO datetime strings
+  timezone?: string // Property timezone (e.g., 'America/New_York', 'Europe/London')
+  
   created_at: string
   updated_at: string
   approved_at?: string

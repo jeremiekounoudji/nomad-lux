@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { 
   ArrowLeft, 
   Heart, 
@@ -44,19 +44,27 @@ import { PropertyDetailPageProps } from '../interfaces/Component'
 import { Property } from '../interfaces/Property'
 import { 
   SharePropertyModal, 
-  ContactHostModal 
+  ContactHostModal
 } from '../components/shared/modals'
+import { BookingCalendar } from '../components/shared'
+import { usePropertySettings } from '../hooks/usePropertySettings'
+import { useBookingFlow } from '../hooks/useBookingFlow'
+import { useAuthStore } from '../lib/stores/authStore'
+import { useBookingStore } from '../lib/stores/bookingStore'
+import { calculateBookingPrice } from '../utils/priceCalculation'
+import toast from 'react-hot-toast'
 
 const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBack }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [checkInTime, setCheckInTime] = useState('15:00')
+  const [checkOutTime, setCheckOutTime] = useState('11:00')
   const [guests, setGuests] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
   const [isLiked, setIsLiked] = useState(property.is_liked)
 
   // Modal states
-  const { isOpen: isBookingOpen, onOpen: onBookingOpen, onClose: onBookingClose } = useDisclosure()
   const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure()
   const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
@@ -64,9 +72,19 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   const { isOpen: isErrorOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure()
 
   // Loading states
-  const [isBooking, setIsBooking] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [validationError, setValidationError] = useState('')
+
+  // Hooks
+  const { user } = useAuthStore()
+  const { getPropertySettings } = usePropertySettings()
+  const { 
+    createBooking
+  } = useBookingFlow()
+  const { isCreatingBooking, isCheckingAvailability } = useBookingStore()
+
+  // Property settings state
+  const [propertySettings, setPropertySettings] = useState<any>(null)
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => 
@@ -80,14 +98,63 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
     )
   }
 
-  const cleaningFee = 50
-  const serviceFee = 30
-  const nights = checkIn && checkOut ? 
-    Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 3
-  const subtotal = property.price * nights
-  const total = subtotal + cleaningFee + serviceFee
+  // Load property settings on component mount
+  useEffect(() => {
+    if (property.id) {
+      console.log('🔄 Loading property settings for property:', property.id)
+      getPropertySettings(property.id)
+        .then(settings => {
+          console.log('✅ Property settings loaded:', settings)
+          setPropertySettings(settings)
+        })
+        .catch(error => {
+          console.warn('⚠️ Failed to load property settings:', error)
+        })
+    }
+  }, [property.id, getPropertySettings])
 
-  const handleReserveClick = () => {
+  // Calculate price using the new price calculation utility
+  const priceCalculation = useMemo(() => {
+    if (!checkIn || !checkOut || !property.price) {
+      return {
+        billingNights: 1,
+        basePrice: property.price || 0,
+        cleaningFee: property.cleaning_fee || 0,
+        serviceFee: property.service_fee || 0,
+        totalAmount: (property.price || 0) + (property.cleaning_fee || 0) + (property.service_fee || 0)
+      }
+    }
+
+    try {
+      return calculateBookingPrice(
+        property,
+        new Date(checkIn),
+        new Date(checkOut),
+        checkInTime,
+        checkOutTime,
+        guests
+      )
+    } catch (error) {
+      console.warn('⚠️ Price calculation error:', error)
+      return {
+        billingNights: 1,
+        basePrice: property.price,
+        cleaningFee: property.cleaning_fee || 0,
+        serviceFee: property.service_fee || 0,
+        totalAmount: property.price + (property.cleaning_fee || 0) + (property.service_fee || 0)
+      }
+    }
+  }, [checkIn, checkOut, checkInTime, checkOutTime, guests, property])
+
+  const { billingNights, basePrice, cleaningFee, serviceFee, totalAmount } = priceCalculation
+
+  const handleReserveClick = async () => {
+    // Validate authentication
+    if (!user) {
+      toast.error('Please sign in to make a booking')
+      return
+    }
+
     // Validate required fields
     if (!checkIn || !checkOut) {
       setValidationError('Please select check-in and check-out dates')
@@ -98,6 +165,41 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
       setValidationError('Check-out date must be after check-in date')
       return
     }
+
+    // Check property settings for booking rules with defaults
+    if (propertySettings) {
+      const startDate = new Date(checkIn)
+      const endDate = new Date(checkOut)
+      const today = new Date()
+      
+      // Use default values if settings are null (as per BookingSystemImplementationPlan.md)
+      const minAdvanceBooking = propertySettings.min_advance_booking || 1
+      const minStayNights = propertySettings.min_stay_nights || 1
+      const maxStayNights = propertySettings.max_stay_nights || 30
+      
+      // Check minimum advance booking
+      const daysDifference = Math.ceil((startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+      if (daysDifference < minAdvanceBooking) {
+        setValidationError(`Minimum ${minAdvanceBooking} day(s) advance booking required`)
+        return
+      }
+
+      // Check minimum stay length
+      if (billingNights < minStayNights) {
+        setValidationError(`Minimum stay is ${minStayNights} night(s)`)
+        return
+      }
+      
+      // Check maximum stay length
+      if (billingNights > maxStayNights) {
+        setValidationError(`Maximum stay is ${maxStayNights} night(s)`)
+        return
+      }
+    }
+    
+    // Since we have property data loaded and calendar shows availability,
+    // we can skip the RPC call and do basic validation
+    console.log('✅ Using loaded property data, skipping RPC availability check')
     
     // Clear validation error and open confirmation dialog
     setValidationError('')
@@ -105,40 +207,55 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   }
 
   const handleConfirmBooking = async () => {
-    setIsBooking(true)
+    if (!user) {
+      toast.error('Please sign in to make a booking')
+      return
+    }
+
     onConfirmClose()
     
     try {
-      // Simulate booking API call
-      const bookingData = {
-        propertyId: property.id,
-        checkIn,
-        checkOut,
-        guests,
-        specialRequests: specialRequests || undefined,
-        totalPrice: total,
-        subtotal,
-        cleaningFee,
-        serviceFee
+      console.log('🔄 Creating booking...')
+      
+      // Create booking form data and price breakdown for the API
+      const bookingForm = {
+        property_id: property.id,
+        check_in_date: new Date(checkIn),
+        check_out_date: new Date(checkOut),
+        check_in_time: '15:00', // Default check-in time
+        check_out_time: '11:00', // Default check-out time
+        guest_count: guests,
+        special_requests: specialRequests || undefined
       }
       
-      console.log('Processing booking:', bookingData)
+      const priceBreakdownData = {
+        basePrice,
+        cleaningFee,
+        serviceFee,
+        taxes: 0, // You can calculate taxes if needed
+        totalAmount,
+        billingNights,
+        totalHours: billingNights * 24,
+        minimumChargeApplied: false,
+        currency: property.currency || 'USD'
+      }
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      console.log('📤 Booking form data:', bookingForm)
+      console.log('📤 Price breakdown:', priceBreakdownData)
       
-      // Simulate success/error (90% success rate)
-      if (Math.random() > 0.1) {
+      const result = await createBooking(bookingForm)
+      
+      if (result) {
+        console.log('✅ Booking created successfully:', result)
         onSuccessOpen()
       } else {
-        setErrorMessage('Sorry, this property is no longer available for the selected dates. Please try different dates.')
-        onErrorOpen()
+        throw new Error('Booking creation failed')
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.')
+      console.error('❌ Booking creation failed:', error)
+      const errorMsg = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again later.'
+      setErrorMessage(errorMsg)
       onErrorOpen()
-    } finally {
-      setIsBooking(false)
     }
   }
 
@@ -453,29 +570,45 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                   </div>
                 </CardHeader>
                 <CardBody className="pt-6">
-                  {/* Date Selection */}
+                  {/* Visual Calendar with Availability */}
+                  <div className="mb-4">
+                    <BookingCalendar
+                      propertyId={property.id}
+                      unavailableDates={property.unavailable_dates}
+                      timezone={property.timezone}
+                      city={property.location.city}
+                      country={property.location.country}
+                      selectedCheckIn={checkIn}
+                      selectedCheckOut={checkOut}
+                      onDateChange={(checkInDate, checkOutDate) => {
+                        setCheckIn(checkInDate)
+                        setCheckOut(checkOutDate)
+                        setValidationError('')
+                      }}
+                      onTimeChange={(checkInTimeNew, checkOutTimeNew) => {
+                        setCheckInTime(checkInTimeNew)
+                        setCheckOutTime(checkOutTimeNew)
+                      }}
+                    />
+                  </div>
+
+                  {/* Time Selection (Manual Override) */}
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-IN</label>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-IN TIME</label>
                       <input
-                        type="date"
-                        value={checkIn}
-                        onChange={(e) => {
-                          setCheckIn(e.target.value)
-                          setValidationError('')
-                        }}
+                        type="time"
+                        value={checkInTime}
+                        onChange={(e) => setCheckInTime(e.target.value)}
                         className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
                       />
                     </div>
                     <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECKOUT</label>
+                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-OUT TIME</label>
                       <input
-                        type="date"
-                        value={checkOut}
-                        onChange={(e) => {
-                          setCheckOut(e.target.value)
-                          setValidationError('')
-                        }}
+                        type="time"
+                        value={checkOutTime}
+                        onChange={(e) => setCheckOutTime(e.target.value)}
                         className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
                       />
                     </div>
@@ -523,8 +656,10 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       radius="lg"
                       onPress={handleReserveClick}
                       startContent={<Calendar className="w-5 h-5" />}
+                      isLoading={isCheckingAvailability}
+                      disabled={isCheckingAvailability}
                     >
-                      Reserve Now
+                      {isCheckingAvailability ? 'Checking Availability...' : 'Reserve Now'}
                     </Button>
                   </div>
 
@@ -547,8 +682,8 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                   {/* Price Breakdown */}
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-700">${property.price} x {nights} nights</span>
-                      <span className="font-medium text-gray-900">${subtotal}</span>
+                      <span className="text-gray-700">${property.price} x {billingNights} nights</span>
+                      <span className="font-medium text-gray-900">${basePrice}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-700">Cleaning fee</span>
@@ -561,7 +696,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                     <Divider className="my-3" />
                     <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
                       <span className="font-bold text-gray-900">Total before taxes</span>
-                      <span className="font-bold text-gray-900 text-lg">${total}</span>
+                      <span className="font-bold text-gray-900 text-lg">${totalAmount}</span>
                     </div>
                   </div>
                 </CardBody>
@@ -625,7 +760,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-gray-700">Nights</p>
-                        <p className="text-lg">{nights} night{nights > 1 ? 's' : ''}</p>
+                        <p className="text-lg">{billingNights} night{billingNights > 1 ? 's' : ''}</p>
                       </div>
                     </div>
 
@@ -642,8 +777,8 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                   {/* Price Breakdown */}
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>${property.price} × {nights} nights</span>
-                      <span>${subtotal}</span>
+                      <span>${property.price} × {billingNights} nights</span>
+                      <span>${basePrice}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Cleaning fee</span>
@@ -656,7 +791,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                     <Divider className="my-2" />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
-                      <span>${total}</span>
+                      <span>${totalAmount}</span>
                     </div>
                   </div>
                 </div>
@@ -668,9 +803,11 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                 <Button 
                   className="bg-primary-600 hover:bg-primary-700 text-white font-semibold"
                   onPress={handleConfirmBooking}
-                  startContent={<CheckCircle className="w-4 h-4" />}
+                  startContent={!isCreatingBooking && <CheckCircle className="w-4 h-4" />}
+                  isLoading={isCreatingBooking}
+                  disabled={isCreatingBooking}
                 >
-                  Confirm Reservation
+                  {isCreatingBooking ? 'Creating Booking...' : 'Confirm Reservation'}
                 </Button>
               </ModalFooter>
             </>
@@ -693,7 +830,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                 </p>
                 <div className="space-y-2 text-sm text-gray-600">
                   <p><strong>Booking Reference:</strong> NL{Date.now().toString().slice(-6)}</p>
-                  <p><strong>Total Amount:</strong> ${total}</p>
+                  <p><strong>Total Amount:</strong> ${totalAmount}</p>
                 </div>
               </ModalBody>
               <ModalFooter className="justify-center">
@@ -734,7 +871,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
       </Modal>
 
       {/* Loading Overlay */}
-      {isBooking && (
+      {isCreatingBooking && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 text-center">
             <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>

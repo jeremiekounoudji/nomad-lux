@@ -180,9 +180,42 @@ export const useProperty = () => {
         throw new Error('Video upload failed')
       }
 
-      // Step 2: Prepare property data for database with uploaded URLs
+      // Step 2: Handle property settings (settings-first workflow)
+      let propertySettingsId: string
+
+      if (propertyData.create_new_settings && propertyData.property_settings) {
+        console.log('🔄 Step 2a: Creating new property settings first...')
+        
+        // Create property settings first
+        const { data: settingsData, error: settingsError } = await supabase
+          .from('host_property_settings')
+          .insert({
+            host_id: user.id,
+            ...propertyData.property_settings
+          })
+          .select()
+          .single()
+
+        if (settingsError) {
+          console.error('❌ Error creating property settings:', settingsError)
+          throw new Error(`Failed to create property settings: ${settingsError.message}`)
+        }
+
+        propertySettingsId = settingsData.id
+        console.log('✅ Property settings created:', propertySettingsId)
+        
+      } else if (propertyData.existing_settings_id) {
+        console.log('🔄 Step 2b: Using existing property settings:', propertyData.existing_settings_id)
+        propertySettingsId = propertyData.existing_settings_id
+        
+      } else {
+        throw new Error('No property settings provided - either create new or select existing settings')
+      }
+
+      // Step 3: Prepare property data for database with uploaded URLs and settings ID
       const dbPropertyData = {
         host_id: user.id,
+        property_settings_id: propertySettingsId, // Link to property settings
         title: propertyData.title,
         description: propertyData.description,
         price: propertyData.price,
@@ -208,11 +241,12 @@ export const useProperty = () => {
         status: 'pending'
       }
 
-      console.log('💾 Step 3: Inserting property data into database:', {
+      console.log('💾 Step 4: Inserting property data into database:', {
         title: dbPropertyData.title,
         imageCount: dbPropertyData.images.length,
         hasVideo: !!dbPropertyData.videos,
-        propertyType: dbPropertyData.property_type
+        propertyType: dbPropertyData.property_type,
+        settingsId: propertySettingsId
       })
 
       const { data, error } = await supabase
