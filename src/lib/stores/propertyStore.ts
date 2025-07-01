@@ -1,5 +1,8 @@
 import { create } from 'zustand'
 import { Property } from '../../interfaces'
+import { supabase } from '../supabase'
+import toast from 'react-hot-toast'
+import { useAuthStore } from './authStore'
 
 interface PropertyState {
   // State
@@ -50,6 +53,16 @@ interface PropertyState {
   getPropertyById: (id: string) => Property | undefined
   getPropertiesByHost: (hostId: string) => Property[]
   clearAll: () => void
+  
+  likedPropertyIds: string[]
+  likedProperties: Property[]
+  isLikeLoading: boolean
+  
+  // Actions
+  toggleLike: (propertyId: string) => Promise<void>
+  fetchLikedProperties: () => Promise<void>
+  clearLikedProperties: () => void
+  isPropertyLiked: (propertyId: string) => boolean
 }
 
 export const usePropertyStore = create<PropertyState>((set, get) => ({
@@ -67,6 +80,10 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
   currentPage: 1,
   totalPages: 1,
   totalCount: 0,
+  
+  likedPropertyIds: [],
+  likedProperties: [],
+  isLikeLoading: false,
   
   // Actions
   setProperties: (properties) => {
@@ -178,8 +195,119 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
       filters: {},
       currentPage: 1,
       totalPages: 1,
-      totalCount: 0
+      totalCount: 0,
+      likedPropertyIds: [],
+      likedProperties: [],
+      isLikeLoading: false
     })
+  },
+  
+  toggleLike: async (propertyId: string) => {
+    try {
+      set({ isLikeLoading: true })
+      const { likedPropertyIds, properties } = get()
+      const isLiked = likedPropertyIds.includes(propertyId)
+      const userId = useAuthStore.getState().supabaseUser?.id
+      if (!userId) {
+        toast.error('Please sign in to like properties')
+        set({ isLikeLoading: false })
+        return
+      }
+      let error = null
+      if (!isLiked) {
+        // Like: insert into property_likes and increment like_count
+        const { error: insertError } = await supabase
+          .from('property_likes')
+          .insert([{ property_id: propertyId, user_id: userId }])
+        if (insertError) throw insertError
+        // Increment like_count (fetch then update)
+        const { data: current, error: fetchError } = await supabase
+          .from('properties')
+          .select('like_count')
+          .eq('id', propertyId)
+          .single()
+        if (fetchError) throw fetchError
+        const newLikeCount = (current?.like_count ?? 0) + 1
+        const { data: updated, error: updateError } = await supabase
+          .from('properties')
+          .update({ like_count: newLikeCount })
+          .eq('id', propertyId)
+          .select('like_count')
+          .single()
+        if (updateError) throw updateError
+        set({ likedPropertyIds: [...likedPropertyIds, propertyId] })
+        // Update property like_count in store
+        set({ properties: properties.map(p => p.id === propertyId ? { ...p, like_count: updated.like_count, is_liked: true } : p) })
+        toast.success('Property added to favorites')
+      } else {
+        // Unlike: delete from property_likes and decrement like_count
+        const { error: deleteError } = await supabase
+          .from('property_likes')
+          .delete()
+          .eq('property_id', propertyId)
+          .eq('user_id', userId)
+        if (deleteError) throw deleteError
+        // Decrement like_count (fetch then update)
+        const { data: current, error: fetchError } = await supabase
+          .from('properties')
+          .select('like_count')
+          .eq('id', propertyId)
+          .single()
+        if (fetchError) throw fetchError
+        const newLikeCount = Math.max((current?.like_count ?? 1) - 1, 0)
+        const { data: updated, error: updateError } = await supabase
+          .from('properties')
+          .update({ like_count: newLikeCount })
+          .eq('id', propertyId)
+          .select('like_count')
+          .single()
+        if (updateError) throw updateError
+        set({ likedPropertyIds: likedPropertyIds.filter(id => id !== propertyId) })
+        // Update property like_count in store
+        set({ properties: properties.map(p => p.id === propertyId ? { ...p, like_count: updated.like_count, is_liked: false } : p) })
+        toast.success('Property removed from favorites')
+      }
+    } catch (error) {
+      console.error('Error toggling property like:', error)
+      set({ error: 'Failed to update property like status' })
+      toast.error('Failed to update favorites')
+    } finally {
+      set({ isLikeLoading: false })
+    }
+  },
+
+  fetchLikedProperties: async () => {
+    try {
+      set({ isLikeLoading: true })
+      // Use the new paginated RPC
+      const userId = useAuthStore.getState().supabaseUser?.id
+      const { data, error } = await supabase.rpc('get_user_liked_properties_paginated', { p_user_id: userId, p_page: 1, p_page_size: 100 })
+      if (error) throw error
+      console.log('👍🏻 Liked properties:', data)
+      set({ likedPropertyIds: data.map((item: { property_id: string }) => item.property_id), likedProperties: data })
+      // Optionally update is_liked and like_count in properties
+      set((state) => ({
+        properties: state.properties.map((p) => ({
+          ...p,
+          is_liked: data.some((item: { property_id: string }) => item.property_id === p.id),
+          like_count: data.find((item: { property_id: string }) => item.property_id === p.id)?.like_count ?? p.like_count
+        }))
+      }))
+    } catch (error) {
+      console.error('Error fetching liked properties:', error)
+      set({ error: 'Failed to fetch liked properties' })
+    } finally {
+      set({ isLikeLoading: false })
+    }
+  },
+
+  clearLikedProperties: () => {
+    set({ likedPropertyIds: [], error: null })
+  },
+
+  isPropertyLiked: (propertyId: string) => {
+    const { likedPropertyIds } = get()
+    return likedPropertyIds.includes(propertyId)
   }
 }))
 

@@ -300,4 +300,28 @@ For technical support or questions:
 
 **Built with ❤️ by the Nomad Lux Team**
 
-*Creating exceptional luxury travel experiences through technology.* 
+*Creating exceptional luxury travel experiences through technology.*
+
+## Social Media Integration
+
+### Open Graph Image Setup
+
+For optimal social media sharing, add an Open Graph image to the `public` folder:
+
+1. Create a high-quality image (1200x630px recommended) showcasing NomadLux
+2. Save it as `public/og-image.jpg`
+3. The image should include:
+   - NomadLux branding/logo
+   - Attractive property imagery
+   - Clear, readable text
+   - Brand colors matching the site theme
+
+### Meta Tags
+
+The application automatically updates meta tags for property pages to ensure rich link previews when sharing. Key features:
+
+- Dynamic Open Graph tags for each property
+- Twitter Card support
+- Proper canonical URLs
+- Property-specific titles and descriptions
+- Automatic fallback to default site meta tags 

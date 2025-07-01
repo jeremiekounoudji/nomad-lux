@@ -1,10 +1,11 @@
 import React from 'react'
 import { Property } from '../../interfaces/Property'
-import { Heart, MapPin, Users, Bed, Bath } from 'lucide-react'
+import { Heart, MapPin, Users, Bed, Bath, Share2 } from 'lucide-react'
 
 interface HomePagePropertyCardProps {
   property: Property
   onLike?: (id: string) => void
+  onShare?: (property: Property) => void
   onClick?: (property: Property) => void
   className?: string
 }
@@ -12,6 +13,7 @@ interface HomePagePropertyCardProps {
 const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
   property,
   onLike,
+  onShare,
   onClick,
   className = ''
 }) => {
@@ -31,6 +33,11 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation()
     onLike?.(property.id)
+  }
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onShare?.(property)
   }
 
   return (
@@ -84,11 +91,22 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           onClick={handleLike}
           className="absolute top-3 right-3 p-2 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
         >
-          <Heart
-            className={`w-6 h-6 ${
-              property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
-            }`}
-          />
+          <div className="flex items-center gap-1">
+            <Heart
+              className={`w-6 h-6 ${
+                property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
+              }`}
+            />
+            <span className="text-xs text-white font-semibold">{property.like_count ?? 0}</span>
+          </div>
+        </button>
+
+        {/* Share button */}
+        <button
+          onClick={handleShare}
+          className="absolute top-3 right-14 p-2 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
+        >
+          <Share2 className="w-6 h-6 text-white" />
         </button>
       </div>
 
@@ -100,11 +118,20 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
             onClick={handleLike}
             className="p-0 bg-transparent border-none"
           >
-            <Heart
-              className={`w-6 h-6 ${
-                property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-700'
-              } hover:text-gray-500 transition-colors`}
-            />
+            <div className="flex items-center gap-1">
+              <Heart
+                className={`w-6 h-6 ${
+                  property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-700'
+                } hover:text-gray-500 transition-colors`}
+              />
+              <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+            </div>
+          </button>
+          <button
+            onClick={handleShare}
+            className="p-0 bg-transparent border-none"
+          >
+            <Share2 className="w-6 h-6 text-gray-700 hover:text-gray-500 transition-colors" />
           </button>
         </div>
 

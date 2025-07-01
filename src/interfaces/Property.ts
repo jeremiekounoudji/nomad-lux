@@ -51,6 +51,7 @@ export interface Property {
   title: string
   description: string
   price: number
+  price_per_night: number
   currency: string
   location: {
     city: string
@@ -87,6 +88,7 @@ export interface Property {
   // New availability management fields
   unavailable_dates?: string[]
   timezone?: string
+  like_count: number
 }
 
 // Admin property interface

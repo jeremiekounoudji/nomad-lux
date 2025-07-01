@@ -14,15 +14,19 @@ import BookingRequestsPage from './BookingRequestsPage'
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
 import SearchPage from './SearchPage'
+import HelpPage from './HelpPage'
+import TermsPage from './TermsPage'
 import { AdminLoginPage } from './AdminLoginPage'
 import { AdminRegisterPage } from './AdminRegisterPage'
 import { AdminPage } from './AdminPage'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminSettings } from '../hooks/useAdminSettings'
 import { useHomeFeed } from '../hooks/useHomeFeed'
+import { usePropertyShare } from '../hooks/usePropertyShare'
 import { Property } from '../interfaces'
 import { Button } from '@heroui/react'
 import { RefreshCw, AlertCircle, ArrowLeft, MapPin } from 'lucide-react'
+import { SharePropertyModal } from '../components/shared/modals'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 
@@ -54,6 +58,7 @@ const HomePage: React.FC = () => {
 
   const { isAuthenticated, isLoading, user } = useAuthStore()
   const { settings, isLoading: settingsLoading, fetchSettings } = useAdminSettings()
+  const { handleShare: shareProperty } = usePropertyShare()
 
   // Use our new home feed hook
   const {
@@ -203,22 +208,6 @@ const HomePage: React.FC = () => {
     handleLikeProperty(propertyId)
   }, [handleLikeProperty])
 
-  const handleShare = (property: Property) => {
-    console.log('📤 Share property:', property.title)
-    // TODO: Implement share functionality
-    if (navigator.share) {
-      navigator.share({
-        title: property.title,
-        text: property.description,
-        url: `${window.location.origin}/property/${property.id}`
-      })
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(`${window.location.origin}/property/${property.id}`)
-      toast.success('Property link copied to clipboard!')
-    }
-  }
-
   const handleBook = (property: Property) => {
     if (!isAuthenticated) {
       toast.error('Please sign in to book properties')
@@ -360,7 +349,8 @@ const HomePage: React.FC = () => {
           onBackToHome={handleBackToHome}
           onRefetch={fetchCityProperties}
           onPropertyClick={handlePropertyClick}
-              onLike={handleLike}
+          onLike={handleLike}
+          onShare={shareProperty}
         />
       </MainLayout>
     );
@@ -380,6 +370,10 @@ const HomePage: React.FC = () => {
       return <NotificationsPage onPageChange={handlePageChange} />
     case 'requests':
       return <BookingRequestsPage onPageChange={handlePageChange} />
+    case 'help':
+      return <HelpPage onPageChange={handlePageChange} />
+    case 'terms':
+      return <TermsPage onPageChange={handlePageChange} />
     case 'login':
       return <LoginPage onPageChange={handlePageChange} onLogin={handleLogin} />
     case 'register':
@@ -400,39 +394,6 @@ const HomePage: React.FC = () => {
   return (
     <>
       <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
-        {/* Welcome message for authenticated users */}
-        {isAuthenticated && user && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
-            <div className="bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl p-6 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-              <h2 className="text-2xl font-bold mb-2">
-                Welcome back, {user.display_name}! 👋
-              </h2>
-              <p className="text-white/90">
-                Ready to discover your next adventure?
-                    {userLocation && (
-                      <span className="block text-sm mt-1">
-                        📍 Showing properties near you
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <Button
-                  variant="light"
-                  size="sm"
-                  onPress={handleRefresh}
-                  isLoading={feedLoading || popularPlacesLoading}
-                  startContent={<RefreshCw className="w-4 h-4" />}
-                  className="text-white border-white/20 hover:bg-white/10"
-                >
-                  Refresh
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Popular Places Section - Full width across all columns */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4 mb-6">
           <PopularPlaces 
@@ -482,6 +443,7 @@ const HomePage: React.FC = () => {
             <HomePagePropertyCard
               property={property}
               onLike={handleLike}
+              onShare={shareProperty}
               onClick={handlePropertyClick}
             />
           </div>

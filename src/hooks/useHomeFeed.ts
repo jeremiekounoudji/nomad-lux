@@ -4,6 +4,7 @@ import { useHomeFeedStore } from '../lib/stores/homeFeedStore'
 import { useAuthStore } from '../lib/stores/authStore'
 import { Property } from '../interfaces'
 import toast from 'react-hot-toast'
+import { usePropertyStore } from '../lib/stores/propertyStore'
 
 interface PopularPlace {
   id: string
@@ -67,6 +68,8 @@ export const useHomeFeed = () => {
   
   // Auth store
   const { isAuthenticated, user } = useAuthStore()
+
+  const toggleLike = usePropertyStore(state => state.toggleLike)
 
   console.log('🏠 useHomeFeed hook initialized', { 
     isAuthenticated, 
@@ -139,7 +142,7 @@ export const useHomeFeed = () => {
         sort_by: 'relevance',
         page_num: page,
         page_size: 20,
-        user_id: user?.id || null
+        user_id: useAuthStore.getState().supabaseUser?.id || null
       })
 
       if (error) {
@@ -197,7 +200,9 @@ export const useHomeFeed = () => {
         additional_fees: [],
         distance: item.distance || '',
         created_at: item.created_at || '',
-        total_before_taxes: item.total_before_taxes || item.price || 0
+        total_before_taxes: item.total_before_taxes || item.price || 0,
+        like_count: item.like_count || 0,
+        price_per_night: item.price_per_night || 0
       }))
 
       // Update store
@@ -228,7 +233,7 @@ export const useHomeFeed = () => {
       }
     }
   }, [
-    userLocation, user?.id, setFeedLoading, setIsLoadingMore, clearFeedError,
+    userLocation, useAuthStore.getState().supabaseUser?.id, setFeedLoading, setIsLoadingMore, clearFeedError,
     setFeedError, setProperties, appendProperties, setCurrentPage, 
     setHasNextPage, setTotalCount
   ])
@@ -256,7 +261,7 @@ export const useHomeFeed = () => {
       sort_by: 'relevance',
       page_num: 1,
       page_size: 50,
-      user_id: user?.id || null,
+      user_id: useAuthStore.getState().supabaseUser?.id || null,
       ...filters,
     };
 
@@ -279,7 +284,7 @@ export const useHomeFeed = () => {
       toast.error(error.message || 'Failed to load properties for the selected filter.');
       throw error; // Re-throw the error to be caught by the caller
     }
-  }, [user?.id]);
+  }, [useAuthStore.getState().supabaseUser?.id]);
 
   // Load more properties (infinite scroll)
   const loadMoreProperties = useCallback(async () => {
@@ -343,34 +348,21 @@ export const useHomeFeed = () => {
     }
 
     console.log('❤️ Toggling property like:', propertyId)
-    
-    // Find current property
     const property = properties.find(p => p.id === propertyId)
     if (!property) return
-
     const newLikedState = !property.is_liked
-    
     // Optimistic update
     updatePropertyLike(propertyId, newLikedState)
-    
     try {
-      // TODO: Implement save/unsave property API call
-      console.log('💾 Would save/unsave property:', propertyId, newLikedState)
-      
-      // Show feedback
-      if (newLikedState) {
-        toast.success('Property saved to your favorites')
-      } else {
-        toast.success('Property removed from favorites')
-      }
-      
+      await toggleLike(propertyId)
+      // Success toast handled inside toggleLike
     } catch (error: any) {
       console.error('❌ Failed to update property like:', error)
       // Revert optimistic update
       updatePropertyLike(propertyId, !newLikedState)
       toast.error('Failed to update favorites')
     }
-  }, [isAuthenticated, properties, updatePropertyLike])
+  }, [isAuthenticated, properties, updatePropertyLike, toggleLike])
 
   const handlePropertyView = useCallback((propertyId: string) => {
     console.log('👁️ Property viewed:', propertyId)

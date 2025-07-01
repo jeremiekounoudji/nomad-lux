@@ -1,5 +1,5 @@
 import React from 'react'
-import { Home, Search, Heart, Plus, Calendar, User, Settings, LogOut, Bookmark, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus } from 'lucide-react'
+import { Home, Search, Heart, Plus, Calendar, User, LogOut, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus } from 'lucide-react'
 import { mockCurrentUser } from '../../lib/mockData'
 import { SidebarProps } from '../../interfaces'
 import { useAuthStore } from '../../lib/stores/authStore'
@@ -39,10 +39,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
   ]
 
   const secondaryItems = [
-    { key: 'saved', label: 'Saved', icon: Bookmark },
-    { key: 'settings', label: 'Settings', icon: Settings },
-    { key: 'help', label: 'Help', icon: HelpCircle },
-    { key: 'privacy', label: 'Privacy', icon: Shield },
+    { key: 'help', label: 'Help Center', icon: HelpCircle },
+    { key: 'terms', label: 'Terms & Conditions', icon: Shield },
     ...(isAuthenticated ? [] : [
       { key: 'login', label: 'Login', icon: LogIn },
       { key: 'register', label: 'Register', icon: UserPlus },

@@ -602,4 +602,87 @@ begin
 
     return v_result;
 end;
-$$ language plpgsql security definer; 
+$$ language plpgsql security definer;
+
+-- Function to toggle property like status
+CREATE OR REPLACE FUNCTION toggle_property_like(
+  property_id UUID,
+  user_id UUID DEFAULT auth.uid()
+) RETURNS BOOLEAN AS $$
+DECLARE
+  is_liked BOOLEAN;
+BEGIN
+  -- Check if user exists in saved_properties
+  IF NOT EXISTS (SELECT 1 FROM saved_properties WHERE user_id = user_id) THEN
+    INSERT INTO saved_properties (user_id, property_ids) VALUES (user_id, ARRAY[property_id]);
+    RETURN true;
+  END IF;
+
+  -- Check if property is already liked
+  SELECT property_id = ANY(property_ids) INTO is_liked
+  FROM saved_properties
+  WHERE user_id = user_id;
+
+  IF is_liked THEN
+    -- Remove property from liked array
+    UPDATE saved_properties
+    SET 
+      property_ids = array_remove(property_ids, property_id),
+      updated_at = NOW()
+    WHERE user_id = user_id;
+    RETURN false;
+  ELSE
+    -- Add property to liked array
+    UPDATE saved_properties
+    SET 
+      property_ids = array_append(property_ids, property_id),
+      updated_at = NOW()
+    WHERE user_id = user_id;
+    RETURN true;
+  END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to get user's liked properties
+CREATE OR REPLACE FUNCTION get_user_liked_properties(
+  user_id UUID DEFAULT auth.uid()
+) RETURNS TABLE (
+  property_id UUID
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT UNNEST(property_ids)::UUID
+  FROM saved_properties
+  WHERE user_id = user_id;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to check if a property is liked by user
+CREATE OR REPLACE FUNCTION check_property_like_status(
+  property_id UUID,
+  user_id UUID DEFAULT auth.uid()
+) RETURNS BOOLEAN AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1
+    FROM saved_properties
+    WHERE user_id = user_id
+    AND property_id = ANY(property_ids)
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Add RLS policies for saved_properties table
+ALTER TABLE saved_properties ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can view their own saved properties"
+  ON saved_properties FOR SELECT
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own saved properties"
+  ON saved_properties FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their own saved properties"
+  ON saved_properties FOR INSERT
+  WITH CHECK (auth.uid() = user_id); 

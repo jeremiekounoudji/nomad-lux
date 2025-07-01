@@ -22,7 +22,28 @@ import {
   Calendar,
   DollarSign,
   AlertCircle,
-  X
+  X,
+  Clock,
+  MessageSquare,
+  CheckCircle2,
+  Mail,
+  Phone,
+  Home,
+  Tv,
+  Coffee,
+  Snowflake,
+  Flame,
+  DoorClosed,
+  Shirt,
+  Dumbbell,
+  Waves as Pool,
+  TreeDeciduous as TreePine,
+  Dog as PawPrint,
+  Baby,
+  Car as Parking,
+  Wind,
+  Play,
+  Image as ImageIcon
 } from 'lucide-react'
 import { 
   Card, 
@@ -49,13 +70,40 @@ import {
 import { BookingCalendar } from '../components/shared'
 import { usePropertySettings } from '../hooks/usePropertySettings'
 import { useBookingFlow } from '../hooks/useBookingFlow'
+import { usePropertyShare } from '../hooks/usePropertyShare'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { calculateBookingPrice } from '../utils/priceCalculation'
+import { updatePropertyMetaTags, resetDefaultMetaTags } from '../utils/shareUtils'
 import toast from 'react-hot-toast'
+import { usePropertyLike } from '../hooks/usePropertyLike'
+
+const getAmenityIcon = (amenity: string) => {
+  const amenityMap: { [key: string]: React.ReactNode } = {
+    'wifi': <Wifi className="w-5 h-5" />,
+    'tv': <Tv className="w-5 h-5" />,
+    'kitchen': <Utensils className="w-5 h-5" />,
+    'air_conditioning': <Wind className="w-5 h-5" />,
+    'heating': <Flame className="w-5 h-5" />,
+    'washer': <Shirt className="w-5 h-5" />,
+    'dryer': <Shirt className="w-5 h-5" />,
+    'gym': <Dumbbell className="w-5 h-5" />,
+    'pool': <Pool className="w-5 h-5" />,
+    'parking': <Parking className="w-5 h-5" />,
+    'elevator': <DoorClosed className="w-5 h-5" />,
+    'coffee_maker': <Coffee className="w-5 h-5" />,
+    'workspace': <Home className="w-5 h-5" />,
+    'pet_friendly': <PawPrint className="w-5 h-5" />,
+    'baby_friendly': <Baby className="w-5 h-5" />,
+    'garden_view': <TreePine className="w-5 h-5" />
+  }
+  return amenityMap[amenity.toLowerCase()] || <CheckCircle2 className="w-5 h-5" />
+}
 
 const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBack }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [checkInTime, setCheckInTime] = useState('15:00')
@@ -64,12 +112,64 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   const [specialRequests, setSpecialRequests] = useState('')
   const [isLiked, setIsLiked] = useState(property.is_liked)
 
+  // Combine all media for the counter
+  const allMedia = [...property.images, ...property.videos]
+  const currentOverallIndex = mediaType === 'image' 
+    ? currentImageIndex 
+    : property.images.length + currentVideoIndex
+
+  const nextMedia = () => {
+    if (mediaType === 'image') {
+      if (currentImageIndex === property.images.length - 1) {
+        if (property.videos.length > 0) {
+          setMediaType('video')
+          setCurrentVideoIndex(0)
+        } else {
+          setCurrentImageIndex(0)
+        }
+      } else {
+        setCurrentImageIndex(prev => prev + 1)
+      }
+    } else {
+      if (currentVideoIndex === property.videos.length - 1) {
+        setMediaType('image')
+        setCurrentImageIndex(0)
+      } else {
+        setCurrentVideoIndex(prev => prev + 1)
+      }
+    }
+  }
+
+  const prevMedia = () => {
+    if (mediaType === 'image') {
+      if (currentImageIndex === 0) {
+        if (property.videos.length > 0) {
+          setMediaType('video')
+          setCurrentVideoIndex(property.videos.length - 1)
+        } else {
+          setCurrentImageIndex(property.images.length - 1)
+        }
+      } else {
+        setCurrentImageIndex(prev => prev - 1)
+      }
+    } else {
+      if (currentVideoIndex === 0) {
+        setMediaType('image')
+        setCurrentImageIndex(property.images.length - 1)
+      } else {
+        setCurrentVideoIndex(prev => prev - 1)
+      }
+    }
+  }
+
   // Modal states
-  const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure()
   const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const { isOpen: isErrorOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure()
+
+  // Share hook
+  const { handleShare } = usePropertyShare()
 
   // Loading states
   const [errorMessage, setErrorMessage] = useState('')
@@ -86,19 +186,10 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   // Property settings state
   const [propertySettings, setPropertySettings] = useState<any>(null)
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === property.images.length - 1 ? 0 : prev + 1
-    )
-  }
+  // Like hook
+  const { likedPropertyIds, isLoading: isLikeLoading, toggleLike, isLiked: isPropertyLiked } = usePropertyLike()
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? property.images.length - 1 : prev - 1
-    )
-  }
-
-  // Load property settings on component mount
+  // Load property settings and update meta tags on component mount
   useEffect(() => {
     if (property.id) {
       console.log('🔄 Loading property settings for property:', property.id)
@@ -111,7 +202,15 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
           console.warn('⚠️ Failed to load property settings:', error)
         })
     }
-  }, [property.id, getPropertySettings])
+
+    // Update meta tags for better link sharing
+    updatePropertyMetaTags(property)
+
+    // Reset meta tags when component unmounts
+    return () => {
+      resetDefaultMetaTags()
+    }
+  }, [property.id, property, getPropertySettings])
 
   // Calculate price using the new price calculation utility
   const priceCalculation = useMemo(() => {
@@ -265,9 +364,9 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
+      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-50">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <button 
             onClick={onBack}
@@ -277,13 +376,15 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
           </button>
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => setIsLiked(!isLiked)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={() => toggleLike(property.id)}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center gap-1"
+              disabled={isLikeLoading}
             >
-              <Heart className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <Heart className={`w-6 h-6 ${isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
             </button>
             <button 
-              onClick={onShareOpen}
+              onClick={() => handleShare(property)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <Share className="w-6 h-6 text-gray-700" />
@@ -292,30 +393,42 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Main Content Container with Scroll */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Image Gallery */}
+            {/* Image/Video Gallery */}
             <div className="relative mb-8">
               <div className="relative h-64 sm:h-80 lg:h-96 overflow-hidden rounded-xl">
-                <img
-                  src={property.images[currentImageIndex]}
-                  alt={property.title}
-                  className="w-full h-full object-cover"
-                />
+                {mediaType === 'image' ? (
+                  <img
+                    src={property.images[currentImageIndex]}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <video
+                    src={property.videos[currentVideoIndex]}
+                    className="w-full h-full object-cover"
+                    controls
+                    autoPlay
+                    playsInline
+                  />
+                )}
                 
                 {/* Navigation Buttons */}
-                {property.images.length > 1 && (
+                {allMedia.length > 1 && (
                   <>
                     <button
-                      onClick={prevImage}
+                      onClick={prevMedia}
                       className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
                     >
                       <ChevronLeft className="w-5 h-5 text-gray-700" />
                     </button>
                     <button
-                      onClick={nextImage}
+                      onClick={nextMedia}
                       className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
                     >
                       <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -323,39 +436,87 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                   </>
                 )}
 
-                {/* Image Counter */}
+                {/* Media Counter */}
                 <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {property.images.length}
+                  {currentOverallIndex + 1} / {allMedia.length}
                 </div>
 
-                {/* Quick View Button */}
-                <button 
-                  onClick={() => {}} // You can implement quick view here
-                  className="absolute bottom-4 left-4 bg-white hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all flex items-center gap-2"
-                >
-                  <Eye className="w-4 h-4" />
-                  View all photos
-                </button>
+                {/* Media Type Indicator */}
+                <div className="absolute bottom-4 left-4 flex gap-2">
+                  <button 
+                    onClick={() => {
+                      if (property.images.length > 0) {
+                        setMediaType('image')
+                        setCurrentImageIndex(0)
+                      }
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all ${
+                      mediaType === 'image' && property.images.length > 0
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-white/90 text-gray-700 hover:bg-white'
+                    }`}
+                    disabled={property.images.length === 0}
+                  >
+                    <ImageIcon className="w-4 h-4" />
+                    Photos ({property.images.length})
+                  </button>
+                  <button 
+                    onClick={() => {
+                      if (property.videos.length > 0) {
+                        setMediaType('video')
+                        setCurrentVideoIndex(0)
+                      }
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all ${
+                      mediaType === 'video' && property.videos.length > 0
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-white/90 text-gray-700 hover:bg-white'
+                    }`}
+                    disabled={property.videos.length === 0}
+                  >
+                    <Play className="w-4 h-4" />
+                    Videos ({property.videos.length})
+                  </button>
+                </div>
               </div>
 
-              {/* Thumbnail Strip - Mobile Optimized */}
+              {/* Thumbnail Strip */}
               <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-                {property.images.slice(0, 6).map((image, index) => (
+                {property.images.map((image, index) => (
                   <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
+                    key={`img-${index}`}
+                    onClick={() => {
+                      setMediaType('image')
+                      setCurrentImageIndex(index)
+                    }}
                     className={`flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      index === currentImageIndex ? 'border-primary-500' : 'border-gray-200 hover:border-gray-300'
+                      mediaType === 'image' && index === currentImageIndex 
+                        ? 'border-primary-500' 
+                        : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <img src={image} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
-                {property.images.length > 6 && (
-                  <button className="flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all">
-                    +{property.images.length - 6}
+                {property.videos.map((video, index) => (
+                  <button
+                    key={`vid-${index}`}
+                    onClick={() => {
+                      setMediaType('video')
+                      setCurrentVideoIndex(index)
+                    }}
+                    className={`relative flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                      mediaType === 'video' && index === currentVideoIndex 
+                        ? 'border-primary-500' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <video src={video} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <Play className="w-6 h-6 text-white" />
+                    </div>
                   </button>
-                )}
+                ))}
               </div>
             </div>
 
@@ -411,125 +572,86 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
             </div>
 
             {/* Amenities */}
-            <Card className="mb-8 shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">What this place offers</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="mt-8">
+              <h2 className="text-2xl font-semibold mb-4">What this place offers</h2>
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all border border-gray-100">
-                      <div className="w-10 h-10 bg-secondary-500 rounded-full flex items-center justify-center">
-                        {amenity === 'WiFi' && <Wifi className="w-5 h-5 text-white" />}
-                        {amenity === 'Parking' && <Car className="w-5 h-5 text-white" />}
-                        {amenity === 'Kitchen' && <Utensils className="w-5 h-5 text-white" />}
-                        {amenity === 'Pool' && <Waves className="w-5 h-5 text-white" />}
-                        {amenity === 'Beach Access' && <Waves className="w-5 h-5 text-white" />}
-                        {!['WiFi', 'Parking', 'Kitchen', 'Pool', 'Beach Access'].includes(amenity) && (
-                          <CheckCircle className="w-5 h-5 text-white" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <span className="text-gray-900 font-medium">{amenity}</span>
-                        {amenity === 'WiFi' && <p className="text-sm text-gray-600">High-speed internet</p>}
-                        {amenity === 'Pool' && <p className="text-sm text-gray-600">Infinity pool with ocean view</p>}
-                        {amenity === 'Kitchen' && <p className="text-sm text-gray-600">Fully equipped kitchen</p>}
-                        {amenity === 'Parking' && <p className="text-sm text-gray-600">Free on-site parking</p>}
-                        {amenity === 'Beach Access' && <p className="text-sm text-gray-600">Private beach access</p>}
-                      </div>
+                    <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
+                      {getAmenityIcon(amenity)}
+                      <span className="text-gray-700">{amenity.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
                     </div>
                   ))}
                 </div>
-              </CardBody>
-            </Card>
+              </div>
+            </div>
 
             {/* Host Info */}
-            <Card className="mb-8 shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">Meet your host</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="flex flex-col sm:flex-row gap-6">
-                  {/* Host Profile */}
-                  <div className="flex items-center sm:flex-col sm:items-center gap-4 sm:text-center">
-                    <Avatar
-                      src={property.host?.avatar_url || '/default-avatar.png'}
-                      alt={property.host?.display_name || 'Host'}
-                      className="w-20 h-20 sm:w-24 sm:h-24"
-                      isBordered
-                      color="primary"
-                    />
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900">{property.host?.display_name || 'Your Host'}</h4>
-                      <p className="text-sm text-gray-600">Host since 2019</p>
-                      {property.host?.is_email_verified && (
-                        <Chip size="sm" color="primary" className="mt-2">
-                          Verified Host
-                        </Chip>
+            <div className="mt-8">
+              <h2 className="text-2xl font-semibold mb-4">Meet your host</h2>
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <div className="flex items-start gap-6">
+                  <Avatar
+                    src={property.host.avatar_url}
+                    alt={property.host.name}
+                    className="w-16 h-16"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-xl font-medium">{property.host.display_name}</h3>
+                      {property.host.is_identity_verified && (
+                        <Badge color="success" className="flex items-center gap-1">
+                          <Shield className="w-4 h-4" />
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-400" />
+                        <span>{property.host.rating.toFixed(1)} Rating</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>Host since {new Date(property.created_at).getFullYear()}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <MessageSquare className="w-4 h-4" />
+                        <span>{property.host.response_rate}% Response rate</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{property.host.response_time} avg. response time</span>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 mb-4">{property.host.bio || "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world."}</p>
+                    <div className="flex flex-wrap gap-4">
+                      {property.host.is_email_verified && (
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Mail className="w-4 h-4" />
+                          <span>Email verified</span>
+                        </div>
+                      )}
+                      {property.host.phone && (
+                        <div className="flex items-center gap-1 text-sm text-gray-600">
+                          <Phone className="w-4 h-4" />
+                          <span>Phone verified</span>
+                        </div>
                       )}
                     </div>
                   </div>
-
-                  {/* Host Details */}
-                  <div className="flex-1">
-                    {/* Host Stats */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">4.9</div>
-                        <div className="text-xs text-gray-600">Rating</div>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <MessageCircle className="w-4 h-4 text-gray-700" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">127</div>
-                        <div className="text-xs text-gray-600">Reviews</div>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <Shield className="w-4 h-4 text-gray-700" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">100%</div>
-                        <div className="text-xs text-gray-600">Response</div>
-                      </div>
-                    </div>
-
-                    {/* Host Bio */}
-                    <p className="text-gray-700 mb-6 leading-relaxed">
-                      {property.host?.bio || "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world. I've been hosting for over 5 years and take pride in providing exceptional experiences for my guests."}
-                    </p>
-
-                    {/* Host Badges */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      <Chip size="sm" color="success" startContent={<Award className="w-3 h-3" />}>
-                        Superhost
-                      </Chip>
-                      <Chip size="sm" color="primary" startContent={<Shield className="w-3 h-3" />}>
-                        Identity verified
-                      </Chip>
-                      <Chip size="sm" color="secondary" startContent={<MessageCircle className="w-3 h-3" />}>
-                        Quick responder
-                      </Chip>
-                    </div>
-
-                    {/* Contact Button */}
-                    <Button 
-                      color="primary" 
-                      variant="solid" 
-                      size="lg"
-                      startContent={<MessageCircle className="w-4 h-4" />}
-                      className="w-full sm:w-auto"
-                      onPress={onContactOpen}
-                    >
-                      Contact Host
-                    </Button>
-                  </div>
                 </div>
-              </CardBody>
-            </Card>
+                <div className="mt-4 pt-4 border-t">
+                  <Button 
+                    variant="flat" 
+                    onClick={onContactOpen}
+                    className="w-full sm:w-auto bg-primary-500 text-white"
+                  >
+                    Contact Host
+                  </Button>
+                </div>
+              </div>
+            </div>
 
             {/* Location */}
             <Card className="shadow-sm border border-gray-200">
@@ -554,7 +676,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
 
           {/* Booking Card */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
+            <div className="lg:sticky lg:top-6 lg:h-fit">
               <Card className="shadow-lg border border-gray-200">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between w-full">
@@ -703,6 +825,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
               </Card>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
@@ -879,12 +1002,6 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
           </div>
         </div>
       )}
-
-      <SharePropertyModal
-        isOpen={isShareOpen}
-        onClose={onShareClose}
-        property={property}
-      />
 
       <ContactHostModal
         isOpen={isContactOpen}

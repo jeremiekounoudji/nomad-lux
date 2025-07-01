@@ -37,13 +37,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     { key: 'listings', label: 'My Listings', icon: Home },
     { key: 'requests', label: 'Booking Requests', icon: ClipboardList },
     { key: 'notifications', label: 'Notifications', icon: Bell },
-    { key: 'saved', label: 'Saved', icon: Bookmark },
-    { key: 'settings', label: 'Settings', icon: Settings },
-    { key: 'help', label: 'Help', icon: HelpCircle },
-    { key: 'privacy', label: 'Privacy', icon: Shield },
+    { key: 'help', label: 'Help Center', icon: HelpCircle },
+    { key: 'terms', label: 'Terms & Conditions', icon: Shield },
     { key: 'login', label: 'Login', icon: LogIn },
     { key: 'register', label: 'Register', icon: UserPlus },
-    { key: 'admin-login', label: 'Admin Access', icon: Crown },
+    { key: 'admin-login', label: 'Admin Access', icon: Crown }
   ]
 
   const handlePageChange = (page: string) => {

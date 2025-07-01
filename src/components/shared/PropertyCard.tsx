@@ -23,6 +23,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     }
   }
 
+  const handleViewDetails = () => {
+    onClick?.(property)
+  }
+
   return (
     <Card className={`overflow-hidden ${className}`}>
       <div className="relative">
@@ -42,9 +46,12 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               }}
               className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white"
             >
-              <Heart
-                className={`w-5 h-5 ${property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
-              />
+              <div className="flex items-center gap-1">
+                <Heart
+                  className={`w-5 h-5 ${property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                />
+                <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+              </div>
             </button>
           )}
         </div>
@@ -91,14 +98,14 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Price and Action Button */}
           <div className="flex items-center justify-between mt-2">
             <div className="text-left">
-              <p className="font-semibold text-gray-900">${property.price}</p>
+              <p className="font-semibold text-gray-900">${property.price || property.price_per_night}</p>
               <p className="text-sm text-gray-500">per night</p>
             </div>
             {showActions && (
               <Button
-                variant="light"
-                onClick={() => onView?.(property.id)}
-                className="text-sm"
+                color="primary"
+                onClick={handleViewDetails}
+                className="text-sm bg-primary-600 text-white hover:bg-primary-700"
               >
                 View Details
               </Button>
@@ -110,4 +117,4 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   )
 }
 
-export default PropertyCard 
+export default PropertyCard

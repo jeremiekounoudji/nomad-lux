@@ -12,6 +12,7 @@ interface CityPropertiesViewProps {
   onBackToHome: () => void;
   onRefetch: (city: City) => void;
   onLike: (id: string) => void;
+  onShare?: (property: Property) => void;
   onPropertyClick: (property: Property) => void;
 }
 
@@ -23,6 +24,7 @@ export const CityPropertiesView = ({
   onBackToHome,
   onRefetch,
   onLike,
+  onShare,
   onPropertyClick,
 }: CityPropertiesViewProps) => {
   return (
@@ -101,6 +103,7 @@ export const CityPropertiesView = ({
                   key={property.id}
                   property={property}
                   onLike={onLike}
+                  onShare={onShare}
                   onClick={onPropertyClick}
                 />
               ))

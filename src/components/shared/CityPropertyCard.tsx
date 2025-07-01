@@ -1,11 +1,12 @@
 import React from 'react'
 import { Property } from '../../interfaces/Property'
-import { MapPin, Users, Bed, Bath, Heart } from 'lucide-react'
+import { MapPin, Users, Bed, Bath, Heart, Share2 } from 'lucide-react'
 import { Button } from '@heroui/react'
 
 interface CityPropertyCardProps {
   property: Property
   onLike?: (id: string) => void
+  onShare?: (property: Property) => void
   onClick?: (property: Property) => void
   className?: string
 }
@@ -13,6 +14,7 @@ interface CityPropertyCardProps {
 const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
   property,
   onLike,
+  onShare,
   onClick,
   className = ''
 }) => {
@@ -23,6 +25,11 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation()
     onLike?.(property.id)
+  }
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onShare?.(property)
   }
 
   return (
@@ -39,17 +46,25 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
             className="w-full h-full object-cover rounded-lg border-2 border-primary/20"
           />
           
-          {/* Like button */}
-          <button
-            onClick={handleLike}
-            className="absolute top-2 right-2 p-1.5 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
-          >
-            <Heart
-              className={`w-4 h-4 ${
-                property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
-              }`}
-            />
-          </button>
+          {/* Action buttons */}
+          <div className="absolute top-2 right-2 flex gap-1">
+            <button
+              onClick={handleShare}
+              className="p-1.5 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
+            >
+              <Share2 className="w-4 h-4 text-white" />
+            </button>
+            <button
+              onClick={handleLike}
+              className="p-1.5 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
+            >
+              <Heart
+                className={`w-4 h-4 ${
+                  property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
+                }`}
+              />
+            </button>
+          </div>
 
           {/* Property type badge */}
           <div className="absolute bottom-2 left-2">

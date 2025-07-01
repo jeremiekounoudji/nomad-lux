@@ -83,7 +83,10 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     onPress={handleLike}
                     className={isLiked ? 'text-red-500' : 'text-gray-500'}
                   >
-                    <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                    <div className="flex items-center gap-1">
+                      <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+                      <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+                    </div>
                   </Button>
                   <Button
                     isIconOnly
