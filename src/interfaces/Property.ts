@@ -89,6 +89,10 @@ export interface Property {
   unavailable_dates?: string[]
   timezone?: string
   like_count: number
+  // Suspension fields
+  suspended_at?: string | null
+  suspended_by?: string | null
+  suspension_reason?: string | null
 }
 
 // Admin property interface
@@ -117,6 +121,10 @@ export interface AdminProperty {
   bedrooms: number
   bathrooms: number
   maxGuests: number
+  // Suspension fields
+  suspended_at?: string | null
+  suspended_by?: string | null
+  suspension_reason?: string | null
 }
 
 export interface PopularPlace {

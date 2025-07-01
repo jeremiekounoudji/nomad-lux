@@ -31,4 +31,7 @@ export interface DatabaseProperty {
   created_at: string
   updated_at: string
   status: string
+  suspended_at: string | null
+  suspended_by: string | null
+  suspension_reason: string | null
 } 

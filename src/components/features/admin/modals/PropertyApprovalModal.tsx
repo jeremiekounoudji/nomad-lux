@@ -8,12 +8,12 @@ import {
   Button
 } from '@heroui/react'
 import { CheckCircle } from 'lucide-react'
-import { Property } from './types'
+import { DatabaseProperty } from '../../../../interfaces/DatabaseProperty'
 
 interface PropertyApprovalModalProps {
   isOpen: boolean
   onClose: () => void
-  property: Property | null
+  property: DatabaseProperty | null
   onApprove: () => void
 }
 
@@ -42,17 +42,17 @@ export const PropertyApprovalModal: React.FC<PropertyApprovalModalProps> = ({
                   />
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                    <p className="text-sm text-gray-600">{property.location}</p>
-                    <p className="text-sm text-gray-600">Host: {property.host.display_name}</p>
+                    <p className="text-sm text-gray-600">{property.location.city}, {property.location.country}</p>
+                    <p className="text-sm text-gray-600">Host ID: {property.host_id}</p>
                   </div>
                 </div>
                 <div className="bg-success-50 border border-success-200 rounded-lg p-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-success-500 mt-0.5" />
                     <div>
-                      <p className="font-medium text-success-800">Ready to approve this property?</p>
+                      <p className="font-medium text-success-800">Ready to approve?</p>
                       <p className="text-sm text-success-700 mt-1">
-                        This will make the property visible to guests and allow bookings to be made.
+                        This property will be published and available for guests to book.
                         The host will be notified of the approval.
                       </p>
                     </div>
@@ -71,7 +71,7 @@ export const PropertyApprovalModal: React.FC<PropertyApprovalModalProps> = ({
             onPress={onApprove}
             startContent={<CheckCircle className="w-4 h-4" />}
           >
-            Confirm Approval
+            Approve Property
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -9,12 +9,12 @@ import {
   Textarea
 } from '@heroui/react'
 import { XCircle } from 'lucide-react'
-import { Property } from './types'
+import { DatabaseProperty } from '../../../../interfaces/DatabaseProperty'
 
 interface PropertyRejectionModalProps {
   isOpen: boolean
   onClose: () => void
-  property: Property | null
+  property: DatabaseProperty | null
   rejectionReason: string
   onReasonChange: (reason: string) => void
   onReject: () => void

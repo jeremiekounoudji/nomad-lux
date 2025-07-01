@@ -9,12 +9,12 @@ import {
   Textarea
 } from '@heroui/react'
 import { Ban } from 'lucide-react'
-import { Property } from './types'
+import { DatabaseProperty } from '../../../../interfaces/DatabaseProperty'
 
 interface PropertySuspensionModalProps {
   isOpen: boolean
   onClose: () => void
-  property: Property | null
+  property: DatabaseProperty | null
   suspensionReason: string
   onReasonChange: (reason: string) => void
   onSuspend: () => void
@@ -47,8 +47,8 @@ export const PropertySuspensionModal: React.FC<PropertySuspensionModalProps> = (
                   />
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                    <p className="text-sm text-gray-600">{property.location}</p>
-                    <p className="text-sm text-gray-600">Host: {property.host.display_name}</p>
+                    <p className="text-sm text-gray-600">{property.location.city}, {property.location.country}</p>
+                    <p className="text-sm text-gray-600">Host ID: {property.host_id}</p>
                   </div>
                 </div>
                 <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">

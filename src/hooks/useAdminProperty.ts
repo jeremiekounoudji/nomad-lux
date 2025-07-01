@@ -1,24 +1,158 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../lib/stores/authStore'
-import { usePropertyStore } from '../lib/stores/propertyStore'
-import { Property } from '../interfaces'
+import { useAdminPropertyStore } from '../lib/stores/adminPropertyStore'
+import { DatabaseProperty, Property, PropertyStatus, ListingStats } from '../interfaces'
 import toast from 'react-hot-toast'
+
+interface FetchPropertiesOptions {
+  status?: PropertyStatus | 'all'
+  page?: number
+  pageSize?: number
+  force?: boolean // Force fetch even if data exists
+}
 
 export const useAdminProperty = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
   const { user } = useAuthStore()
-  const { updateProperty: updatePropertyInStore, setProperties } = usePropertyStore()
+  const {
+    statusData,
+    propertyStats,
+    statusFilter,
+    statusCounts,
+    setStatusData,
+    updateProperty: updatePropertyInStore,
+    setStatusLoading,
+    setPropertyStats,
+    setError: setStoreError,
+    clearError: clearStoreError,
+    setStatusCounts,
+    setStatusFilter,
+    getCurrentProperties,
+    getCurrentPagination,
+    shouldFetchStatus,
+    clearStatus
+  } = useAdminPropertyStore()
 
   console.log('👨‍💼 useAdminProperty hook initialized')
 
   // Check if user is admin
   const isAdmin = user?.user_role === 'admin' || user?.user_role === 'super_admin'
 
-  // Approve a property
-  const approveProperty = async (propertyId: string): Promise<Property | null> => {
+  // Fetch admin properties with pagination and smart caching (following useUserListings pattern)
+  const fetchAdminProperties = useCallback(async (options: FetchPropertiesOptions = {}) => {
+    const { status = null, page = 1, pageSize = 10, force = false } = options
+    const statusKey = status || 'all'
+    
+    console.log('🔄 fetchAdminProperties called with options:', options)
+    console.log('👤 Current user:', user)
+    console.log('🆔 User ID:', user?.id, 'Role:', user?.user_role)
+    
+    if (!user?.id || !isAdmin) {
+      console.log('❌ No admin access')
+      setStoreError('Admin access required')
+      setIsLoading(false)
+      return { success: false, error: 'Admin access required' }
+    }
+
+    // Check if we should fetch data (unless forced)
+    if (!force && !shouldFetchStatus(statusKey, page)) {
+      console.log(`⚡ Using cached data for ${statusKey}, page ${page}`)
+      return { success: true, cached: true }
+    }
+
+    console.log(`🔄 Fetching admin properties, status: ${statusKey}, page: ${page}`)
+    setStatusLoading(statusKey, true)
+    clearStoreError()
+
+    try {
+      console.log('📡 Calling list_properties_by_status RPC function')
+      
+      // Use RPC function for complex queries with filters
+      const { data, error: supabaseError } = await supabase
+        .rpc('list_properties_by_status', {
+          p_status: status === 'all' ? null : status,
+          p_filters: null, // Can be extended for advanced filtering
+          p_page: page,
+          p_per_page: pageSize,
+          p_sort_by: 'created_at',
+          p_sort_order: 'desc'
+        })
+
+      console.log('📊 RPC Response:', { data, error: supabaseError })
+
+      if (supabaseError) {
+        console.error('❌ Error fetching admin properties:', supabaseError)
+        setStoreError(supabaseError.message)
+        setStatusLoading(statusKey, false)
+        return { success: false, error: supabaseError.message }
+      }
+
+      console.log('✅ Fetched admin properties:', data?.data?.length || 0, 'properties')
+      
+      const properties = data?.data || []
+      const totalItems = data?.total_count || 0
+      const totalPages = data?.total_pages || 0
+      
+      // Use getPropertyStatistics to update statusCounts
+      const stats = await getPropertyStatistics()
+      if (stats) {
+        setStatusCounts({
+          all: stats.totalProperties,
+          pending: stats.pendingProperties,
+          approved: stats.approvedProperties,
+          rejected: stats.rejectedProperties,
+          suspended: stats.suspendedProperties || 0,
+        })
+      }
+      
+      const paginationInfo = {
+        currentPage: page,
+        pageSize,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1
+      }
+      
+      // Update status data in store
+      const statusDataEntry = {
+        properties,
+        pagination: paginationInfo,
+        lastFetched: Date.now(),
+        isLoading: false
+      }
+      
+      setStatusData(statusKey, statusDataEntry)
+
+      // Create real statistics for each property
+      const realStats: Record<string, ListingStats> = {}
+      properties.forEach((property: DatabaseProperty) => {
+        realStats[property.id] = {
+          views: property.view_count || 0,
+          bookings: property.booking_count || 0,
+          revenue: property.total_revenue || 0,
+          rating: property.rating || 0,
+          status: property.status as PropertyStatus
+        }
+      })
+      setPropertyStats(realStats)
+
+      return { success: true, data: properties, totalItems, totalPages }
+
+    } catch (error) {
+      console.error('❌ Unexpected error fetching admin properties:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch properties'
+      setStoreError(errorMessage)
+      setStatusLoading(statusKey, false)
+      return { success: false, error: errorMessage }
+    }
+  }, [user?.id, user?.user_role, isAdmin, shouldFetchStatus, setStatusData, setPropertyStats, setStatusLoading, setStoreError, clearStoreError, setStatusCounts])
+
+  // Approve a property (updated to work with store)
+  const approveProperty = async (propertyId: string): Promise<DatabaseProperty | null> => {
     if (!user || !isAdmin) {
       console.error('❌ User not authorized for property approval')
       toast.error('Admin access required')
@@ -30,6 +164,7 @@ export const useAdminProperty = () => {
     setError(null)
 
     try {
+      // Direct table update (not RPC) for simple status changes
       const { data, error } = await supabase
         .from('properties')
         .update({
@@ -39,19 +174,7 @@ export const useAdminProperty = () => {
         })
         .eq('id', propertyId)
         .eq('status', 'pending') // Only approve pending properties
-        .select(`
-          *,
-          host:users(
-            id,
-            display_name,
-            username,
-            avatar_url,
-            host_rating,
-            response_rate,
-            response_time,
-            is_identity_verified
-          )
-        `)
+          .select()
         .single()
 
       if (error) {
@@ -64,6 +187,12 @@ export const useAdminProperty = () => {
       }
 
       console.log('✅ Property approved successfully:', data.id)
+
+      // Update store with the updated property
+      updatePropertyInStore(data)
+      
+      // Refresh the current data to get updated counts
+      await fetchAdminProperties({ force: true })
 
       toast.success('Property approved successfully!')
       setIsLoading(false)
@@ -79,8 +208,8 @@ export const useAdminProperty = () => {
     }
   }
 
-  // Reject a property
-  const rejectProperty = async (propertyId: string, rejectionReason: string): Promise<Property | null> => {
+  // Reject a property (updated to work with store)
+  const rejectProperty = async (propertyId: string, rejectionReason: string): Promise<DatabaseProperty | null> => {
     if (!user || !isAdmin) {
       console.error('❌ User not authorized for property rejection')
       toast.error('Admin access required')
@@ -97,6 +226,7 @@ export const useAdminProperty = () => {
     setError(null)
 
     try {
+      // Direct table update (not RPC) for simple status changes
       const { data, error } = await supabase
         .from('properties')
         .update({
@@ -121,6 +251,12 @@ export const useAdminProperty = () => {
 
       console.log('❌ Property rejected successfully:', data.id)
 
+      // Update store with the updated property
+      updatePropertyInStore(data)
+      
+      // Refresh the current data to get updated counts
+      await fetchAdminProperties({ force: true })
+
       toast.success('Property rejected successfully!')
       setIsLoading(false)
       return data
@@ -135,114 +271,82 @@ export const useAdminProperty = () => {
     }
   }
 
-  // Get properties by status (for admin dashboard)
-  const getPropertiesByStatus = async (
-    status: 'pending' | 'approved' | 'rejected',
-    filters?: {
-      priceRange?: { min: number; max: number }
-      location?: { lat: number; lng: number; radius: number }
-      amenities?: string[]
-      propertyType?: string
-      maxGuests?: number
-    },
-    page: number = 1,
-    perPage: number = 10,
-    sortBy: string = 'created_at',
-    sortOrder: 'asc' | 'desc' = 'desc'
-  ): Promise<{ properties: Property[]; totalCount: number; totalPages: number } | null> => {
+  // Suspend a property (updated to work with store)
+  const suspendProperty = async (propertyId: string, suspensionReason: string, skipReasonCheck = false): Promise<DatabaseProperty | null> => {
     if (!user || !isAdmin) {
-      console.error('❌ User not authorized to view properties by status')
+      console.error('❌ User not authorized for property suspension')
       toast.error('Admin access required')
       return null
     }
+    if (!skipReasonCheck && !suspensionReason.trim()) {
+      toast.error('Please provide a suspension reason')
+      return null
+    }
 
-    console.log('📋 Fetching properties by status:', status)
+    console.log('⏸️ Suspending property:', propertyId, 'Reason:', suspensionReason)
     setIsLoading(true)
     setError(null)
 
     try {
       const { data, error } = await supabase
-        .rpc('list_properties_by_status', {
-          p_status: status,
-          p_filters: filters ? JSON.stringify(filters) : null,
-          p_page: page,
-          p_per_page: perPage,
-          p_sort_by: sortBy,
-          p_sort_order: sortOrder
+        .from('properties')
+        .update({
+          status: 'suspended',
+          suspended_at: new Date().toISOString(),
+          suspended_by: user.id,
+          suspension_reason: suspensionReason
         })
+        .eq('id', propertyId)
+        .eq('status', 'approved') // Only suspend approved properties
+        .select()
+        .single()
 
       if (error) {
-        console.error('❌ Supabase error fetching properties by status:', error)
-        throw new Error(`Failed to fetch properties: ${error.message}`)
+        console.error('❌ Supabase error suspending property:', error)
+        throw new Error(`Failed to suspend property: ${error.message}`)
       }
 
       if (!data) {
-        throw new Error('No data returned from properties fetch')
+        throw new Error('No data returned from property suspension')
       }
 
-      console.log('✅ Properties fetched successfully:', data.total_count, 'total')
-
-      // Transform search results
-      const transformedProperties: Property[] = data.data.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.description,
-        price: item.price_per_night,
-        currency: item.currency,
-        location: item.location,
-        images: item.images,
-        videos: item.video ? [item.video] : [],
-        host: {
-          id: item.host_id,
-          name: item.host_name,
-          username: '',
-          avatar: item.host_avatar || '',
-          isVerified: false,
-          email: '',
-          phone: '',
-          rating: item.host_rating || 0,
-          responseRate: item.host_response_rate || 0,
-          responseTime: item.host_response_time || 'Unknown'
-        },
-        rating: 0,
-        reviewCount: 0,
-        propertyType: item.property_type,
-        amenities: item.amenities,
-        maxGuests: item.max_guests,
-        bedrooms: item.bedrooms,
-        bathrooms: item.bathrooms,
-        isLiked: false,
-        createdAt: item.created_at,
-        cleaningFee: item.cleaning_fee,
-        serviceFee: item.service_fee,
-        totalBeforeTaxes: item.price_per_night + (item.cleaning_fee || 0) + (item.service_fee || 0)
-      }))
-
-      // Update store with fetched properties
-      setProperties(transformedProperties)
-
+      console.log('⏸️ Property suspended successfully:', data.id)
+      updatePropertyInStore(data)
+      await fetchAdminProperties({ force: true })
+      toast.success('Property suspended successfully!')
       setIsLoading(false)
-      return {
-        properties: transformedProperties,
-        totalCount: data.total_count,
-        totalPages: data.total_pages
-      }
-
+      return data
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-      console.error('❌ Error fetching properties by status:', error)
+      console.error('❌ Error suspending property:', error)
       setError(errorMessage)
+      toast.error(`Failed to suspend property: ${errorMessage}`)
       setIsLoading(false)
       return null
     }
   }
 
+  // Handle tab selection change
+  const handleTabSelectionChange = useCallback(async (key: React.Key) => {
+    console.log('🔄 Admin tab selection changed to:', key)
+    const newStatus = key as PropertyStatus | 'all'
+    setStatusFilter(newStatus)
+    await fetchAdminProperties({ status: newStatus })
+  }, [setStatusFilter, fetchAdminProperties])
+
+  // Handle pagination change
+  const goToPage = useCallback(async (page: number) => {
+    console.log('📄 Admin page change to:', page)
+    await fetchAdminProperties({ status: statusFilter, page })
+  }, [fetchAdminProperties, statusFilter])
+
   // Get property statistics (for admin dashboard)
-  const getPropertyStatistics = async (): Promise<{
+  const getPropertyStatistics = useCallback(async (): Promise<{
     totalProperties: number
     pendingProperties: number
     approvedProperties: number
     rejectedProperties: number
+    suspendedProperties: number
     recentSubmissions: number
     recentApprovals: number
     recentRejections: number
@@ -258,87 +362,23 @@ export const useAdminProperty = () => {
     setError(null)
 
     try {
-      // Get basic counts
-      const { data: totalData, error: totalError } = await supabase
-        .from('properties')
-        .select('status', { count: 'exact', head: true })
-
-      if (totalError) {
-        throw new Error(`Failed to fetch total count: ${totalError.message}`)
-      }
-
-      const { data: pendingData, error: pendingError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'pending')
-
-      if (pendingError) {
-        throw new Error(`Failed to fetch pending count: ${pendingError.message}`)
-      }
-
-      const { data: approvedData, error: approvedError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'approved')
-
-      if (approvedError) {
-        throw new Error(`Failed to fetch approved count: ${approvedError.message}`)
-      }
-
-      const { data: rejectedData, error: rejectedError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'rejected')
-
-      if (rejectedError) {
-        throw new Error(`Failed to fetch rejected count: ${rejectedError.message}`)
-      }
-
-      // Get recent submissions (last 7 days)
-      const sevenDaysAgo = new Date()
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
-      const { data: recentSubmissionsData, error: recentSubmissionsError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .gte('created_at', sevenDaysAgo.toISOString())
-
-      if (recentSubmissionsError) {
-        throw new Error(`Failed to fetch recent submissions: ${recentSubmissionsError.message}`)
-      }
-
-      const { data: recentApprovalsData, error: recentApprovalsError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .gte('approved_at', sevenDaysAgo.toISOString())
-
-      if (recentApprovalsError) {
-        throw new Error(`Failed to fetch recent approvals: ${recentApprovalsError.message}`)
-      }
-
-      const { data: recentRejectionsData, error: recentRejectionsError } = await supabase
-        .from('properties')
-        .select('id', { count: 'exact', head: true })
-        .gte('rejected_at', sevenDaysAgo.toISOString())
-
-      if (recentRejectionsError) {
-        throw new Error(`Failed to fetch recent rejections: ${recentRejectionsError.message}`)
-      }
-
+      // Use the new RPC function (returns a single record)
+      const { data, error } = await supabase.rpc('get_admin_property_statistics')
+      if (error) throw new Error(error.message)
+      if (!data) throw new Error('No statistics returned')
       const statistics = {
-        totalProperties: totalData?.length || 0,
-        pendingProperties: pendingData?.length || 0,
-        approvedProperties: approvedData?.length || 0,
-        rejectedProperties: rejectedData?.length || 0,
-        recentSubmissions: recentSubmissionsData?.length || 0,
-        recentApprovals: recentApprovalsData?.length || 0,
-        recentRejections: recentRejectionsData?.length || 0
+        totalProperties: data.total_properties || 0,
+        pendingProperties: data.pending_properties || 0,
+        approvedProperties: data.approved_properties || 0,
+        rejectedProperties: data.rejected_properties || 0,
+        suspendedProperties: data.suspended_properties || 0,
+        recentSubmissions: data.recent_submissions || 0,
+        recentApprovals: data.recent_approvals || 0,
+        recentRejections: data.recent_rejections || 0
       }
-
       console.log('✅ Property statistics fetched:', statistics)
       setIsLoading(false)
       return statistics
-
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
       console.error('❌ Error fetching property statistics:', error)
@@ -346,19 +386,93 @@ export const useAdminProperty = () => {
       setIsLoading(false)
       return null
     }
-  }
+  }, [user, isAdmin])
+
+  // Bulk approve properties
+  const bulkApproveProperties = async (propertyIds: string[]): Promise<{ success: string[]; failed: { id: string; error: string }[] }> => {
+    const success: string[] = [];
+    const failed: { id: string; error: string }[] = [];
+    for (const id of propertyIds) {
+      try {
+        const result = await approveProperty(id);
+        if (result) {
+          success.push(id);
+        } else {
+          failed.push({ id, error: 'Unknown error' });
+        }
+      } catch (e: any) {
+        failed.push({ id, error: e?.message || 'Unknown error' });
+      }
+    }
+    return { success, failed };
+  };
+
+  // Bulk reject properties (single reason for all)
+  const bulkRejectProperties = async (propertyIds: string[], reason: string): Promise<{ success: string[]; failed: { id: string; error: string }[] }> => {
+    const success: string[] = [];
+    const failed: { id: string; error: string }[] = [];
+    for (const id of propertyIds) {
+      try {
+        const result = await rejectProperty(id, reason);
+        if (result) {
+          success.push(id);
+        } else {
+          failed.push({ id, error: 'Unknown error' });
+        }
+      } catch (e: any) {
+        failed.push({ id, error: e?.message || 'Unknown error' });
+      }
+    }
+    return { success, failed };
+  };
+
+  // Bulk suspend properties (single reason for all)
+  const bulkSuspendProperties = async (propertyIds: string[], reason: string): Promise<{ success: string[]; failed: { id: string; error: string }[] }> => {
+    const success: string[] = [];
+    const failed: { id: string; error: string }[] = [];
+    for (const id of propertyIds) {
+      try {
+        const result = await suspendProperty(id, reason, true);
+        if (result) {
+          success.push(id);
+        } else {
+          failed.push({ id, error: 'Unknown error' });
+        }
+      } catch (e: any) {
+        failed.push({ id, error: e?.message || 'Unknown error' });
+      }
+    }
+    return { success, failed };
+  };
+
+  // Get filtered properties from store (like in useUserListings)
+  const filteredProperties = getCurrentProperties()
+  const pagination = getCurrentPagination()
 
   return {
-    // State
-    isLoading,
-    error,
-    isAdmin,
+    // State from store
+    filteredProperties,
+    propertyStats,
+    isLoading: statusData[statusFilter]?.isLoading || isLoading,
+    error: error,
+    statusFilter,
+    statusCounts,
+    pagination,
     
     // Actions
+    fetchAdminProperties,
     approveProperty,
     rejectProperty,
-    getPropertiesByStatus,
+    suspendProperty,
+    bulkApproveProperties,
+    bulkRejectProperties,
+    bulkSuspendProperties,
     getPropertyStatistics,
+    handleTabSelectionChange,
+    goToPage,
+    
+    // Admin check
+    isAdmin,
     
     // Utilities
     clearError: () => setError(null)

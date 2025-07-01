@@ -339,4 +339,59 @@ export interface HeaderSkeletonProps {
 
 export interface TabsSkeletonProps {
   className?: string
+}
+
+export interface PropertyDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperty: import('./DatabaseProperty').DatabaseProperty | null;
+  reviewChecklist: {
+    title: boolean;
+    description: boolean;
+    images: boolean;
+    location: boolean;
+    price: boolean;
+    amenities: boolean;
+    policies: boolean;
+  };
+  setReviewChecklist: React.Dispatch<React.SetStateAction<{
+    title: boolean;
+    description: boolean;
+    images: boolean;
+    location: boolean;
+    price: boolean;
+    amenities: boolean;
+    policies: boolean;
+  }>>;
+  allChecked: boolean;
+  onRejectOpen: () => void;
+  handleApproveConfirm: (property: import('./DatabaseProperty').DatabaseProperty) => void;
+}
+
+export interface ImageLightboxModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperty: import('./DatabaseProperty').DatabaseProperty | null;
+  currentImageIndex: number;
+  prevImage: () => void;
+  nextImage: () => void;
+}
+
+export interface BulkActionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  bulkActionType: 'approve' | 'reject' | null;
+  selectedProperties: string[];
+  rejectionReason: string;
+  setRejectionReason: (reason: string) => void;
+  handleBulkConfirm: () => void;
+  bulkLoading: boolean;
+}
+
+export interface BulkSuspendModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperties: string[];
+  bulkSuspendLoading: boolean;
+  handleBulkSuspendConfirm: () => void;
 } 
