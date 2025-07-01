@@ -61,6 +61,16 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     return initial
   })
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { 
+    isOpen: isDeclineModalOpen, 
+    onOpen: onDeclineModalOpen, 
+    onClose: onDeclineModalClose 
+  } = useDisclosure()
+  const {
+    isOpen: isConfirmModalOpen,
+    onOpen: onConfirmModalOpen,
+    onClose: onConfirmModalClose
+  } = useDisclosure()
 
   // Hooks
   const { user } = useAuthStore()
@@ -218,6 +228,17 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     }
   }
 
+  const handleApproveConfirm = async () => {
+    if (!selectedRequest) return;
+    
+    try {
+      await handleApprove(selectedRequest.id);
+      onConfirmModalClose();
+    } catch (error) {
+      console.error('Error in approval confirmation:', error);
+    }
+  };
+
   const currentRequests = bookingRequestsByStatus[selectedTab] || []
   const currentPagination = paginationData[selectedTab]
 
@@ -228,8 +249,19 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     <MainLayout>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Banner Header */}
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-          <div className="text-left">
+        <div className="relative bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8 overflow-hidden">
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 z-0 opacity-20"
+            style={{
+              backgroundImage: 'url("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070")',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+          {/* Content */}
+          <div className="relative z-10">
             <h1 className="text-3xl font-bold mb-2">Booking Requests</h1>
             <p className="text-primary-100 text-lg">Manage and respond to guest booking requests</p>
           </div>
@@ -294,20 +326,25 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
               </div>
             )}
             {/* Requests Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {requests.length === 0 ? (
-                <Card>
-                  <CardBody className="text-center py-8">
-                    <div className="text-gray-500 mb-2">No requests found</div>
-                    <p className="text-sm text-gray-400">
-                      {selectedTab === 'pending' 
-                        ? 'You have no pending booking requests'
-                        : `You have no ${selectedTab} bookings`}
-                    </p>
+            {requests.length === 0 ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <Card className="w-full max-w-md">
+                  <CardBody className="text-center py-12">
+                    <div className="flex flex-col items-center gap-4">
+                      <ClipboardList className="w-16 h-16 text-gray-400" />
+                      <div className="text-xl font-semibold text-gray-700 mb-2">No requests found</div>
+                      <p className="text-gray-500">
+                        {selectedTab === 'pending' 
+                          ? 'You have no pending booking requests'
+                          : `You have no ${selectedTab} bookings`}
+                      </p>
+                    </div>
                   </CardBody>
                 </Card>
-              ) : (
-                requests.map((request) => (
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {requests.map((request) => (
                   <Card key={request.id} className="overflow-hidden flex flex-col">
                     <CardBody className="p-4 flex flex-col gap-4">
                       {/* Property Image - full width, top */}
@@ -422,11 +459,11 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                                 startContent={<X className="w-4 h-4" />}
                                 onPress={() => {
                                   setSelectedRequest(request)
-                                  onOpen()
+                                  onDeclineModalOpen()
                                 }}
                                 className="flex-1"
-                            isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
-                            disabled={updatingBookingId === request.id}
+                                isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
+                                disabled={updatingBookingId === request.id}
                               >
                                 Decline
                               </Button>
@@ -434,10 +471,13 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                                 size="sm"
                                 color="success"
                                 startContent={<Check className="w-4 h-4" />}
-                                onPress={() => handleApprove(request.id)}
+                                onPress={() => {
+                                  setSelectedRequest(request)
+                                  onConfirmModalOpen()
+                                }}
                                 className="flex-1"
-                            isLoading={updatingBookingId === request.id && updatingAction === 'approve'}
-                            disabled={updatingBookingId === request.id}
+                                isLoading={updatingBookingId === request.id && updatingAction === 'approve'}
+                                disabled={updatingBookingId === request.id}
                               >
                                 Approve
                               </Button>
@@ -454,9 +494,9 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                           )}
                     </CardBody>
                   </Card>
-                ))
-              )}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* Pagination */}
             {currentPagination && currentRequests.length > 0 && (
@@ -657,8 +697,8 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                       variant="flat"
                       startContent={<X className="w-4 h-4" />}
                       onPress={() => {
-                        handleDecline(selectedRequest.id)
                         onClose()
+                        onDeclineModalOpen()
                       }}
                       isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'decline'}
                       disabled={updatingBookingId === selectedRequest.id}
@@ -669,8 +709,8 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                       color="success"
                       startContent={<Check className="w-4 h-4" />}
                       onPress={() => {
-                        handleApprove(selectedRequest.id)
                         onClose()
+                        onConfirmModalOpen()
                       }}
                       isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'approve'}
                       disabled={updatingBookingId === selectedRequest.id}
@@ -687,9 +727,9 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
 
       {/* Decline Booking Modal */}
       <Modal 
-        isOpen={isOpen} 
+        isOpen={isDeclineModalOpen} 
         onClose={() => {
-          onClose()
+          onDeclineModalClose()
           setRejectReason('')
         }}
         size="md"
@@ -731,6 +771,43 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                   disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
                 >
                   Decline Booking
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Confirm Approval Modal */}
+      <Modal 
+        isOpen={isConfirmModalOpen} 
+        onClose={onConfirmModalClose}
+        size="sm"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <h2 className="text-xl font-bold">Confirm Approval</h2>
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-600">
+                  Are you sure you want to approve this booking request? This will notify the guest and initiate the payment process.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  variant="light"
+                  onPress={onClose}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="success"
+                  onPress={handleApproveConfirm}
+                  isLoading={updatingBookingId === selectedRequest?.id}
+                >
+                  Confirm Approval
                 </Button>
               </ModalFooter>
             </>

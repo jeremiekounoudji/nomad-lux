@@ -703,13 +703,26 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       selectedCheckIn={checkIn}
                       selectedCheckOut={checkOut}
                       onDateChange={(checkInDate, checkOutDate) => {
-                        setCheckIn(checkInDate)
-                        setCheckOut(checkOutDate)
-                        setValidationError('')
+                        console.log('📅 Date change:', { checkInDate, checkOutDate })
+                        if (checkInDate !== checkIn || checkOutDate !== checkOut) {
+                          setCheckIn(checkInDate)
+                          setCheckOut(checkOutDate)
+                          setValidationError('')
+                          // Show toast for date selection
+                          if (checkInDate && !checkOutDate) {
+                            toast.success('Check-in date selected')
+                          } else if (checkInDate && checkOutDate) {
+                            toast.success('Check-out date selected')
+                          }
+                        }
                       }}
                       onTimeChange={(checkInTimeNew, checkOutTimeNew) => {
-                        setCheckInTime(checkInTimeNew)
-                        setCheckOutTime(checkOutTimeNew)
+                        console.log('🕒 Time change:', { checkInTimeNew, checkOutTimeNew })
+                        if (checkInTimeNew !== checkInTime || checkOutTimeNew !== checkOutTime) {
+                          setCheckInTime(checkInTimeNew)
+                          setCheckOutTime(checkOutTimeNew)
+                          toast.success('Time updated')
+                        }
                       }}
                     />
                   </div>
@@ -721,35 +734,97 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       <input
                         type="time"
                         value={checkInTime}
-                        onChange={(e) => setCheckInTime(e.target.value)}
+                        onChange={(e) => {
+                          const newTime = e.target.value;
+                          const [hours, minutes] = newTime.split(':').map(Number);
+                          const timeInMinutes = hours * 60 + minutes;
+                          
+                          // Validate check-in time (6:00 AM - 10:00 PM)
+                          if (timeInMinutes < 360 || timeInMinutes > 1320) {
+                            toast.error('Check-in time must be between 6:00 AM and 10:00 PM');
+                            return;
+                          }
+                          
+                          console.log('🕒 Setting check-in time:', newTime);
+                          setCheckInTime(newTime);
+                          toast.success('Check-in time updated');
+                        }}
+                        min="06:00"
+                        max="22:00"
+                        step="1800"
                         className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
                       />
+                      <p className="text-xs text-gray-500 mt-1">Check-in available 6:00 AM - 10:00 PM</p>
                     </div>
                     <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
                       <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-OUT TIME</label>
                       <input
                         type="time"
                         value={checkOutTime}
-                        onChange={(e) => setCheckOutTime(e.target.value)}
+                        onChange={(e) => {
+                          const newTime = e.target.value;
+                          const [hours, minutes] = newTime.split(':').map(Number);
+                          const timeInMinutes = hours * 60 + minutes;
+                          
+                          // Validate check-out time (6:00 AM - 12:00 PM)
+                          if (timeInMinutes < 360 || timeInMinutes > 720) {
+                            toast.error('Check-out time must be between 6:00 AM and 12:00 PM');
+                            return;
+                          }
+                          
+                          console.log('🕒 Setting check-out time:', newTime);
+                          setCheckOutTime(newTime);
+                          toast.success('Check-out time updated');
+                        }}
+                        min="06:00"
+                        max="12:00"
+                        step="1800"
                         className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
                       />
+                      <p className="text-xs text-gray-500 mt-1">Check-out required by 12:00 PM</p>
                     </div>
                   </div>
 
                   {/* Guests */}
                   <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
                     <label className="block text-xs font-semibold text-gray-700 mb-1">GUESTS</label>
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(Number(e.target.value))}
-                      className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                    >
-                      {Array.from({ length: property.max_guests }, (_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1} guest{i > 0 ? 's' : ''}
-                        </option>
-                      ))}
-                    </select>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-5 h-5 text-gray-500" />
+                        <span className="text-gray-900">{guests} guest{guests > 1 ? 's' : ''}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="light"
+                          onPress={() => {
+                            if (guests > 1) {
+                              console.log('Decreasing guests from', guests, 'to', guests - 1)
+                              setGuests(prev => Math.max(1, prev - 1))
+                            }
+                          }}
+                          isDisabled={guests <= 1}
+                        >
+                          <span className="text-2xl font-bold">-</span>
+                        </Button>
+                        <Button
+                          isIconOnly
+                          size="sm"
+                          variant="light"
+                          onPress={() => {
+                            if (guests < property.max_guests) {
+                              console.log('Increasing guests from', guests, 'to', guests + 1)
+                              setGuests(prev => Math.min(property.max_guests, prev + 1))
+                            }
+                          }}
+                          isDisabled={guests >= property.max_guests}
+                        >
+                          <span className="text-2xl font-bold">+</span>
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">Maximum {property.max_guests} guests allowed</p>
                   </div>
 
                   {/* Special Requests */}
@@ -769,7 +844,7 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                     </div>
                   </div>
 
-                  {/* Reserve Button - Make it more prominent */}
+                  {/* Reserve Button */}
                   <div className="mb-4">
                     <Button 
                       color="primary" 
@@ -778,10 +853,12 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       radius="lg"
                       onPress={handleReserveClick}
                       startContent={<Calendar className="w-5 h-5" />}
-                      isLoading={isCheckingAvailability}
-                      disabled={isCheckingAvailability}
+                      isLoading={isCheckingAvailability || isCreatingBooking}
+                      disabled={isCheckingAvailability || isCreatingBooking || !checkIn || !checkOut}
                     >
-                      {isCheckingAvailability ? 'Checking Availability...' : 'Reserve Now'}
+                      {isCheckingAvailability ? 'Checking Availability...' : 
+                       isCreatingBooking ? 'Creating Booking...' : 
+                       !checkIn || !checkOut ? 'Select dates' : 'Reserve Now'}
                     </Button>
                   </div>
 
@@ -791,6 +868,18 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
                       <div className="flex items-center gap-2">
                         <AlertCircle className="w-4 h-4 text-danger-600" />
                         <p className="text-sm text-danger-700 font-medium">{validationError}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Booking Status */}
+                  {(checkIn && checkOut) && (
+                    <div className="mb-4 p-3 bg-primary-50 border border-primary-200 rounded-lg">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-primary-600" />
+                        <p className="text-sm text-primary-700">
+                          {billingNights} night{billingNights > 1 ? 's' : ''} · {guests} guest{guests > 1 ? 's' : ''}
+                        </p>
                       </div>
                     </div>
                   )}

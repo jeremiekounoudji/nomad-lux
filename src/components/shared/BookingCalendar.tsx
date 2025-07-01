@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react'
 import { Calendar, DateValue } from '@heroui/react'
-import { today, getLocalTimeZone } from '@internationalized/date'
+import { today, getLocalTimeZone, type CalendarDate } from '@internationalized/date'
 import { AlertCircle, CheckCircle, Calendar as CalendarIcon, MapPin } from 'lucide-react'
 import { getTimezoneInfo } from '../../utils/propertyUtils'
+import toast from 'react-hot-toast'
 
 interface BookingCalendarProps {
   propertyId: string
@@ -37,6 +38,8 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 }) => {
   const [showCalendar, setShowCalendar] = useState(false)
   const [selectedDate, setSelectedDate] = useState<DateValue | null>(null)
+  const [checkInTime, setCheckInTime] = useState('06:00')
+  const [checkOutTime, setCheckOutTime] = useState('12:00')
 
   // Process availability data for the next 6 months
   const availabilityData = useMemo(() => {
@@ -91,22 +94,152 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     const availability = availabilityMap.get(dateString)
     
     if (availability && !availability.isAvailable) {
-      console.log('Selected date is not available:', dateString)
+      console.log('❌ Selected date is not available:', dateString)
+      toast.error(`${new Date(dateString).toLocaleDateString()} is not available for booking`)
       return
     }
 
-    // Auto-fill date inputs based on current selection
+    console.log('🗓️ Calendar date selected:', dateString)
+    console.log('Current state - Check-in:', selectedCheckIn, 'Check-out:', selectedCheckOut)
+
     if (!selectedCheckIn || (selectedCheckIn && selectedCheckOut)) {
       // Start new selection with check-in
+      console.log('📅 Setting new check-in date:', dateString)
       onDateChange(dateString, '')
+      setSelectedDate(date)
+      toast.success('Check-in date selected')
     } else if (selectedCheckIn && !selectedCheckOut) {
-      // Set check-out date
-      if (new Date(dateString) > new Date(selectedCheckIn)) {
+      // Set check-out date if it's after check-in
+      const checkInDate = new Date(selectedCheckIn)
+      const selectedDate = new Date(dateString)
+      
+      if (selectedDate > checkInDate) {
+        console.log('📅 Setting check-out date:', dateString)
         onDateChange(selectedCheckIn, dateString)
+        toast.success('Check-out date selected')
       } else {
         // If selected date is before check-in, make it the new check-in
+        console.log('📅 Selected date is before current check-in, updating check-in:', dateString)
         onDateChange(dateString, '')
+        toast.success('Updated check-in date')
       }
+      setSelectedDate(date)
+    }
+  }
+
+  // Check if a date range has any unavailable dates
+  const isDateRangeAvailable = (startDate: Date, endDate: Date): { isAvailable: boolean; conflictDate: string } => {
+    let currentDate = new Date(startDate)
+    while (currentDate <= endDate) {
+      const dateString = currentDate.toISOString().split('T')[0]
+      const availability = availabilityMap.get(dateString)
+      if (availability && !availability.isAvailable) {
+        return { isAvailable: false, conflictDate: dateString }
+      }
+      currentDate.setDate(currentDate.getDate() + 1)
+    }
+    return { isAvailable: true, conflictDate: '' }
+  }
+
+  // Handle direct input changes
+  const handleInputChange = (type: 'checkin' | 'checkout', value: string) => {
+    console.log(`🔄 Handling ${type} input change:`, value)
+    
+    if (!value) {
+      if (type === 'checkin') {
+        console.log('🗑️ Clearing check-in date')
+        onDateChange('', '')  // Clear both dates when check-in is cleared
+        toast.success('Dates cleared')
+      } else {
+        console.log('🗑️ Clearing check-out date')
+        onDateChange(selectedCheckIn || '', '')  // Only clear check-out
+        toast.success('Check-out date cleared')
+      }
+      return
+    }
+
+    const newDate = new Date(value)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    // Validate date is not in the past
+    if (newDate < today) {
+      console.log('❌ Cannot select past date')
+      toast.error('Cannot select a date in the past')
+      return
+    }
+
+    // Check if the individual date is available
+    const availability = availabilityMap.get(value)
+    if (availability && !availability.isAvailable) {
+      console.log('❌ Selected date is not available:', value)
+      toast.error(`${new Date(value).toLocaleDateString()} is not available for booking`)
+      return
+    }
+    
+    if (type === 'checkin') {
+      const currentCheckOut = selectedCheckOut ? new Date(selectedCheckOut) : null
+      
+      if (currentCheckOut) {
+        // Check if the new date range has any unavailable dates
+        const { isAvailable, conflictDate } = isDateRangeAvailable(newDate, currentCheckOut)
+        if (!isAvailable) {
+          console.log('❌ Date range contains unavailable date:', conflictDate)
+          toast.error(`The selected date range includes an unavailable date: ${new Date(conflictDate).toLocaleDateString()}`)
+          return
+        }
+
+        if (currentCheckOut <= newDate) {
+          // If new check-in is after or equal to current check-out, clear check-out
+          console.log('📅 New check-in affects check-out, clearing check-out')
+          onDateChange(value, '')
+          toast.success('Check-out date cleared due to new check-in date')
+        } else {
+          console.log('📅 Updating check-in date:', value)
+          onDateChange(value, selectedCheckOut || '')
+          toast.success('Check-in date updated')
+        }
+      } else {
+        console.log('📅 Setting new check-in date:', value)
+        onDateChange(value, '')
+        toast.success('Check-in date selected')
+      }
+    } else {
+      if (!selectedCheckIn) {
+        console.log('❌ Please select check-in date first')
+        toast.error('Please select a check-in date first')
+        return
+      }
+      
+      const checkInDate = new Date(selectedCheckIn)
+      
+      if (newDate <= checkInDate) {
+        console.log('❌ Check-out must be after check-in')
+        toast.error('Check-out date must be after check-in date')
+        return
+      }
+
+      // Check if the new date range has any unavailable dates
+      const { isAvailable, conflictDate } = isDateRangeAvailable(checkInDate, newDate)
+      if (!isAvailable) {
+        console.log('❌ Date range contains unavailable date:', conflictDate)
+        toast.error(`The selected date range includes an unavailable date: ${new Date(conflictDate).toLocaleDateString()}`)
+        return
+      }
+
+      console.log('📅 Updating check-out date:', value)
+      onDateChange(selectedCheckIn, value)
+      toast.success('Check-out date updated')
+    }
+  }
+
+  // Handle time change
+  const handleTimeChange = (type: 'checkin' | 'checkout', value: string) => {
+    console.log(`🕒 Handling ${type} time change:`, value)
+    if (onTimeChange) {
+      const newCheckInTime = type === 'checkin' ? value : checkInTime
+      const newCheckOutTime = type === 'checkout' ? value : checkOutTime
+      onTimeChange(newCheckInTime, newCheckOutTime)
     }
   }
 
@@ -146,7 +279,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           <input
             type="date"
             value={selectedCheckIn || ''}
-            onChange={(e) => onDateChange(e.target.value, selectedCheckOut || '')}
+            onChange={(e) => handleInputChange('checkin', e.target.value)}
             min={today(getLocalTimeZone()).toString()}
             className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
           />
@@ -156,96 +289,36 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
           <input
             type="date"
             value={selectedCheckOut || ''}
-            onChange={(e) => onDateChange(selectedCheckIn || '', e.target.value)}
+            onChange={(e) => handleInputChange('checkout', e.target.value)}
             min={selectedCheckIn ? new Date(new Date(selectedCheckIn).getTime() + 24*60*60*1000).toISOString().split('T')[0] : today(getLocalTimeZone()).toString()}
             className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
           />
         </div>
       </div>
 
-      {/* Toggle Calendar Button */}
+      {/* Calendar Toggle Button */}
       <button
-        type="button"
         onClick={() => setShowCalendar(!showCalendar)}
-        className="w-full flex items-center justify-center gap-2 p-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all text-gray-600 hover:text-primary-600"
+        className="w-full flex items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <CalendarIcon className="w-4 h-4" />
-        <span className="text-sm font-medium">
-          {showCalendar ? 'Hide Calendar' : 'Show Availability Calendar'}
-        </span>
+        <CalendarIcon className="w-5 h-5" />
+        <span className="font-medium">{showCalendar ? 'Hide Calendar' : 'Show Calendar'}</span>
       </button>
 
-      {/* Visual Calendar (Collapsible) */}
+      {/* Calendar Component */}
       {showCalendar && (
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          <div className="mb-4">
-            <h4 className="text-sm font-semibold text-gray-900 mb-2">Property Availability</h4>
-            <div className="flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded"></div>
-                <span className="text-gray-600">Available</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-red-500 rounded"></div>
-                <span className="text-gray-600">Booked</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded"></div>
-                <span className="text-gray-600">Selected</span>
-              </div>
-            </div>
-          </div>
-
-            <Calendar
-              value={selectedDate}
-              onChange={(date) => {
-                setSelectedDate(date)
-                handleCalendarDateSelect(date)
-              }}
-              minValue={today(getLocalTimeZone())}
-              classNames={{
-              base: "w-full"
+        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+          <Calendar
+            value={selectedDate}
+            onChange={handleCalendarDateSelect}
+            minValue={today(getLocalTimeZone())}
+            isDateUnavailable={(date) => {
+              const dateString = date.toString()
+              const availability = availabilityMap.get(dateString)
+              return availability ? !availability.isAvailable : false
             }}
+            className="w-full"
           />
-
-          {/* Selected Date Info */}
-          {selectedDate && (
-            <div className="mt-4 p-3 bg-white rounded-lg border">
-              <div className="flex items-center gap-2 mb-2">
-                <CalendarIcon className="w-4 h-4 text-primary-500" />
-                <span className="font-medium text-gray-900">
-                  {selectedDate.toDate(getLocalTimeZone()).toLocaleDateString()}
-                </span>
-                <span className="text-sm text-gray-500">
-                  ({timezone})
-                </span>
-              </div>
-              
-              {(() => {
-                const dateString = selectedDate.toString()
-                const availability = availabilityMap.get(dateString)
-                
-                if (availability && !availability.isAvailable) {
-                  return (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-red-600">
-                        <AlertCircle className="w-4 h-4" />
-                        <span className="text-sm font-medium">Not Available</span>
-                      </div>
-                      <p className="text-sm text-gray-600">{availability.conflictReason}</p>
-                    </div>
-                  )
-                }
-                
-                return (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <CheckCircle className="w-4 h-4" />
-                    <span className="text-sm font-medium">Available for booking</span>
-                  </div>
-                )
-              })()}
-            </div>
-          )}
         </div>
       )}
 
