@@ -97,25 +97,22 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
       }
 
       // Call Supabase edge function to create FedaPay payment intent
-      const response = await fetch('/api/v1/create-fedapay-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`
-        },
-        body: JSON.stringify({
+      const { data: fnData, error: fnError } = await supabase.functions.invoke('create-fedapay-payment-intent', {
+        body: {
           ...data,
           user_id: user.id,
           customer_email: data.customer_email || user.email
-        })
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       })
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Failed to create payment intent')
+      if (fnError) {
+        throw new Error(fnError.message || 'Failed to create payment intent')
       }
 
-      const paymentIntent: PaymentIntentResponse = await response.json()
+      const paymentIntent: PaymentIntentResponse = fnData as PaymentIntentResponse
       
       console.log('✅ [useFedaPayPayment] Payment intent created', {
         paymentIntentId: paymentIntent.payment_intent_id,
