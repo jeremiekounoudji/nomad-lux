@@ -29,6 +29,7 @@ import { RefreshCw, AlertCircle, ArrowLeft, MapPin } from 'lucide-react'
 import { SharePropertyModal } from '../components/shared/modals'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
+import WalletPage from './WalletPage'
 
 // Add interface for popular place (matching the useHomeFeed hook)
 interface PopularPlace {
@@ -108,7 +109,7 @@ const HomePage: React.FC = () => {
   // Protected pages that require authentication
   const protectedPages = [
     'home', 'create', 'liked', 'bookings', 'listings', 
-    'notifications', 'requests', 'search', 'profile'
+    'notifications', 'requests', 'search', 'profile', 'wallet'
   ]
 
   // Fetch admin settings on mount
@@ -386,6 +387,8 @@ const HomePage: React.FC = () => {
       return <AdminRegisterPage onPageChange={handlePageChange} />
     case 'admin':
       return <AdminPage onPageChange={handlePageChange} />
+    case 'wallet':
+      return <WalletPage />
     default:
       break
   }

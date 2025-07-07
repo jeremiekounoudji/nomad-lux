@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Home, Heart, Plus, Calendar, User, Settings, Menu, Search, Bell, ClipboardList, X, LogOut, Bookmark, HelpCircle, Shield, LogIn, UserPlus, Crown } from 'lucide-react'
+import { Home, Heart, Plus, Calendar, User, Settings, Menu, Search, Bell, ClipboardList, X, LogOut, Bookmark, HelpCircle, Shield, LogIn, UserPlus, Crown, Wallet } from 'lucide-react'
 import { mockCurrentUser } from '../../lib/mockData'
 import { useAuth } from '../../hooks/useAuth'
 import { useAuthStore } from '../../lib/stores/authStore'
@@ -37,6 +37,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
     { key: 'listings', label: 'My Listings', icon: Home },
     { key: 'requests', label: 'Booking Requests', icon: ClipboardList },
     { key: 'notifications', label: 'Notifications', icon: Bell },
+    { key: 'wallet', label: 'Wallet', icon: Wallet },
     { key: 'help', label: 'Help Center', icon: HelpCircle },
     { key: 'terms', label: 'Terms & Conditions', icon: Shield },
     { key: 'login', label: 'Login', icon: LogIn },

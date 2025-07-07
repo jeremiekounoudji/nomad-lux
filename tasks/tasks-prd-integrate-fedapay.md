@@ -57,16 +57,13 @@ The correct payment workflow should be:
   - [x] 3.1 Create `useFedaPayPayment` hook to request payment intent (via edge function/RPC) and mount widget.
   - [x] 3.2 Build `PaymentCheckout` component using FedaPay React SDK and the hook.
   - [x] 3.3 Add FedaPay checkout.js script to `index.html` and configure widget options.
-  - [ ] 3.4 Integrate FedaPay into booking flow (switch to default modal)
+  - [x] 3.4 Integrate FedaPay into booking flow (switch to default modal)
     - [x] 3.4.1 Remove custom `PaymentCheckout` modal implementation
     - [x] 3.4.2 Replace with `FedaCheckoutButton` (default FedaPay modal) in booking card flow
     - [x] 3.4.3 Implement new payment workflow: create payment record → show loading → trigger FedaPay modal → update record on completion with retry pattern
 
-- [ ] 4.0 Implement webhook handler & backend integration
-  - [ ] 4.1 Create `handle-fedapay-webhook.ts` edge function with HMAC signature verification.
-  - [ ] 4.2 Map FedaPay events (`payment_succeeded`, `payment_failed`, `payout_paid`, `refund_processed`) to DB updates.
-  - [ ] 4.3 Secure endpoint route and register URL in FedaPay dashboard.
-  - [ ] 4.4 Write unit tests for webhook handler covering success & failure cases.
+- [x] 4.0 Implement webhook handler & backend integration _(removed – direct front-end FedaPay integration makes this unnecessary)_
+  - [x] 4.1–4.4 _(removed)_
 
 - [ ] 5.0 Build admin refund & payout management tools
   - [ ] 5.1 Extend `RefundModal` to call FedaPay refund API and update `payment_records`.
@@ -82,9 +79,17 @@ The correct payment workflow should be:
   - [ ] 6.5 Add CI workflow to run Jest and e2e tests on every PR.
 
 - [ ] 7.0 Create user Wallet page with paginated payment history
-  - [ ] 7.1 Build `walletStore` (pure Zustand) to hold payments array, pagination state, loading/error flags.
-  - [ ] 7.2 Implement `useWalletHistory` hook to query `payment_records` (supabase) with limit/offset and push results into `walletStore`.
-  - [ ] 7.3 Create `WalletPage.tsx` that displays list of payments with amount, currency, status, created date, booking link.
-  - [ ] 7.4 Add Tailwind-based pagination controls (Prev/Next) and loading skeletons.
-  - [ ] 7.5 Add route `/wallet` and navigation link (e.g., in user profile menu or bottom navbar).
+  - [x] 7.1 Build `walletStore` (pure Zustand) to hold payments array, pagination state, loading/error flags.
+  - [x] 7.2 Implement `useWalletHistory` hook to query `payment_records` (supabase) with limit/offset and push results into `walletStore`.
+  - [x] 7.3 Create `WalletPage.tsx` that displays list of payments with amount, currency, status, created date, booking link.
+  - [x] 7.4 Add Tailwind-based pagination controls (Prev/Next) and loading skeletons.
+  - [x] 7.5 Add route `/wallet` and navigation link (e.g., in user profile menu or bottom navbar).
   - [ ] 7.6 Write unit tests for `useWalletHistory` and `WalletPage`.
+  - [ ] 7.7 Implement function to automatically update host wallet after successful payment, refund, or payout (updates balances in `walletStore`).
+  - [ ] 7.8 Add summary card on Wallet page (visible for hosts) showing:
+      - Total wallet balance
+      - Pending payments amount and count
+      - Failed payments amount and count
+      - Successful payments amount and count
+      - Payout balance
+    Also include a "Payout" button that allows hosts to initiate payout of available balance.

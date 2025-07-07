@@ -1,5 +1,5 @@
 import React from 'react'
-import { Home, Search, Heart, Plus, Calendar, User, LogOut, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus } from 'lucide-react'
+import { Home, Search, Heart, Plus, Calendar, User, LogOut, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus, Wallet } from 'lucide-react'
 import { mockCurrentUser } from '../../lib/mockData'
 import { SidebarProps } from '../../interfaces'
 import { useAuthStore } from '../../lib/stores/authStore'
@@ -35,6 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
     { key: 'bookings', label: 'My Bookings', icon: Calendar },
     { key: 'requests', label: 'Booking Requests', icon: ClipboardList },
     { key: 'notifications', label: 'Notifications', icon: Bell },
+    { key: 'wallet', label: 'Wallet', icon: Wallet },
     { key: 'profile', label: 'Profile', icon: User },
   ]
 
