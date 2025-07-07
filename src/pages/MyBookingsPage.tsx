@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider, Pagination } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X } from 'lucide-react'
+import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X, CheckCircle, AlertCircle } from 'lucide-react'
 import MainLayout from '../components/layout/MainLayout'
 import { MyBookingsPageProps, Booking, DatabaseBooking } from '../interfaces'
 import { CancelBookingModal } from '../components/shared'
@@ -8,6 +8,8 @@ import { useBookingManagement } from '../hooks/useBookingManagement'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { BookingStatus } from '../interfaces/Booking'
 import MyBookingCard from '../components/shared/MyBookingCard'
+import { useAuthStore } from '../lib/stores/authStore'
+import { PaymentCheckout } from '../components/features/booking/PaymentCheckout'
 
 // Extended type for guest bookings with joined properties data
 type GuestBookingWithProperties = DatabaseBooking & {
@@ -48,11 +50,14 @@ const ALL_STATUSES: BookingStatus[] = [
 ]
 
 const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
+  const { user } = useAuthStore()
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
+  const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure()
+  const { isOpen: isPaymentOpen, onOpen: onPaymentOpen, onClose: onPaymentClose } = useDisclosure()
   const [paginationByStatus, setPaginationByStatus] = useState<Record<BookingStatus, { page: number }>>(() => {
     const initial: Record<BookingStatus, { page: number }> = {} as any
     ALL_STATUSES.forEach(status => { initial[status] = { page: 1 } })
@@ -77,16 +82,16 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const getStatusColor = (status: string): "default" | "primary" | "secondary" | "success" | "warning" | "danger" => {
     switch (status) {
       case 'accepted-and-waiting-for-payment':
-        return 'primary'
+        return 'warning'
       case 'confirmed':
-        return 'secondary'
-      case 'completed':
         return 'success'
+      case 'completed':
+        return 'primary'
       case 'cancelled':
       case 'rejected':
         return 'danger'
       case 'payment-failed':
-        return 'warning'
+        return 'danger'
       default:
         return 'default'
     }
@@ -94,6 +99,28 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
   const getStatusActions = (booking: GuestBookingWithProperties) => {
     switch (booking.status) {
+      case 'accepted-and-waiting-for-payment':
+        return (
+          <div className="flex gap-2">
+            <Button 
+              size="sm" 
+              color="primary"
+              onPress={() => handlePayNow(booking)}
+              startContent={<CreditCard className="w-4 h-4" />}
+            >
+              Pay Now
+            </Button>
+            <Button 
+              size="sm" 
+              variant="flat" 
+              color="danger"
+              onPress={() => handleCancelBooking(booking)}
+              startContent={<X className="w-4 h-4" />}
+            >
+              Cancel
+            </Button>
+          </div>
+        )
       case 'confirmed':
         return (
           <div className="flex gap-2">
@@ -141,6 +168,25 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const handleCancelBooking = (booking: GuestBookingWithProperties) => {
     setBookingToCancel(booking)
     onCancelOpen()
+  }
+
+  const handlePayNow = (booking: GuestBookingWithProperties) => {
+    console.log('🔄 Opening payment for booking:', booking.id)
+    setBookingToPay(booking)
+    onPaymentOpen()
+  }
+
+  const handlePaymentSuccess = (transactionId: string) => {
+    console.log('✅ Payment successful, closing modal and refreshing bookings', { transactionId })
+    onPaymentClose()
+    setBookingToPay(null)
+    // Refresh bookings to show updated status
+    loadGuestBookings().catch(console.error)
+  }
+
+  const handlePaymentError = (error: string) => {
+    console.error('❌ Payment failed:', error)
+    // Keep modal open so user can retry
   }
 
   const handleConfirmCancel = (reason: string) => {
@@ -448,6 +494,41 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                   </div>
                 )}
               </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      {/* Payment Modal */}
+      <Modal 
+        isOpen={isPaymentOpen} 
+        onClose={onPaymentClose}
+        size="2xl"
+        hideCloseButton
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                <h2 className="text-xl font-bold">Complete Your Payment</h2>
+                <p className="text-sm text-gray-600">
+                  Your booking has been approved by the host. Complete your payment to confirm your reservation.
+                </p>
+              </ModalHeader>
+              <ModalBody>
+                                 {bookingToPay && (
+                   <PaymentCheckout
+                     bookingId={bookingToPay.id}
+                     amount={bookingToPay.total_amount}
+                     currency={bookingToPay.currency || 'XOF'}
+                     description={`Booking payment for ${bookingToPay.properties?.title || 'property'}`}
+                     customerEmail={user?.email}
+                     onPaymentSuccess={handlePaymentSuccess}
+                     onPaymentError={handlePaymentError}
+                     onPaymentCancel={onPaymentClose}
+                   />
+                 )}
+              </ModalBody>
             </>
           )}
         </ModalContent>
