@@ -38,12 +38,10 @@
   - [x] 2.3 Update `src/lib/config.ts` to expose keys via Vite/Supabase runtime config.
 
 - [ ] 3.0 Implement client-side payment flow (inline widget & hook)
-  - [ ] 3.1 Create `useFedaPayPayment` hook to request payment intent (via edge function/RPC) and mount widget.
-  - [ ] 3.2 Build `PaymentCheckout.tsx` that uses the hook, displays booking summary, and handles loading/error states.
-  - [ ] 3.3 Integrate checkout component into the booking confirmation step.
-  - [ ] 3.4 Display Tailwind toasts on payment success/failure/time-out.
-  - [ ] 3.5 Persist transaction details to Supabase after successful payment.
-  - [ ] 3.6 Implement duplicate payment detection before creating new intent.
+  - [x] 3.1 Create `useFedaPayPayment` hook to request payment intent (via edge function/RPC) and mount widget.
+  - [x] 3.2 Build `PaymentCheckout` component using FedaPay React SDK and the hook.
+  - [x] 3.3 Add FedaPay checkout.js script to `index.html` and configure widget options.
+  - [ ] 3.4 Integrate component into booking flow and test basic payment initiation.
 
 - [ ] 4.0 Implement webhook handler & backend integration
   - [ ] 4.1 Create `handle-fedapay-webhook.ts` edge function with HMAC signature verification.
