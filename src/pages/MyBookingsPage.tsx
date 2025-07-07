@@ -100,27 +100,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const getStatusActions = (booking: GuestBookingWithProperties) => {
     switch (booking.status) {
       case 'accepted-and-waiting-for-payment':
-        return (
-          <div className="flex gap-2">
-            <Button 
-              size="sm" 
-              color="primary"
-              onPress={() => handlePayNow(booking)}
-              startContent={<CreditCard className="w-4 h-4" />}
-            >
-              Pay Now
-            </Button>
-            <Button 
-              size="sm" 
-              variant="flat" 
-              color="danger"
-              onPress={() => handleCancelBooking(booking)}
-              startContent={<X className="w-4 h-4" />}
-            >
-              Cancel
-            </Button>
-          </div>
-        )
+        return null // handled inside card with full-width buttons
       case 'confirmed':
         return (
           <div className="flex gap-2">
@@ -268,6 +248,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               onClick={handleBookingClick}
               getStatusColor={getStatusColor}
               getStatusActions={getStatusActions}
+              onPayNow={handlePayNow}
+              onCancelBooking={handleCancelBooking}
             />
           ))}
           

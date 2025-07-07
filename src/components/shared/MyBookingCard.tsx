@@ -7,9 +7,11 @@ interface MyBookingCardProps {
   onClick: (booking: any) => void;
   getStatusColor: (status: string) => "default" | "primary" | "secondary" | "success" | "warning" | "danger";
   getStatusActions: (booking: any) => React.ReactNode;
+  onPayNow?: (booking: any) => void;
+  onCancelBooking?: (booking: any) => void;
 }
 
-const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStatusColor, getStatusActions }) => {
+const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStatusColor, getStatusActions, onPayNow, onCancelBooking }) => {
   return (
     <div className="h-full">
       <Card className="h-full bg-white rounded-xl shadow hover:shadow-lg transition-shadow duration-200">
@@ -89,15 +91,28 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
             <div className="pt-2 space-y-2">
               {/* Status-specific actions */}
               {booking.status === 'accepted-and-waiting-for-payment' && (
-                <Button 
-                  color="primary"
-                  variant="solid"
-                  fullWidth
-                  size="lg"
-                  className="bg-primary-600 hover:bg-primary-700 text-white font-medium shadow-sm"
-                >
-                  Pay Now
-                </Button>
+                <>
+                  <Button 
+                    color="primary"
+                    variant="solid"
+                    fullWidth
+                    size="lg"
+                    className="bg-primary-600 hover:bg-primary-700 text-white font-medium shadow-sm"
+                    onPress={() => onPayNow?.(booking)}
+                  >
+                    Pay Now
+                  </Button>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    fullWidth
+                    size="lg"
+                    className="font-medium shadow-sm"
+                    onPress={() => onCancelBooking?.(booking)}
+                  >
+                    Cancel
+                  </Button>
+                </>
               )}
               {booking.status === 'payment-failed' && (
                 <Button 
@@ -106,6 +121,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                   fullWidth
                   size="lg"
                   className="bg-primary-600 hover:bg-primary-700 text-white font-medium shadow-sm"
+                  onPress={() => onPayNow?.(booking)}
                 >
                   Retry Payment
                 </Button>
