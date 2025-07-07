@@ -32,10 +32,10 @@
   - [x] 1.3 Regenerate Supabase TypeScript types and update `src/interfaces/PaymentRecord.ts`.
   - [x] 1.4 Refactor any existing queries/stores to use the new columns.
 
-- [ ] 2.0 Configure FedaPay environment variables & keys (staging/production)
-  - [ ] 2.1 Obtain FedaPay public, secret, and webhook keys for both environments.
-  - [ ] 2.2 Add keys to `.env`, Supabase secrets, and CI variables.
-  - [ ] 2.3 Update `src/lib/config.ts` to expose keys via Vite/Supabase runtime config.
+- [x] 2.0 Configure FedaPay environment variables & keys (staging/production)
+  - [x] 2.1 Obtain FedaPay public, secret, and webhook keys for both environments.
+  - [x] 2.2 Add keys to `.env`, Supabase secrets, and CI variables.
+  - [x] 2.3 Update `src/lib/config.ts` to expose keys via Vite/Supabase runtime config.
 
 - [ ] 3.0 Implement client-side payment flow (inline widget & hook)
   - [ ] 3.1 Create `useFedaPayPayment` hook to request payment intent (via edge function/RPC) and mount widget.
