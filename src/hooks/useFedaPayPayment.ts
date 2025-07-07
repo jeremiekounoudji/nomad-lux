@@ -3,6 +3,7 @@ import { config } from '../lib/config'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { PaymentRecord } from '../interfaces/PaymentRecord'
+import { supabase } from '../lib/supabase'
 
 // FedaPay payment response interfaces
 interface FedaPayTransaction {
@@ -65,8 +66,8 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
   console.log('🔧 [useFedaPayPayment] Hook initialized', {
     user: user?.id,
     fedaPayConfig: {
-      environment: config.fedapay.environment,
-      publicKey: config.fedapay.publicKey ? 'configured' : 'missing'
+      isDevelopment: config.isDevelopment,
+      publicKey: config.fedapay.current.publicKey ? 'configured' : 'missing'
     }
   })
 
@@ -88,12 +89,19 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
     })
 
     try {
+      // Get the current session for the access token
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        throw new Error('No valid session found')
+      }
+
       // Call Supabase edge function to create FedaPay payment intent
       const response = await fetch('/api/v1/create-fedapay-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.access_token || ''}`
+          'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
           ...data,
@@ -127,7 +135,13 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
         payment_status: 'pending',
         processing_fee: paymentIntent.fees.processing_fee,
         platform_fee: paymentIntent.fees.platform_fee,
+        net_amount: paymentIntent.amount - paymentIntent.fees.processing_fee - paymentIntent.fees.platform_fee,
         payout_status: 'pending',
+        payment_metadata: {
+          fedapay_intent_id: paymentIntent.payment_intent_id,
+          customer_email: data.customer_email || user.email
+        },
+        initiated_at: new Date().toISOString(),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       }
@@ -175,11 +189,15 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
         payment_intent_id: paymentData.payment_intent_id,
         payment_method: paymentMethod,
         payment_status: response.transaction.status === 'completed' ? 'completed' : 'failed',
-        provider_transaction_id: response.transaction.id,
-        provider_reference: response.transaction.reference,
         processing_fee: response.transaction.fees,
         net_amount: response.transaction.net_amount,
-        paid_at: response.transaction.status === 'completed' ? new Date().toISOString() : undefined,
+        completed_at: response.transaction.status === 'completed' ? new Date().toISOString() : undefined,
+        payment_metadata: {
+          ...((paymentData as any).payment_metadata || {}),
+          fedapay_transaction_id: response.transaction.id,
+          fedapay_reference: response.transaction.reference,
+          completion_reason: response.reason
+        },
         updated_at: new Date().toISOString()
       }
 
