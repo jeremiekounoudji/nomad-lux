@@ -9,7 +9,6 @@ import { useBookingStore } from '../lib/stores/bookingStore'
 import { BookingStatus } from '../interfaces/Booking'
 import MyBookingCard from '../components/shared/MyBookingCard'
 import { useAuthStore } from '../lib/stores/authStore'
-import { PaymentCheckout } from '../components/features/booking/PaymentCheckout'
 
 // Extended type for guest bookings with joined properties data
 type GuestBookingWithProperties = DatabaseBooking & {
@@ -57,7 +56,6 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure()
-  const { isOpen: isPaymentOpen, onOpen: onPaymentOpen, onClose: onPaymentClose } = useDisclosure()
   const [paginationByStatus, setPaginationByStatus] = useState<Record<BookingStatus, { page: number }>>(() => {
     const initial: Record<BookingStatus, { page: number }> = {} as any
     ALL_STATUSES.forEach(status => { initial[status] = { page: 1 } })
@@ -151,14 +149,13 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   }
 
   const handlePayNow = (booking: GuestBookingWithProperties) => {
-    console.log('🔄 Opening payment for booking:', booking.id)
-    setBookingToPay(booking)
-    onPaymentOpen()
+    console.log('✅ FedaPay checkout completed for booking:', booking.id)
+    // Refresh bookings to update status
+    loadGuestBookings().catch(console.error)
   }
 
   const handlePaymentSuccess = (transactionId: string) => {
     console.log('✅ Payment successful, closing modal and refreshing bookings', { transactionId })
-    onPaymentClose()
     setBookingToPay(null)
     // Refresh bookings to show updated status
     loadGuestBookings().catch(console.error)
@@ -476,41 +473,6 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                   </div>
                 )}
               </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Payment Modal */}
-      <Modal 
-        isOpen={isPaymentOpen} 
-        onClose={onPaymentClose}
-        size="2xl"
-        hideCloseButton
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Complete Your Payment</h2>
-                <p className="text-sm text-gray-600">
-                  Your booking has been approved by the host. Complete your payment to confirm your reservation.
-                </p>
-              </ModalHeader>
-              <ModalBody>
-                                 {bookingToPay && (
-                   <PaymentCheckout
-                     bookingId={bookingToPay.id}
-                     amount={bookingToPay.total_amount}
-                     currency={bookingToPay.currency || 'XOF'}
-                     description={`Booking payment for ${bookingToPay.properties?.title || 'property'}`}
-                     customerEmail={user?.email}
-                     onPaymentSuccess={handlePaymentSuccess}
-                     onPaymentError={handlePaymentError}
-                     onPaymentCancel={onPaymentClose}
-                   />
-                 )}
-              </ModalBody>
             </>
           )}
         </ModalContent>

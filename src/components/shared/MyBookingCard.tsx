@@ -1,6 +1,7 @@
 import React from 'react';
 import { MapPin, Star, Calendar, AlertCircle } from 'lucide-react';
 import { Card, CardBody, Button, Chip } from '@heroui/react';
+import { PaymentButton } from './';
 
 interface MyBookingCardProps {
   booking: any;
@@ -92,16 +93,19 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
               {/* Status-specific actions */}
               {booking.status === 'accepted-and-waiting-for-payment' && (
                 <>
-                  <Button 
-                    color="primary"
-                    variant="solid"
-                    fullWidth
-                    size="lg"
-                    className="bg-primary-600 hover:bg-primary-700 text-white font-medium shadow-sm"
-                    onPress={() => onPayNow?.(booking)}
+                  <PaymentButton
+                    booking={booking}
+                    onPaymentSuccess={(booking) => {
+                      onPayNow?.(booking);
+                      console.log('Payment successful for booking:', booking.id);
+                    }}
+                    onPaymentError={(error) => {
+                      console.error('Payment error:', error);
+                    }}
+                    className="mb-2"
                   >
                     Pay Now
-                  </Button>
+                  </PaymentButton>
                   <Button
                     color="danger"
                     variant="flat"
@@ -115,16 +119,30 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                 </>
               )}
               {booking.status === 'payment-failed' && (
-                <Button 
-                  color="primary"
-                  variant="solid"
-                  fullWidth
-                  size="lg"
-                  className="bg-primary-600 hover:bg-primary-700 text-white font-medium shadow-sm"
-                  onPress={() => onPayNow?.(booking)}
-                >
-                  Retry Payment
-                </Button>
+                <div className="space-y-2">
+                  <PaymentButton
+                    booking={booking}
+                    onPaymentSuccess={(booking) => {
+                      onPayNow?.(booking);
+                      console.log('Payment retry successful for booking:', booking.id);
+                    }}
+                    onPaymentError={(error) => {
+                      console.error('Payment retry error:', error);
+                    }}
+                  >
+                    Retry Payment
+                  </PaymentButton>
+                  <Button
+                    color="danger"
+                    variant="flat"
+                    fullWidth
+                    size="lg"
+                    className="font-medium shadow-sm"
+                    onPress={() => onCancelBooking?.(booking)}
+                  >
+                    Cancel Booking
+                  </Button>
+                </div>
               )}
               {/* Render other status actions */}
               {getStatusActions(booking)}

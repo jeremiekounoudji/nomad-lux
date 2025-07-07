@@ -24,6 +24,22 @@
 - Migrations filenames should start with a UTC timestamp for Supabase.
 - Follow **Nomad Lux Frontend Guide**: use Tailwind CSS for styling and Hero UI headless components when building `WalletPage` and any new UI elements.
 
+## Payment Workflow
+
+The correct payment workflow should be:
+
+1. **User clicks "Pay Now"** → Show loading state on button
+2. **Create payment record in database** with:
+   - `status: 'pending'` 
+   - `payment_method: null` (empty, will be filled after payment)
+   - `amount` (fees already included, no need to calculate processing_fee/platform_fee)
+3. **Open FedaPay modal** via `FedaCheckoutButton` programmatically
+4. **On payment completion** → Update the payment record with:
+   - `status: 'completed'` or `'failed'`
+   - `payment_method: <actual_method_used>`
+   - Other relevant fields from FedaPay response
+5. **Implement retry pattern** to ensure database updates succeed
+
 ## Tasks
 
 - [x] 1.0 Update `payment_records` database schema for FedaPay data
@@ -41,7 +57,10 @@
   - [x] 3.1 Create `useFedaPayPayment` hook to request payment intent (via edge function/RPC) and mount widget.
   - [x] 3.2 Build `PaymentCheckout` component using FedaPay React SDK and the hook.
   - [x] 3.3 Add FedaPay checkout.js script to `index.html` and configure widget options.
-  - [ ] 3.4 Integrate component into booking flow and test basic payment initiation.
+  - [ ] 3.4 Integrate FedaPay into booking flow (switch to default modal)
+    - [x] 3.4.1 Remove custom `PaymentCheckout` modal implementation
+    - [x] 3.4.2 Replace with `FedaCheckoutButton` (default FedaPay modal) in booking card flow
+    - [x] 3.4.3 Implement new payment workflow: create payment record → show loading → trigger FedaPay modal → update record on completion with retry pattern
 
 - [ ] 4.0 Implement webhook handler & backend integration
   - [ ] 4.1 Create `handle-fedapay-webhook.ts` edge function with HMAC signature verification.

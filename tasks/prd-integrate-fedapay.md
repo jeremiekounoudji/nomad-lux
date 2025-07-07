@@ -29,6 +29,24 @@ The solution will use FedaPay's **inline (embedded) checkout widget** to maintai
   * *As an admin*, I need to identify and void duplicate charges so that guests are not over-billed.
 
 ## 4. Functional Requirements
+
+### 4.1 Payment Workflow
+The payment flow **must follow** this specific sequence:
+
+1. **User clicks "Pay Now"** → Button shows loading state immediately
+2. **Create payment record in database** with:
+   - `status: 'pending'` 
+   - `payment_method: null` (will be populated after payment completion)
+   - `amount` (all fees already included in total amount)
+   - `processing_fee: null` and `platform_fee: null` (no calculation needed)
+3. **Open FedaPay modal** programmatically via `FedaCheckoutButton`
+4. **On payment completion** → Update payment record with:
+   - `status: 'completed'` or `'failed'`
+   - `payment_method: <actual_method_selected_by_user>`
+   - Other relevant fields from FedaPay response
+5. **Implement retry pattern** with exponential backoff to ensure database updates succeed
+
+### 4.2 Core Requirements
 1. The booking checkout screen **must embed** FedaPay's inline widget (`<iframe>`/JS) rather than redirecting (F2).
 2. When a guest confirms a booking, the system **must create a FedaPay payment intent** with amount, currency, and metadata (`booking_id`).
 3. The widget **must list** payment methods: bank card, mobile money, bank transfer (D1-D3).
@@ -62,7 +80,7 @@ The solution will use FedaPay's **inline (embedded) checkout widget** to maintai
 * **API keys:** Store `FEDAPAY_PUBLIC_KEY`, `FEDAPAY_SECRET_KEY`, `FEDAPAY_WEBHOOK_SECRET` in Supabase environment.
 * **Edge Function:** `handle-fedapay-webhook.ts` verifies signature and updates `payment_records`.
 * **Client:** Create `useFedaPayPayment()` hook to generate intent & attach widget.
-* **Error Handling:** Log failures; surface via toast; retry logic capped at 3 attempts.
+* **Error Handling:** Log failures; surface via toast; retry logic capped at 3 attempts with exponential backoff.
 * **Security:** Use HTTPS only; validate amounts server-side to prevent tampering.
 
 ## 8. Success Metrics

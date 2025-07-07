@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useFedaPayPayment } from '../../../hooks/useFedaPayPayment'
 import { config } from '../../../lib/config'
+import { FedaCheckoutContainer } from 'fedapay-reactjs'
 
 interface PaymentCheckoutProps {
   bookingId: string
@@ -189,52 +190,27 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
           </div>
         </div>
 
-        {/* FedaPay Checkout Integration */}
+        {/* FedaPay Checkout Integration - React SDK Container */}
         <div className="p-6">
-          <div id="fedapay-checkout-container" className="min-h-[400px]">
-            {/* This will be populated by FedaPay checkout.js script */}
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading payment form...</p>
-            </div>
-          </div>
-          
-          {/* Initialize FedaPay checkout when component mounts */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                if (window.FedaPay) {
-                  FedaPay.init({
-                    public_key: '${config.fedapay.current.publicKey}',
-                    environment: '${config.isDevelopment ? 'sandbox' : 'live'}'
-                  });
-                  
-                  FedaPay.checkout({
-                    transaction: {
-                      id: '${paymentData.payment_intent_id}',
-                      amount: ${paymentData.amount},
-                      currency: '${paymentData.currency}',
-                      description: '${description}'
-                    },
-                    customer: {
-                      email: '${customerEmail || ''}',
-                      phone: '${customerPhone || ''}'
-                    },
-                    container: 'fedapay-checkout-container',
-                    onComplete: function(response) {
-                      window.handleFedaPayComplete && window.handleFedaPayComplete(response);
-                    },
-                    onError: function(error) {
-                      window.handleFedaPayError && window.handleFedaPayError(error);
-                    },
-                    onCancel: function() {
-                      window.handleFedaPayCancel && window.handleFedaPayCancel();
-                    }
-                  });
+          <div className="h-[650px] overflow-y-auto">
+            <FedaCheckoutContainer
+              options={{
+                public_key: config.fedapay.current.publicKey,
+                transaction: {
+                  amount: paymentData.amount,
+                  description: description
+                },
+                currency: {
+                  iso: paymentData.currency
+                },
+                customer: {
+                  firstname: (customerEmail || 'Guest').split('@')[0],
+                  lastname: 'Client',
+                  email: customerEmail || ''
                 }
-              `
-            }}
-          />
+              }}
+            />
+          </div>
         </div>
 
         {/* Security Notice */}
@@ -258,20 +234,4 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   )
 }
 
-// Expose handlers to global scope for FedaPay callbacks
-if (typeof window !== 'undefined') {
-  (window as any).handleFedaPayComplete = (response: any) => {
-    console.log('🎯 [PaymentCheckout] Global FedaPay complete handler', response)
-    // This will be handled by the component's handleFedaPayComplete function
-  }
-  
-  (window as any).handleFedaPayError = (error: any) => {
-    console.error('❌ [PaymentCheckout] Global FedaPay error handler', error)
-    // This will be handled by the component's handleFedaPayError function
-  }
-  
-  (window as any).handleFedaPayCancel = () => {
-    console.log('⚠️ [PaymentCheckout] Global FedaPay cancel handler')
-    // This will be handled by the component's handleFedaPayCancel function
-  }
-} 
+// Global handlers no longer needed – handled directly via React callbacks 

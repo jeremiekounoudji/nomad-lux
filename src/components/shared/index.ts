@@ -9,6 +9,9 @@ export { default as PopularPlaces } from './PopularPlaces'
 // Booking components
 export { default as BookingCalendar } from './BookingCalendar'
 
+// Payment components
+export { default as PaymentButton } from './PaymentButton'
+
 // UI components
 export { default as ProfileModal } from './ProfileModal'
 export { default as PropertyListingSkeleton, PropertyCardSkeleton, HeaderSkeleton, TabsSkeleton } from './LoadingSkeleton'
