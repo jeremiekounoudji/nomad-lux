@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { DatabaseProperty, ListingStats, PropertyStatus } from '../../interfaces'
+import { CACHE_TTL_MS } from '../cacheConfig'
 
 interface StatusData {
   properties: DatabaseProperty[]
@@ -339,9 +340,9 @@ export const useAdminPropertyStore = create<AdminPropertyState>((set, get) => ({
     if (statusData.isLoading) return false
     if (statusData.pagination.currentPage !== page) return true
     
-    // Fetch if data is older than 5 minutes
-    const fiveMinutesAgo = Date.now() - (5 * 60 * 1000)
-    return statusData.lastFetched < fiveMinutesAgo
+    // Fetch if data is older than the configured TTL
+    const ttlAgo = Date.now() - CACHE_TTL_MS
+    return statusData.lastFetched < ttlAgo
   },
   
   clearStatus: (status) => {

@@ -1,6 +1,6 @@
 // Payment Record interfaces for the booking system
 
-export type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer'
+export type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'fedapay_card' | 'fedapay_mobile_money' | 'fedapay_bank_transfer'
 export type PaymentRecordStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'refunded' | 'partial_refund'
 export type PayoutStatus = 'pending' | 'available' | 'processing' | 'completed' | 'failed'
 
@@ -10,7 +10,7 @@ export interface PaymentRecord {
   
   // Payment Details
   payment_method: PaymentMethod
-  payment_provider: string // 'stripe', 'paypal', etc.
+  payment_provider: string // 'stripe', 'paypal', 'fedapay', etc.
   payment_intent_id?: string // Provider's payment ID
   amount: number
   currency: string
@@ -18,6 +18,7 @@ export interface PaymentRecord {
   // Status & Fees
   payment_status: PaymentRecordStatus
   processing_fee: number
+  platform_fee: number // FedaPay or other platform fees
   net_amount: number
   
   // Host Payout Management
@@ -49,6 +50,7 @@ export interface PaymentRecordCreateData {
   amount: number
   currency: string
   processing_fee: number
+  platform_fee: number
   net_amount: number
   payment_metadata?: Record<string, any>
 }
@@ -84,4 +86,23 @@ export interface RefundCalculation {
   processing_fee: number
   net_refund: number
   refund_breakdown: Record<string, any>
+}
+
+// FedaPay specific interfaces
+export interface FedaPayPaymentIntent {
+  id: string
+  amount: number
+  currency: string
+  status: 'pending' | 'processing' | 'succeeded' | 'failed'
+  payment_method_types: string[]
+  metadata: Record<string, any>
+}
+
+export interface FedaPayWebhookEvent {
+  id: string
+  type: 'payment.succeeded' | 'payment.failed' | 'payout.paid' | 'refund.processed'
+  data: {
+    object: FedaPayPaymentIntent | any
+  }
+  created: number
 } 

@@ -10,6 +10,7 @@ import {
   ContentSettings,
   AdminSettingRecord
 } from '../../interfaces/Settings'
+import { CACHE_TTL_MS } from '../cacheConfig'
 
 interface AdminSettingsStore {
   // State
@@ -223,8 +224,7 @@ export const useAdminSettingsStore = create<AdminSettingsStore>()(
       shouldRefresh: () => {
         const { lastFetched } = get()
         if (!lastFetched) return true
-        const fiveMinutes = 5 * 60 * 1000
-        return Date.now() - lastFetched > fiveMinutes
+        return Date.now() - lastFetched > CACHE_TTL_MS
       },
 
       // Invalidate cache

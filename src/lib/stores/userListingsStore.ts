@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { DatabaseProperty, ListingStats } from '../../interfaces'
+import { CACHE_TTL_MS } from '../cacheConfig'
 
 interface StatusData {
   listings: DatabaseProperty[]
@@ -339,9 +340,9 @@ export const useUserListingsStore = create<UserListingsState>((set, get) => ({
     if (data.isLoading) return false // Already loading
     if (data.pagination.currentPage !== page) return true // Different page
     
-    // Check if data is stale (older than 5 minutes)
-    const fiveMinutesAgo = Date.now() - (5 * 60 * 1000)
-    if (data.lastFetched < fiveMinutesAgo) return true
+    // Check if data is stale (older than the configured TTL)
+    const ttlAgo = Date.now() - CACHE_TTL_MS
+    if (data.lastFetched < ttlAgo) return true
     
     return false
   },

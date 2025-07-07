@@ -1,0 +1,32 @@
+# Supabase + Zustand Integration Rule
+
+1. **Data-Fetching Convention**  
+   • All Supabase queries **must be wrapped in a custom React hook** located in `src/hooks/`.  
+   • Never call Supabase directly inside components.
+
+2. **State Management**  
+   • For every *GET*-style request, store the resulting data in a **Zustand store** under `src/lib/stores/` for easy re-use across the app.  
+   • Stores should be *pure*: they manage state only; **they must not perform network requests**.
+
+3. **Type Safety**  
+   • All domain models and response shapes must live in `src/interfaces/`, grouped by domain (e.g. `Property.ts`, `Booking.ts`).  
+   • Hooks and stores should import these interfaces—never duplicate shape definitions.
+
+4. **Supabase MCP Usage**  
+   • Database administration actions (DDL/DML migrations, RLS policies, RPC/Edge function creation, running tests, etc.) **must be executed via the Supabase MCP tool set**—*never* through ad-hoc SQL files or fallback scripts.  
+   • If an MCP action fails, report the exact error code/message and suggest concrete remediation steps (e.g. missing project id, cost confirmation required), but **do not attempt an alternative method**.
+
+5. **No Fallbacks**  
+   • When an MCP operation is unavailable the workflow stops; do **not** bypass it with direct SQL or other tooling.  
+   • Output a clear explanation of why the MCP call failed and recommended next steps to restore MCP access.
+
+6. **Example Structure**  
+   *Hook*: `[useProperty.ts](mdc:src/hooks/useProperty.ts)`  
+   *Store*: `[propertyStore.ts](mdc:src/lib/stores/propertyStore.ts)`  
+   *Interface*: `[Property.ts](mdc:src/interfaces/Property.ts)`
+
+Follow this rule for all future code additions or refactors.
+description:
+globs:
+alwaysApply: false
+---
