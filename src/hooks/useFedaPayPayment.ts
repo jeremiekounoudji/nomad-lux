@@ -121,6 +121,11 @@ export const useFedaPayPayment = (): UseFedaPayPaymentReturn => {
         fees: paymentIntent.fees
       })
 
+      // In case the edge function doesn't yet return the fees object (placeholder)
+      if (!paymentIntent.fees) {
+        paymentIntent.fees = { processing_fee: 0, platform_fee: 0 }
+      }
+
       // Create initial payment record in store
       const paymentRecord: Partial<PaymentRecord> = {
         booking_id: data.booking_id,
