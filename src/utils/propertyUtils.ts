@@ -1,4 +1,5 @@
 import { DatabaseProperty, Property, PropertyHost } from '../interfaces'
+import type { MapCoordinates } from '../interfaces/Map'
 
 // Convert DatabaseProperty to Property for UI components
 export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty): Property => {
@@ -381,5 +382,207 @@ export const validateBookingDates = (
     isValid: errors.length === 0,
     errors,
     conflicts
+  }
+} 
+
+/**
+ * Validate if property coordinates are valid for map display
+ */
+export const validatePropertyCoordinates = (property: Property): boolean => {
+  const coords = getPropertyCoordinates(property)
+  
+  if (!coords) {
+    return false
+  }
+  
+  // Check if coordinates are within valid ranges
+  const { lat, lng } = coords
+  
+  // Latitude must be between -90 and 90
+  if (lat < -90 || lat > 90) {
+    return false
+  }
+  
+  // Longitude must be between -180 and 180
+  if (lng < -180 || lng > 180) {
+    return false
+  }
+  
+  // Check if coordinates are not null/zero (0,0 is in the ocean, likely invalid)
+  if (lat === 0 && lng === 0) {
+    return false
+  }
+  
+  return true
+}
+
+/**
+ * Extract coordinates from property object with fallbacks
+ */
+export const getPropertyCoordinates = (property: Property): MapCoordinates | null => {
+  try {
+    // Primary: property.location.coordinates
+    if (property.location?.coordinates?.lat && property.location?.coordinates?.lng) {
+      return {
+        lat: property.location.coordinates.lat,
+        lng: property.location.coordinates.lng
+      }
+    }
+    
+    // Fallback: property.location.latitude/longitude (legacy format)
+    if ((property.location as any)?.latitude && (property.location as any)?.longitude) {
+      return {
+        lat: (property.location as any).latitude,
+        lng: (property.location as any).longitude
+      }
+    }
+    
+    console.warn('🗺️ Property coordinates not found or invalid:', property.id)
+    return null
+  } catch (error) {
+    console.error('❌ Error extracting property coordinates:', error)
+    return null
+  }
+}
+
+/**
+ * Get property location string for display
+ */
+export const getPropertyLocationString = (property: Property): string => {
+  try {
+    if (property.location?.city && property.location?.country) {
+      return `${property.location.city}, ${property.location.country}`
+    }
+    
+    if (property.location?.city) {
+      return property.location.city
+    }
+    
+    if (property.location?.country) {
+      return property.location.country
+    }
+    
+    return 'Location not specified'
+  } catch (error) {
+    console.error('❌ Error getting property location string:', error)
+    return 'Location unavailable'
+  }
+}
+
+/**
+ * Calculate distance between two coordinates (Haversine formula)
+ */
+export const calculateDistance = (
+  coord1: MapCoordinates,
+  coord2: MapCoordinates
+): number => {
+  const R = 6371 // Earth's radius in kilometers
+  const dLat = toRadians(coord2.lat - coord1.lat)
+  const dLng = toRadians(coord2.lng - coord1.lng)
+  
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRadians(coord1.lat)) * Math.cos(toRadians(coord2.lat)) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const distance = R * c
+  
+  return Math.round(distance * 100) / 100 // Round to 2 decimal places
+}
+
+/**
+ * Convert degrees to radians
+ */
+const toRadians = (degrees: number): number => {
+  return degrees * (Math.PI / 180)
+}
+
+/**
+ * Format distance for display
+ */
+export const formatDistance = (distance: number): string => {
+  if (distance < 1) {
+    return `${Math.round(distance * 1000)}m`
+  } else if (distance < 10) {
+    return `${distance.toFixed(1)}km`
+  } else {
+    return `${Math.round(distance)}km`
+  }
+}
+
+/**
+ * Check if property has a valid address for geocoding
+ */
+export const hasValidAddress = (property: Property): boolean => {
+  const location = property.location
+  
+  if (!location) {
+    return false
+  }
+  
+  // At minimum, we need city and country
+  return Boolean(location.city && location.country)
+}
+
+/**
+ * Generate Google Maps URL for property
+ */
+export const getGoogleMapsUrl = (property: Property): string => {
+  const coords = getPropertyCoordinates(property)
+  
+  if (coords) {
+    return `https://www.google.com/maps/search/?api=1&query=${coords.lat},${coords.lng}`
+  }
+  
+  // Fallback to search by address
+  const locationString = getPropertyLocationString(property)
+  const encodedLocation = encodeURIComponent(locationString)
+  return `https://www.google.com/maps/search/?api=1&query=${encodedLocation}`
+}
+
+/**
+ * Generate directions URL to property
+ */
+export const getDirectionsUrl = (property: Property): string => {
+  const coords = getPropertyCoordinates(property)
+  
+  if (coords) {
+    return `https://www.google.com/maps/dir/?api=1&destination=${coords.lat},${coords.lng}`
+  }
+  
+  // Fallback to search by address
+  const locationString = getPropertyLocationString(property)
+  const encodedLocation = encodeURIComponent(locationString)
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodedLocation}`
+}
+
+/**
+ * Property map error types for better error handling
+ */
+export enum PropertyMapError {
+  INVALID_COORDINATES = 'INVALID_COORDINATES',
+  MISSING_COORDINATES = 'MISSING_COORDINATES',
+  GEOCODING_FAILED = 'GEOCODING_FAILED',
+  MAP_LOAD_FAILED = 'MAP_LOAD_FAILED',
+  NETWORK_ERROR = 'NETWORK_ERROR'
+}
+
+/**
+ * Get user-friendly error message for property map errors
+ */
+export const getPropertyMapErrorMessage = (error: PropertyMapError | string): string => {
+  switch (error) {
+    case PropertyMapError.INVALID_COORDINATES:
+      return 'The property location coordinates are invalid.'
+    case PropertyMapError.MISSING_COORDINATES:
+      return 'Property location coordinates are not available.'
+    case PropertyMapError.GEOCODING_FAILED:
+      return 'Unable to find the exact location on the map.'
+    case PropertyMapError.MAP_LOAD_FAILED:
+      return 'Failed to load the map. Please try again.'
+    case PropertyMapError.NETWORK_ERROR:
+      return 'Network error while loading the map.'
+    default:
+      return 'An unexpected error occurred while loading the map.'
   }
 } 

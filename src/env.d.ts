@@ -1,4 +1,6 @@
 /// <reference types="vite/client" />
+/// <reference types="leaflet" />
+/// <reference types="leaflet.markercluster" />
 
 interface ImportMetaEnv {
   readonly VITE_SUPABASE_URL: string

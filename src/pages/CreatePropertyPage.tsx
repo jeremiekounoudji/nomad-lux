@@ -6,7 +6,7 @@ import { CreatePropertyPageProps } from '../interfaces'
 
 const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange }) => {
   return (
-    <MainLayout currentPage="create" onPageChange={onPageChange}>
+    <>
       <div className="col-span-1 md:col-span-2 lg:col-span-3">
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <div className="mb-6">
@@ -20,7 +20,7 @@ const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange })
           <PropertySubmissionForm />
         </div>
       </div>
-    </MainLayout>
+    </>
   );
 };
 

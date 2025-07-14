@@ -9,3 +9,4 @@ export { default as PropertyEditConfirmationModal } from './PropertyEditConfirma
 export { PropertyQuickViewModal } from './PropertyQuickViewModal'
 export { PropertyStatsModal } from './PropertyStatsModal'
 export { SharePropertyModal } from './SharePropertyModal' 
+export { RequestPayoutModal } from './RequestPayoutModal' 

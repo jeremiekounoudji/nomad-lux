@@ -1,25 +1,29 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom'
 import { Home, Search, Heart, Plus, Calendar, User, LogOut, HelpCircle, Shield, Bell, ClipboardList, LogIn, UserPlus, Wallet } from 'lucide-react'
-import { mockCurrentUser } from '../../lib/mockData'
-import { SidebarProps } from '../../interfaces'
 import { useAuthStore } from '../../lib/stores/authStore'
 import { useAuth } from '../../hooks/useAuth'
+import { useNavigation } from '../../hooks/useNavigation'
+import { ROUTES } from '../../router/types'
 import toast from 'react-hot-toast'
 
-const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
+// Type for icon render function
+type IconRenderProps = {
+  isActive: boolean;
+  className?: string;
+}
+
+const Sidebar: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore()
   const { signOut } = useAuth()
+  const { navigateWithAuth } = useNavigation()
 
   const handleLogout = async () => {
     try {
       console.log('🚪 User logout initiated from sidebar')
       await signOut()
       toast.success('Logged out successfully')
-      
-      // Redirect to login
-      if (onPageChange) {
-        onPageChange('login')
-      }
+      navigateWithAuth(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       console.error('❌ Logout error:', error)
       toast.error('Failed to logout')
@@ -27,24 +31,24 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
   }
 
   const navigationItems = [
-    { key: 'home', label: 'Home', icon: Home },
-    { key: 'search', label: 'Search', icon: Search },
-    { key: 'liked', label: 'Liked', icon: Heart },
-    { key: 'create', label: 'Create Property', icon: Plus },
-    { key: 'listings', label: 'My Listings', icon: Home },
-    { key: 'bookings', label: 'My Bookings', icon: Calendar },
-    { key: 'requests', label: 'Booking Requests', icon: ClipboardList },
-    { key: 'notifications', label: 'Notifications', icon: Bell },
-    { key: 'wallet', label: 'Wallet', icon: Wallet },
-    { key: 'profile', label: 'Profile', icon: User },
+    { path: ROUTES.HOME, label: 'Home', icon: Home },
+    { path: ROUTES.SEARCH, label: 'Search', icon: Search },
+    { path: ROUTES.LIKED_PROPERTIES, label: 'Liked', icon: Heart, requireAuth: true },
+    { path: ROUTES.CREATE_PROPERTY, label: 'Create Property', icon: Plus, requireAuth: true },
+    { path: ROUTES.MY_LISTINGS, label: 'My Listings', icon: Home, requireAuth: true },
+    { path: ROUTES.MY_BOOKINGS, label: 'My Bookings', icon: Calendar, requireAuth: true },
+    { path: ROUTES.BOOKING_REQUESTS, label: 'Booking Requests', icon: ClipboardList, requireAuth: true },
+    { path: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell, requireAuth: true },
+    { path: ROUTES.WALLET, label: 'Wallet', icon: Wallet, requireAuth: true },
+    { path: ROUTES.HOME, label: 'Profile', icon: User, requireAuth: true },
   ]
 
   const secondaryItems = [
-    { key: 'help', label: 'Help Center', icon: HelpCircle },
-    { key: 'terms', label: 'Terms & Conditions', icon: Shield },
+    { path: ROUTES.HELP, label: 'Help Center', icon: HelpCircle },
+    { path: ROUTES.TERMS, label: 'Terms & Conditions', icon: Shield },
     ...(isAuthenticated ? [] : [
-      { key: 'login', label: 'Login', icon: LogIn },
-      { key: 'register', label: 'Register', icon: UserPlus },
+      { path: ROUTES.LOGIN, label: 'Login', icon: LogIn },
+      { path: ROUTES.REGISTER, label: 'Register', icon: UserPlus },
     ])
   ]
 
@@ -52,14 +56,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
     <div className="hidden lg:flex lg:w-64 xl:w-72 bg-white border-r border-gray-200 flex-col h-screen">
       {/* Logo */}
       <div className="p-6 border-b border-gray-100 flex-shrink-0">
-        <div className="flex items-center gap-3">
+        <NavLink to={ROUTES.HOME} className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
             <span className="text-white font-bold text-lg">NL</span>
           </div>
           <span className="font-script font-bold text-2xl text-primary-600">
             Nomad Lux
           </span>
-        </div>
+        </NavLink>
       </div>
 
       {/* Profile Section */}
@@ -72,7 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
                 src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
                 alt={user.display_name}
                 className="w-20 h-20 rounded-full ring-4 ring-primary-100 shadow-lg cursor-pointer hover:ring-primary-200 transition-all"
-                onClick={() => onPageChange('profile')}
+                onClick={() => navigateWithAuth(ROUTES.HOME)}
               />
               {user.is_email_verified && (
                 <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
@@ -131,18 +135,18 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
               <h3 className="font-bold text-lg text-gray-900 mb-1">Guest User</h3>
               <p className="text-sm text-gray-500 mb-4">Please sign in to access all features</p>
               <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => onPageChange('login')}
-                  className="w-full bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                <NavLink
+                  to={ROUTES.LOGIN}
+                  className="w-full bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium text-center"
                 >
                   Sign In
-                </button>
-                <button
-                  onClick={() => onPageChange('register')}
-                  className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                </NavLink>
+                <NavLink
+                  to={ROUTES.REGISTER}
+                  className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium text-center"
                 >
                   Sign Up
-                </button>
+                </NavLink>
               </div>
             </div>
           </div>
@@ -155,20 +159,28 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
         <div className="py-4">
           <nav className="space-y-1 px-3">
             {navigationItems.map((item) => (
-              <button
-                key={item.key}
-                onClick={() => onPageChange(item.key)}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
-                  currentPage === item.key
-                    ? 'bg-primary-50 text-primary-700 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                <item.icon className={`w-6 h-6 ${
-                  currentPage === item.key ? 'text-primary-600' : 'text-gray-500'
-                }`} />
-                <span className="text-base">{item.label}</span>
-              </button>
+              (!item.requireAuth || isAuthenticated) && (
+                <NavLink
+                  key={`${item.path}-${item.label}`}
+                  to={item.path}
+                  className={({ isActive }) => `
+                    w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200
+                    ${isActive
+                      ? 'bg-primary-50 text-primary-700 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
+                    }
+                  `}
+                >
+                  {({ isActive }) => (
+                    <>
+                      <item.icon className={`w-6 h-6 ${
+                        isActive ? 'text-primary-600' : 'text-gray-500'
+                      }`} />
+                      <span className="text-base">{item.label}</span>
+                    </>
+                  )}
+                </NavLink>
+              )
             ))}
           </nav>
 
@@ -176,14 +188,26 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, onPageChange }) => {
           <div className="mt-8 pt-4 border-t border-gray-100">
             <nav className="space-y-1 px-3">
               {secondaryItems.map((item) => (
-                <button
-                  key={item.key}
-                  onClick={() => onPageChange(item.key)}
-                  className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-gray-50"
+                <NavLink
+                  key={`${item.path}-${item.label}`}
+                  to={item.path}
+                  className={({ isActive }) => `
+                    w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200
+                    ${isActive
+                      ? 'bg-primary-50 text-primary-700 font-medium'
+                      : 'text-gray-700 hover:bg-gray-50'
+                    }
+                  `}
                 >
-                  <item.icon className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm">{item.label}</span>
-                </button>
+                  {({ isActive }) => (
+                    <>
+                      <item.icon className={`w-5 h-5 ${
+                        isActive ? 'text-primary-600' : 'text-gray-500'
+                      }`} />
+                      <span className="text-sm">{item.label}</span>
+                    </>
+                  )}
+                </NavLink>
               ))}
             </nav>
           </div>

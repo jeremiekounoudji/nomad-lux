@@ -1,58 +1,62 @@
-import React, { useState, useEffect } from 'react'
-import { Heart } from 'lucide-react'
-import MainLayout from '../components/layout/MainLayout'
-import PropertyCard from '../components/shared/PropertyCard'
-import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton'
-import { LikedPropertiesPageProps, Property } from '../interfaces'
-import { usePropertyStore } from '../lib/stores/propertyStore'
-import PropertyDetailPage from './PropertyDetailPage'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import MainLayout from '../components/layout/MainLayout';
+import PropertyCard from '../components/shared/PropertyCard';
+import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
+import { LikedPropertiesPageProps, Property } from '../interfaces';
+import { usePropertyStore } from '../lib/stores/propertyStore';
+import { useHomeFeed } from '../hooks/useHomeFeed';
+import { usePropertyLike } from '../hooks/usePropertyLike';
+import toast from 'react-hot-toast';
 
 const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange }) => {
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
-  const { properties, likedPropertyIds, likedProperties, fetchLikedProperties, isLikeLoading } = usePropertyStore()
+  const navigate = useNavigate();
+  const { properties, likedPropertyIds, likedProperties, isLikeLoading, setSelectedProperty } = usePropertyStore();
+  const { fetchLikedProperties } = usePropertyLike();
 
   useEffect(() => {
-    fetchLikedProperties()
-  }, [fetchLikedProperties])
+    fetchLikedProperties();
+  }, [fetchLikedProperties]);
 
-  const likedList = likedProperties.length > 0 ? likedProperties : properties.filter(p=>likedPropertyIds.includes(p.id))
+  const likedList = (likedProperties.length > 0 ? likedProperties : properties.filter(p => likedPropertyIds.includes(p.id)))
+    .map(p => ({
+      ...p,
+      id: p.id || (p as any).property_id, // Type-safe fallback for property_id
+    }));
 
   const handleLike = (propertyId: string) => {
-    console.log('Unliked property:', propertyId)
+    console.log('Unliked property:', propertyId);
     // TODO: Implement unlike functionality
-  }
+  };
 
   const handleShare = (property: Property) => {
-    console.log('Share property:', property.title)
+    console.log('Share property:', property.title);
     // TODO: Implement share functionality
-  }
+  };
 
   const handleBook = (property: Property) => {
-    console.log('Book property:', property.title)
+    console.log('Book property:', property.title);
     // TODO: Implement booking functionality
-  }
+  };
 
-  const handlePropertyClick = (property: Property) => {
-    console.log('View property:', property.title)
-    setSelectedProperty(property)
-  }
-
-  const handleBackToList = () => {
-    setSelectedProperty(null)
-  }
-
-  // Show property detail view if a property is selected
-  if (selectedProperty) {
-    return (
-      <PropertyDetailPage 
-        property={selectedProperty}
-        onBack={handleBackToList}
-      />
-    )
-  }
+  const handlePropertyClick = (property: Property | any) => {
+    const resolvedId = property.id ?? property.property_id;
+    console.log('View property:', property, 'resolvedId:', resolvedId);
+    if (!resolvedId) {
+      toast.error('Property ID is missing. Cannot open details.');
+      console.error('Property object missing id and property_id:', property);
+      return;
+    }
+    // handlePropertyView(resolvedId);
+    // Ensure we store a property with a valid id in state
+    const normalizedProperty = { ...property, id: resolvedId } as Property;
+    setSelectedProperty(normalizedProperty);
+    navigate(`/properties/${resolvedId}`);
+  };
 
   return (
-    <MainLayout currentPage="liked" onPageChange={onPageChange}>
+    <>
       {/* Header Banner */}
       <div className="col-span-full mb-6">
         <div 
@@ -117,8 +121,8 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
           </div>
         )}
       </div>
-    </MainLayout>
-  )
-}
+    </>
+  );
+};
 
-export default LikedPropertiesPage 
+export default LikedPropertiesPage; 

@@ -1,23 +1,23 @@
-import { useEffect } from 'react'
-import { supabase } from '../lib/supabase'
-import { useAuthStore } from '../lib/stores/authStore'
-import { useUser } from './useUser'
+import { useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useAuthStore } from '../lib/stores/authStore';
+import { useUser } from './useUser';
+import type { Session } from '@supabase/supabase-js';
 
 export const useAuthInit = () => {
-  const { setAuthData, clearAuth, setLoading } = useAuthStore()
-  const { fetchUserByAuthId } = useUser()
+  const { setAuthData, clearAuth, setLoading } = useAuthStore();
+  const { fetchUserByAuthId } = useUser();
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const handleSessionUpdate = async (session: Session | null) => {
       try {
         if (session?.user) {
-          const userData = await fetchUserByAuthId(session.user.id)
+          const userData = await fetchUserByAuthId(session.user.id);
           if (userData) {
-            setAuthData(userData, session.user)
+            setAuthData(userData, session.user);
           } else {
-            // If user is not in our DB, but authenticated, create a minimal user object
             const minimalUser = {
               id: session.user.id,
               auth_id: session.user.id,
@@ -33,18 +33,35 @@ export const useAuthInit = () => {
             setAuthData(minimalUser as any, session.user);
           }
         } else {
-          clearAuth()
+          clearAuth();
         }
       } catch (error) {
-        console.error('Error during auth state change:', error)
-        clearAuth()
+        console.error('Error during auth state change processing:', error);
+        clearAuth();
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    })
+    };
+
+    // Fetch the current session immediately on load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleSessionUpdate(session);
+    });
+
+    // Listen for sign-in/out events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+          handleSessionUpdate(session);
+      }
+      }
+    );
 
     return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-} 
+      subscription.unsubscribe();
+    };
+    // The dependencies are the functions used within the effect.
+    // Zustand setters are stable, so we can disable the lint warning.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetchUserByAuthId]);
+}; 

@@ -18,7 +18,6 @@ export interface BookingSettings {
   maxAdvanceBooking?: number
   minAdvanceBooking?: number
   cancellationGracePeriod?: number
-  hostPayoutDelay?: number
   minimumStay?: number
   maximumStay?: number
   autoApprovalEnabled?: boolean
@@ -58,6 +57,7 @@ export interface PaymentSettings {
   defaultCurrency?: string
   payoutSchedule?: string
   minimumPayoutAmount?: number
+  paymentHoldDays?: number
   taxRate?: number
   autoPayoutEnabled?: boolean
   chargeTaxes?: boolean

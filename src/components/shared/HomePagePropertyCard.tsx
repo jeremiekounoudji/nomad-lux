@@ -42,7 +42,7 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
 
   return (
     <div 
-      className={`bg-white rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}
+      className={`bg-white rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 w-full ${className}`}
       onClick={handleCardClick}
     >
       {/* Header with host info */}

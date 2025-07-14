@@ -16,6 +16,8 @@ export * from './DatabaseProperty'
 export * from './ListingStats'
 export * from './PropertyCardProps'
 export * from './Settings'
+export * from './PayoutRequest'
+export * from './Map'
 
 // Pagination interfaces
 export interface PaginationParams {

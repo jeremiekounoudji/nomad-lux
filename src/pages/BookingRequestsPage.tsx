@@ -246,7 +246,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
   const requests = currentRequests;
 
   return (
-    <MainLayout>
+    <>
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Banner Header */}
         <div className="relative bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8 overflow-hidden">
@@ -814,7 +814,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
           )}
         </ModalContent>
       </Modal>
-    </MainLayout>
+    </>
   )
 }
 

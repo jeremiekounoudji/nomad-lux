@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip, Checkbox, Avatar } from '@heroui/react'
 import { CheckCircle, XCircle, Ban } from 'lucide-react'
 import { PropertyDetailsModalProps } from '../../../../interfaces/Component'
+import { LocationVerificationMap } from '../LocationVerificationMap'
 
 export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
   isOpen,
@@ -24,7 +25,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
       <ModalHeader>
         Property Review: {selectedProperty?.title}
       </ModalHeader>
-      <ModalBody className="max-h-[65vh] overflow-y-auto">
+      <ModalBody>
         {selectedProperty && (
           <div className="space-y-6">
             {/* Image Gallery */}
@@ -51,35 +52,17 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
 
             {/* Location Details with Map */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-3">Location Details</h4>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Address</label>
-                    <p className="text-sm text-gray-900">{selectedProperty.location.city}, {selectedProperty.location.country}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-600">Coordinates</label>
-                    <p className="text-sm text-gray-900">
-                      Lat: {selectedProperty.location.coordinates.lat}, Lng: {selectedProperty.location.coordinates.lng}
-                    </p>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-600 block mb-2">Map Preview</label>
-                  <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border">
-                    <img
-                      src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-home+ff0000(${selectedProperty.location.coordinates.lng},${selectedProperty.location.coordinates.lat})/${selectedProperty.location.coordinates.lng},${selectedProperty.location.coordinates.lat},13/300x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA`}
-                      alt="Property location map"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
+              <LocationVerificationMap
+                property={selectedProperty}
+                onVerify={(verified) => {
+                  setReviewChecklist(prev => ({ ...prev, location: verified }))
+                }}
+                className="mb-6"
+              />
             </div>
 
             {/* Property Details Grid */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Property Type</label>
@@ -100,6 +83,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                   </div>
                 </div>
               </div>
+              
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Price per night</label>
@@ -135,7 +119,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
             </div>
 
             {/* Review Checklist */}
-            <div className="bg-gradient-to-br from-primary-50 to-secondary-50 border border-primary-200 rounded-xl p-6">
+            <div className="bg-gray-50 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
                   <CheckCircle className="w-5 h-5 text-white" />
@@ -150,11 +134,11 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                   { key: 'title', label: 'Title is descriptive and appropriate', icon: '📝' },
                   { key: 'description', label: 'Description is detailed and accurate', icon: '📄' },
                   { key: 'images', label: 'Images are high quality and representative', icon: '📸' },
-                  { key: 'location', label: 'Location is accurate and properly set', icon: '📍' },
+                  { key: 'location', label: 'Location is verified and accurate', icon: '📍' },
                   { key: 'price', label: 'Price is reasonable for the market', icon: '💰' },
                   { key: 'amenities', label: 'Amenities list is accurate and complete', icon: '✨' },
                   { key: 'policies', label: 'House rules and policies are appropriate', icon: '📋' }
-                ].map((item: { key: string; label: string; icon: string }) => (
+                ].map((item) => (
                   <div
                     key={item.key}
                     className={`p-4 rounded-lg border-2 transition-all duration-200 ${
@@ -181,7 +165,8 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                   </div>
                 ))}
               </div>
-              <div className="mt-6 p-4 bg-white/60 rounded-lg border border-primary-200">
+              
+              <div className="mt-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${allChecked ? 'bg-success-500' : 'bg-gray-300'}`}></div>

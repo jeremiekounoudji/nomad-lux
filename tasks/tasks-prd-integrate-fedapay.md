@@ -85,11 +85,18 @@ The correct payment workflow should be:
   - [x] 7.4 Add Tailwind-based pagination controls (Prev/Next) and loading skeletons.
   - [x] 7.5 Add route `/wallet` and navigation link (e.g., in user profile menu or bottom navbar).
   - [ ] 7.6 Write unit tests for `useWalletHistory` and `WalletPage`.
-  - [ ] 7.7 Implement function to automatically update host wallet after successful payment, refund, or payout (updates balances in `walletStore`).
-  - [ ] 7.8 Add summary card on Wallet page (visible for hosts) showing:
-      - Total wallet balance
-      - Pending payments amount and count
-      - Failed payments amount and count
-      - Successful payments amount and count
-      - Payout balance
-    Also include a "Payout" button that allows hosts to initiate payout of available balance.
+  - [ ] 7.7 Create **persistent server-side wallet metrics**
+    - [x] 7.7.1 Create `user_wallets` table (one row per user) with columns  
+      `user_id` (PK, FK → `public.users.id`), `currency`, `total_balance`,  
+      `pending_amount`, `pending_count`, `failed_amount`, `failed_count`,  
+      `successful_amount`, `successful_count`, `payout_balance`,  
+      `last_payout_date`, `next_payout_allowed_at`, `created_at`, `updated_at`.
+    - [x] 7.7.2 Write RPC function `update_user_wallet()` that takes the delta from a `payment_records` insert/update (incl. type `payout` / `withdraw`) and atomically updates the correct metrics in `user_wallets`.
+    - [x] 7.7.3 Add `AFTER INSERT` & `AFTER UPDATE` triggers on `payment_records` to call `update_user_wallet`.
+    - [x] 7.7.4 Add trigger  to insert a zeroed row into `user_wallets` immediately after a new user is created.
+    - [x] 7.7.5 Back-fill existing data: run a one-off aggregation to populate `user_wallets` for all current users.
+    - [x] 7.7.6 Use the MCP Supabase tools for all schema creation, function definitions, triggers, and back-fill.
+  - [ ] 7.8 Add **Wallet summary card** (hosts only) on `WalletPage`:
+    - [ ] 7.8.1 Fetch metrics from `user_wallets` via a dedicated hook (e.g., `useWalletMetrics`) and store in `walletStore`.
+    - [x] 7.8.2 Display: Total balance, pending amount & count, failed amount & count, successful amount & count, payout balance, last payout date.
+    - [ ] 7.8.3 Include a "Payout" button that initiates payout when `total_balance` > 0 and `next_payout_allowed_at` ≤ now.

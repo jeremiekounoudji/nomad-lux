@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { User } from '../interfaces/User'
 
@@ -8,7 +8,7 @@ export const useUser = () => {
 
   console.log('👤 useUser hook initialized')
 
-  const createUser = async (userData: Partial<User>): Promise<User | null> => {
+  const createUser = useCallback(async (userData: Partial<User>): Promise<User | null> => {
     try {
       console.log('👤 Creating user in database:', userData.email)
       setIsLoading(true)
@@ -36,9 +36,9 @@ export const useUser = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const fetchUserByAuthId = async (authId: string): Promise<User | null> => {
+  const fetchUserByAuthId = useCallback(async (authId: string): Promise<User | null> => {
     try {
       console.log('🔍 Fetching user from database for auth_id:', authId)
       setIsLoading(true)
@@ -106,9 +106,9 @@ export const useUser = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const clearError = () => setError(null)
+  const clearError = useCallback(() => setError(null), [])
 
   return {
     isLoading,

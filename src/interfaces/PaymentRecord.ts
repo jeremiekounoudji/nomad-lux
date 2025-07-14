@@ -2,7 +2,7 @@
 
 export type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'fedapay_card' | 'fedapay_mobile_money' | 'fedapay_bank_transfer'
 export type PaymentRecordStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'refunded' | 'partial_refund'
-export type PayoutStatus = 'pending' | 'available' | 'processing' | 'completed' | 'failed'
+export type PayoutStatus = 'pending' | 'approved' | 'available' | 'processing' | 'completed' | 'failed'
 
 export interface PaymentRecord {
   id: string

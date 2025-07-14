@@ -5,6 +5,7 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { Property } from '../interfaces'
 import toast from 'react-hot-toast'
 import { usePropertyStore } from '../lib/stores/propertyStore'
+import { usePropertyLike } from './usePropertyLike'
 
 interface PopularPlace {
   id: string
@@ -69,7 +70,7 @@ export const useHomeFeed = () => {
   // Auth store
   const { isAuthenticated, user } = useAuthStore()
 
-  const toggleLike = usePropertyStore(state => state.toggleLike)
+  const { toggleLike } = usePropertyLike()
 
   console.log('🏠 useHomeFeed hook initialized', { 
     isAuthenticated, 

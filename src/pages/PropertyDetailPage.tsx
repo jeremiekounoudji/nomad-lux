@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
   Heart, 
@@ -43,7 +44,8 @@ import {
   Car as Parking,
   Wind,
   Play,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Navigation
 } from 'lucide-react'
 import { 
   Card, 
@@ -68,6 +70,7 @@ import {
   ContactHostModal
 } from '../components/shared/modals'
 import { BookingCalendar } from '../components/shared'
+import { LazyMapWrapper } from '../components/map'
 import { usePropertySettings } from '../hooks/usePropertySettings'
 import { useBookingFlow } from '../hooks/useBookingFlow'
 import { usePropertyShare } from '../hooks/usePropertyShare'
@@ -75,8 +78,12 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { calculateBookingPrice } from '../utils/priceCalculation'
 import { updatePropertyMetaTags, resetDefaultMetaTags } from '../utils/shareUtils'
+import { getDirectionsUrl } from '../utils/propertyUtils'
+import type { MapCoordinates } from '../interfaces/Map'
 import toast from 'react-hot-toast'
 import { usePropertyLike } from '../hooks/usePropertyLike'
+import { usePropertyStore } from '../lib/stores/propertyStore';
+import { PropertyCardSkeleton } from '../components/shared';
 
 const getAmenityIcon = (amenity: string) => {
   const amenityMap: { [key: string]: React.ReactNode } = {
@@ -100,7 +107,40 @@ const getAmenityIcon = (amenity: string) => {
   return amenityMap[amenity.toLowerCase()] || <CheckCircle2 className="w-5 h-5" />
 }
 
-const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBack }) => {
+const PropertyDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { selectedProperty, setSelectedProperty } = usePropertyStore();
+
+  // Simple property resolution: if selectedProperty exists and matches URL, use it
+  // Otherwise, we need to redirect since we can't fetch individual properties yet
+  const property = selectedProperty && selectedProperty.id === id ? selectedProperty : null;
+  
+  // If no property data is available after a short delay, redirect to home
+  useEffect(() => {
+    if (!property) {
+      const timer = setTimeout(() => {
+        console.log('❌ No property data available, redirecting to home');
+        toast.error("Property not found. Please try again from the main page.");
+        navigate('/');
+      }, 1000); // Give 1 second for any store updates
+
+      return () => clearTimeout(timer);
+    } else {
+      // Update meta tags when property is available
+      updatePropertyMetaTags(property);
+    }
+    
+    return () => {
+      resetDefaultMetaTags();
+    };
+  }, [property, navigate, id]);
+
+  // Loading states
+  const [isLoading, setIsLoading] = useState(false); // Remove this since we're not fetching
+  const [error, setError] = useState<string | null>(null);
+
+  // Rest of component state remains the same...
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
@@ -110,57 +150,59 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   const [checkOutTime, setCheckOutTime] = useState('11:00')
   const [guests, setGuests] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
-  const [isLiked, setIsLiked] = useState(property.is_liked)
+  const [isLiked, setIsLiked] = useState(property?.is_liked);
 
   // Combine all media for the counter
-  const allMedia = [...property.images, ...property.videos]
+  const allMedia = [...(property?.images || []), ...(property?.videos || [])];
   const currentOverallIndex = mediaType === 'image' 
     ? currentImageIndex 
-    : property.images.length + currentVideoIndex
+    : (property?.images?.length || 0) + currentVideoIndex;
 
   const nextMedia = () => {
+    if (!property) return;
     if (mediaType === 'image') {
       if (currentImageIndex === property.images.length - 1) {
         if (property.videos.length > 0) {
-          setMediaType('video')
-          setCurrentVideoIndex(0)
+          setMediaType('video');
+          setCurrentVideoIndex(0);
         } else {
-          setCurrentImageIndex(0)
+          setCurrentImageIndex(0);
         }
       } else {
-        setCurrentImageIndex(prev => prev + 1)
+        setCurrentImageIndex(prev => prev + 1);
       }
     } else {
       if (currentVideoIndex === property.videos.length - 1) {
-        setMediaType('image')
-        setCurrentImageIndex(0)
+        setMediaType('image');
+        setCurrentImageIndex(0);
       } else {
-        setCurrentVideoIndex(prev => prev + 1)
+        setCurrentVideoIndex(prev => prev + 1);
       }
     }
-  }
+  };
 
   const prevMedia = () => {
+    if (!property) return;
     if (mediaType === 'image') {
       if (currentImageIndex === 0) {
         if (property.videos.length > 0) {
-          setMediaType('video')
-          setCurrentVideoIndex(property.videos.length - 1)
+          setMediaType('video');
+          setCurrentVideoIndex(property.videos.length - 1);
         } else {
-          setCurrentImageIndex(property.images.length - 1)
+          setCurrentImageIndex(property.images.length - 1);
         }
       } else {
-        setCurrentImageIndex(prev => prev - 1)
+        setCurrentImageIndex(prev => prev - 1);
       }
     } else {
       if (currentVideoIndex === 0) {
-        setMediaType('image')
-        setCurrentImageIndex(property.images.length - 1)
+        setMediaType('image');
+        setCurrentImageIndex(property.images.length - 1);
       } else {
-        setCurrentVideoIndex(prev => prev - 1)
+        setCurrentVideoIndex(prev => prev - 1);
       }
     }
-  }
+  };
 
   // Modal states
   const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
@@ -191,37 +233,31 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
 
   // Load property settings and update meta tags on component mount
   useEffect(() => {
-    if (property.id) {
-      console.log('🔄 Loading property settings for property:', property.id)
+    if (property?.id) {
+      console.log('🔄 Loading property settings for property:', property.id);
       getPropertySettings(property.id)
         .then(settings => {
-          console.log('✅ Property settings loaded:', settings)
-          setPropertySettings(settings)
+          console.log('✅ Property settings loaded:', settings);
+          setPropertySettings(settings);
         })
         .catch(error => {
-          console.warn('⚠️ Failed to load property settings:', error)
-        })
+          console.warn('⚠️ Failed to load property settings:', error);
+        });
+      // Update meta tags for better link sharing
+      updatePropertyMetaTags(property);
     }
-
-    // Update meta tags for better link sharing
-    updatePropertyMetaTags(property)
-
-    // Reset meta tags when component unmounts
-    return () => {
-      resetDefaultMetaTags()
-    }
-  }, [property.id, property, getPropertySettings])
+  }, [property, getPropertySettings]);
 
   // Calculate price using the new price calculation utility
   const priceCalculation = useMemo(() => {
-    if (!checkIn || !checkOut || !property.price) {
+    if (!property || !checkIn || !checkOut || !property.price) {
       return {
         billingNights: 1,
-        basePrice: property.price || 0,
-        cleaningFee: property.cleaning_fee || 0,
-        serviceFee: property.service_fee || 0,
-        totalAmount: (property.price || 0) + (property.cleaning_fee || 0) + (property.service_fee || 0)
-      }
+        basePrice: property?.price || 0,
+        cleaningFee: property?.cleaning_fee || 0,
+        serviceFee: property?.service_fee || 0,
+        totalAmount: (property?.price || 0) + (property?.cleaning_fee || 0) + (property?.service_fee || 0)
+      };
     }
 
     try {
@@ -243,9 +279,9 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
         totalAmount: property.price + (property.cleaning_fee || 0) + (property.service_fee || 0)
       }
     }
-  }, [checkIn, checkOut, checkInTime, checkOutTime, guests, property])
+  }, [checkIn, checkOut, checkInTime, checkOutTime, guests, property]);
 
-  const { billingNights, basePrice, cleaningFee, serviceFee, totalAmount } = priceCalculation
+  const { billingNights, basePrice, cleaningFee, serviceFee, totalAmount } = priceCalculation;
 
   const handleReserveClick = async () => {
     // Validate authentication
@@ -311,6 +347,12 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
       return
     }
 
+    if (!property) {
+      toast.error('Cannot process booking: property data is missing.')
+      onConfirmClose()
+      return
+    }
+
     onConfirmClose()
     
     try {
@@ -363,28 +405,53 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
     // Handle message sending
   }
 
+  // If property is not available, show loading state briefly before redirect
+  if (!property) {
+    return (
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <PropertyCardSkeleton />
+          <p className="mt-4 text-gray-600">Loading property details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+        <AlertCircle className="w-16 h-16 text-danger-500 mb-4" />
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Could Not Load Property</h2>
+        <p className="text-gray-600 text-center mb-6">{error}</p>
+        <Button onClick={() => navigate('/')} startContent={<ArrowLeft />}>
+          Back to Home
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-50">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <button 
-            onClick={onBack}
+            onClick={() => navigate(-1)}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700" />
           </button>
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => toggleLike(property.id)}
+              onClick={() => property && toggleLike(property.id)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center gap-1"
               disabled={isLikeLoading}
             >
-              <Heart className={`w-6 h-6 ${isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
-              <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+              <Heart className={`w-6 h-6 ${property && isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <span className="text-xs text-gray-700 font-semibold">{property?.like_count ?? 0}</span>
             </button>
             <button 
-              onClick={() => handleShare(property)}
+              onClick={() => property && handleShare(property)}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <Share className="w-6 h-6 text-gray-700" />
@@ -654,24 +721,58 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
             </div>
 
             {/* Location */}
-            <Card className="shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">Where you'll be</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="bg-gray-100 h-64 rounded-xl flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-secondary-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <MapPin className="w-8 h-8 text-white" />
+            <div className="mt-8">
+              <h2 className="text-2xl font-semibold mb-4">Where you'll be</h2>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <LazyMapWrapper
+                  key={property.id}
+                  type="property"
+                  property={property}
+                  height="400px"
+                  showNearbyAmenities={false}
+                  showDirections={true}
+                  showRadius={false}
+                  onContactHost={() => onContactOpen()}
+                  onDirectionsRequest={(coordinates: MapCoordinates) => {
+                    console.log('🗺️ Directions requested for:', coordinates);
+                    const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
+                    window.open(url, '_blank');
+                  }}
+                />
+                
+                {/* Location Info card temporarily disabled */}
+                {/*
+                <div className="p-6 border-t border-gray-200">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {`${property.location.city}, ${property.location.country}`}
+                      </h3>
+                      <p className="text-gray-600 mb-3">
+                        Explore the neighborhood and discover what makes this location special.
+                      </p>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>• Safe, well-connected area</span>
+                        <span>• Close to local amenities</span>
+                        <span>• Easy transportation access</span>
+                      </div>
                     </div>
-                    <p className="text-gray-900 font-semibold text-lg">
-                      {`${property.location.city}, ${property.location.country}`}
-                    </p>
-                    <p className="text-gray-600 mt-2">Interactive map coming soon</p>
+                    <Button
+                      variant="light"
+                      size="sm"
+                      startContent={<Navigation className="w-4 h-4" />}
+                      onClick={() => {
+                        const url = getDirectionsUrl(property);
+                        window.open(url, '_blank');
+                      }}
+                    >
+                      Get Directions
+                    </Button>
                   </div>
                 </div>
-              </CardBody>
-            </Card>
+                */}
+              </div>
+            </div>
           </div>
 
           {/* Booking Card */}

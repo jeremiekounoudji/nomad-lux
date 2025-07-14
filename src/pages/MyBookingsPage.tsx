@@ -197,7 +197,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   }
 
   return (
-    <MainLayout currentPage="bookings" onPageChange={onPageChange}>
+    <>
       {/* Header Section - Full Width */}
       <div className="col-span-full mb-6">
         {/* Banner Header */}
@@ -487,7 +487,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           onConfirmCancel={handleConfirmCancel}
         />
       )} */}
-    </MainLayout>
+    </>
   )
 }
 

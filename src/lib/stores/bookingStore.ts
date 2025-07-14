@@ -109,7 +109,9 @@ const initialState = {
     confirmed: [],
     cancelled: [],
     completed: [],
-    refunded: []
+    refunded: [],
+    rejected: [],
+    'payment-failed': []
   },
   paginationData: {
     pending: {
@@ -153,6 +155,22 @@ const initialState = {
       pageSize: 10
     },
     refunded: {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+      pageSize: 10
+    },
+    rejected: {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      hasNextPage: false,
+      hasPreviousPage: false,
+      pageSize: 10
+    },
+    'payment-failed': {
       currentPage: 1,
       totalPages: 1,
       totalItems: 0,

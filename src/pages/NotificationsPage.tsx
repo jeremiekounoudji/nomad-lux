@@ -89,7 +89,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = ({ onPageChange }) =
   const unreadCount = mockNotifications.filter(n => !n.read).length
 
   return (
-    <MainLayout currentPage="notifications" onPageChange={onPageChange}>
+    <>
       <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
@@ -246,7 +246,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = ({ onPageChange }) =
           </Button>
         </div>
       </div>
-    </MainLayout>
+    </>
   )
 }
 

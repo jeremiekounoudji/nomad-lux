@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
-import MainLayout from '../components/layout/MainLayout'
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import MainLayout from '../components/layout/MainLayout';
 import PopularPlaces from '../components/shared/PopularPlaces'
 import { HomePagePropertyCard, PropertyCardSkeleton, CityPropertyCard } from '../components/shared'
 import { CityPropertiesView } from '../components/features/search/CityPropertiesView'
@@ -23,6 +24,7 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminSettings } from '../hooks/useAdminSettings'
 import { useHomeFeed } from '../hooks/useHomeFeed'
 import { usePropertyShare } from '../hooks/usePropertyShare'
+import { usePropertyStore } from '../lib/stores/propertyStore';
 import { Property } from '../interfaces'
 import { Button } from '@heroui/react'
 import { RefreshCw, AlertCircle, ArrowLeft, MapPin } from 'lucide-react'
@@ -46,8 +48,10 @@ interface PopularPlace {
 }
 
 const HomePage: React.FC = () => {
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
-  const [selectedCity, setSelectedCity] = useState<PopularPlace | null>(null)
+  const navigate = useNavigate();
+  const { setSelectedProperty } = usePropertyStore();
+  const [selectedProperty, setSelectedPropertyState] = useState<Property | null>(null);
+  const [selectedCity, setSelectedCity] = useState<PopularPlace | null>(null);
   const [cityProperties, setCityProperties] = useState<Property[]>([])
   const [cityPropertiesLoading, setCityPropertiesLoading] = useState(false)
   const [cityPropertiesError, setCityPropertiesError] = useState<string | null>(null)
@@ -221,10 +225,11 @@ const HomePage: React.FC = () => {
   }
 
   const handlePropertyClick = useCallback((property: Property) => {
-    console.log('🏠 Property clicked:', property.title)
-    handlePropertyView(property.id)
-    setSelectedProperty(property)
-  }, [handlePropertyView])
+    console.log('🏠 Property clicked:', property.title);
+    handlePropertyView(property.id);
+    setSelectedProperty(property); // Set in Zustand store
+    navigate(`/properties/${property.id}`);
+  }, [handlePropertyView, setSelectedProperty, navigate]);
 
   const handleCityClick = useCallback((place: PopularPlace) => {
     console.log('🏙️ City clicked:', place.name)
@@ -233,15 +238,15 @@ const HomePage: React.FC = () => {
   }, [fetchCityProperties])
 
   const handleBackToHome = () => {
-    setSelectedProperty(null)
-    setSelectedCity(null)
-    setCityProperties([])
-    setCityPropertiesError(null)
-    setCurrentPage('home')
+    setSelectedProperty(null);
+    setSelectedCity(null);
+    setCityProperties([]);
+    setCityPropertiesError(null);
+    setCurrentPage('home');
   }
 
   const handleBackToCityList = () => {
-    setSelectedProperty(null)
+    setSelectedProperty(null);
   }
 
   const handlePageChange = (page: string) => {
@@ -266,9 +271,9 @@ const HomePage: React.FC = () => {
       return
     }
     
-    setCurrentPage(page)
-    setSelectedProperty(null)
-    setIsProfileModalOpen(false)
+    setCurrentPage(page);
+    setSelectedProperty(null);
+    setIsProfileModalOpen(false);
   }
 
   const handleLogin = () => {
@@ -328,21 +333,19 @@ const HomePage: React.FC = () => {
     )
   }
 
-  // Handle different page views
+  // This is a legacy state management that should be removed.
+  // We now use routing for page navigation.
   if (selectedProperty) {
-    return (
-      <PropertyDetailPage 
-        property={selectedProperty} 
-        onBack={selectedCity ? handleBackToCityList : handleBackToHome}
-      />
-    )
+    return null; // Should be handled by router now
   }
 
   // City Properties View
   if (selectedCity) {
     return (
-      <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
-        <CityPropertiesView
+      // <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
+        
+      // </MainLayout>
+      <CityPropertiesView
           selectedCity={selectedCity}
           cityProperties={cityProperties}
           cityPropertiesError={cityPropertiesError}
@@ -353,52 +356,51 @@ const HomePage: React.FC = () => {
           onLike={handleLike}
           onShare={shareProperty}
         />
-      </MainLayout>
     );
   }
 
-  // Route to different pages
+  // This switch statement is also legacy and should be removed
+  // as routing handles page changes.
   switch (currentPage) {
     case 'create':
-      return <CreatePropertyPage onPageChange={handlePageChange} />
+      return <CreatePropertyPage  />
     case 'liked':
-      return <LikedPropertiesPage onPageChange={handlePageChange} />
+      return <LikedPropertiesPage  />
     case 'bookings':
-      return <MyBookingsPage onPageChange={handlePageChange} />
+      return <MyBookingsPage  />
     case 'listings':
-      return <MyListingsPage onPageChange={handlePageChange} />
+      return <MyListingsPage  />
     case 'notifications':
-      return <NotificationsPage onPageChange={handlePageChange} />
+      return <NotificationsPage />
     case 'requests':
-      return <BookingRequestsPage onPageChange={handlePageChange} />
+      return <BookingRequestsPage  />
     case 'help':
-      return <HelpPage onPageChange={handlePageChange} />
+      return <HelpPage />
     case 'terms':
-      return <TermsPage onPageChange={handlePageChange} />
+      return <TermsPage  />
     case 'login':
-      return <LoginPage onPageChange={handlePageChange} onLogin={handleLogin} />
+      return <LoginPage  onLogin={handleLogin} />
     case 'register':
-      return <RegisterPage onPageChange={handlePageChange} onRegister={handleRegister} />
+      return <RegisterPage />
     case 'search':
-      return <SearchPage onPageChange={handlePageChange} />
+      return <SearchPage />
     case 'admin-login':
-      return <AdminLoginPage onPageChange={handlePageChange} />
+      return <AdminLoginPage  />
     case 'admin-register':
-      return <AdminRegisterPage onPageChange={handlePageChange} />
+      return <AdminRegisterPage/>
     case 'admin':
-      return <AdminPage onPageChange={handlePageChange} />
+      return <AdminPage />
     case 'wallet':
       return <WalletPage />
     default:
-      break
+      break;
   }
 
   // Default home page view (protected)
   return (
     <>
-      <MainLayout currentPage={currentPage} onPageChange={handlePageChange}>
         {/* Popular Places Section - Full width across all columns */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4 mb-6">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4">
           <PopularPlaces 
             onPlaceClick={handleCityClick}
             onExploreClick={() => {
@@ -442,7 +444,7 @@ const HomePage: React.FC = () => {
 
         {/* Property Cards - Each card takes one grid column */}
         {properties.map((property) => (
-          <div key={property.id} className="col-span-1">
+          <div key={property.id}>
             <HomePagePropertyCard
               property={property}
               onLike={handleLike}
@@ -454,7 +456,7 @@ const HomePage: React.FC = () => {
 
         {/* No properties state */}
         {!feedLoading && !feedError && properties.length === 0 && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3">
+          <div className="col-span-full">
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-gray-400 text-2xl">🏠</span>
@@ -525,11 +527,10 @@ const HomePage: React.FC = () => {
               className="mt-2"
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-              Refresh for new listings
-            </Button>
-          </div>
-        )}
-      </MainLayout>
+                          Refresh for new listings
+          </Button>
+        </div>
+      )}
 
       {/* Profile Modal */}
       <ProfileModal 

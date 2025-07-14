@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Button, Chip, useDisclosure } from '@heroui/react'
 import { 
   Users, 
@@ -10,9 +10,17 @@ import {
   CheckCircle,
   XCircle,
   ArrowRight,
-  AlertTriangle
+  AlertTriangle,
+  Map
 } from 'lucide-react'
 import { PropertyApprovalModal, PropertyRejectionModal, Property as PropertyType } from './modals'
+import { PayoutRequestsTable } from './PayoutRequestsTable'
+import { ApproveRejectPayoutModal } from './modals/ApproveRejectPayoutModal'
+import { PropertyDistributionMap } from './PropertyDistributionMap'
+import { useAdminPayoutRequests } from '../../../hooks/useAdminPayoutRequests'
+import { useAdminProperty } from '../../../hooks/useAdminProperty'
+import { PayoutRequest } from '../../../interfaces'
+import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
 
 interface AdminDashboardProps {
   onSectionChange?: (section: string) => void
@@ -99,6 +107,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [rejectionReason, setRejectionReason] = useState('')
   const [pendingApprovalProperty, setPendingApprovalProperty] = useState<Property | null>(null)
+  const [showPropertyMap, setShowPropertyMap] = useState(false)
+  
+  const {
+    requests,
+    isLoading,
+    error,
+    fetchPayoutRequests,
+    approve,
+    reject
+  } = useAdminPayoutRequests()
+
+  // Get admin properties for the map
+  const { filteredProperties } = useAdminProperty()
+
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalAction, setModalAction] = useState<'approve' | 'reject' | null>(null)
+  const [selectedRequest, setSelectedRequest] = useState<PayoutRequest | null>(null)
 
   const { 
     isOpen: isApproveOpen, 
@@ -151,13 +176,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
     onApproveOpen()
   }
 
-  const handleApprove = () => {
-    if (pendingApprovalProperty) {
-      console.log('Approving property:', pendingApprovalProperty.id)
-      // TODO: Implement approval logic
-      onApproveClose()
-      setPendingApprovalProperty(null)
-    }
+  const handleApprove = (req: PayoutRequest) => {
+    setSelectedRequest(req)
+    setModalAction('approve')
+    setModalOpen(true)
   }
 
   const handleQuickReject = (property: Property) => {
@@ -165,18 +187,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
     onRejectOpen()
   }
 
-  const handleReject = () => {
-    if (selectedProperty && rejectionReason.trim()) {
-      console.log('Rejecting property:', selectedProperty.id, 'Reason:', rejectionReason)
-      setRejectionReason('')
-      onRejectClose()
-      setSelectedProperty(null)
-      // TODO: Implement rejection logic
-    }
+  const handleReject = (req: PayoutRequest) => {
+    setSelectedRequest(req)
+    setModalAction('reject')
+    setModalOpen(true)
   }
 
+  const handlePropertyClick = (property: DatabaseProperty) => {
+    // Navigate to property details or open modal
+    console.log('Property clicked:', property.title)
+  }
+
+  useEffect(() => {
+    fetchPayoutRequests()
+  }, [fetchPayoutRequests])
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -201,7 +228,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Users */}
         <Card className="shadow-sm border border-gray-200">
           <CardBody className="p-6">
@@ -281,8 +308,56 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         </Card>
       </div>
 
+      {/* Property Distribution Map Section */}
+      <Card className="shadow-sm border border-gray-200">
+        <CardBody className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Map className="w-5 h-5 text-primary-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Property Distribution</h3>
+            </div>
+            <Button
+              size="sm"
+              color="primary"
+              variant={showPropertyMap ? "solid" : "flat"}
+              onPress={() => setShowPropertyMap(!showPropertyMap)}
+              startContent={<Map className="w-4 h-4" />}
+            >
+              {showPropertyMap ? 'Hide Map' : 'Show Map'}
+            </Button>
+          </div>
+          
+          {showPropertyMap && filteredProperties.length > 0 ? (
+            <PropertyDistributionMap
+              properties={filteredProperties}
+              onPropertyClick={handlePropertyClick}
+              height="400px"
+            />
+          ) : showPropertyMap ? (
+            <div className="text-center py-12">
+              <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No Properties Available</h3>
+              <p className="text-gray-500">There are no properties to display on the map.</p>
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Property Distribution Map</h3>
+              <p className="text-gray-500 mb-4">View all properties distributed across locations on an interactive map.</p>
+              <Button
+                color="primary"
+                onPress={() => setShowPropertyMap(true)}
+                startContent={<Map className="w-4 h-4" />}
+              >
+                Show Distribution Map
+              </Button>
+            </div>
+          )}
+        </CardBody>
+      </Card>
+
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Pending Property Approvals */}
         <div className="lg:col-span-2">
           <Card className="shadow-sm border border-gray-200 h-full">
@@ -339,7 +414,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         </div>
 
         {/* Recent Activity */}
-        <div>
+        <div className="lg:col-span-1">
           <Card className="shadow-sm border border-gray-200 h-full">
             <CardBody className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -440,7 +515,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         isOpen={isApproveOpen}
         onClose={onApproveClose}
         property={pendingApprovalProperty ? convertToModalProperty(pendingApprovalProperty) : null}
-        onApprove={handleApprove}
+        onApprove={() => handleApprove(selectedRequest!)}
       />
 
       <PropertyRejectionModal
@@ -449,8 +524,34 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         property={selectedProperty ? convertToModalProperty(selectedProperty) : null}
         rejectionReason={rejectionReason}
         onReasonChange={setRejectionReason}
-        onReject={handleReject}
+        onReject={() => handleReject(selectedRequest!)}
       />
+
+      <section className="space-y-6">
+        <h2 className="text-xl font-bold mb-4">Payout Requests</h2>
+        <PayoutRequestsTable
+          requests={requests}
+          isLoading={isLoading}
+          error={error}
+          onApprove={handleApprove}
+          onReject={handleReject}
+        />
+        <ApproveRejectPayoutModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          request={selectedRequest}
+          action={modalAction}
+          onSubmit={async (note) => {
+            if (!selectedRequest || !modalAction) return
+            if (modalAction === 'approve') {
+              await approve(selectedRequest, note)
+            } else {
+              await reject(selectedRequest, note)
+            }
+            setModalOpen(false)
+          }}
+        />
+      </section>
     </div>
   )
 } 

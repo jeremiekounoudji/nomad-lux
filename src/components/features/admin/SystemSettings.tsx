@@ -682,12 +682,7 @@ export const SystemSettings: React.FC = () => {
                   onChange={(e) => handleBookingSettingChange('cancellationGracePeriod', parseInt(e.target.value))}
                 />
                 
-                <Input
-                  label="Host Payout Delay (days)"
-                  type="number"
-                  value={bookingSettings.hostPayoutDelay?.toString() || '1'}
-                  onChange={(e) => handleBookingSettingChange('hostPayoutDelay', parseInt(e.target.value))}
-                />
+
                 
                 <Input
                   label="Minimum Stay (nights)"
@@ -837,6 +832,14 @@ export const SystemSettings: React.FC = () => {
                       value={paymentSettings.minimumPayoutAmount?.toString() || '50'}
                       onChange={(e) => handlePaymentSettingChange('minimumPayoutAmount', parseFloat(e.target.value))}
                       startContent={<DollarSign className="w-4 h-4" />}
+                    />
+                    
+                    <Input
+                      label="Payment Hold Days"
+                      type="number"
+                      value={paymentSettings.paymentHoldDays?.toString() || '1'}
+                      onChange={(e) => handlePaymentSettingChange('paymentHoldDays', parseInt(e.target.value))}
+                      description="Days to hold payment before making it eligible for payout"
                     />
                     
                     <Input
