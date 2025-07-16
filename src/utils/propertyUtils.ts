@@ -3,24 +3,6 @@ import type { MapCoordinates } from '../interfaces/Map'
 
 // Convert DatabaseProperty to Property for UI components
 export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty): Property => {
-  // Create a mock host for now - in real app this would come from a join or separate query
-  const mockHost: PropertyHost = {
-    id: dbProperty.host_id,
-    name: 'Property Host', // TODO: Get real host data
-    username: 'host_user',
-    avatar_url: '/default-avatar.jpg',
-    display_name: 'Property Host',
-    is_identity_verified: true,
-    is_email_verified: true,
-    email: 'host@example.com',
-    phone: '+1234567890',
-    rating: 4.8,
-    response_rate: 95,
-    response_time: '< 1 hour',
-    bio: '',
-    experience: 1
-  }
-
   return {
     id: dbProperty.id,
     title: dbProperty.title,
@@ -40,7 +22,7 @@ export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty):
     },
     images: dbProperty.images || [],
     videos: dbProperty.video ? [dbProperty.video] : [],
-    host: mockHost,
+    host: undefined,
     rating: dbProperty.rating || 0,
     review_count: dbProperty.review_count || 0,
     view_count: dbProperty.view_count || 0,

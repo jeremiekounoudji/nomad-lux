@@ -9,7 +9,7 @@ import {
   Chip,
   Textarea
 } from '@heroui/react'
-import { Dispute } from './bookingTypes'
+import { Dispute } from '../../../../interfaces'
 
 interface DisputeManagementModalProps {
   isOpen: boolean
@@ -70,15 +70,21 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
                 </div>
               </div>
 
-              {/* Messages */}
+              {/* Description */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3">Description</h4>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-700">{dispute.description}</p>
+                </div>
+              </div>
+
+              {/* Messages Thread */}
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Communication Thread</h4>
-                <div className="max-h-96 overflow-y-auto space-y-3 bg-gray-50 p-4 rounded-lg">
+                <div className="max-h-64 overflow-y-auto space-y-3 border border-gray-200 rounded-lg p-4">
                   {dispute.messages.map((message) => (
-                    <div key={message.id} className={`p-3 rounded-lg ${
-                      message.isAdmin ? 'bg-blue-100 ml-8' : 'bg-white mr-8'
-                    }`}>
-                      <div className="flex items-center justify-between mb-2">
+                    <div key={message.id} className={`p-3 rounded-lg ${message.isAdmin ? 'bg-blue-50 ml-8' : 'bg-gray-50 mr-8'}`}>
+                      <div className="flex justify-between items-start mb-1">
                         <span className="font-medium text-sm">{message.sender}</span>
                         <span className="text-xs text-gray-500">{message.timestamp}</span>
                       </div>
@@ -86,16 +92,17 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
                     </div>
                   ))}
                 </div>
-                
-                {/* New Message */}
-                <div className="mt-4">
-                  <Textarea
-                    placeholder="Type your response..."
-                    value={disputeMessage}
-                    onChange={(e) => onDisputeMessageChange(e.target.value)}
-                    minRows={3}
-                  />
-                </div>
+              </div>
+
+              {/* Response Input */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3">Add Response</h4>
+                <Textarea
+                  value={disputeMessage}
+                  onChange={(e) => onDisputeMessageChange(e.target.value)}
+                  placeholder="Type your response..."
+                  minRows={3}
+                />
               </div>
             </div>
           )}
@@ -105,11 +112,14 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
             Close
           </Button>
           <Button 
-            color="primary"
+            color="primary" 
             onPress={onSendMessage}
             isDisabled={!disputeMessage.trim()}
           >
-            Send Message
+            Send Response
+          </Button>
+          <Button color="success">
+            Resolve Dispute
           </Button>
         </ModalFooter>
       </ModalContent>

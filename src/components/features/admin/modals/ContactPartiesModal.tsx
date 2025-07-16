@@ -10,12 +10,12 @@ import {
   CardBody
 } from '@heroui/react'
 import { Phone, Mail, User, Home, Shield, MessageSquare } from 'lucide-react'
-import { Booking } from './bookingTypes'
+import { AdminBooking } from '../../../../interfaces'
 
 interface ContactPartiesModalProps {
   isOpen: boolean
   onClose: () => void
-  booking: Booking | null
+  booking: AdminBooking | null
 }
 
 export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
@@ -52,7 +52,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
               </div>
 
               {/* Contact Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Guest Contact */}
                 <Card className="border-2 border-blue-200 bg-blue-50">
                   <CardBody className="p-6">
@@ -197,16 +197,54 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
               </div>
 
               {/* Emergency Contact Notice */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-amber-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-amber-800">Emergency Contact Protocol</h4>
-                    <p className="text-sm text-amber-700 mt-1">
-                      Contact both parties for disputes or emergencies. Document all communication for legal compliance.
-                      For urgent matters, call first then follow up with email.
-                    </p>
-                  </div>
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="w-5 h-5 text-amber-600" />
+                  <h4 className="font-semibold text-amber-900">Admin Communication Guidelines</h4>
+                </div>
+                <div className="text-sm text-amber-800">
+                  <p className="mb-2">• Always maintain professional communication standards</p>
+                  <p className="mb-2">• Document all interactions in the booking activity log</p>
+                  <p>• For urgent matters, contact both parties and escalate if needed</p>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-semibold text-gray-900 mb-3">Quick Actions</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    startContent={<MessageSquare className="w-4 h-4" />}
+                    className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                  >
+                    Send Email Template
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    startContent={<Phone className="w-4 h-4" />}
+                    className="text-green-600 border-green-200 hover:bg-green-50"
+                  >
+                    Schedule Call
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    startContent={<Shield className="w-4 h-4" />}
+                    className="text-purple-600 border-purple-200 hover:bg-purple-50"
+                  >
+                    Emergency Contact
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    startContent={<MessageSquare className="w-4 h-4" />}
+                    className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                  >
+                    Document Call
+                  </Button>
                 </div>
               </div>
             </div>
@@ -216,11 +254,8 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
           <Button variant="flat" onPress={onClose}>
             Close
           </Button>
-          <Button
-            color="primary"
-            startContent={<MessageSquare className="w-4 h-4" />}
-          >
-            Create Support Ticket
+          <Button color="primary" startContent={<MessageSquare className="w-4 h-4" />}>
+            Open Message Center
           </Button>
         </ModalFooter>
       </ModalContent>

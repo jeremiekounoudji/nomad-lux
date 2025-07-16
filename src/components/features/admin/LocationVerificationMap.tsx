@@ -4,6 +4,8 @@ import { DatabaseProperty } from '../../../interfaces/DatabaseProperty';
 import { MapCoordinates } from '../../../interfaces/Map';
 import { Button, Chip } from '@heroui/react';
 import { MapPin, Check, AlertTriangle, Search } from 'lucide-react';
+import { convertDatabasePropertyToProperty } from '../../../utils/propertyUtils';
+import { validatePropertyCoordinates, getPropertyCoordinates, PropertyMapError, getPropertyMapErrorMessage } from '../../../utils/propertyUtils';
 
 interface LocationVerificationMapProps {
   property: DatabaseProperty;
@@ -44,6 +46,24 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
     }
   }, [property.coordinates, onVerify]);
 
+  // Convert DatabaseProperty to Property for utility functions
+  const propertyForMap = convertDatabasePropertyToProperty(property);
+  const hasValidCoords = validatePropertyCoordinates(propertyForMap);
+  const coords = getPropertyCoordinates(propertyForMap);
+
+  if (!hasValidCoords || !coords) {
+    console.warn('🗺️ Coordinates unavailable for property:', property.id, property.title, property.location);
+    return (
+      <div className={`bg-gray-100 rounded-lg flex items-center justify-center h-[300px] ${className}`}>
+        <div className="text-center p-6">
+          <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">Coordinates unavailable</h3>
+          <p className="text-gray-500 mb-4">This property does not have valid location coordinates.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
@@ -65,9 +85,9 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
       <div className="relative rounded-xl overflow-hidden border border-gray-200">
         <LazyMapWrapper
           type="property"
-          property={property}
+          property={propertyForMap}
           height="300px"
-          showNearbyAmenities={true}
+          showNearbyAmenities={false}
           showDirections={false}
           showRadius={true}
           onDirectionsRequest={(coordinates: MapCoordinates) => {
@@ -79,8 +99,8 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
 
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-600">
-          <p>Latitude: {property.coordinates.lat}</p>
-          <p>Longitude: {property.coordinates.lng}</p>
+          <p>Latitude: {coords.lat}</p>
+          <p>Longitude: {coords.lng}</p>
         </div>
         <Button
           color="primary"

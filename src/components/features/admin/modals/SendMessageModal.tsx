@@ -19,13 +19,13 @@ import {
   CardBody
 } from '@heroui/react'
 import { MessageSquare, Mail, Smartphone, Bell, Send } from 'lucide-react'
-import { User } from './userTypes'
+import { AdminUser } from '../../../../interfaces'
 
 interface SendMessageModalProps {
   isOpen: boolean
   onClose: () => void
-  user: User | null
-  users?: User[] // For bulk messaging
+  user: AdminUser | null
+  users?: AdminUser[] // For bulk messaging
   onSend: (messageData: MessageData) => void
 }
 
@@ -101,56 +101,51 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size="xl">
+    <Modal isOpen={isOpen} onClose={handleClose} size="3xl">
       <ModalContent>
-        <ModalHeader className="flex items-center gap-3 bg-blue-50 text-blue-900 rounded-t-lg">
-          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">
-              Send Message {isMultiple ? `to ${recipientList.length} Users` : `to ${user?.display_name}`}
-            </h3>
-            <p className="text-sm font-normal text-blue-700">
-              Communicate directly with platform users
-            </p>
-          </div>
+        <ModalHeader className="flex items-center gap-2">
+          <MessageSquare className="w-5 h-5 text-primary-500" />
+          Send Message{isMultiple ? ` to ${recipientList.length} Users` : ` to ${user?.name}`}
         </ModalHeader>
-        
-        <ModalBody className="space-y-6">
-          {/* Recipients Display */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 mb-3">
+        <ModalBody className="gap-6">
+          {/* Recipients Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
               {isMultiple ? 'Recipients' : 'Recipient'}
-            </h4>
-            
-            {isMultiple ? (
-              <div className="space-y-2 max-h-32 overflow-y-auto">
-                {recipientList.map((recipient) => (
-                  <div key={recipient.id} className="flex items-center gap-2 text-sm">
-                    <Avatar src={recipient.avatar_url} name={recipient.display_name} size="sm" />
-                    <span className="font-medium">{recipient.display_name}</span>
-                    <span className="text-gray-500">({recipient.email})</span>
+            </label>
+            <div className="space-y-2 max-h-32 overflow-y-auto">
+              {recipientList.map((recipient) => (
+                <div key={recipient.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
+                  <Avatar
+                    src={recipient.avatar}
+                    name={recipient.name}
+                    size="sm"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{recipient.name}</p>
+                    <p className="text-xs text-gray-500 truncate">{recipient.email}</p>
+                  </div>
+                  <div className="flex gap-1">
                     <Chip
                       color={recipient.status === 'active' ? 'success' : 'warning'}
                       size="sm"
                       variant="flat"
+                      className="capitalize"
                     >
                       {recipient.status}
                     </Chip>
+                    <Chip
+                      color="secondary"
+                      size="sm"
+                      variant="flat"
+                      className="capitalize"
+                    >
+                      {recipient.role}
+                    </Chip>
                   </div>
-                ))}
-              </div>
-            ) : user && (
-              <div className="flex items-center gap-3">
-                <Avatar src={user.avatar_url} name={user.display_name} size="md" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">{user.display_name}</h3>
-                  <p className="text-sm text-gray-600">{user.email}</p>
-                  <p className="text-xs text-gray-400">{user.phone}</p>
                 </div>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
 
           <Divider />
@@ -202,59 +197,48 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
 
           {/* Message Content */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Message Content <span className="text-red-500">*</span>
-            </label>
             <Textarea
+              label="Message"
               placeholder={getPlaceholderText()}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              minRows={messageType === 'email' ? 6 : 4}
-              maxRows={messageType === 'email' ? 10 : 6}
+              minRows={4}
+              maxRows={8}
               maxLength={getMaxLength()}
-              className="w-full"
+              description={`${message.length}/${getMaxLength()} characters`}
+              isRequired
             />
-            <div className="flex justify-between items-center mt-2">
-              <p className="text-xs text-gray-500">
-                {messageType === 'email' 
-                  ? 'Professional email with admin signature will be sent'
-                  : messageType === 'sms'
-                  ? 'SMS charges may apply'
-                  : 'Push notification will appear in user\'s app'
-                }
-              </p>
-              <p className="text-xs text-gray-400">
-                {message.length}/{getMaxLength()}
-              </p>
-            </div>
           </div>
 
           {/* Message Preview */}
-          <Card className="bg-gray-50 border-dashed border-2 border-gray-200">
-            <CardBody className="p-4">
-              <div className="flex items-center gap-2 mb-2">
-                {getMessageTypeIcon(messageType)}
-                <span className="text-sm font-medium text-gray-700">Preview</span>
-              </div>
-              <div className="text-sm text-gray-600">
-                {messageType === 'email' && subject && (
-                  <div className="mb-2">
-                    <strong>Subject:</strong> {subject}
-                  </div>
-                )}
-                <div>
-                  {message || 'Your message will appear here...'}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">Preview</label>
+            <Card className="bg-gray-50 border-dashed border-2 border-gray-200">
+              <CardBody className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  {getMessageTypeIcon(messageType)}
+                  <span className="text-sm font-medium text-gray-700">Preview</span>
                 </div>
-                {messageType === 'email' && (
-                  <div className="mt-3 pt-3 border-t border-gray-300 text-xs text-gray-500">
-                    <p>Best regards,</p>
-                    <p>Nomad Lux Admin Team</p>
-                    <p>admin@nomadlux.com</p>
+                <div className="text-sm text-gray-600">
+                  {messageType === 'email' && subject && (
+                    <div className="mb-2">
+                      <strong>Subject:</strong> {subject}
+                    </div>
+                  )}
+                  <div>
+                    {message || 'Your message will appear here...'}
                   </div>
-                )}
-              </div>
-            </CardBody>
-          </Card>
+                  {messageType === 'email' && (
+                    <div className="mt-3 pt-3 border-t border-gray-300 text-xs text-gray-500">
+                      <p>Best regards,</p>
+                      <p>Nomad Lux Admin Team</p>
+                      <p>admin@nomadlux.com</p>
+                    </div>
+                  )}
+                </div>
+              </CardBody>
+            </Card>
+          </div>
         </ModalBody>
         
         <ModalFooter className="bg-gray-50 rounded-b-lg">

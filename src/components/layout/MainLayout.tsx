@@ -223,6 +223,23 @@ const MainLayout: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 ml-6">
+            {/* Admin Panel - always visible */}
+            <NavLink 
+              to={ROUTES.ADMIN_LOGIN}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <Crown className="w-5 h-5" />
+            </NavLink>
+            {/* Create Post - authenticated only */}
+            {isAuthenticated && (
+              <NavLink 
+                to={ROUTES.CREATE_PROPERTY}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <Plus className="w-5 h-5" />
+              </NavLink>
+            )}
+            {/* Notification Bell - always visible */}
             <NavLink 
               to={ROUTES.NOTIFICATIONS}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
@@ -230,6 +247,16 @@ const MainLayout: React.FC = () => {
               <Bell className="w-5 h-5" />
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full"></div>
             </NavLink>
+            {/* Sign Out - authenticated only */}
+            {isAuthenticated && (
+              <button 
+                onClick={handleLogout}
+                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                title="Sign Out"
+              >
+                <LogOut className="w-5 h-5 text-red-500" />
+              </button>
+            )}
           </div>
         </div>
 

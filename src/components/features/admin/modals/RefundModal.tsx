@@ -10,12 +10,12 @@ import {
   Textarea
 } from '@heroui/react'
 import { DollarSign } from 'lucide-react'
-import { Booking } from './bookingTypes'
+import { AdminBooking } from '../../../../interfaces'
 
 interface RefundModalProps {
   isOpen: boolean
   onClose: () => void
-  booking: Booking | null
+  booking: AdminBooking | null
   refundAmount: string
   onRefundAmountChange: (amount: string) => void
   onProcessRefund: () => void

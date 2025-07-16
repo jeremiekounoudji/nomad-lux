@@ -17,10 +17,11 @@ import {
 
 // Custom property icon with avatar, price, and rating
 const createPropertyIcon = (property: Property, isSelected: boolean = true) => {
+  const hasHost = property.host && property.host.avatar_url;
   const iconHtml = `
     <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
       <div style="background:white;border:2px solid ${isSelected ? '#3b82f6' : '#d1d5db'};border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,0.10);padding:6px 12px;display:flex;align-items:center;gap:8px;min-width:70px;">
-        <img src='${property.host.avatar_url}' alt='avatar' style="width:28px;height:28px;border-radius:50%;border:2px solid #e5e7eb;object-fit:cover;" />
+        ${hasHost ? `<img src='${property.host.avatar_url}' alt='avatar' style="width:28px;height:28px;border-radius:50%;border:2px solid #e5e7eb;object-fit:cover;" />` : ''}
         <div style="display:flex;flex-direction:column;align-items:flex-start;">
           <span style="font-size:14px;font-weight:700;color:${isSelected ? '#2563eb' : '#374151'};line-height:1;">$${property.price}</span>
           <span style="font-size:12px;color:#f59e42;font-weight:600;display:flex;align-items:center;gap:2px;">

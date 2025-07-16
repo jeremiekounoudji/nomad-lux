@@ -13,12 +13,12 @@ import {
   Checkbox
 } from '@heroui/react'
 import { Trash2, AlertTriangle, XCircle } from 'lucide-react'
-import { User } from './userTypes'
+import { AdminUser } from '../../../../interfaces'
 
 interface UserDeletionModalProps {
   isOpen: boolean
   onClose: () => void
-  user: User | null
+  user: AdminUser | null
   onConfirm: (reason: string) => void
 }
 
@@ -79,9 +79,9 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
               <div className="bg-gray-50 rounded-lg p-4">
                 <h4 className="font-semibold text-gray-900 mb-3">User Details</h4>
                 <div className="flex items-center gap-3 mb-4">
-                  <Avatar src={user.avatar_url} name={user.display_name} size="md" />
+                  <Avatar src={user.avatar} name={user.name} size="md" />
                   <div>
-                    <h3 className="font-semibold text-gray-900">{user.display_name}</h3>
+                    <h3 className="font-semibold text-gray-900">{user.name}</h3>
                     <p className="text-sm text-gray-600">{user.email}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Chip

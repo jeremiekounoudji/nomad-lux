@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { 
   Card, 
   CardBody, 
@@ -13,16 +13,20 @@ import {
   SelectItem,
   Progress,
   Divider,
-  Badge
+  Badge,
+  Pagination,
+  Spinner
 } from '@heroui/react'
 import {
   BookingDetailsModal,
   DisputeManagementModal,
   RefundModal,
-  ContactPartiesModal,
-  Booking,
-  Dispute
+  ContactPartiesModal
 } from './modals'
+import PaymentRecordDetailsModal from './modals/PaymentRecordDetailsModal';
+import { useAdminBookings, useAdminPaymentRecords } from '../../../hooks/useAdminBookings'
+import { AdminBooking } from '../../../interfaces/Booking'
+import { PaymentRecord } from '../../../interfaces/PaymentRecord';
 import { 
   Search,
   Calendar,
@@ -51,109 +55,19 @@ import {
 } from 'lucide-react'
 
 interface BookingManagementProps {
-  onPageChange: (page: string) => void
+  onPageChange?: (page: string) => void
 }
 
-
-
-const mockBookings: Booking[] = [
-  {
-    id: 'BK001',
-    propertyId: 'P001',
-    propertyTitle: 'Luxury Beach House with Ocean View',
-    propertyImage: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-    guestName: 'John Smith',
-    guestEmail: 'john.smith@email.com',
-    guestPhone: '+1 (555) 123-4567',
-    hostName: 'Sarah Johnson',
-    hostEmail: 'sarah.johnson@email.com',
-    hostPhone: '+1 (555) 111-2222',
-    checkIn: '2024-02-15',
-    checkOut: '2024-02-20',
-    totalAmount: 2250,
-    status: 'dispute',
-    paymentStatus: 'paid',
-    bookingDate: '2024-01-10',
-    guests: 4,
-    nights: 5,
-    disputeReason: 'Property not as described',
-    disputeDate: '2024-02-16',
-    lastActivity: '2 hours ago'
-  },
-  {
-    id: 'BK002',
-    propertyId: 'P002',
-    propertyTitle: 'Modern Downtown Apartment',
-    propertyImage: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
-    guestName: 'Lisa Chen',
-    guestEmail: 'lisa.chen@email.com',
-    guestPhone: '+1 (555) 987-6543',
-    hostName: 'Michael Chen',
-    hostEmail: 'michael.chen@email.com',
-    hostPhone: '+1 (555) 333-4444',
-    checkIn: '2024-02-10',
-    checkOut: '2024-02-12',
-    totalAmount: 360,
-    status: 'completed',
-    paymentStatus: 'paid',
-    bookingDate: '2024-01-20',
-    guests: 2,
-    nights: 2,
-    lastActivity: '1 week ago'
-  },
-  {
-    id: 'BK003',
-    propertyId: 'P003',
-    propertyTitle: 'Cozy Mountain Cabin',
-    propertyImage: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
-    guestName: 'David Wilson',
-    guestEmail: 'david.wilson@email.com',
-    guestPhone: '+1 (555) 456-7890',
-    hostName: 'Emma Rodriguez',
-    hostEmail: 'emma.rodriguez@email.com',
-    hostPhone: '+1 (555) 555-6666',
-    checkIn: '2024-02-25',
-    checkOut: '2024-03-01',
-    totalAmount: 1320,
-    status: 'confirmed',
-    paymentStatus: 'paid',
-    bookingDate: '2024-01-25',
-    guests: 3,
-    nights: 6,
-    lastActivity: '3 days ago'
-  },
-  {
-    id: 'BK004',
-    propertyId: 'P004',
-    propertyTitle: 'City Loft with Rooftop',
-    propertyImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
-    guestName: 'Anna Taylor',
-    guestEmail: 'anna.taylor@email.com',
-    guestPhone: '+1 (555) 234-5678',
-    hostName: 'James Park',
-    hostEmail: 'james.park@email.com',
-    hostPhone: '+1 (555) 777-8888',
-    checkIn: '2024-01-28',
-    checkOut: '2024-01-30',
-    totalAmount: 480,
-    status: 'cancelled',
-    paymentStatus: 'refunded',
-    bookingDate: '2024-01-15',
-    guests: 2,
-    nights: 2,
-    lastActivity: '5 days ago'
-  }
-]
-
-const mockDisputes: Dispute[] = [
+// Mock disputes data - this would come from a disputes table in a real implementation
+const mockDisputes = [
   {
     id: 'D001',
     bookingId: 'BK001',
-    type: 'property_issue',
-    priority: 'high',
-    reporter: 'guest',
+    type: 'property_issue' as const,
+    priority: 'high' as const,
+    reporter: 'guest' as const,
     description: 'Property was not clean upon arrival, and several amenities listed were not available.',
-    status: 'investigating',
+    status: 'investigating' as const,
     createdDate: '2024-02-16',
     assignedTo: 'Admin Team',
     messages: [
@@ -170,45 +84,70 @@ const mockDisputes: Dispute[] = [
         message: 'Thank you for reporting this issue. We are investigating and will contact the host immediately.',
         timestamp: '2024-02-16 15:45',
         isAdmin: true
-      },
-      {
-        id: 'M003',
-        sender: 'Sarah Johnson',
-        message: 'I apologize for the inconvenience. The cleaning service was delayed, and the pool heater is being repaired.',
-        timestamp: '2024-02-16 16:20',
-        isAdmin: false
-      }
-    ]
-  },
-  {
-    id: 'D002',
-    bookingId: 'BK005',
-    type: 'cancellation',
-    priority: 'medium',
-    reporter: 'host',
-    description: 'Guest violated house rules and caused property damage.',
-    status: 'open',
-    createdDate: '2024-02-14',
-    messages: [
-      {
-        id: 'M004',
-        sender: 'Host Name',
-        message: 'Guest threw a party despite strict no-party policy and damaged furniture.',
-        timestamp: '2024-02-14 22:15',
-        isAdmin: false
       }
     ]
   }
 ]
 
-export const BookingManagement: React.FC = () => {
+export const BookingManagement: React.FC<BookingManagementProps> = () => {
   const [selectedTab, setSelectedTab] = useState('all')
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const [selectedDispute, setSelectedDispute] = useState<Dispute | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<AdminBooking | null>(null)
+  const [selectedDispute, setSelectedDispute] = useState<any>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [refundAmount, setRefundAmount] = useState('')
   const [disputeMessage, setDisputeMessage] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
+  const [bookingStats, setBookingStats] = useState({
+    total: 0,
+    confirmed: 0,
+    disputes: 0,
+    revenue: 0
+  })
+
+  // Use admin bookings hook (returns AdminBooking[])
+  const {
+    bookings: adminBookings,
+    isLoading,
+    error,
+    pagination,
+    loadAdminBookings,
+    getBookingStats,
+    processRefund,
+    updateBookingStatus,
+    clearError
+  } = useAdminBookings();
+
+  // Payment Records State
+  const [selectedPayment, setSelectedPayment] = useState<PaymentRecord | null>(null);
+  const {
+    paymentRecords,
+    isLoading: paymentLoading,
+    error: paymentError,
+    pagination: paymentPagination,
+    loadAdminPaymentRecords,
+    clearError: clearPaymentError
+  } = useAdminPaymentRecords();
+  const {
+    isOpen: isPaymentOpen,
+    onOpen: onPaymentOpen,
+    onClose: onPaymentClose
+  } = useDisclosure();
+
+  // Computed filtered bookings for client-side filtering (in addition to server-side)
+  const filteredBookings: AdminBooking[] = useMemo(() => {
+    const safeSearch = (searchQuery || '').toLowerCase();
+    if (!adminBookings || adminBookings.length === 0) return [];
+    return adminBookings.filter((booking) => {
+      const matchesSearch =
+        safeSearch === '' ||
+        (booking.id?.toLowerCase() || '').includes(safeSearch) ||
+        (booking.guestName?.toLowerCase() || '').includes(safeSearch) ||
+        (booking.hostName?.toLowerCase() || '').includes(safeSearch) ||
+        (booking.propertyTitle?.toLowerCase() || '').includes(safeSearch);
+      const matchesStatus = filterStatus === 'all' || booking.status === filterStatus;
+      return matchesSearch && matchesStatus;
+    });
+  }, [adminBookings, searchQuery, filterStatus]);
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { 
@@ -227,26 +166,81 @@ export const BookingManagement: React.FC = () => {
     onClose: onContactClose
   } = useDisclosure()
 
-  const handleViewBooking = (booking: Booking) => {
+  // Load initial data
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        await loadAdminBookings(1, { status: filterStatus, search: searchQuery })
+        const stats = await getBookingStats()
+        setBookingStats(stats)
+      } catch (error) {
+        console.error('Failed to load initial data:', error)
+      }
+    }
+
+    loadInitialData()
+  }, [])
+
+  // Load payment records on tab switch
+  useEffect(() => {
+    if (selectedTab === 'payments') {
+      loadAdminPaymentRecords(1);
+    }
+  }, [selectedTab]);
+
+  // Handle search and filter changes
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      loadAdminBookings(1, { 
+        status: filterStatus === 'all' ? undefined : filterStatus,
+        search: searchQuery || undefined
+      })
+    }, 500) // Debounce search
+
+    return () => clearTimeout(delayedSearch)
+  }, [searchQuery, filterStatus, loadAdminBookings])
+
+  // Handle pagination
+  const handlePageChange = async (page: number) => {
+    await loadAdminBookings(page, {
+      status: filterStatus === 'all' ? undefined : filterStatus,
+      search: searchQuery || undefined
+    })
+  }
+
+  // Payment pagination handler
+  const handlePaymentPageChange = async (page: number) => {
+    await loadAdminPaymentRecords(page);
+  };
+
+  const handleViewBooking = (booking: AdminBooking) => {
     setSelectedBooking(booking)
     onOpen()
   }
 
-  const handleContactParties = (booking: Booking) => {
+  const handleContactParties = (booking: AdminBooking) => {
     setSelectedBooking(booking)
     onContactOpen()
   }
 
-  const handleViewDispute = (dispute: Dispute) => {
+  const handleViewDispute = (dispute: any) => {
     setSelectedDispute(dispute)
     onDisputeOpen()
   }
 
-  const handleRefund = (bookingId: string, amount: string) => {
-    console.log('Processing refund:', bookingId, amount)
-    setRefundAmount('')
-    onRefundClose()
-    // TODO: Implement refund logic
+  const handleRefund = async (bookingId: string, amount: string) => {
+    try {
+      await processRefund(bookingId, parseFloat(amount), 'Admin processed refund')
+      setRefundAmount('')
+      onRefundClose()
+      // Refresh bookings
+      await loadAdminBookings(pagination.currentPage, {
+        status: filterStatus === 'all' ? undefined : filterStatus,
+        search: searchQuery || undefined
+      })
+    } catch (error) {
+      console.error('Failed to process refund:', error)
+    }
   }
 
   const handleDisputeMessage = (disputeId: string, message: string) => {
@@ -286,28 +280,38 @@ export const BookingManagement: React.FC = () => {
     }
   }
 
-  const filteredBookings = mockBookings.filter(booking => {
-    const matchesSearch = 
-      booking.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.propertyTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.id.toLowerCase().includes(searchQuery.toLowerCase())
-    
-    const matchesStatus = filterStatus === 'all' || booking.status === filterStatus
-    
-    return matchesSearch && matchesStatus
-  })
-
-  const stats = {
-    total: mockBookings.length,
-    confirmed: mockBookings.filter(b => b.status === 'confirmed').length,
-    disputes: mockBookings.filter(b => b.status === 'dispute').length,
-    revenue: mockBookings.reduce((sum, b) => sum + (b.status === 'completed' ? b.totalAmount : 0), 0)
-  }
-
   const disputeStats = {
-    open: mockDisputes.filter(d => d.status === 'open').length,
+    open: mockDisputes.filter(d => d.status === 'investigating').length, // match mock data
     investigating: mockDisputes.filter(d => d.status === 'investigating').length,
-    urgent: mockDisputes.filter(d => d.priority === 'urgent').length
+    urgent: mockDisputes.filter(d => d.priority === 'high').length // match mock data
+  };
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
+        <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Booking Management</h1>
+        <p className="text-gray-600 mb-4">Monitor and manage all platform bookings</p>
+        <Card className="border-l-4 border-l-red-500 bg-red-50 w-full max-w-md">
+          <CardBody className="p-6 flex flex-col items-center">
+            <h4 className="font-semibold text-red-900 mb-2">Error Loading Bookings</h4>
+            <p className="text-sm text-red-700 mb-4 text-center">{error}</p>
+            <Button 
+              size="md" 
+              color="danger" 
+              variant="flat"
+              onPress={() => {
+                clearError();
+                loadAdminBookings(1, { status: filterStatus, search: searchQuery });
+              }}
+            >
+              Retry
+            </Button>
+          </CardBody>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -321,17 +325,14 @@ export const BookingManagement: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">{stats.total}</h3>
+            <h3 className="text-4xl font-bold text-white">{bookingStats.total}</h3>
             <p className="text-white/90 font-medium">Total Bookings</p>
-            <div className="flex items-center justify-center gap-1 mt-2">
-              <span className="text-white/70 text-sm">📈 +12% this month</span>
-            </div>
           </CardBody>
         </Card>
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-teal-500 text-white">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">{stats.confirmed}</h3>
+            <h3 className="text-4xl font-bold text-white">{bookingStats.confirmed}</h3>
             <p className="text-white/90 font-medium">Active Bookings</p>
             <p className="text-white/70 text-sm">Currently confirmed</p>
           </CardBody>
@@ -339,7 +340,7 @@ export const BookingManagement: React.FC = () => {
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-orange-500 text-white">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">{stats.disputes}</h3>
+            <h3 className="text-4xl font-bold text-white">{bookingStats.disputes}</h3>
             <p className="text-white/90 font-medium">Active Disputes</p>
             <p className="text-white/70 text-sm">Require attention</p>
           </CardBody>
@@ -347,34 +348,11 @@ export const BookingManagement: React.FC = () => {
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">${stats.revenue.toLocaleString()}</h3>
+            <h3 className="text-4xl font-bold text-white">${bookingStats.revenue.toLocaleString()}</h3>
             <p className="text-white/90 font-medium">Revenue (Completed)</p>
-            <div className="flex items-center justify-center gap-1 mt-2">
-              <span className="text-white/70 text-sm">📈 +8% this month</span>
-            </div>
           </CardBody>
         </Card>
       </div>
-
-      {/* Dispute Alert */}
-      {disputeStats.urgent > 0 && (
-        <Card className="border-l-4 border-l-red-500 bg-red-50">
-          <CardBody className="p-4">
-            <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-              <div className="flex-1">
-                <h4 className="font-semibold text-red-900">Urgent Disputes Require Attention</h4>
-                <p className="text-sm text-red-700">
-                  {disputeStats.urgent} urgent dispute{disputeStats.urgent !== 1 ? 's' : ''} need immediate resolution
-                </p>
-              </div>
-              <Button size="sm" color="danger" variant="flat">
-                View Disputes
-              </Button>
-            </div>
-          </CardBody>
-        </Card>
-      )}
 
       {/* Search and Filters */}
       <Card className="shadow-sm border border-gray-200">
@@ -391,16 +369,19 @@ export const BookingManagement: React.FC = () => {
             <div className="flex gap-3">
               <Select
                 placeholder="Filter by status"
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                selectedKeys={filterStatus ? [filterStatus] : []}
+                onSelectionChange={(keys) => {
+                  const selectedKey = Array.from(keys)[0] as string
+                  setFilterStatus(selectedKey || 'all')
+                }}
                 className="min-w-[150px]"
               >
-                <SelectItem key="all" value="all">All Status</SelectItem>
-                <SelectItem key="confirmed" value="confirmed">Confirmed</SelectItem>
-                <SelectItem key="pending" value="pending">Pending</SelectItem>
-                <SelectItem key="completed" value="completed">Completed</SelectItem>
-                <SelectItem key="cancelled" value="cancelled">Cancelled</SelectItem>
-                <SelectItem key="dispute" value="dispute">Dispute</SelectItem>
+                <SelectItem key="all">All Status</SelectItem>
+                <SelectItem key="confirmed">Confirmed</SelectItem>
+                <SelectItem key="pending">Pending</SelectItem>
+                <SelectItem key="completed">Completed</SelectItem>
+                <SelectItem key="cancelled">Cancelled</SelectItem>
+                <SelectItem key="dispute">Dispute</SelectItem>
               </Select>
             </div>
           </div>
@@ -420,145 +401,199 @@ export const BookingManagement: React.FC = () => {
             tabContent: "group-data-[selected=true]:text-primary-600"
           }}
         >
-          <Tab key="all" title={`All Bookings (${filteredBookings.length})`} />
+          <Tab key="all" title={`All Bookings (${pagination.totalItems})`} />
           <Tab key="disputes" title={`Disputes (${disputeStats.open + disputeStats.investigating})`} />
           <Tab key="payments" title="Payment Tracking" />
         </Tabs>
       </div>
 
-      {/* Bookings List */}
-      {selectedTab === 'all' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filteredBookings.map((booking) => (
-            <Card key={booking.id} className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <CardBody className="p-6">
-                <div className="flex flex-col lg:flex-row gap-6">
-                  {/* Property Image */}
-                  <div className="flex-shrink-0">
-                    <img
-                      src={booking.propertyImage}
-                      alt={booking.propertyTitle}
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
-                  </div>
-
-                  {/* Booking Details */}
-                  <div className="flex-1 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-lg text-gray-900">{booking.propertyTitle}</h3>
-                          <Chip
-                            color={getStatusColor(booking.status)}
-                            variant="flat"
-                            size="sm"
-                          >
-                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                          </Chip>
-                          <Chip
-                            color={getPaymentStatusColor(booking.paymentStatus)}
-                            variant="flat"
-                            size="sm"
-                          >
-                            {booking.paymentStatus.replace('_', ' ').charAt(0).toUpperCase() + booking.paymentStatus.replace('_', ' ').slice(1)}
-                          </Chip>
-                        </div>
-                        <div className="text-sm text-gray-600 space-y-1">
-                          <div className="flex items-center gap-4">
-                            <span className="font-medium">ID:</span>
-                            <span className="font-mono">{booking.id}</span>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className="font-medium">Guest:</span>
-                            <span>{booking.guestName}</span>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className="font-medium">Host:</span>
-                            <span>{booking.hostName}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-gray-900">${booking.totalAmount.toLocaleString()}</div>
-                        <div className="text-sm text-gray-600">{booking.nights} nights • {booking.guests} guests</div>
-                        <div className="text-xs text-gray-500 mt-1">Last activity: {booking.lastActivity}</div>
-                      </div>
-                    </div>
-
-                    {/* Dates and Status */}
-                    <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        <span>{booking.checkIn} → {booking.checkOut}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="w-4 h-4" />
-                        <span>Booked on {booking.bookingDate}</span>
-                      </div>
-                      {booking.status === 'dispute' && booking.disputeDate && (
-                        <div className="flex items-center gap-2 text-red-600">
-                          <AlertTriangle className="w-4 h-4" />
-                          <span>Dispute filed on {booking.disputeDate}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        onPress={() => handleViewBooking(booking)}
-                        startContent={<Eye className="w-4 h-4" />}
-                      >
-                        View Details
-                      </Button>
-                      
-                      {booking.status === 'dispute' && (
-                        <Button
-                          size="sm"
-                          color="danger"
-                          variant="flat"
-                          startContent={<Flag className="w-4 h-4" />}
-                        >
-                          Manage Dispute
-                        </Button>
-                      )}
-                      
-                      {(booking.paymentStatus === 'paid' || booking.paymentStatus === 'partial_refund') && (
-                        <Button
-                          size="sm"
-                          color="secondary"
-                          variant="flat"
-                          onPress={() => {
-                            setSelectedBooking(booking)
-                            onRefundOpen()
-                          }}
-                          startContent={<RefreshCw className="w-4 h-4" />}
-                        >
-                          Process Refund
-                        </Button>
-                      )}
-                      
-                      <Button
-                        size="sm"
-                        variant="flat"
-                        startContent={<MessageSquare className="w-4 h-4" />}
-                        onPress={() => handleContactParties(booking)}
-                      >
-                        Contact Parties
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          ))}
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center min-h-[40vh] w-full">
+          <Spinner size="lg" className="mb-4" />
+          <span className="text-lg text-gray-600">Loading bookings...</span>
         </div>
       )}
 
-      {/* Disputes Tab */}
+      {/* Bookings List */}
+      {selectedTab === 'all' && !isLoading && (
+        <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {filteredBookings.map((booking: AdminBooking) => (
+              <Card key={booking.id} className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                <CardBody className="p-6">
+                  <div className="flex flex-col lg:flex-row gap-6">
+                    {/* Property Image */}
+                    <div className="flex-shrink-0">
+                      <img
+                        src={booking.propertyImage}
+                        alt={booking.propertyTitle}
+                        className="w-24 h-24 object-cover rounded-lg"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400'
+                        }}
+                      />
+                    </div>
+
+                    {/* Booking Details */}
+                    <div className="flex-1 space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className="font-semibold text-lg text-gray-900">{booking.propertyTitle}</h3>
+                            <Chip
+                              color={getStatusColor(booking.status)}
+                              variant="flat"
+                              size="sm"
+                            >
+                              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                            </Chip>
+                            <Chip
+                              color={getPaymentStatusColor(booking.paymentStatus)}
+                              variant="flat"
+                              size="sm"
+                            >
+                              {booking.paymentStatus.replace('_', ' ').charAt(0).toUpperCase() + booking.paymentStatus.replace('_', ' ').slice(1)}
+                            </Chip>
+                          </div>
+                          <div className="text-sm text-gray-600 space-y-1">
+                            <div className="flex items-center gap-4">
+                              <span className="font-medium">ID:</span>
+                              <span className="font-mono">{booking.id}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="font-medium">Guest:</span>
+                              <span>{booking.guestName}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <span className="font-medium">Host:</span>
+                              <span>{booking.hostName}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-gray-900">${booking.totalAmount.toLocaleString()}</div>
+                          <div className="text-sm text-gray-600">{booking.nights} nights • {booking.guests} guests</div>
+                          <div className="text-xs text-gray-500 mt-1">Last activity: {booking.lastActivity}</div>
+                        </div>
+                      </div>
+
+                      {/* Dates and Status */}
+                      <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="w-4 h-4" />
+                          <span>{booking.checkIn} → {booking.checkOut}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CreditCard className="w-4 h-4" />
+                          <span>Booked on {booking.bookingDate}</span>
+                        </div>
+                        {booking.status === 'dispute' && booking.disputeDate && (
+                          <div className="flex items-center gap-2 text-red-600">
+                            <AlertTriangle className="w-4 h-4" />
+                            <span>Dispute filed on {booking.disputeDate}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-wrap gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          onPress={() => handleViewBooking(booking)}
+                          startContent={<Eye className="w-4 h-4" />}
+                        >
+                          View Details
+                        </Button>
+                        
+                        {booking.status === 'dispute' && (
+                          <Button
+                            size="sm"
+                            color="danger"
+                            variant="flat"
+                            startContent={<Flag className="w-4 h-4" />}
+                          >
+                            Manage Dispute
+                          </Button>
+                        )}
+                        
+                        {(booking.paymentStatus === 'paid' || booking.paymentStatus === 'partial_refund') && (
+                          <Button
+                            size="sm"
+                            color="secondary"
+                            variant="flat"
+                            onPress={() => {
+                              setSelectedBooking(booking)
+                              onRefundOpen()
+                            }}
+                            startContent={<RefreshCw className="w-4 h-4" />}
+                          >
+                            Process Refund
+                          </Button>
+                        )}
+                        
+                        <Button
+                          size="sm"
+                          variant="flat"
+                          startContent={<MessageSquare className="w-4 h-4" />}
+                          onPress={() => handleContactParties(booking)}
+                        >
+                          Contact Parties
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="flex justify-center mt-8">
+              <Pagination
+                total={pagination.totalPages}
+                page={pagination.currentPage}
+                onChange={handlePageChange}
+                showControls
+                showShadow
+                color="primary"
+              />
+            </div>
+          )}
+
+          {/* No bookings message */}
+          {!isLoading && filteredBookings.length === 0 && (
+            <Card className="shadow-sm border border-gray-200">
+              <CardBody className="p-12 text-center">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
+                <p className="text-gray-600 mb-4">
+                  {searchQuery || filterStatus !== 'all' 
+                    ? 'Try adjusting your search or filters.'
+                    : 'No bookings have been made yet.'}
+                </p>
+                {(searchQuery || filterStatus !== 'all') && (
+                  <Button 
+                    variant="flat" 
+                    onPress={() => {
+                      setSearchQuery('')
+                      setFilterStatus('all')
+                    }}
+                  >
+                    Clear Filters
+                  </Button>
+                )}
+              </CardBody>
+            </Card>
+          )}
+        </>
+      )}
+
+      {/* Disputes Tab - using mock data for now */}
       {selectedTab === 'disputes' && (
         <div className="space-y-4">
           {/* Dispute Stats */}
@@ -601,7 +636,7 @@ export const BookingManagement: React.FC = () => {
                         {dispute.priority.charAt(0).toUpperCase() + dispute.priority.slice(1)} Priority
                       </Chip>
                       <Chip
-                        color={dispute.status === 'open' ? 'danger' : 'warning'}
+                        color={dispute.status === 'investigating' ? 'danger' : 'warning'}
                         variant="flat"
                         size="sm"
                       >
@@ -635,13 +670,6 @@ export const BookingManagement: React.FC = () => {
                     >
                       Manage Dispute
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="flat"
-                      startContent={<ArrowRight className="w-4 h-4" />}
-                    >
-                      View Booking
-                    </Button>
                   </div>
                 </div>
               </CardBody>
@@ -653,71 +681,88 @@ export const BookingManagement: React.FC = () => {
       {/* Payment Tracking Tab */}
       {selectedTab === 'payments' && (
         <div className="space-y-6">
+          {/* Payment Records Table */}
           <Card className="shadow-sm border border-gray-200">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Payment Overview</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600">
-                    ${mockBookings.filter(b => b.paymentStatus === 'paid').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-green-700">Total Collected</div>
+              <h3 className="text-lg font-semibold mb-4">Payment Records</h3>
+              {paymentError && (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <AlertTriangle className="w-8 h-8 text-red-500 mb-2" />
+                  <span className="text-red-600 font-medium mb-2">{paymentError}</span>
+                  <Button size="sm" color="danger" variant="flat" onPress={clearPaymentError}>Clear</Button>
                 </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <div className="text-2xl font-bold text-yellow-600">
-                    ${mockBookings.filter(b => b.paymentStatus === 'pending').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-yellow-700">Pending Payments</div>
+              )}
+              {paymentLoading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <Spinner size="lg" className="mb-4" />
+                  <span className="text-lg text-gray-600">Loading payment records...</span>
                 </div>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">
-                    ${mockBookings.filter(b => b.paymentStatus === 'refunded').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Booking</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Method</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                        <th className="px-4 py-2"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-100">
+                      {paymentRecords.map((record) => (
+                        <tr key={record.id} className="hover:bg-gray-50 transition cursor-pointer">
+                          <td className="px-4 py-2 font-mono text-xs">{record.id}</td>
+                          <td className="px-4 py-2 font-mono text-xs">{record.booking_id}</td>
+                          <td className="px-4 py-2 font-semibold text-green-700">{record.amount} {record.currency}</td>
+                          <td className="px-4 py-2">
+                            <Chip color={record.payment_status === 'completed' ? 'success' : record.payment_status === 'pending' ? 'warning' : record.payment_status === 'failed' ? 'danger' : 'default'} variant="flat" size="sm">
+                              {record.payment_status.replace('_', ' ').toUpperCase()}
+                            </Chip>
+                          </td>
+                          <td className="px-4 py-2 text-xs">{record.payment_method}</td>
+                          <td className="px-4 py-2 text-xs">{record.created_at.split('T')[0]}</td>
+                          <td className="px-4 py-2">
+                            <Button size="sm" variant="flat" onPress={() => { setSelectedPayment(record); onPaymentOpen(); }}>Details</Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {/* Pagination */}
+                  {paymentPagination.totalPages > 1 && (
+                    <div className="flex justify-center mt-6">
+                      <Pagination
+                        total={paymentPagination.totalPages}
+                        page={paymentPagination.currentPage}
+                        onChange={handlePaymentPageChange}
+                        showControls
+                        showShadow
+                        color="primary"
+                      />
                   </div>
-                  <div className="text-sm text-blue-700">Total Refunded</div>
+                  )}
+                  {/* No payment records message */}
+                  {!paymentLoading && paymentRecords.length === 0 && (
+                    <div className="text-center text-gray-500 py-8">No payment records found.</div>
+                  )}
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600">
-                    ${mockBookings.filter(b => b.paymentStatus === 'partial_refund').reduce((sum, b) => sum + b.totalAmount, 0).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-purple-700">Partial Refunds</div>
-                </div>
-              </div>
+              )}
             </CardBody>
           </Card>
 
-          {/* Recent Transactions */}
-          <Card className="shadow-sm border border-gray-200">
-            <CardBody className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Recent Payment Activities</h3>
-              <div className="space-y-3">
-                {mockBookings.slice(0, 5).map((booking) => (
-                  <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        booking.paymentStatus === 'paid' ? 'bg-green-500' :
-                        booking.paymentStatus === 'pending' ? 'bg-yellow-500' :
-                        booking.paymentStatus === 'refunded' ? 'bg-blue-500' : 'bg-purple-500'
-                      }`} />
-                      <div>
-                        <div className="font-medium">{booking.id} - {booking.guestName}</div>
-                        <div className="text-sm text-gray-600">{booking.propertyTitle}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-semibold">${booking.totalAmount.toLocaleString()}</div>
-                      <div className="text-sm text-gray-600 capitalize">
-                        {booking.paymentStatus.replace('_', ' ')}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
+          {/* Payment Details Modal */}
+          <PaymentRecordDetailsModal
+            isOpen={!!selectedPayment && isPaymentOpen}
+            onClose={() => { setSelectedPayment(null); onPaymentClose(); }}
+            paymentRecord={selectedPayment}
+          />
         </div>
       )}
 
-      {/* Booking Details Modal */}
+      {/* Modals */}
       <BookingDetailsModal
         isOpen={isOpen}
         onClose={onClose}
@@ -726,7 +771,6 @@ export const BookingManagement: React.FC = () => {
         getPaymentStatusColor={getPaymentStatusColor}
       />
 
-      {/* Dispute Management Modal */}
       <DisputeManagementModal
         isOpen={isDisputeOpen}
         onClose={onDisputeClose}
@@ -741,7 +785,6 @@ export const BookingManagement: React.FC = () => {
         getDisputePriorityColor={getDisputePriorityColor}
       />
 
-      {/* Refund Modal */}
       <RefundModal
         isOpen={isRefundOpen}
         onClose={onRefundClose}
@@ -755,7 +798,6 @@ export const BookingManagement: React.FC = () => {
         }}
       />
 
-      {/* Contact Parties Modal */}
       <ContactPartiesModal
         isOpen={isContactOpen}
         onClose={onContactClose}

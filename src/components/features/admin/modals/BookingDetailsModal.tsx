@@ -8,12 +8,12 @@ import {
   Button,
   Chip
 } from '@heroui/react'
-import { Booking } from './bookingTypes'
+import { AdminBooking } from '../../../../interfaces'
 
 interface BookingDetailsModalProps {
   isOpen: boolean
   onClose: () => void
-  booking: Booking | null
+  booking: AdminBooking | null
   getStatusColor: (status: string) => 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
   getPaymentStatusColor: (status: string) => 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
 }
