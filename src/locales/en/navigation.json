@@ -1,0 +1,81 @@
+{
+  "menu": {
+    "home": "Home",
+    "search": "Search",
+    "bookings": "My Bookings",
+    "favorites": "Favorites",
+    "createProperty": "Create Property",
+    "myListings": "My Listings",
+    "bookingRequests": "Booking Requests",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "helpCenter": "Help Center",
+    "terms": "Terms & Conditions",
+    "logout": "Logout",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "users": "Users",
+    "admin": "Admin",
+    "host": "Host",
+    "guest": "Guest",
+    "notifications": "Notifications",
+    "wallet": "Wallet"
+  },
+  "search": {
+    "placeholder": "Search destinations, properties, or hosts..."
+  },
+  "profile": {
+    "guestUser": "Guest User",
+    "signInToAccess": "Please sign in to access all features",
+    "notSignedIn": "Not signed in",
+    "hostAndGuest": "Host & Guest",
+    "host": "Host",
+    "guest": "Guest",
+    "admin": "Admin",
+    "super_admin": "Super Admin",
+    "properties": "Properties",
+    "bookings": "Bookings"
+  },
+  "settings": {
+    "language": "Language"
+  },
+  "messages": {
+    "logoutSuccess": "Logged out successfully",
+    "logoutError": "Failed to logout"
+  },
+  "tabs": {
+    "overview": "Overview",
+    "details": "Details",
+    "amenities": "Amenities",
+    "location": "Location",
+    "reviews": "Reviews",
+    "availability": "Availability",
+    "pricing": "Pricing",
+    "photos": "Photos",
+    "policies": "Policies"
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "properties": "Properties",
+    "property": "Property",
+    "booking": "Booking",
+    "profile": "Profile",
+    "settings": "Settings",
+    "admin": "Admin",
+    "dashboard": "Dashboard"
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "support": "Support",
+    "careers": "Careers",
+    "press": "Press",
+    "blog": "Blog",
+    "copyright": "© 2025 Nomad Lux. All rights reserved."
+  }
+}

@@ -12,6 +12,7 @@ import {
 } from '@heroui/react'
 import { Bell, Calendar, MessageCircle, Home, CreditCard, AlertTriangle } from 'lucide-react'
 import { NotificationDetailsModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> = ({
   isOpen,
@@ -19,6 +20,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
   notification,
   onMarkAsRead
 }) => {
+  const { t } = useTranslation(['notifications', 'booking', 'common'])
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'booking':
@@ -82,11 +84,11 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                       variant="flat"
                       className="capitalize"
                     >
-                      {notification.type}
+                      {t(`notifications.types.${notification.type}`, { defaultValue: notification.type })}
                     </Chip>
                     {!notification.read && (
                       <Chip size="sm" color="primary" variant="solid">
-                        New
+                        {t('notifications.labels.new')}
                       </Chip>
                     )}
                   </div>
@@ -97,7 +99,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
               <div className="space-y-4">
                 {/* Timestamp */}
                 <div className="text-sm text-gray-600">
-                  {new Date(notification.timestamp).toLocaleString()}
+                  {t('notifications.labels.timestamp', { ts: new Date(notification.timestamp).toLocaleString() })}
                 </div>
 
                 <Divider />
@@ -111,7 +113,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   {/* Additional Details */}
                   {notification.propertyName && (
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">Related Property</h4>
+                      <h4 className="font-semibold mb-2">{t('notifications.details.relatedProperty')}</h4>
                       <div className="flex items-center gap-3">
                         {notification.propertyImage && (
                           <img
@@ -133,7 +135,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   {/* Guest/Host Information */}
                   {notification.guestName && (
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">Guest Information</h4>
+                      <h4 className="font-semibold mb-2">{t('notifications.details.guestInformation')}</h4>
                       <div className="flex items-center gap-3">
                         <Avatar src={notification.guestAvatar} size="md" />
                         <div>
@@ -147,11 +149,11 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   {/* Booking Details */}
                   {notification.bookingDetails && (
                     <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">Booking Details</h4>
+                      <h4 className="font-semibold mb-2">{t('notifications.details.bookingDetails')}</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         {notification.bookingDetails.checkIn && (
                           <div>
-                            <p className="text-gray-600">Check-in</p>
+                            <p className="text-gray-600">{t('booking.labels.checkIn')}</p>
                             <p className="font-medium">
                               {new Date(notification.bookingDetails.checkIn).toLocaleDateString()}
                             </p>
@@ -159,7 +161,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                         )}
                         {notification.bookingDetails.checkOut && (
                           <div>
-                            <p className="text-gray-600">Check-out</p>
+                            <p className="text-gray-600">{t('booking.labels.checkOut')}</p>
                             <p className="font-medium">
                               {new Date(notification.bookingDetails.checkOut).toLocaleDateString()}
                             </p>
@@ -167,13 +169,13 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                         )}
                         {notification.bookingDetails.guests && (
                           <div>
-                            <p className="text-gray-600">Guests</p>
+                            <p className="text-gray-600">{t('booking.labels.guests')}</p>
                             <p className="font-medium">{notification.bookingDetails.guests}</p>
                           </div>
                         )}
                         {notification.bookingDetails.totalPrice && (
                           <div>
-                            <p className="text-gray-600">Total Price</p>
+                            <p className="text-gray-600">{t('booking.labels.totalPrice')}</p>
                             <p className="font-medium">${notification.bookingDetails.totalPrice}</p>
                           </div>
                         )}
@@ -184,14 +186,14 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   {/* Payment Information */}
                   {notification.paymentAmount && (
                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <h4 className="font-semibold text-green-800 mb-2">Payment Information</h4>
+                      <h4 className="font-semibold text-green-800 mb-2">{t('notifications.details.paymentInformation')}</h4>
                       <div className="text-sm text-green-700">
-                        <p>Amount: ${notification.paymentAmount}</p>
+                        <p>{t('notifications.details.amount', { amount: notification.paymentAmount })}</p>
                         {notification.paymentMethod && (
-                          <p>Method: {notification.paymentMethod}</p>
+                          <p>{t('notifications.details.method', { method: notification.paymentMethod })}</p>
                         )}
                         {notification.paymentDate && (
-                          <p>Date: {new Date(notification.paymentDate).toLocaleDateString()}</p>
+                          <p>{t('notifications.details.date', { date: new Date(notification.paymentDate).toLocaleDateString() })}</p>
                         )}
                       </div>
                     </div>
@@ -203,9 +205,9 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                       <div className="flex items-start gap-2">
                         <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-warning-800">Action Required</h4>
+                          <h4 className="font-semibold text-warning-800">{t('notifications.details.actionRequired')}</h4>
                           <p className="text-sm text-warning-700 mt-1">
-                            {notification.actionDescription || 'Please review and take appropriate action.'}
+                            {notification.actionDescription || t('notifications.details.defaultActionDescription')}
                           </p>
                         </div>
                       </div>
@@ -216,21 +218,21 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Close
+                {t('common.buttons.close')}
               </Button>
               {notification.actionRequired && (
                 <Button color="primary">
-                  Take Action
+                  {t('notifications.actions.takeAction')}
                 </Button>
               )}
               {notification.type === 'booking' && (
                 <Button color="secondary" variant="flat">
-                  View Booking
+                  {t('booking.actions.viewBooking')}
                 </Button>
               )}
               {notification.type === 'message' && (
                 <Button color="secondary" variant="flat">
-                  Reply
+                  {t('notifications.actions.reply')}
                 </Button>
               )}
             </ModalFooter>

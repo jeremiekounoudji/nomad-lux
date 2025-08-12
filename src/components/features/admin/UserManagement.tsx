@@ -30,20 +30,8 @@ import {
   BulkUserActionsModal,
   User
 } from './modals'
-import { 
-  Search, 
-  MoreHorizontal, 
-  Eye, 
-  Ban, 
-  UserCheck, 
-  Trash2, 
-  MessageSquare,
-  Calendar,
-  DollarSign,
-  Home,
-  Star,
-  Download
-} from 'lucide-react'
+import { Search, MoreHorizontal, Eye, Ban, UserCheck, Trash2, MessageSquare, Calendar, DollarSign, Home, Star, Download } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 
 
@@ -108,6 +96,7 @@ const mockUsers: User[] = [
 ]
 
 export const UserManagement: React.FC = () => {
+  const { t } = useTranslation(['admin', 'common'])
   const [selectedTab, setSelectedTab] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
@@ -239,8 +228,8 @@ export const UserManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <p className="text-gray-600 mt-1">Manage platform users and their activities</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('admin.users.allUsers')}</h1>
+        <p className="text-gray-600 mt-1">{t('admin.dashboard.overview', { defaultValue: 'Manage platform users and their activities' })}</p>
       </div>
 
       {/* Stats Overview */}
@@ -248,37 +237,37 @@ export const UserManagement: React.FC = () => {
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-slate-500 to-slate-600 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.all}</p>
-            <p className="text-white/90 text-sm">Total Users</p>
+            <p className="text-white/90 text-sm">{t('admin.dashboard.totalUsers')}</p>
           </CardBody>
         </Card>
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.active}</p>
-            <p className="text-white/90 text-sm">Active</p>
+            <p className="text-white/90 text-sm">{t('common.status.active')}</p>
           </CardBody>
         </Card>
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-rose-500 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.suspended}</p>
-            <p className="text-white/90 text-sm">Suspended</p>
+            <p className="text-white/90 text-sm">{t('common.status.suspended')}</p>
           </CardBody>
         </Card>
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-amber-500 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.pending}</p>
-            <p className="text-white/90 text-sm">Pending</p>
+            <p className="text-white/90 text-sm">{t('common.status.pending')}</p>
           </CardBody>
         </Card>
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.hosts}</p>
-            <p className="text-white/90 text-sm">Hosts</p>
+            <p className="text-white/90 text-sm">{t('admin.users.hosts')}</p>
           </CardBody>
         </Card>
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-violet-500 text-white">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.guests}</p>
-            <p className="text-white/90 text-sm">Guests</p>
+            <p className="text-white/90 text-sm">{t('admin.users.guests')}</p>
           </CardBody>
         </Card>
       </div>
@@ -287,20 +276,20 @@ export const UserManagement: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-3 flex-1">
           <Input
-            placeholder="Search users..."
+            placeholder={t('common.buttons.search') + ' users...'}
             value={searchQuery}
             onValueChange={setSearchQuery}
             startContent={<Search className="w-4 h-4 text-gray-400" />}
             className="sm:max-w-xs"
           />
           <Select
-            placeholder="Filter by status"
+            placeholder={t('common.buttons.filter')}
             className="sm:max-w-xs"
           >
-            <SelectItem key="all" value="all">All Users</SelectItem>
-            <SelectItem key="active" value="active">Active</SelectItem>
-            <SelectItem key="suspended" value="suspended">Suspended</SelectItem>
-            <SelectItem key="pending" value="pending">Pending</SelectItem>
+            <SelectItem key="all" value="all">{t('admin.users.allUsers')}</SelectItem>
+            <SelectItem key="active" value="active">{t('common.status.active')}</SelectItem>
+            <SelectItem key="suspended" value="suspended">{t('common.status.suspended')}</SelectItem>
+            <SelectItem key="pending" value="pending">{t('common.status.pending')}</SelectItem>
           </Select>
         </div>
         <div className="flex gap-2">
@@ -308,18 +297,18 @@ export const UserManagement: React.FC = () => {
             <Dropdown>
               <DropdownTrigger>
                 <Button variant="flat">
-                  Bulk Actions ({selectedUsers.length})
+                  {t('admin.actions.bulkAction')} ({selectedUsers.length})
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownItem key="activate" onClick={() => handleBulkAction('activate')}>
-                  Activate Users
+                  {t('admin.actions.activate')}
                 </DropdownItem>
                 <DropdownItem key="suspend" onClick={() => handleBulkAction('suspend')}>
-                  Suspend Users
+                  {t('admin.actions.suspend')}
                 </DropdownItem>
                 <DropdownItem key="delete" onClick={() => handleBulkAction('delete')} className="text-danger">
-                  Delete Users
+                  {t('admin.actions.delete')}
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -328,7 +317,7 @@ export const UserManagement: React.FC = () => {
             startContent={<Download className="w-4 h-4" />}
             variant="flat"
           >
-            Export
+            {t('admin.actions.export')}
           </Button>
         </div>
       </div>
@@ -339,12 +328,12 @@ export const UserManagement: React.FC = () => {
         onSelectionChange={(key) => setSelectedTab(key as string)}
         variant="underlined"
       >
-        <Tab key="all" title={`All (${stats.all})`} />
-        <Tab key="active" title={`Active (${stats.active})`} />
-        <Tab key="suspended" title={`Suspended (${stats.suspended})`} />
-        <Tab key="pending" title={`Pending (${stats.pending})`} />
-        <Tab key="host" title={`Hosts (${stats.hosts})`} />
-        <Tab key="guest" title={`Guests (${stats.guests})`} />
+        <Tab key="all" title={`${t('admin.users.allUsers')} (${stats.all})`} />
+        <Tab key="active" title={`${t('common.status.active')} (${stats.active})`} />
+        <Tab key="suspended" title={`${t('common.status.suspended')} (${stats.suspended})`} />
+        <Tab key="pending" title={`${t('common.status.pending')} (${stats.pending})`} />
+        <Tab key="host" title={`${t('admin.users.hosts')} (${stats.hosts})`} />
+        <Tab key="guest" title={`${t('admin.users.guests')} (${stats.guests})`} />
       </Tabs>
 
       {/* Users Table */}
@@ -362,12 +351,12 @@ export const UserManagement: React.FC = () => {
                       color="primary"
                     />
                   </th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">User</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">Status</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">Role</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">Activity</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">Performance</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">Actions</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.users.userDetails')}</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('common.labels.status')}</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.users.userRole')}</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.dashboard.recentActivity')}</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Performance' })}</th>
+                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.actions.view')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -425,11 +414,11 @@ export const UserManagement: React.FC = () => {
                       <div className="text-sm">
                         <div className="flex items-center gap-2 mb-1">
                           <Calendar className="w-3 h-3 text-gray-400" />
-                          <span>{user.totalBookings} bookings</span>
+                        <span>{user.totalBookings} {t('admin.bookings.allBookings')}</span>
                         </div>
                         <div className="flex items-center gap-2 mb-1">
                           <Home className="w-3 h-3 text-gray-400" />
-                          <span>{user.totalProperties} properties</span>
+                        <span>{user.totalProperties} {t('admin.navigation.properties')}</span>
                         </div>
                         {user.revenue > 0 && (
                           <div className="flex items-center gap-2 mb-1">
@@ -466,14 +455,14 @@ export const UserManagement: React.FC = () => {
                               onOpen()
                             }}
                           >
-                            View Details
+                            {t('admin.actions.view')}
                           </DropdownItem>
                           <DropdownItem
                             key="message"
                             startContent={<MessageSquare className="w-4 h-4" />}
                             onClick={() => handleUserAction(user, 'message')}
                           >
-                            Send Message
+                            {t('admin.actions.message', { defaultValue: 'Send Message' })}
                           </DropdownItem>
                           {user.status === 'active' ? (
                             <DropdownItem
@@ -482,7 +471,7 @@ export const UserManagement: React.FC = () => {
                               onClick={() => handleUserAction(user, 'suspend')}
                               className="text-warning"
                             >
-                              Suspend User
+                              {t('admin.actions.suspend')}
                             </DropdownItem>
                           ) : (
                             <DropdownItem
@@ -491,7 +480,7 @@ export const UserManagement: React.FC = () => {
                               onClick={() => handleUserAction(user, 'activate')}
                               className="text-success"
                             >
-                              Activate User
+                              {t('admin.actions.activate')}
                             </DropdownItem>
                           )}
                           <DropdownItem
@@ -500,7 +489,7 @@ export const UserManagement: React.FC = () => {
                             onClick={() => handleUserAction(user, 'delete')}
                             className="text-danger"
                           >
-                            Delete User
+                            {t('admin.actions.delete')}
                           </DropdownItem>
                         </DropdownMenu>
                       </Dropdown>
@@ -591,10 +580,10 @@ export const UserManagement: React.FC = () => {
           </ModalBody>
           <ModalFooter>
             <Button variant="light" onPress={onClose}>
-              Close
+              {t('common.buttons.close')}
             </Button>
             <Button color="primary" onPress={onClose}>
-              Edit User
+              {t('admin.users.editProfile')}
             </Button>
           </ModalFooter>
         </ModalContent>

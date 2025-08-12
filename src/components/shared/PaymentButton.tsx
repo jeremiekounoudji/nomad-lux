@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { config } from '../../lib/config';
 import { useFedaPayPayment } from '../../hooks/useFedaPayPayment';
 import { useBookingManagement } from '../../hooks/useBookingManagement';
+import { useTranslation } from 'react-i18next';
 
 interface PaymentButtonProps {
   booking: {
@@ -29,12 +30,13 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
   onPaymentSuccess,
   onPaymentError,
   className = '',
-  children = 'Pay Now',
+  children,
   size = 'lg',
   disabled = false,
   variant = 'solid',
   color = 'primary'
 }) => {
+  const { t } = useTranslation(['booking', 'common']);
   const [isCreatingRecord, setIsCreatingRecord] = useState(false);
   const [paymentRecordCreated, setPaymentRecordCreated] = useState(false);
   const [shouldTriggerPayment, setShouldTriggerPayment] = useState(false);
@@ -69,7 +71,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         booking_id: booking.id,
         amount: booking.total_amount,
         currency: 'XOF', // Default currency - could be made dynamic
-        description: `Booking payment for ${booking.properties?.title ?? 'property'}`,
+        description: t('booking.payment.description', { title: booking.properties?.title ?? t('booking.labels.property') }),
       });
 
       if (paymentData) {
@@ -81,12 +83,12 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         setShouldTriggerPayment(true);
       } else {
         console.error('❌ [PaymentButton] Failed to create payment record');
-        toast.error('Failed to create payment record');
-        onPaymentError?.('Failed to create payment record');
+        toast.error(t('booking.payment.createRecordFailed'));
+        onPaymentError?.(t('booking.payment.createRecordFailed'));
       }
     } catch (err) {
       console.error('❌ [PaymentButton] Error creating payment record:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Payment initialization failed';
+      const errorMessage = err instanceof Error ? err.message : t('booking.payment.initFailed');
       toast.error(errorMessage);
       onPaymentError?.(errorMessage);
     } finally {
@@ -104,7 +106,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
       // Check for successful payment
       if (response.transaction?.status === 'approved' || response.transaction?.approved_at) {
         console.log('✅ [PaymentButton] Payment successful');
-        toast.success('Payment completed successfully!');
+        toast.success(t('booking.messages.paymentSuccess'));
         // Refresh bookings to get updated booking status
         console.log('🔄 [PaymentButton] Refetching bookings after successful payment');
         try {
@@ -141,16 +143,16 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
           errorCode: response.transaction?.last_error_code
         });
         
-        let errorMessage = 'Payment was not completed successfully';
+        let errorMessage = t('booking.payment.notCompleted');
         
         if (response.reason === 'DIALOG DISMISSED') {
-          errorMessage = 'Payment was cancelled by user';
+          errorMessage = t('booking.payment.cancelledByUser');
         } else if (response.transaction?.status === 'canceled') {
-          errorMessage = `Payment cancelled: ${response.transaction?.last_error_code || 'Unknown reason'}`;
+          errorMessage = t('booking.payment.cancelledWithReason', { reason: response.transaction?.last_error_code || 'Unknown reason' });
         } else if (response.transaction?.status === 'declined') {
-          errorMessage = `Payment declined: ${response.transaction?.last_error_code || 'Transaction declined'}`;
+          errorMessage = t('booking.payment.declinedWithReason', { reason: response.transaction?.last_error_code || 'Transaction declined' });
         } else if (response.transaction?.last_error_code) {
-          errorMessage = `Payment failed: ${response.transaction.last_error_code}`;
+          errorMessage = t('booking.payment.failedWithCode', { code: response.transaction.last_error_code });
         }
         
         // Show toast notification for payment failure
@@ -219,8 +221,8 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         setTimeout(() => {
           if (!attemptClick()) {
             console.error('❌ [PaymentButton] Failed to find and trigger FedaPay button after retry');
-            toast.error('Failed to open payment modal');
-            onPaymentError?.('Failed to open payment modal');
+            toast.error(t('booking.payment.openModalFailed'));
+            onPaymentError?.(t('booking.payment.openModalFailed'));
           }
         }, 200);
       }
@@ -243,8 +245,8 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
     <div className="relative">
       {/* Main Pay Now Button */}
       <Button
-        color="primary"
-        variant="solid"
+        color={color}
+        variant={variant}
         size={size}
         fullWidth
         className={`font-medium shadow-sm bg-primary-600 hover:bg-primary-700 text-white ${className}`}
@@ -252,7 +254,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         isLoading={isCreatingRecord}
         disabled={disabled || isCreatingRecord}
       >
-        {isCreatingRecord ? 'Preparing Payment...' : children}
+        {isCreatingRecord ? t('booking.payment.processing') : (children ?? t('booking.actions.payNow'))}
       </Button>
 
       {/* Hidden FedaCheckoutButton that gets triggered programmatically */}
@@ -261,20 +263,20 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
           style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}
           data-fedapay-container="true"
         >
-          <FedaCheckoutButton
+              <FedaCheckoutButton
             ref={fedaButtonRef}
             options={{
               public_key: config.fedapay.current.publicKey,
               transaction: {
                 amount: booking.total_amount,
-                description: `Booking payment for ${booking.properties?.title ?? 'property'}`
+                    description: t('booking.payment.description', { title: booking.properties?.title ?? t('booking.labels.property') })
               },
               currency: {
                 iso: 'XOF'
               },
               button: {
                 class: 'fedapay-button-hidden',
-                text: 'Pay with FedaPay'
+                    text: t('booking.payment.payWithFedaPay')
               },
               onComplete: handleFedaPayComplete
             }}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Progress, Card } from '@heroui/react';
 import { UploadProgress } from '../../utils/fileUpload';
+import { useTranslation } from 'react-i18next';
 
 interface UploadProgressIndicatorProps {
   uploads: UploadProgress[];
@@ -11,6 +12,7 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
   uploads, 
   className = '' 
 }) => {
+  const { t } = useTranslation(['common']);
   if (uploads.length === 0) return null;
 
   const completedUploads = uploads.filter(upload => upload.status === 'completed').length;
@@ -22,7 +24,7 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h4 className="text-sm font-medium text-blue-900">
-            Uploading Files ({completedUploads}/{totalUploads})
+            {t('common.upload.header', { completed: completedUploads, total: totalUploads, defaultValue: 'Uploading Files ({{completed}}/{{total}})' })}
           </h4>
           <span className="text-xs text-blue-700">
             {Math.round(overallProgress)}%
@@ -68,7 +70,7 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
                     'text-blue-600'
                   }`}>
                     {upload.status === 'completed' ? '100%' : 
-                     upload.status === 'error' ? 'Error' :
+                     upload.status === 'error' ? t('common.upload.error', 'Error') :
                      `${Math.round(upload.progress)}%`}
                   </span>
                 </div>
@@ -80,13 +82,13 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
                   color={upload.status === 'error' ? 'danger' : 'primary'}
                   size="sm"
                   className="w-full"
-                  aria-label={`Upload progress for ${upload.fileName}`}
+                  aria-label={t('common.upload.progressAria', { fileName: upload.fileName, defaultValue: 'Upload progress for {{fileName}}' })}
                 />
               )}
               
               {upload.status === 'error' && upload.error && (
                 <p className="text-xs text-red-600 mt-1">
-                  Error: {upload.error}
+                  {t('common.upload.errorWithReason', { reason: upload.error, defaultValue: 'Error: {{reason}}' })}
                 </p>
               )}
             </div>
@@ -100,17 +102,17 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
               <svg className="w-3 h-3 mr-1 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
               </svg>
-              All files uploaded successfully
+              {t('common.upload.allUploaded', 'All files uploaded successfully')}
             </span>
           ) : uploads.some(u => u.status === 'error') ? (
             <span className="flex items-center text-red-600">
               <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
-              Some uploads failed
+              {t('common.upload.someFailed', 'Some uploads failed')}
             </span>
           ) : (
-            <span>Uploading files...</span>
+            <span>{t('common.upload.uploadingFiles', 'Uploading files...')}</span>
           )}
         </div>
       </div>

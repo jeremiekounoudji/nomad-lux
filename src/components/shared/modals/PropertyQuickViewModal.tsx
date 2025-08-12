@@ -25,6 +25,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { PropertyQuickViewModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
   isOpen,
@@ -33,6 +34,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
   onBookNow,
   onLike
 }) => {
+  const { t } = useTranslation(['property', 'booking', 'common'])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isLiked, setIsLiked] = useState(false)
 
@@ -67,7 +69,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 text-yellow-500 fill-current" />
                       <span className="text-sm font-medium">{property.rating}</span>
-                      <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
+                      <span className="text-sm text-gray-500">({t('booking.reviews.count', { count: property.review_count })})</span>
                     </div>
                     <span className="text-sm text-gray-500">•</span>
                     <div className="flex items-center gap-1">
@@ -135,8 +137,8 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                 <div className="flex items-center gap-3">
                   <Avatar src={property.host?.avatar_url} size="md" />
                   <div className="flex-1">
-                    <p className="font-medium">Hosted by {property.host?.display_name}</p>
-                    <p className="text-sm text-gray-600">{property.host?.experience || 4} years hosting</p>
+                    <p className="font-medium">{t('property.labels.hostedBy', { name: property.host?.display_name, defaultValue: 'Hosted by {{name}}' })}</p>
+                    <p className="text-sm text-gray-600">{t('property.labels.yearsHosting', { years: property.host?.experience || 4, defaultValue: '{{years}} years hosting' })}</p>
                   </div>
                   <Chip color="success" variant="flat" size="sm">
                     Superhost
@@ -150,32 +152,32 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   <div className="flex items-center gap-2">
                     <Users className="w-5 h-5 text-gray-500" />
                     <div>
-                      <p className="text-sm font-medium">{property.max_guests} guests</p>
-                      <p className="text-xs text-gray-500">Maximum</p>
+                      <p className="text-sm font-medium">{property.max_guests} {t('property.labels.guests')}</p>
+                      <p className="text-xs text-gray-500">{t('property.labels.max', 'Maximum')}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <Bed className="w-5 h-5 text-gray-500" />
                     <div>
-                      <p className="text-sm font-medium">{property.bedrooms} bedrooms</p>
-                      <p className="text-xs text-gray-500">Private</p>
+                      <p className="text-sm font-medium">{property.bedrooms} {t('property.labels.bedrooms')}</p>
+                      <p className="text-xs text-gray-500">{t('property.labels.private', 'Private')}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <Bath className="w-5 h-5 text-gray-500" />
                     <div>
-                      <p className="text-sm font-medium">{property.bathrooms} bathrooms</p>
-                      <p className="text-xs text-gray-500">Full</p>
+                      <p className="text-sm font-medium">{property.bathrooms} {t('property.labels.bathrooms')}</p>
+                      <p className="text-xs text-gray-500">{t('property.labels.full', 'Full')}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <Star className="w-5 h-5 text-yellow-500" />
                     <div>
-                      <p className="text-sm font-medium">{property.rating} rating</p>
-                      <p className="text-xs text-gray-500">{property.review_count} reviews</p>
+                      <p className="text-sm font-medium">{property.rating} {t('property.labels.rating', 'rating')}</p>
+                      <p className="text-xs text-gray-500">{t('booking.reviews.count', { count: property.review_count })}</p>
                     </div>
                   </div>
                 </div>
@@ -184,13 +186,13 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
 
                 {/* Description */}
                 <div>
-                  <h4 className="font-semibold mb-2">About this place</h4>
+                  <h4 className="font-semibold mb-2">{t('property.labels.aboutThisPlace', 'About this place')}</h4>
                   <p className="text-sm text-gray-700 line-clamp-4">{property.description}</p>
                 </div>
 
                 {/* Amenities */}
                 <div>
-                  <h4 className="font-semibold mb-3">Amenities</h4>
+                  <h4 className="font-semibold mb-3">{t('property.labels.amenities')}</h4>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {property.amenities.slice(0, 6).map((amenity) => (
                       <div key={amenity} className="flex items-center gap-2">
@@ -200,7 +202,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     ))}
                     {property.amenities.length > 6 && (
                       <div className="text-sm text-gray-500">
-                        +{property.amenities.length - 6} more
+                        +{property.amenities.length - 6} {t('property.labels.more', 'more')}
                       </div>
                     )}
                   </div>
@@ -213,11 +215,11 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                       <span className="text-2xl font-bold text-primary-600">
                         ${property.price}
                       </span>
-                      <span className="text-gray-600 ml-1">per night</span>
+                      <span className="text-gray-600 ml-1">{t('property.labels.perNight')}</span>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Free cancellation</p>
-                      <p className="text-sm text-gray-600">for 48 hours</p>
+                      <p className="text-sm text-gray-600">{t('property.labels.freeCancellation', 'Free cancellation')}</p>
+                      <p className="text-sm text-gray-600">{t('property.labels.forHours', { hours: 48, defaultValue: 'for {{hours}} hours' })}</p>
                     </div>
                   </div>
                 </div>
@@ -225,14 +227,14 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={onClose}>
-                Close
+                {t('common.buttons.close')}
               </Button>
               <Button 
                 color="secondary" 
                 variant="flat"
                 startContent={<MessageCircle className="w-4 h-4" />}
               >
-                Contact Host
+                {t('property.actions.contactHost')}
               </Button>
               <Button 
                 color="primary" 
@@ -242,7 +244,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                 }}
                 startContent={<Calendar className="w-4 h-4" />}
               >
-                Book Now
+                {t('booking.actions.bookNow')}
               </Button>
             </ModalFooter>
           </>

@@ -1,0 +1,137 @@
+{
+  "required": "Ce champ est obligatoire",
+  "email": {
+    "invalid": "Veuillez saisir une adresse email valide",
+    "required": "L'adresse email est obligatoire",
+    "exists": "Cette adresse email est déjà enregistrée",
+    "notFound": "Aucun compte trouvé avec cette adresse email"
+  },
+  "password": {
+    "required": "Le mot de passe est obligatoire",
+    "minLength": "Le mot de passe doit contenir au moins {{min}} caractères",
+    "maxLength": "Le mot de passe ne doit pas dépasser {{max}} caractères",
+    "weak": "Le mot de passe est trop faible",
+    "mismatch": "Les mots de passe ne correspondent pas",
+    "incorrect": "Mot de passe incorrect",
+    "mustContain": "Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre"
+  },
+  "name": {
+    "required": "Le nom est obligatoire",
+    "minLength": "Le nom doit contenir au moins {{min}} caractères",
+    "maxLength": "Le nom ne doit pas dépasser {{max}} caractères",
+    "invalid": "Veuillez saisir un nom valide"
+  },
+  "phone": {
+    "required": "Le numéro de téléphone est obligatoire",
+    "invalid": "Veuillez saisir un numéro de téléphone valide",
+    "exists": "Ce numéro de téléphone est déjà enregistré"
+  },
+  "date": {
+    "required": "La date est obligatoire",
+    "invalid": "Veuillez saisir une date valide",
+    "past": "La date doit être dans le passé",
+    "future": "La date doit être dans le futur",
+    "minAge": "Vous devez avoir au moins {{age}} ans",
+    "checkIn": "La date d'arrivée est obligatoire",
+    "checkOut": "La date de départ est obligatoire",
+    "checkOutAfterCheckIn": "La date de départ doit être après la date d'arrivée",
+    "minimumStay": "Le séjour minimum est de {{nights}} nuits",
+    "maximumStay": "Le séjour maximum est de {{nights}} nuits",
+    "unavailable": "Les dates sélectionnées ne sont pas disponibles"
+  },
+  "property": {
+    "title": {
+      "required": "Le titre de la propriété est obligatoire",
+      "minLength": "Le titre doit contenir au moins {{min}} caractères",
+      "maxLength": "Le titre ne doit pas dépasser {{max}} caractères"
+    },
+    "description": {
+      "required": "La description de la propriété est obligatoire",
+      "minLength": "La description doit contenir au moins {{min}} caractères",
+      "maxLength": "La description ne doit pas dépasser {{max}} caractères"
+    },
+    "price": {
+      "required": "Le prix est obligatoire",
+      "positive": "Le prix doit être supérieur à 0",
+      "maximum": "Le prix ne peut pas dépasser {{max}}"
+    },
+    "guests": {
+      "required": "Le nombre maximum d'invités est obligatoire",
+      "minimum": "Doit accueillir au moins 1 invité",
+      "maximum": "Ne peut pas accueillir plus de {{max}} invités"
+    },
+    "bedrooms": {
+      "required": "Le nombre de chambres est obligatoire",
+      "minimum": "Doit avoir au moins 0 chambre",
+      "maximum": "Ne peut pas avoir plus de {{max}} chambres"
+    },
+    "bathrooms": {
+      "required": "Le nombre de salles de bain est obligatoire",
+      "minimum": "Doit avoir au moins 1 salle de bain",
+      "maximum": "Ne peut pas avoir plus de {{max}} salles de bain"
+    },
+    "images": {
+      "required": "Au moins {{min}} images sont requises",
+      "maximum": "Ne peut pas télécharger plus de {{max}} images",
+      "format": "Seules les images JPEG, PNG et WebP sont autorisées",
+      "size": "La taille de l'image ne peut pas dépasser {{size}}MB"
+    },
+    "location": {
+      "required": "L'emplacement de la propriété est obligatoire",
+      "invalid": "Veuillez sélectionner un emplacement valide"
+    },
+    "amenities": {
+      "required": "Veuillez sélectionner au moins un équipement"
+    },
+    "type": {
+      "required": "Le type de propriété est obligatoire"
+    }
+  },
+  "booking": {
+    "guests": {
+      "required": "Le nombre d'invités est obligatoire",
+      "minimum": "Doit avoir au moins 1 invité",
+      "maximum": "Ne peut pas dépasser le nombre maximum d'invités autorisés ({{max}})"
+    },
+    "specialRequests": {
+      "maxLength": "Les demandes spéciales ne peuvent pas dépasser {{max}} caractères"
+    }
+  },
+  "payment": {
+    "cardNumber": {
+      "required": "Le numéro de carte est obligatoire",
+      "invalid": "Veuillez saisir un numéro de carte valide"
+    },
+    "expiryDate": {
+      "required": "La date d'expiration est obligatoire",
+      "invalid": "Veuillez saisir une date d'expiration valide",
+      "expired": "La carte a expiré"
+    },
+    "cvv": {
+      "required": "Le CVV est obligatoire",
+      "invalid": "Veuillez saisir un CVV valide"
+    },
+    "billingAddress": {
+      "required": "L'adresse de facturation est obligatoire"
+    }
+  },
+  "file": {
+    "required": "Le fichier est obligatoire",
+    "format": "Format de fichier invalide",
+    "size": "La taille du fichier ne peut pas dépasser {{size}}MB",
+    "upload": "Échec du téléchargement du fichier"
+  },
+  "terms": {
+    "required": "Vous devez accepter les conditions générales"
+  },
+  "general": {
+    "invalid": "Saisie invalide",
+    "tooShort": "La saisie est trop courte",
+    "tooLong": "La saisie est trop longue",
+    "numeric": "Doit être un nombre",
+    "positive": "Doit être un nombre positif",
+    "integer": "Doit être un nombre entier",
+    "url": "Doit être une URL valide",
+    "unique": "Cette valeur existe déjà"
+  }
+}

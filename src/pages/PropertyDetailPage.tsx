@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../lib/stores/translationStore';
+import { usePropertyTypeTranslation, useAmenitiesTranslation, useContentTranslation } from '../hooks/useTranslatedContent';
 import { 
   ArrowLeft, 
   Heart, 
@@ -111,6 +113,7 @@ const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { selectedProperty, setSelectedProperty } = usePropertyStore();
+  const { t } = useTranslation('property');
 
   // Simple property resolution: if selectedProperty exists and matches URL, use it
   // Otherwise, we need to redirect since we can't fetch individual properties yet
@@ -157,6 +160,22 @@ const PropertyDetailPage: React.FC = () => {
   const currentOverallIndex = mediaType === 'image' 
     ? currentImageIndex 
     : (property?.images?.length || 0) + currentVideoIndex;
+
+  // Translation hooks
+  const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property?.property_type || '')
+  const { translatedContent: translatedTitle } = useContentTranslation(
+    'property',
+    property?.id || '',
+    'title',
+    property?.title || ''
+  )
+  const { translatedContent: translatedDescription } = useContentTranslation(
+    'property',
+    property?.id || '',
+    'description',
+    property?.description || ''
+  )
+  const { translations: amenityTranslations, isLoading: amenitiesLoading } = useAmenitiesTranslation(property?.amenities || [])
 
   const nextMedia = () => {
     if (!property) return;
@@ -592,7 +611,7 @@ const PropertyDetailPage: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
                 <div className="flex-1">
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Dancing Script, cursive' }}>
-                    {property.title}
+                    {translatedTitle}
                   </h1>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-gray-600">
                     <div className="flex items-center gap-1">
@@ -609,7 +628,7 @@ const PropertyDetailPage: React.FC = () => {
                 <div className="text-right">
                   <div className="text-2xl sm:text-3xl font-bold text-gray-900">
                     ${property.price}
-                    <span className="text-base font-normal text-gray-600 ml-1">/ night</span>
+                    <span className="text-base font-normal text-gray-600 ml-1">/ {t('labels.night', 'night')}</span>
                   </div>
                 </div>
               </div>
@@ -618,22 +637,22 @@ const PropertyDetailPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Users className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.max_guests} guests</span>
+                  <span className="text-gray-900 font-medium text-sm">{property.max_guests} {t('labels.guests', 'guests')}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Bed className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bedrooms} bedrooms</span>
+                  <span className="text-gray-900 font-medium text-sm">{property.bedrooms} {t('labels.bedrooms')}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Bath className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bathrooms} bathrooms</span>
+                  <span className="text-gray-900 font-medium text-sm">{property.bathrooms} {t('labels.bathrooms')}</span>
                 </div>
               </div>
 
               {/* Description */}
               <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                 <p className="text-gray-700 leading-relaxed">
-                  {property.description}
+                  {translatedDescription}
                 </p>
               </div>
             </div>
@@ -646,7 +665,9 @@ const PropertyDetailPage: React.FC = () => {
                   {property.amenities.map((amenity, index) => (
                     <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
                       {getAmenityIcon(amenity)}
-                      <span className="text-gray-700">{amenity.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</span>
+                      <span className="text-gray-700">
+                        {amenityTranslations[amenity] || amenity.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -783,7 +804,7 @@ const PropertyDetailPage: React.FC = () => {
                   <div className="flex items-center justify-between w-full">
                     <div>
                       <span className="text-2xl font-bold text-gray-900">${property.price}</span>
-                      <span className="ml-1 text-gray-600">night</span>
+                      <span className="ml-1 text-gray-600">{t('labels.night', 'night')}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -888,11 +909,11 @@ const PropertyDetailPage: React.FC = () => {
 
                   {/* Guests */}
                   <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">GUESTS</label>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">{t('labels.guests', 'GUESTS').toUpperCase()}</label>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Users className="w-5 h-5 text-gray-500" />
-                        <span className="text-gray-900">{guests} guest{guests > 1 ? 's' : ''}</span>
+                        <span className="text-gray-900">{guests} {guests > 1 ? t('labels.guests', 'guests') : t('labels.guest', 'guest')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -925,7 +946,7 @@ const PropertyDetailPage: React.FC = () => {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Maximum {property.max_guests} guests allowed</p>
+                    <p className="text-xs text-gray-500 mt-1">{t('labels.maxGuests', { count: property.max_guests })}</p>
                   </div>
 
                   {/* Special Requests */}

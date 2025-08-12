@@ -9,10 +9,14 @@ import { SystemSettings } from '../components/features/admin/SystemSettings'
 import { ActivityLog } from '../components/features/admin/ActivityLog'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminAuth } from '../hooks/useAdminAuth'
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
+import { useTranslation } from 'react-i18next'
 
 import { AdminPageProps } from '../interfaces'
 
 export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
+  const { t } = useTranslation(['admin', 'common'])
   const [currentSection, setCurrentSection] = useState('dashboard')
   
   const { isAuthenticated, isAdmin, user } = useAuthStore()
@@ -88,6 +92,18 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
       onSectionChange={setCurrentSection}
       onLogout={handleLogout}
     >
+      {/* Banner */}
+      <div className="mb-6">
+        <PageBanner
+          backgroundImage={getBannerConfig('admin').image}
+          title={t('admin.banner.title')}
+          subtitle={t('admin.banner.subtitle')}
+          imageAlt={getBannerConfig('admin').alt}
+          overlayOpacity={getBannerConfig('admin').overlayOpacity}
+          height={getBannerConfig('admin').height}
+        />
+      </div>
+
       {renderContent()}
     </AdminLayout>
   )

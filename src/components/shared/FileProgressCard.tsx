@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Chip, Progress } from '@heroui/react';
 import { UploadProgress } from '../../utils/fileUpload';
+import { useTranslation } from 'react-i18next';
 
 interface FileProgressCardProps {
   file: File | string;
@@ -15,6 +16,7 @@ const FileProgressCard: React.FC<FileProgressCardProps> = ({
   onRemove, 
   type 
 }) => {
+  const { t } = useTranslation(['common', 'modals', 'property', 'upload']);
   const fileName = typeof file === 'string' ? file.split('/').pop() || 'Unknown' : file.name;
   const fileUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
   
@@ -67,7 +69,7 @@ const FileProgressCard: React.FC<FileProgressCardProps> = ({
               <div className="text-2xl font-bold mb-2">{Math.round(progressValue)}%</div>
               
               {/* Progress Text */}
-              <div className="text-sm opacity-90">Uploading...</div>
+              <div className="text-sm opacity-90">{t('common.messages.uploading', 'Uploading...')}</div>
               
               {/* Progress Bar */}
               <div className="w-20 mt-3">
@@ -114,8 +116,8 @@ const FileProgressCard: React.FC<FileProgressCardProps> = ({
             hasError ? 'bg-red-500' : 
             'bg-blue-500'
           }`}>
-            {isCompleted ? '✓ UPLOADED' : 
-             hasError ? '✗ FAILED' : 
+            {isCompleted ? t('common.upload.uploaded', '✓ UPLOADED') : 
+             hasError ? t('common.upload.failed', '✗ FAILED') : 
              `${Math.round(progressValue)}%`}
           </div>
         )}
@@ -157,7 +159,7 @@ const FileProgressCard: React.FC<FileProgressCardProps> = ({
         {/* Error Message - Prominent display */}
         {hasError && progress?.error && (
           <div className="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-xs p-2 text-center font-medium z-30">
-            Upload Failed: {progress.error}
+            {t('common.upload.uploadFailedWithReason', { reason: progress.error, defaultValue: 'Upload Failed: {{reason}}' })}
           </div>
         )}
       </div>

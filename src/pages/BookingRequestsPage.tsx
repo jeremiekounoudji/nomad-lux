@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider, Tabs, Tab, Spinner, Pagination } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, Check, X, ClipboardList } from 'lucide-react'
-import MainLayout from '../components/layout/MainLayout'
+import React, { useState, useEffect, useMemo } from 'react'
+import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tabs, Tab, Pagination } from '@heroui/react'
+import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, User, Home, Eye, DollarSign, Check, X, ClipboardList } from 'lucide-react'
+
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
 import { BookingRequestsPageProps, BookingRequest, BookingStatus, PaginationParams } from '../interfaces'
 import { useBookingManagement } from '../hooks/useBookingManagement'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
-import { LoadingSkeleton } from '../components/shared/LoadingSkeleton'
+// removed unused LoadingSkeleton
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 const ITEMS_PER_PAGE = 10
 
@@ -44,7 +47,8 @@ const getStatusColor = (status: BookingStatus | 'no_shows') => {
   }
 }
 
-const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange }) => {
+const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
+  const { t } = useTranslation(['booking', 'common'])
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedRequest, setSelectedRequest] = useState<BookingRequest | null>(null)
   const [rejectReason, setRejectReason] = useState<string>('')
@@ -86,7 +90,6 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     bookingRequestsByStatus,
     paginationData,
     isLoadingHostRequests, 
-    isUpdatingBooking,
     error 
   } = useBookingStore()
 
@@ -245,292 +248,301 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
   // Remove incorrect requests initialization and use currentRequests directly
   const requests = currentRequests;
 
+  const mapStatusKey = (status: BookingStatus | 'no_shows') => {
+    switch (status) {
+      case 'accepted-and-waiting-for-payment':
+        return 'acceptedWaitingPayment'
+      case 'payment-failed':
+        return 'paymentFailed'
+      case 'no_shows':
+        return 'noShow'
+      default:
+        return status
+    }
+  }
+
+  const tabTitle = (status: BookingStatus) => `${t(`booking.status.${mapStatusKey(status)}`)} (${requestCounts[status]})`
+  const emptyStatusLabel = useMemo(() => t(`booking.status.${mapStatusKey(selectedTab)}`), [selectedTab, t])
+
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Header Section - Full Width */}
+      <div className="col-span-full mb-6">
         {/* Banner Header */}
-        <div className="relative bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8 overflow-hidden">
-          {/* Background Image */}
-          <div 
-            className="absolute inset-0 z-0 opacity-20"
-            style={{
-              backgroundImage: 'url("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=2070")',
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
-          {/* Content */}
-          <div className="relative z-10">
-            <h1 className="text-3xl font-bold mb-2">Booking Requests</h1>
-            <p className="text-primary-100 text-lg">Manage and respond to guest booking requests</p>
-          </div>
-        </div>
+        <PageBanner
+          backgroundImage={getBannerConfig('bookingRequests').image}
+          title={t('booking.bookingRequests.banner.title')}
+          subtitle={t('booking.bookingRequests.banner.subtitle')}
+          imageAlt={getBannerConfig('bookingRequests').alt}
+          overlayOpacity={getBannerConfig('bookingRequests').overlayOpacity}
+          height={getBannerConfig('bookingRequests').height}
+          className="mb-8"
+        />
 
         {/* Tabs */}
-        <Tabs 
-          selectedKey={selectedTab}
-          onSelectionChange={handleTabChange}
-          className="mb-6"
-          variant="underlined"
-          classNames={{
-            tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-            cursor: "w-full bg-primary-500",
-            tab: "max-w-fit px-0 h-12",
-            tabContent: "group-data-[selected=true]:text-primary-600"
-          }}
-        >
-          <Tab 
-            key="pending" 
-            title={`Pending (${requestCounts.pending})`}
-          />
-          <Tab 
-            key="confirmed" 
-            title={`Confirmed (${requestCounts.confirmed})`}
-          />
-          <Tab 
-            key="cancelled" 
-            title={`Cancelled (${requestCounts.cancelled})`}
-          />
-          <Tab 
-            key="completed" 
-            title={`Completed (${requestCounts.completed})`}
-          />
-          <Tab 
-            key="rejected" 
-            title={`Rejected (${requestCounts.rejected})`}
-          />
-          <Tab 
-            key="accepted-and-waiting-for-payment" 
-            title={`Awaiting Payment (${requestCounts['accepted-and-waiting-for-payment']})`}
-          />
-          <Tab 
-            key="payment-failed" 
-            title={`Payment Failed (${requestCounts['payment-failed']})`}
-          />
-        </Tabs>
-
-        {/* Loading State */}
-        {isLoadingHostRequests ? (
-          <div className="grid gap-4">
-            {[1, 2, 3].map((n) => (
-              <LoadingSkeleton key={n} />
-            ))}
+        <div className="w-full overflow-hidden">
+          <div className="overflow-x-auto scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <Tabs
+              selectedKey={selectedTab}
+              onSelectionChange={handleTabChange}
+              variant="underlined"
+              classNames={{
+                tabList: "gap-3 sm:gap-6 w-max sm:w-full relative rounded-none p-0 border-b border-divider min-w-full",
+                cursor: "w-full bg-primary-500",
+                tab: "max-w-fit px-2 sm:px-0 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-sm sm:text-base whitespace-nowrap"
+              }}
+            >
+              <Tab key="pending" title={tabTitle('pending')} />
+              <Tab key="confirmed" title={tabTitle('confirmed')} />
+              <Tab key="cancelled" title={tabTitle('cancelled')} />
+              <Tab key="completed" title={tabTitle('completed')} />
+              <Tab key="rejected" title={tabTitle('rejected')} />
+              <Tab key="accepted-and-waiting-for-payment" title={tabTitle('accepted-and-waiting-for-payment')} />
+              <Tab key="payment-failed" title={tabTitle('payment-failed')} />
+            </Tabs>
           </div>
-        ) : (
-          <>
-            {/* Inline Error Display */}
-            {error && (
-              <div className="mb-4 text-red-600 text-center font-medium">
-                {error}
-              </div>
-            )}
-            {/* Requests Grid */}
-            {requests.length === 0 ? (
-              <div className="flex items-center justify-center min-h-[400px]">
-                <Card className="w-full max-w-md">
-                  <CardBody className="text-center py-12">
-                    <div className="flex flex-col items-center gap-4">
-                      <ClipboardList className="w-16 h-16 text-gray-400" />
-                      <div className="text-xl font-semibold text-gray-700 mb-2">No requests found</div>
-                      <p className="text-gray-500">
-                        {selectedTab === 'pending' 
-                          ? 'You have no pending booking requests'
-                          : `You have no ${selectedTab} bookings`}
-                      </p>
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        </div>
+      </div>
+
+      {/* Loading State */}
+      {isLoadingHostRequests ? (
+        <div className="col-span-full text-center py-12">
+          <span className="text-lg text-gray-500">{t('booking.bookingRequests.loading')}</span>
+        </div>
+      ) : error ? (
+        <div className="col-span-full text-center py-12 text-red-600">
+          {error}
+        </div>
+      ) : requests.length > 0 ? (
+        <>
+          {/* Requests Grid */}
+          <div className="col-span-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
                 {requests.map((request) => (
-                  <Card key={request.id} className="overflow-hidden flex flex-col">
-                    <CardBody className="p-4 flex flex-col gap-4">
-                      {/* Property Image - full width, top */}
-                      <div className="relative w-full h-40 rounded-lg overflow-hidden mb-2">
-                          <img
-                            src={request.property_images[0]}
-                            alt={request.property_title}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                          <div className="absolute bottom-2 left-2 right-2">
-                            <h4 className="text-white text-sm font-medium line-clamp-1">
-                              {request.property_title}
-                            </h4>
+                  <Card key={request.id} className="overflow-hidden w-full min-w-0">
+                    <CardBody className="p-3 sm:p-4">
+                      {/* Property Image */}
+                      <div className="relative w-full h-32 sm:h-40 rounded-lg overflow-hidden mb-3">
+                        <img
+                          src={request.property_images[0]}
+                          alt={request.property_title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-2 left-2 right-2">
+                          <h4 className="text-white text-sm font-medium line-clamp-1">
+                            {request.property_title}
+                          </h4>
+                        </div>
+                      </div>
+
+                      {/* Guest Info */}
+                      <div className="flex items-center gap-2 sm:gap-3 mb-3">
+                        <Avatar
+                          src={request.guest_avatar_url}
+                          name={request.guest_display_name}
+                          size="sm"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-gray-900 text-sm truncate">
+                            {request.guest_display_name}
+                          </p>
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                          <span>{request.guest_rating} ({t('booking.reviews.count', { count: request.total_guest_reviews })})</span>
                           </div>
                         </div>
+                      </div>
 
-                          {/* Guest Info */}
-                      <div className="flex items-center gap-3 mb-2">
-                            <Avatar
-                              src={request.guest_avatar_url}
-                              name={request.guest_display_name}
-                              size="sm"
-                            />
-                            <div>
-                              <p className="font-medium text-gray-900">
-                                {request.guest_display_name}
-                              </p>
-                              <div className="flex items-center gap-2 text-sm text-gray-600">
-                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                                <span>{request.guest_rating} ({request.total_guest_reviews} reviews)</span>
-                              </div>
-                            </div>
+                      {/* Booking Details */}
+                      <div className="space-y-2 text-xs sm:text-sm mb-3">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <span className="truncate">
+                            {new Date(request.check_in_date).toLocaleDateString()} - {new Date(request.check_out_date).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <User className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>{t('booking.labels.guests')}: {request.guest_count}</span>
                           </div>
-
-                          {/* Booking Details */}
-                      <div className="grid grid-cols-1 gap-2 text-sm mb-2">
-                            <div className="flex items-center gap-2 text-gray-600">
-                              <Calendar className="w-4 h-4" />
-                              <span>
-                                {new Date(request.check_in_date).toLocaleDateString()} - {new Date(request.check_out_date).toLocaleDateString()}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600">
-                              <User className="w-4 h-4" />
-                              <span>{request.guest_count} guests</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600">
-                              <Clock className="w-4 h-4" />
-                              <span>
-                                {request.check_in_time} - {request.check_out_time}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 text-gray-600">
-                              <CreditCard className="w-4 h-4" />
-                              <span>${request.total_amount} total</span>
-                            </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span className="font-medium">${request.total_amount}</span>
                           </div>
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                          <span className="truncate">
+                            {request.check_in_time} - {request.check_out_time}
+                          </span>
+                        </div>
+                      </div>
 
-                          {/* Contact Info */}
-                      <div className="flex flex-wrap gap-4 mb-2">
+                      {/* Contact Info - Mobile Optimized */}
+                      <div className="flex flex-col sm:flex-row gap-2 mb-3">
+                        <Button
+                          size="sm"
+                          variant="light"
+                          color="primary"
+                          startContent={<Mail className="w-3 h-3 sm:w-4 sm:h-4" />}
+                          onClick={() => window.location.href = `mailto:${request.guest_email}`}
+                          className="text-xs sm:text-sm justify-start min-w-0"
+                        >
+                          <span className="truncate">{request.guest_email}</span>
+                        </Button>
+                        {request.guest_phone && (
+                          <Button
+                            size="sm"
+                            variant="light"
+                            color="primary"
+                            startContent={<Phone className="w-3 h-3 sm:w-4 sm:h-4" />}
+                            onClick={() => window.location.href = `tel:${request.guest_phone}`}
+                            className="text-xs sm:text-sm justify-start"
+                          >
+                            {request.guest_phone}
+                          </Button>
+                        )}
+                      </div>
+
+
+
+                      {/* Status Badge */}
+                      <div className="mb-3">
+                        <Chip
+                          color={getStatusColor(request.status as BookingStatus | 'no_shows')}
+                          variant="flat"
+                          size="sm"
+                          className="text-xs"
+                        >
+                          {t(`booking.status.${mapStatusKey(request.status as BookingStatus)}`)}
+                        </Chip>
+                      </div>
+
+                      {/* Actions */}
+                      {request.status === 'pending' && (
+                        <div className="space-y-2">
+                          {/* Primary Actions */}
+                          <div className="flex gap-2">
                             <Button
                               size="sm"
-                              variant="light"
-                              color="primary"
-                              startContent={<Mail className="w-4 h-4" />}
-                              onClick={() => window.location.href = `mailto:${request.guest_email}`}
-                            >
-                              {request.guest_email}
-                            </Button>
-                            {request.guest_phone && (
-                              <Button
-                                size="sm"
-                                variant="light"
-                                color="primary"
-                                startContent={<Phone className="w-4 h-4" />}
-                                onClick={() => window.location.href = `tel:${request.guest_phone}`}
-                              >
-                                {request.guest_phone}
-                              </Button>
-                            )}
-                          </div>
-
-                          {/* Special Requests */}
-                          {request.special_requests && (
-                        <div className="p-3 bg-gray-50 rounded-lg mb-2">
-                              <p className="text-sm text-gray-600">
-                                <span className="font-medium">Special Requests: </span>
-                                {request.special_requests}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Status Badge */}
-                      <div className="mb-2">
-                            <Chip
-                              color={getStatusColor(request.status as BookingStatus | 'no_shows')}
+                              color="danger"
                               variant="flat"
-                              size="sm"
+                              startContent={<X className="w-4 h-4" />}
+                              onPress={() => {
+                                setSelectedRequest(request)
+                                onDeclineModalOpen()
+                              }}
+                              className="flex-1 font-medium"
+                              isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
+                              disabled={updatingBookingId === request.id}
                             >
-                              {request.status}
-                            </Chip>
+                              {t('booking.actions.decline')}
+                            </Button>
+                            <Button
+                              size="sm"
+                              color="success"
+                              startContent={<Check className="w-4 h-4" />}
+                              onPress={() => {
+                                setSelectedRequest(request)
+                                onConfirmModalOpen()
+                              }}
+                              className="flex-1 font-medium"
+                              isLoading={updatingBookingId === request.id && updatingAction === 'approve'}
+                              disabled={updatingBookingId === request.id}
+                            >
+                              {t('booking.actions.approve')}
+                            </Button>
                           </div>
-
-                          {/* Actions */}
-                          {request.status === 'pending' && (
-                            <div className="flex gap-2 pt-2">
-                              <Button
-                                size="sm"
-                                color="danger"
-                                variant="flat"
-                                startContent={<X className="w-4 h-4" />}
-                                onPress={() => {
-                                  setSelectedRequest(request)
-                                  onDeclineModalOpen()
-                                }}
-                                className="flex-1"
-                                isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
-                                disabled={updatingBookingId === request.id}
-                              >
-                                Decline
-                              </Button>
-                              <Button
-                                size="sm"
-                                color="success"
-                                startContent={<Check className="w-4 h-4" />}
-                                onPress={() => {
-                                  setSelectedRequest(request)
-                                  onConfirmModalOpen()
-                                }}
-                                className="flex-1"
-                                isLoading={updatingBookingId === request.id && updatingAction === 'approve'}
-                                disabled={updatingBookingId === request.id}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="light"
-                                startContent={<Eye className="w-4 h-4" />}
-                                onPress={() => handleRequestClick(request)}
+                          {/* Secondary Action */}
+                          <Button
+                            size="sm"
+                            variant="bordered"
+                            color="default"
+                            startContent={<Eye className="w-4 h-4" />}
+                            onPress={() => handleRequestClick(request)}
                             disabled={updatingBookingId === request.id}
-                              >
-                                View Details
-                              </Button>
-                            </div>
-                          )}
+                            className="w-full font-medium"
+                          >
+                            {t('booking.actions.viewDetails')}
+                          </Button>
+                        </div>
+                      )}
+
+                      {/* View Details for non-pending requests */}
+                      {request.status !== 'pending' && (
+                        <Button
+                          size="sm"
+                          variant="bordered"
+                          color="default"
+                          startContent={<Eye className="w-4 h-4" />}
+                          onPress={() => handleRequestClick(request)}
+                          className="w-full font-medium"
+                        >
+                          {t('booking.actions.viewDetails')}
+                        </Button>
+                      )}
                     </CardBody>
                   </Card>
                 ))}
+            </div>
+          </div>
+          
+          {/* Pagination - Full Width */}
+          {currentPagination && currentPagination.totalPages > 1 && (
+            <div className="col-span-full flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
+              <div className="text-sm text-gray-600 order-2 sm:order-1">
+                {t('booking.bookingRequests.showingRange', { from: ((currentPagination.currentPage - 1) * ITEMS_PER_PAGE) + 1, to: Math.min(currentPagination.currentPage * ITEMS_PER_PAGE, currentPagination.totalItems), total: currentPagination.totalItems })}
               </div>
-            )}
-
-            {/* Pagination */}
-            {currentPagination && currentRequests.length > 0 && (
-              <div className="flex justify-center mt-6">
-                <Pagination
-                  total={currentPagination.totalPages}
-                  page={currentPagination.currentPage}
-                  onChange={handlePageChange}
-                />
-              </div>
-            )}
-          </>
-        )}
-      </div>
+              <Pagination
+                total={currentPagination.totalPages}
+                page={currentPagination.currentPage}
+                onChange={handlePageChange}
+                size="sm"
+                showControls
+                className="order-1 sm:order-2"
+              />
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="col-span-full text-center py-12">
+          <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {t('booking.bookingRequests.emptyTitle', { status: emptyStatusLabel })}
+          </h3>
+          <p className="text-gray-500">
+            {t('booking.bookingRequests.emptyDescription', { status: emptyStatusLabel })}
+          </p>
+        </div>
+      )}
 
       {/* Request Details Modal */}
       <Modal 
         isOpen={isOpen} 
         onClose={onClose}
         size="2xl"
+        scrollBehavior="inside"
+        classNames={{
+          base: "mx-2 my-2 sm:mx-6 sm:my-6",
+          wrapper: "items-end sm:items-center"
+        }}
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Booking Request Details</h2>
-                <p className="text-sm text-gray-600">Review all information about this booking request</p>
+              <ModalHeader className="flex flex-col gap-1 p-4 sm:p-6 pb-2 sm:pb-4">
+                <h2 className="text-lg sm:text-xl font-bold">{t('booking.bookingRequests.details.title')}</h2>
+                <p className="text-xs sm:text-sm text-gray-600">{t('booking.bookingRequests.details.subtitle')}</p>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="px-4 sm:px-6 py-2 sm:py-4">
                 {selectedRequest && (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-8">
                     {/* Property Details */}
                     <div>
-                      <h4 className="font-semibold mb-3">Property Information</h4>
+                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.propertyInformation')}</h4>
                       <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
                         <img
                           src={selectedRequest.property_images[0]}
@@ -541,11 +553,11 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                           <h3 className="font-semibold">{selectedRequest.property_title}</h3>
                           <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
                             <MapPin className="w-4 h-4" />
-                            <span>Location details here</span>
+                            <span>{t('booking.bookingRequests.details.locationPlaceholder')}</span>
                           </div>
                           <div className="flex items-center gap-1 mt-1">
                             <Home className="w-4 h-4 text-gray-600" />
-                            <span className="text-sm text-gray-600">Property type details</span>
+                            <span className="text-sm text-gray-600">{t('booking.bookingRequests.details.propertyTypePlaceholder')}</span>
                           </div>
                         </div>
                       </div>
@@ -553,7 +565,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
 
                     {/* Guest Information */}
                     <div>
-                      <h4 className="font-semibold mb-3">Guest Information</h4>
+                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.guestInformation')}</h4>
                       <div className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-3 mb-3">
                           <Avatar
@@ -568,7 +580,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <Star className="w-4 h-4 text-yellow-500 fill-current" />
                               <span>
-                                {selectedRequest.guest_rating} ({selectedRequest.total_guest_reviews} reviews)
+                                {selectedRequest.guest_rating} ({t('booking.reviews.count', { count: selectedRequest.total_guest_reviews })})
                               </span>
                             </div>
                           </div>
@@ -600,14 +612,14 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
 
                     {/* Booking Details */}
                     <div>
-                      <h4 className="font-semibold mb-3">Booking Details</h4>
+                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.bookingDetails')}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="p-4 bg-gray-50 rounded-lg">
                           <div className="space-y-3">
                             <div className="flex items-center gap-2">
                               <Calendar className="w-5 h-5 text-gray-600" />
                               <div>
-                                <p className="text-sm font-medium">Check-in</p>
+                                <p className="text-sm font-medium">{t('booking.labels.checkIn')}</p>
                                 <p className="text-gray-600">
                                   {new Date(selectedRequest.check_in_date).toLocaleDateString()}
                                   <span className="ml-2">{selectedRequest.check_in_time}</span>
@@ -617,7 +629,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                             <div className="flex items-center gap-2">
                               <Calendar className="w-5 h-5 text-gray-600" />
                               <div>
-                                <p className="text-sm font-medium">Check-out</p>
+                                <p className="text-sm font-medium">{t('booking.labels.checkOut')}</p>
                                 <p className="text-gray-600">
                                   {new Date(selectedRequest.check_out_date).toLocaleDateString()}
                                   <span className="ml-2">{selectedRequest.check_out_time}</span>
@@ -627,8 +639,8 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                             <div className="flex items-center gap-2">
                               <User className="w-5 h-5 text-gray-600" />
                               <div>
-                                <p className="text-sm font-medium">Guests</p>
-                                <p className="text-gray-600">{selectedRequest.guest_count} guests</p>
+                                <p className="text-sm font-medium">{t('booking.labels.guests')}</p>
+                                <p className="text-gray-600">{selectedRequest.guest_count} {t('booking.labels.guests')}</p>
                               </div>
                             </div>
                           </div>
@@ -638,15 +650,15 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                             <div className="flex items-center gap-2">
                               <DollarSign className="w-5 h-5 text-gray-600" />
                               <div>
-                                <p className="text-sm font-medium">Total Amount</p>
+                                <p className="text-sm font-medium">{t('booking.bookingRequests.details.totalAmount')}</p>
                                 <p className="text-gray-600">${selectedRequest.total_amount}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-2">
                               <CreditCard className="w-5 h-5 text-gray-600" />
                               <div>
-                                <p className="text-sm font-medium">Payment Status</p>
-                                <p className="text-gray-600">Pending payment</p>
+                                <p className="text-sm font-medium">{t('booking.bookingRequests.details.paymentStatus')}</p>
+                                <p className="text-gray-600">{t('booking.payment.pending')}</p>
                               </div>
                             </div>
                           </div>
@@ -657,9 +669,11 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                     {/* Special Requests */}
                     {selectedRequest.special_requests && (
                       <div>
-                        <h4 className="font-semibold mb-3">Special Requests</h4>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <p className="text-gray-600">{selectedRequest.special_requests}</p>
+                        <h4 className="font-semibold mb-3">{t('booking.labels.specialRequests')}</h4>
+                        <div className="p-3 sm:p-4 bg-gray-50 rounded-lg">
+                          <p className="text-gray-600 break-words whitespace-pre-wrap text-sm sm:text-base leading-relaxed">
+                            {selectedRequest.special_requests}
+                          </p>
                         </div>
                       </div>
                     )}
@@ -668,13 +682,13 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <Clock className="w-5 h-5" />
-                        Request Timeline
+                        {t('booking.bookingRequests.details.timeline')}
                       </h4>
                       <div className="space-y-3">
                         <div className="flex gap-3">
                           <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
-                            <p className="font-medium text-sm">Request Created</p>
+                            <p className="font-medium text-sm">{t('booking.bookingRequests.details.requestCreated')}</p>
                             <p className="text-sm text-gray-600">
                               {new Date(selectedRequest.created_at).toLocaleString()}
                             </p>
@@ -686,9 +700,9 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                   </div>
                 )}
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="p-4 sm:p-6 pt-2 sm:pt-4">
                 <Button color="default" variant="light" onPress={onClose}>
-                  Close
+                  {t('common.buttons.close')}
                 </Button>
                 {selectedRequest && selectedRequest.status === 'pending' && (
                   <div className="flex gap-2">
@@ -703,7 +717,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                       isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'decline'}
                       disabled={updatingBookingId === selectedRequest.id}
                     >
-                      Decline
+                      {t('booking.actions.decline')}
                     </Button>
                     <Button
                       color="success"
@@ -715,7 +729,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                       isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'approve'}
                       disabled={updatingBookingId === selectedRequest.id}
                     >
-                      Approve
+                      {t('booking.actions.approve')}
                     </Button>
                   </div>
                 )}
@@ -738,17 +752,15 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
           {(onClose) => (
             <>
               <ModalHeader>
-                <h2 className="text-xl font-bold">Decline Booking Request</h2>
+                <h2 className="text-xl font-bold">{t('booking.bookingRequests.decline.title')}</h2>
               </ModalHeader>
               <ModalBody>
                 <div className="space-y-4">
-                  <p className="text-gray-600">
-                    Please provide a reason for declining this booking request. This will be visible to the guest.
-                  </p>
+                  <p className="text-gray-600">{t('booking.bookingRequests.decline.description')}</p>
                   <textarea
                     value={rejectReason}
                     onChange={(e) => setRejectReason(e.target.value)}
-                    placeholder="Enter reason for declining..."
+                    placeholder={t('booking.bookingRequests.decline.placeholder')}
                     className="w-full h-32 p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     maxLength={500}
                   />
@@ -762,7 +774,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                     setRejectReason('')
                   }}
                 >
-                  Cancel
+                  {t('common.buttons.cancel')}
                 </Button>
                 <Button
                   color="danger"
@@ -770,7 +782,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
                   isLoading={updatingBookingId === selectedRequest?.id}
                   disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
                 >
-                  Decline Booking
+                  {t('booking.bookingRequests.decline.confirm')}
                 </Button>
               </ModalFooter>
             </>
@@ -788,26 +800,24 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
           {(onClose) => (
             <>
               <ModalHeader>
-                <h2 className="text-xl font-bold">Confirm Approval</h2>
+                <h2 className="text-xl font-bold">{t('booking.bookingRequests.approve.title')}</h2>
               </ModalHeader>
               <ModalBody>
-                <p className="text-gray-600">
-                  Are you sure you want to approve this booking request? This will notify the guest and initiate the payment process.
-                </p>
+                <p className="text-gray-600">{t('booking.bookingRequests.approve.description')}</p>
               </ModalBody>
               <ModalFooter>
                 <Button
                   variant="light"
                   onPress={onClose}
                 >
-                  Cancel
+                  {t('common.buttons.cancel')}
                 </Button>
                 <Button
                   color="success"
                   onPress={handleApproveConfirm}
                   isLoading={updatingBookingId === selectedRequest?.id}
                 >
-                  Confirm Approval
+                  {t('booking.bookingRequests.approve.confirm')}
                 </Button>
               </ModalFooter>
             </>

@@ -1,0 +1,12 @@
+{
+  "findProperties": "Trouver des Propriétés",
+  "useFiltersToFind": "Utilisez les filtres pour trouver votre séjour parfait parmi {{count}} propriétés",
+  "showFilters": "Afficher les Filtres",
+  "hideFilters": "Masquer les Filtres",
+  "propertiesFound": "{{count}} propriétés trouvées",
+  "searchResults": "Résultats de Recherche",
+  "showingResults": "Affichage de {{showing}} sur {{total}}",
+  "tryAdjustingFilters": "Essayez d'ajuster vos filtres pour trouver plus de propriétés",
+  "readyToFind": "Prêt à Trouver Votre Séjour Parfait ?",
+  "useFiltersToStart": "Utilisez les filtres ci-dessus pour commencer votre recherche"
+} 

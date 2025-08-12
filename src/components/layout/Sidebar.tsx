@@ -6,49 +6,45 @@ import { useAuth } from '../../hooks/useAuth'
 import { useNavigation } from '../../hooks/useNavigation'
 import { ROUTES } from '../../router/types'
 import toast from 'react-hot-toast'
-
-// Type for icon render function
-type IconRenderProps = {
-  isActive: boolean;
-  className?: string;
-}
+import { useTranslation } from 'react-i18next'
 
 const Sidebar: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore()
   const { signOut } = useAuth()
   const { navigateWithAuth } = useNavigation()
+  const { t } = useTranslation(['navigation', 'auth', 'common'])
 
   const handleLogout = async () => {
     try {
       console.log('🚪 User logout initiated from sidebar')
       await signOut()
-      toast.success('Logged out successfully')
+      toast.success(t('navigation.messages.logoutSuccess', { defaultValue: 'Logged out successfully' }))
       navigateWithAuth(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       console.error('❌ Logout error:', error)
-      toast.error('Failed to logout')
+      toast.error(t('navigation.messages.logoutError', { defaultValue: 'Failed to logout' }))
     }
   }
 
   const navigationItems = [
-    { path: ROUTES.HOME, label: 'Home', icon: Home },
-    { path: ROUTES.SEARCH, label: 'Search', icon: Search },
-    { path: ROUTES.LIKED_PROPERTIES, label: 'Liked', icon: Heart, requireAuth: true },
-    { path: ROUTES.CREATE_PROPERTY, label: 'Create Property', icon: Plus, requireAuth: true },
-    { path: ROUTES.MY_LISTINGS, label: 'My Listings', icon: Home, requireAuth: true },
-    { path: ROUTES.MY_BOOKINGS, label: 'My Bookings', icon: Calendar, requireAuth: true },
-    { path: ROUTES.BOOKING_REQUESTS, label: 'Booking Requests', icon: ClipboardList, requireAuth: true },
-    { path: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell, requireAuth: true },
-    { path: ROUTES.WALLET, label: 'Wallet', icon: Wallet, requireAuth: true },
-    { path: ROUTES.HOME, label: 'Profile', icon: User, requireAuth: true },
+    { path: ROUTES.HOME, label: t('navigation.menu.home', { defaultValue: 'Home' }), icon: Home },
+    { path: ROUTES.SEARCH, label: t('navigation.menu.search', { defaultValue: 'Search' }), icon: Search },
+    { path: ROUTES.LIKED_PROPERTIES, label: t('navigation.menu.favorites', { defaultValue: 'Favorites' }), icon: Heart, requireAuth: true },
+    { path: ROUTES.CREATE_PROPERTY, label: t('navigation.menu.createProperty', { defaultValue: 'Create Property' }), icon: Plus, requireAuth: true },
+    { path: ROUTES.MY_LISTINGS, label: t('navigation.menu.myListings', { defaultValue: 'My Listings' }), icon: Home, requireAuth: true },
+    { path: ROUTES.MY_BOOKINGS, label: t('navigation.menu.bookings', { defaultValue: 'My Bookings' }), icon: Calendar, requireAuth: true },
+    { path: ROUTES.BOOKING_REQUESTS, label: t('navigation.menu.bookingRequests', { defaultValue: 'Booking Requests' }), icon: ClipboardList, requireAuth: true },
+    { path: ROUTES.NOTIFICATIONS, label: t('navigation.menu.notifications', { defaultValue: 'Notifications' }), icon: Bell, requireAuth: true },
+    { path: ROUTES.WALLET, label: t('navigation.menu.wallet', { defaultValue: 'Wallet' }), icon: Wallet, requireAuth: true },
+    { path: ROUTES.HOME, label: t('navigation.menu.profile', { defaultValue: 'Profile' }), icon: User, requireAuth: true },
   ]
 
   const secondaryItems = [
-    { path: ROUTES.HELP, label: 'Help Center', icon: HelpCircle },
-    { path: ROUTES.TERMS, label: 'Terms & Conditions', icon: Shield },
+    { path: ROUTES.HELP, label: t('navigation.menu.helpCenter', { defaultValue: 'Help Center' }), icon: HelpCircle },
+    { path: ROUTES.TERMS, label: t('navigation.menu.terms', { defaultValue: 'Terms & Conditions' }), icon: Shield },
     ...(isAuthenticated ? [] : [
-      { path: ROUTES.LOGIN, label: 'Login', icon: LogIn },
-      { path: ROUTES.REGISTER, label: 'Register', icon: UserPlus },
+      { path: ROUTES.LOGIN, label: t('navigation.menu.login', { defaultValue: 'Login' }), icon: LogIn },
+      { path: ROUTES.REGISTER, label: t('navigation.menu.signup', { defaultValue: 'Sign Up' }), icon: UserPlus },
     ])
   ]
 
@@ -101,11 +97,11 @@ const Sidebar: React.FC = () => {
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="text-lg font-bold text-gray-900">{user.total_properties}</div>
-                  <div className="text-xs text-gray-500">Properties</div>
+                  <div className="text-xs text-gray-500">{t('navigation.profile.properties', { defaultValue: 'Properties' })}</div>
                 </div>
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="text-lg font-bold text-gray-900">{user.total_bookings}</div>
-                  <div className="text-xs text-gray-500">Bookings</div>
+                  <div className="text-xs text-gray-500">{t('navigation.profile.bookings', { defaultValue: 'Bookings' })}</div>
                 </div>
               </div>
               
@@ -114,13 +110,13 @@ const Sidebar: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <span>⭐</span>
                   <span className="font-medium">{user.guest_rating.toFixed(1)}</span>
-                  <span className="text-gray-500">Guest</span>
+                  <span className="text-gray-500">{t('navigation.profile.guest', { defaultValue: 'Guest' })}</span>
                 </div>
                 {user.is_host && user.host_rating > 0 && (
                   <div className="flex items-center gap-1">
                     <span>🏠</span>
                     <span className="font-medium">{user.host_rating.toFixed(1)}</span>
-                    <span className="text-gray-500">Host</span>
+                    <span className="text-gray-500">{t('navigation.profile.host', { defaultValue: 'Host' })}</span>
                   </div>
                 )}
               </div>
@@ -132,20 +128,20 @@ const Sidebar: React.FC = () => {
               <User className="w-10 h-10 text-gray-500" />
             </div>
             <div className="w-full">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">Guest User</h3>
-              <p className="text-sm text-gray-500 mb-4">Please sign in to access all features</p>
+              <h3 className="font-bold text-lg text-gray-900 mb-1">{t('navigation.profile.guestUser', { defaultValue: 'Guest User' })}</h3>
+              <p className="text-sm text-gray-500 mb-4">{t('navigation.profile.signInToAccess', { defaultValue: 'Please sign in to access all features' })}</p>
               <div className="flex flex-col gap-2">
                 <NavLink
                   to={ROUTES.LOGIN}
                   className="w-full bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium text-center"
                 >
-                  Sign In
+                  {t('auth.login.signIn', { defaultValue: 'Sign In' })}
                 </NavLink>
                 <NavLink
                   to={ROUTES.REGISTER}
                   className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium text-center"
                 >
-                  Sign Up
+                  {t('navigation.menu.signup', { defaultValue: 'Sign Up' })}
                 </NavLink>
               </div>
             </div>
@@ -222,7 +218,7 @@ const Sidebar: React.FC = () => {
             className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600"
           >
             <LogOut className="w-5 h-5" />
-            <span className="text-sm">Logout</span>
+            <span className="text-sm">{t('auth.actions.logout', { defaultValue: 'Logout' })}</span>
           </button>
         </div>
       )}

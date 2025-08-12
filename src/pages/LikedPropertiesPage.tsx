@@ -4,13 +4,17 @@ import { Heart } from 'lucide-react';
 import MainLayout from '../components/layout/MainLayout';
 import PropertyCard from '../components/shared/PropertyCard';
 import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
+import { PageBanner } from '../components/shared';
 import { LikedPropertiesPageProps, Property } from '../interfaces';
 import { usePropertyStore } from '../lib/stores/propertyStore';
 import { useHomeFeed } from '../hooks/useHomeFeed';
 import { usePropertyLike } from '../hooks/usePropertyLike';
+import { getBannerConfig } from '../utils/bannerConfig';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 
 const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange }) => {
+  const { t } = useTranslation(['property'])
   const navigate = useNavigate();
   const { properties, likedPropertyIds, likedProperties, isLikeLoading, setSelectedProperty } = usePropertyStore();
   const { fetchLikedProperties } = usePropertyLike();
@@ -59,23 +63,17 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
     <>
       {/* Header Banner */}
       <div className="col-span-full mb-6">
-        <div 
-          className="relative bg-gradient-to-r from-primary-500/90 to-primary-600/90 text-white p-8 rounded-lg mb-8 overflow-hidden"
-          style={{
-            backgroundImage: 'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
+        <PageBanner
+          backgroundImage={getBannerConfig('likedProperties').image}
+          title={t('property.likedProperties')}
+          subtitle={t('property.favoritePlaces')}
+          imageAlt={getBannerConfig('likedProperties').alt}
+          overlayOpacity={getBannerConfig('likedProperties').overlayOpacity}
+          height={getBannerConfig('likedProperties').height}
+          className="mb-8"
         >
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/90 to-primary-600/90" />
-          
-          {/* Content */}
-          <div className="relative text-left">
-            <h1 className="text-3xl font-bold mb-2">Liked Properties</h1>
-            <p className="text-primary-100 text-lg">Your favorite places to stay</p>
-          </div>
-        </div>
+          <Heart className="w-6 h-6 text-red-400 fill-current" />
+        </PageBanner>
       </div>
 
       {/* Properties Grid */}
@@ -107,16 +105,16 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
               <Heart className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No liked properties yet
+              {t('property.noLikedProperties')}
             </h3>
             <p className="text-gray-500 mb-6">
-              Start exploring and like properties to see them here
+              {t('property.startExploringAndLike')}
             </p>
             <button 
               onClick={() => onPageChange?.('home')}
               className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
             >
-              Explore Properties
+              {t('property.exploreProperties')}
             </button>
           </div>
         )}

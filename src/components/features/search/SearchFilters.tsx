@@ -14,6 +14,7 @@ import { Filter, DollarSign, MapPin, Users, Home, Settings, Star } from 'lucide-
 import { useSearchFeed } from '../../../hooks/useSearchFeed'
 import { useAdminSettings } from '../../../hooks/useAdminSettings'
 import { PropertyType } from '../../../interfaces/Settings'
+import { usePropertyTypes, useAmenities } from '../../../hooks/useTranslatedContent'
 
 // Add onSearch prop to the component
 interface SearchFiltersProps {
@@ -95,6 +96,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
     setLocalSortBy(sortBy)
   }, [filters, sortBy])
 
+  // Get translated property types and amenities
+  const { propertyTypes: translatedPropertyTypes, isLoading: propertyTypesLoading } = usePropertyTypes()
+  const { amenities: translatedAmenities, isLoading: amenitiesLoading } = useAmenities()
+
   // Get property types from admin settings, filtered for enabled ones
   const propertyTypeOptions = React.useMemo(() => {
     console.log('🔍 [SearchFilters] Debugging admin settings:', {
@@ -111,34 +116,24 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       return []
     }
     
+    // Use translated property types if available, otherwise fall back to admin settings
     const enabledTypes = allowedTypes
-      .map((type: PropertyType) => ({
-        value: type.value,
-        label: type.label
-      }))
+      .map((type: PropertyType) => {
+        const translatedType = translatedPropertyTypes.find(t => t.value === type.value)
+        return {
+          value: type.value,
+          label: translatedType?.label || type.label
+        }
+      })
 
     console.log('✅ [SearchFilters] Found property types:', enabledTypes);
     return enabledTypes;
-  }, [settings?.content?.propertyTypes])
+  }, [settings?.content?.propertyTypes, translatedPropertyTypes])
 
-  const amenityOptions = [
-    'WiFi',
-    'Kitchen',
-    'Parking',
-    'Pool',
-    'Hot tub',
-    'Air conditioning',
-    'Heating',
-    'Washer',
-    'Dryer',
-    'TV',
-    'Fireplace',
-    'Gym',
-    'Balcony',
-    'Garden',
-    'Pet friendly',
-    'Smoking allowed'
-  ]
+  // Use translated amenities instead of hardcoded ones
+  const amenityOptions = React.useMemo(() => {
+    return translatedAmenities.map(amenity => amenity.value)
+  }, [translatedAmenities])
 
   const handleApply = async () => {
     console.log('🎯 [FILTER] Apply button clicked!')
@@ -355,10 +350,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             wrapper: "grid grid-cols-2 md:grid-cols-4 gap-2"
           }}
         >
-          {amenityOptions.map((amenity) => (
+          {translatedAmenities.map((amenity) => (
             <Checkbox 
-              key={amenity} 
-              value={amenity}
+              key={amenity.value} 
+              value={amenity.value}
               color="primary"
               className="text-sm"
               classNames={{
@@ -366,7 +361,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
                 label: "text-gray-700"
               }}
             >
-              {amenity}
+              {amenity.label}
             </Checkbox>
           ))}
         </CheckboxGroup>

@@ -32,6 +32,7 @@ import {
 import { useAuthStore } from '../../lib/stores/authStore'
 import { useAuth } from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 interface ProfileModalProps {
   isOpen: boolean
@@ -41,14 +42,15 @@ interface ProfileModalProps {
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   const { user } = useAuthStore()
   const { signOut } = useAuth()
+  const { t } = useTranslation(['common', 'auth', 'profile'])
 
   const handleLogout = async () => {
     try {
       await signOut()
-      toast.success('Logged out successfully')
+      toast.success(t('auth.messages.loggedOut', 'Logged out successfully'))
       onClose()
     } catch (error) {
-      toast.error('Failed to logout')
+      toast.error(t('auth.messages.logoutFailed', 'Failed to logout'))
     }
   }
 
@@ -57,7 +59,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
   }
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Not specified'
+    if (!dateString) return t('common.notSpecified', 'Not specified')
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -88,8 +90,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
     >
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-t-lg">
-          <h2 className="text-2xl font-bold">My Profile</h2>
-          <p className="text-white/90">View and manage your account information</p>
+          <h2 className="text-2xl font-bold">{t('profile.title', 'My Profile')}</h2>
+          <p className="text-white/90">{t('profile.subtitle', 'View and manage your account information')}</p>
         </ModalHeader>
         
         <ModalBody>
@@ -122,7 +124,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                 size="md"
                 className="font-medium"
               >
-                {user.user_role === 'both' ? 'Host & Guest' : user.user_role.charAt(0).toUpperCase() + user.user_role.slice(1)}
+                {user.user_role === 'both' ? t('profile.roles.hostAndGuest', 'Host & Guest') : user.user_role.charAt(0).toUpperCase() + user.user_role.slice(1)}
               </Chip>
               
               {getVerificationLevel() > 0 && (
@@ -133,7 +135,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   size="md"
                   className="font-medium"
                 >
-                  {getVerificationLevel()}/3 Verified
+                  {getVerificationLevel()}/3 {t('profile.verified', 'Verified')}
                 </Chip>
               )}
               
@@ -144,7 +146,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   size="md"
                   className="font-medium"
                 >
-                  Active
+                  {t('profile.status.active', 'Active')}
                 </Chip>
               )}
             </div>
@@ -166,7 +168,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   <Home className="w-6 h-6 text-white" />
                 </div>
                 <p className="text-2xl font-bold text-primary-700">{user.total_properties}</p>
-                <p className="text-sm text-primary-600 font-medium">Properties</p>
+                <p className="text-sm text-primary-600 font-medium">{t('profile.stats.properties', 'Properties')}</p>
               </CardBody>
             </Card>
             
@@ -176,7 +178,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   <Calendar className="w-6 h-6 text-white" />
                 </div>
                 <p className="text-2xl font-bold text-secondary-700">{user.total_bookings}</p>
-                <p className="text-sm text-secondary-600 font-medium">Bookings</p>
+                <p className="text-sm text-secondary-600 font-medium">{t('profile.stats.bookings', 'Bookings')}</p>
               </CardBody>
             </Card>
             
@@ -191,7 +193,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                     user.guest_rating.toFixed(1)
                   }
                 </p>
-                <p className="text-sm text-yellow-600 font-medium">Avg Rating</p>
+                <p className="text-sm text-yellow-600 font-medium">{t('profile.stats.avgRating', 'Avg Rating')}</p>
               </CardBody>
             </Card>
             
@@ -201,7 +203,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   <Users className="w-6 h-6 text-white" />
                 </div>
                 <p className="text-2xl font-bold text-green-700">{user.total_guest_reviews + user.total_host_reviews}</p>
-                <p className="text-sm text-green-600 font-medium">Reviews</p>
+                <p className="text-sm text-green-600 font-medium">{t('profile.stats.reviews', 'Reviews')}</p>
               </CardBody>
             </Card>
           </div>
@@ -243,11 +245,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <Mail className="w-5 h-5 text-primary-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="text-sm text-gray-500">{t('profile.contact.email', 'Email')}</p>
                       <p className="font-medium text-gray-900">{user.email}</p>
                       {user.is_email_verified && (
                         <span className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                          <CheckCircle className="w-3 h-3" /> Verified
+                          <CheckCircle className="w-3 h-3" /> {t('profile.verified', 'Verified')}
                         </span>
                       )}
                     </div>
@@ -258,11 +260,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <Phone className="w-5 h-5 text-secondary-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium text-gray-900">{user.phone || 'Not provided'}</p>
+                      <p className="text-sm text-gray-500">{t('profile.contact.phone', 'Phone')}</p>
+                      <p className="font-medium text-gray-900">{user.phone || t('common.notProvided', 'Not provided')}</p>
                       {user.phone && user.is_phone_verified && (
                         <span className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                          <CheckCircle className="w-3 h-3" /> Verified
+                          <CheckCircle className="w-3 h-3" /> {t('profile.verified', 'Verified')}
                         </span>
                       )}
                     </div>
@@ -273,8 +275,8 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <MapPin className="w-5 h-5 text-green-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-medium text-gray-900">{user.location || 'Not specified'}</p>
+                      <p className="text-sm text-gray-500">{t('profile.contact.location', 'Location')}</p>
+                      <p className="font-medium text-gray-900">{user.location || t('common.notSpecified', 'Not specified')}</p>
                     </div>
                   </div>
                 </div>
@@ -285,7 +287,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               <CardBody className="p-6">
                 <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-purple-600" />
-                  Account Details
+                  {t('profile.accountDetails', 'Account Details')}
                 </h4>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -293,7 +295,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <Calendar className="w-5 h-5 text-purple-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Member since</p>
+                      <p className="text-sm text-gray-500">{t('profile.account.memberSince', 'Member since')}</p>
                       <p className="font-medium text-gray-900">{formatDate(user.created_at)}</p>
                     </div>
                   </div>
@@ -303,7 +305,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <Clock className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Last active</p>
+                      <p className="text-sm text-gray-500">{t('profile.account.lastActive', 'Last active')}</p>
                       <p className="font-medium text-gray-900">{formatDate(user.last_login)}</p>
                     </div>
                   </div>
@@ -313,7 +315,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <Globe className="w-5 h-5 text-indigo-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm text-gray-500">Preferred Language</p>
+                      <p className="text-sm text-gray-500">{t('profile.account.preferredLanguage', 'Preferred Language')}</p>
                       <p className="font-medium text-gray-900">{user.language_preference || 'English'}</p>
                     </div>
                   </div>
@@ -327,22 +329,22 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
             <CardBody className="p-6">
               <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Award className="w-5 h-5 text-blue-600" />
-                Account Summary
+                {t('profile.accountSummary', 'Account Summary')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2">
                     <CheckCircle className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-sm text-gray-600">Verification Level</p>
-                  <p className="font-bold text-blue-700">{getVerificationLevel()}/3 Complete</p>
+                  <p className="text-sm text-gray-600">{t('profile.summary.verificationLevel', 'Verification Level')}</p>
+                  <p className="font-bold text-blue-700">{getVerificationLevel()}/3 {t('profile.summary.complete', 'Complete')}</p>
                 </div>
                 
                 <div className="text-center">
                   <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Star className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-sm text-gray-600">Account Status</p>
+                  <p className="text-sm text-gray-600">{t('profile.summary.accountStatus', 'Account Status')}</p>
                   <p className="font-bold text-green-700 capitalize">{user.account_status}</p>
                 </div>
                 
@@ -350,7 +352,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                   <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2">
                     <Globe className="w-6 h-6 text-white" />
                   </div>
-                  <p className="text-sm text-gray-600">Currency</p>
+                  <p className="text-sm text-gray-600">{t('profile.summary.currency', 'Currency')}</p>
                   <p className="font-bold text-purple-700">{user.preferred_currency}</p>
                 </div>
               </div>
@@ -365,7 +367,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               onPress={onClose}
               className="border-gray-300 text-gray-600 hover:bg-gray-100"
             >
-              Close
+              {t('common.actions.close', 'Close')}
             </Button>
             <div className="flex gap-2">
               <Button 
@@ -374,14 +376,14 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                 onPress={handleLogout}
                 className="text-red-600 hover:bg-red-50"
               >
-                Logout
+                {t('auth.actions.logout', 'Logout')}
               </Button>
               <Button 
                 color="primary" 
                 startContent={<Edit className="w-4 h-4" />}
                 className="bg-primary-600 hover:bg-primary-700"
               >
-                Edit Profile
+                {t('profile.actions.editProfile', 'Edit Profile')}
               </Button>
             </div>
           </div>

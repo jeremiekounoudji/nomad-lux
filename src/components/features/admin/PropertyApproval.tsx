@@ -4,56 +4,15 @@ import {
   CardBody, 
   Button, 
   Chip, 
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
   Tabs,
   Tab,
-  Textarea,
   Checkbox,
   Input,
-  Select,
-  SelectItem,
   Avatar,
-  Progress,
-  Image,
-  Divider,
   Pagination
 } from '@heroui/react'
-import { 
-  CheckCircle, 
-  XCircle, 
-  Eye, 
-  MapPin, 
-  Calendar,
-  Image as ImageIcon,
-  Video,
-  Star,
-  DollarSign,
-  Search,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  MoreHorizontal,
-  ZoomIn,
-  Play,
-  Clock,
-  Bath,
-  Bed,
-  Car,
-  Wifi,
-  Users,
-  Flag,
-  MessageSquare,
-  Home,
-  Camera,
-  Ban,
-  Loader2
-} from 'lucide-react'
+import { CheckCircle, XCircle, Eye, MapPin, Image as ImageIcon, Video, Star, Search, Home, Ban, Loader2 } from 'lucide-react'
 import { 
   PropertyApprovalModal, 
   PropertyRejectionModal, 
@@ -67,16 +26,15 @@ import { useAdminProperty } from '../../../hooks/useAdminProperty'
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
 import { getStatusColor, getStatusDisplayName } from '../../../utils/propertyUtils'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
-interface PropertyApprovalProps {
-  onPageChange: (page: string) => void
-}
+// props are managed via internal navigation hooks; no external props currently used
 
 export const PropertyApproval: React.FC = () => {
+  const { t } = useTranslation(['admin', 'property', 'common'])
   // Hook for admin property management
   const {
     filteredProperties,
-    propertyStats,
     isLoading,
     error,
     statusFilter,
@@ -139,7 +97,6 @@ export const PropertyApproval: React.FC = () => {
   } = useDisclosure()
   const {
     isOpen: isImageOpen,
-    onOpen: onImageOpen,
     onClose: onImageClose
   } = useDisclosure()
   const {
@@ -186,7 +143,7 @@ export const PropertyApproval: React.FC = () => {
       if (result) {
         onApproveClose()
         setPendingApprovalProperty(null)
-        toast.success('Property approved successfully!')
+        toast.success(t('property.messages.propertyApproved'))
       }
       setActionLoading(null)
     }
@@ -201,7 +158,7 @@ export const PropertyApproval: React.FC = () => {
     if (result) {
       setRejectionReason('')
       onRejectClose()
-      toast.success('Property rejected successfully!')
+      toast.success(t('property.messages.propertyRejected'))
     }
     setActionLoading(null)
   }
@@ -216,9 +173,9 @@ export const PropertyApproval: React.FC = () => {
     setActionLoading('suspend')
     try {
       await suspendProperty(propertyId, reason)
-      toast.success('Property suspended successfully!')
+      toast.success(t('property.messages.propertySuspended'))
     } catch (e: any) {
-      toast.error(e?.message || 'Failed to suspend property')
+      toast.error(e?.message || t('property.messages.failedToLoad', { defaultValue: 'Failed to suspend property' }))
     }
     setSuspensionReason('')
     setActionLoading(null)
@@ -343,10 +300,7 @@ export const PropertyApproval: React.FC = () => {
     onOpen()
   }
 
-  const handleImageClick = (index: number) => {
-    setCurrentImageIndex(index)
-    onImageOpen()
-  }
+  // Lightbox image open managed by other UI; helper kept if reintroduced later
 
   const nextImage = () => {
     if (selectedProperty) {
@@ -369,8 +323,8 @@ export const PropertyApproval: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Property Approval</h1>
-        <p className="text-gray-600 mt-1">Review and approve property listings</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('admin.properties.pendingApproval')}</h1>
+        <p className="text-gray-600 mt-1">{t('admin.dashboard.overview', { defaultValue: 'Review and approve property listings' })}</p>
       </div>
 
       {/* Stats Overview */}
@@ -378,32 +332,32 @@ export const PropertyApproval: React.FC = () => {
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-red-500 text-white">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.pending}</h3>
-            <p className="text-white/90 font-medium">Pending Review</p>
-            <p className="text-white/70 text-sm">Requires attention</p>
+            <p className="text-white/90 font-medium">{t('admin.properties.pendingApproval')}</p>
+            <p className="text-white/70 text-sm">{t('admin.bookings.requireAttention', { defaultValue: 'Requires attention' })}</p>
           </CardBody>
         </Card>
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.approved}</h3>
-            <p className="text-white/90 font-medium">Approved</p>
-            <p className="text-white/70 text-sm">Live properties</p>
+            <p className="text-white/90 font-medium">{t('admin.properties.approved')}</p>
+            <p className="text-white/70 text-sm">{t('property.stats.sections.revenue', { defaultValue: 'Live properties' })}</p>
           </CardBody>
         </Card>
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-pink-500 text-white">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.rejected}</h3>
-            <p className="text-white/90 font-medium">Rejected</p>
-            <p className="text-white/70 text-sm">Not approved</p>
+            <p className="text-white/90 font-medium">{t('admin.properties.rejected')}</p>
+            <p className="text-white/70 text-sm">{t('admin.messages.actionCannotBeUndone', { defaultValue: 'Not approved' })}</p>
           </CardBody>
         </Card>
 
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-indigo-500 text-white">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.suspended || 0}</h3>
-            <p className="text-white/90 font-medium">Suspended</p>
-            <p className="text-white/70 text-sm">Temporarily disabled</p>
+            <p className="text-white/90 font-medium">{t('admin.properties.suspended')}</p>
+            <p className="text-white/70 text-sm">{t('admin.messages.confirmAction', { defaultValue: 'Temporarily disabled' })}</p>
           </CardBody>
         </Card>
       </div>
@@ -414,7 +368,7 @@ export const PropertyApproval: React.FC = () => {
           <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
             <div className="flex-1">
               <Input
-                placeholder="Search properties by title, location, or host..."
+                placeholder={t('admin.actions.search') + '...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 startContent={<Search className="w-4 h-4 text-gray-400" />}
@@ -427,20 +381,20 @@ export const PropertyApproval: React.FC = () => {
                 isIndeterminate={selectedProperties.length > 0 && selectedProperties.length < filteredProperties.length}
                 onValueChange={handleSelectAll}
               >
-                Select All
+                {t('admin.actions.selectAll')}
               </Checkbox>
               
               {selectedProperties.length > 0 && (
                 <div className="flex gap-2">
                   <Chip color="primary" variant="flat">
-                    {selectedProperties.length} selected
+                    {t('common.labels.selectedCount', { count: selectedProperties.length, defaultValue: '{{count}} selected' })}
                   </Chip>
                   <Button
                     size="sm"
                     color="success"
                     onPress={() => handleBulkAction('approve')}
                   >
-                    Bulk Approve
+                    {t('admin.actions.approve', { defaultValue: 'Bulk Approve' })}
                   </Button>
                   <Button
                     size="sm"
@@ -448,7 +402,7 @@ export const PropertyApproval: React.FC = () => {
                     variant="flat"
                     onPress={() => handleBulkAction('reject')}
                   >
-                    Bulk Reject
+                    {t('admin.actions.reject', { defaultValue: 'Bulk Reject' })}
                   </Button>
                   <Button
                     size="sm"
@@ -457,7 +411,7 @@ export const PropertyApproval: React.FC = () => {
                     isLoading={bulkSuspendLoading}
                     onPress={() => setIsBulkSuspendModalOpen(true)}
                   >
-                    Bulk Suspend
+                    {t('admin.actions.suspend', { defaultValue: 'Bulk Suspend' })}
                   </Button>
                 </div>
               )}
@@ -479,10 +433,10 @@ export const PropertyApproval: React.FC = () => {
             tabContent: "group-data-[selected=true]:text-primary-600"
           }}
         >
-          <Tab key="pending" title={`Pending (${statusCounts.pending})`} />
-          <Tab key="approved" title={`Approved (${statusCounts.approved})`} />
-          <Tab key="rejected" title={`Rejected (${statusCounts.rejected})`} />
-          <Tab key="suspended" title={`Suspended (${statusCounts.suspended || 0})`} />
+          <Tab key="pending" title={`${t('admin.properties.pendingApproval')} (${statusCounts.pending})`} />
+          <Tab key="approved" title={`${t('admin.properties.approved')} (${statusCounts.approved})`} />
+          <Tab key="rejected" title={`${t('admin.properties.rejected')} (${statusCounts.rejected})`} />
+          <Tab key="suspended" title={`${t('admin.properties.suspended')} (${statusCounts.suspended || 0})`} />
         </Tabs>
       </div>
 
@@ -491,7 +445,7 @@ export const PropertyApproval: React.FC = () => {
         <div className="flex justify-center items-center py-12">
           <div className="flex items-center gap-2">
             <Loader2 className="w-6 h-6 animate-spin" />
-            <span>Loading properties...</span>
+            <span>{t('property.messages.loadingProperties')}</span>
           </div>
         </div>
       )}
@@ -500,10 +454,10 @@ export const PropertyApproval: React.FC = () => {
       {error && (
         <div className="text-center py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Properties</h3>
+            <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.messages.failedToLoad', { defaultValue: 'Error Loading Properties' })}</h3>
             <p className="text-red-600 mb-4">{error}</p>
             <Button color="primary" onPress={() => fetchAdminProperties({ force: true })}>
-              Try Again
+              {t('common.actions.retry', { defaultValue: 'Try Again' })}
             </Button>
           </div>
         </div>
@@ -514,14 +468,14 @@ export const PropertyApproval: React.FC = () => {
         <div className="text-center py-12">
           <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No {statusFilter === 'all' ? '' : statusFilter} properties found
+            {t('property.messages.noProperties', { defaultValue: `No ${statusFilter === 'all' ? '' : statusFilter} properties found` })}
           </h3>
           <p className="text-gray-500 mb-4">
-            {searchQuery ? `No properties match "${searchQuery}"` : `No ${statusFilter} properties available.`}
+            {searchQuery ? t('admin.properties.noMatch', { defaultValue: 'No properties match "{{query}}"', query: searchQuery }) : t('admin.properties.noneAvailable', { defaultValue: `No ${statusFilter} properties available.` })}
           </p>
           {searchQuery && (
             <Button color="primary" onPress={() => setSearchQuery('')}>
-              Clear Search
+              {t('common.actions.clear', { defaultValue: 'Clear Search' })}
             </Button>
           )}
         </div>
@@ -555,14 +509,14 @@ export const PropertyApproval: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
-                    <div className="flex items-center gap-2 text-sm">
+                      <div className="flex items-center gap-2 text-sm">
                       <ImageIcon className="w-4 h-4" />
-                      <span>{property.images.length} photos</span>
+                        <span>{property.images.length} {t('property.labels.images')}</span>
                       {property.video && (
                         <>
                           <span>•</span>
                           <Video className="w-4 h-4" />
-                          <span>1 video</span>
+                            <span>1 {t('property.labels.video')}</span>
                         </>
                       )}
                     </div>
@@ -586,30 +540,30 @@ export const PropertyApproval: React.FC = () => {
                       <div className="flex items-center gap-4 text-xs text-gray-500">
                         <span>{property.property_type}</span>
                         <span>•</span>
-                        <span>{property.bedrooms} bed</span>
+                        <span>{property.bedrooms} {t('property.labels.beds')}</span>
                         <span>•</span>
-                        <span>{property.bathrooms} bath</span>
+                        <span>{property.bathrooms} {t('property.labels.baths')}</span>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-gray-900">${property.price_per_night}</div>
-                      <div className="text-sm text-gray-600">per night</div>
+                      <div className="text-sm text-gray-600">{t('property.labels.perNight')}</div>
                     </div>
                   </div>
 
                   {/* Host Info */}
                   <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
                     <Avatar
-                      name="Host"
+                      name={t('property.modal.contactHost.title', { defaultValue: 'Host' })}
                       size="sm"
                       className="flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm truncate">Host ID: {property.host_id}</div>
+                      <div className="font-medium text-sm truncate">{t('admin.properties.hostInformation', { defaultValue: 'Host ID:' })} {property.host_id}</div>
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                         <span className="text-xs text-gray-600">{property.rating || 0}</span>
-                        <span className="text-xs text-gray-500">• Created {new Date(property.created_at).getFullYear()}</span>
+                        <span className="text-xs text-gray-500">• {t('admin.properties.createdYear', { defaultValue: 'Created {{year}}', year: new Date(property.created_at).getFullYear() })}</span>
                       </div>
                     </div>
                   </div>
@@ -624,7 +578,7 @@ export const PropertyApproval: React.FC = () => {
                       ))}
                       {property.amenities.length > 3 && (
                         <Chip size="sm" variant="flat" color="default">
-                          +{property.amenities.length - 3} more
+                          +{property.amenities.length - 3} {t('property.labels.more')}
                         </Chip>
                       )}
                     </div>
@@ -638,7 +592,7 @@ export const PropertyApproval: React.FC = () => {
                       onPress={() => handleViewDetails(property as DatabaseProperty)}
                       startContent={<Eye className="w-4 h-4" />}
                     >
-                      View Details
+                      {t('property.actions.viewDetails')}
                     </Button>
                     {getActionButtons(property as DatabaseProperty)}
                   </div>
@@ -655,9 +609,7 @@ export const PropertyApproval: React.FC = () => {
           <div className="flex items-center gap-4">
             {/* Results info */}
             <div className="text-sm text-gray-700">
-              Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> to{' '}
-              <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> of{' '}
-              <span className="font-medium">{pagination.totalItems}</span> results
+              {t('admin.reports.reportPeriod', { defaultValue: 'Showing {{from}} to {{to}} of {{total}} results', from: ((pagination.currentPage - 1) * pagination.pageSize) + 1, to: Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems), total: pagination.totalItems })}
             </div>
             
             {/* HeroUI Pagination */}

@@ -1,0 +1,298 @@
+{
+  "banner": {
+    "title": "Admin Panel",
+    "subtitle": "Manage properties, bookings, users, and platform settings"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "users": "Users",
+    "payments": "Payments",
+    "settings": "Settings",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "support": "Support"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "totalUsers": "Total Users",
+    "totalProperties": "Total Properties",
+    "totalBookings": "Total Bookings",
+    "totalRevenue": "Total Revenue",
+    "activeProperties": "Active Properties",
+    "pendingApprovals": "Pending Approvals",
+    "recentActivity": "Recent Activity",
+    "topHosts": "Top Hosts",
+    "popularProperties": "Popular Properties",
+    "bookingTrends": "Booking Trends",
+    "revenueTrends": "Revenue Trends",
+    "submitted": "Submitted"
+  },
+  "messages": {
+    "noProperties": "There are no properties to display on the map.",
+    "propertyMapDescription": "View all properties distributed across locations on an interactive map."
+  },
+  "properties": {
+    "allProperties": "All Properties",
+    "pendingApproval": "Pending Approval",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "suspended": "Suspended",
+    "approveProperty": "Approve Property",
+    "rejectProperty": "Reject Property",
+    "suspendProperty": "Suspend Property",
+    "viewProperty": "View Property",
+    "editProperty": "Edit Property",
+    "deleteProperty": "Delete Property",
+    "propertyDetails": "Property Details",
+    "hostInformation": "Host Information",
+    "approvalStatus": "Approval Status",
+    "rejectionReason": "Rejection Reason",
+    "suspensionReason": "Suspension Reason"
+  },
+  "bookings": {
+    "allBookings": "All Bookings",
+    "pendingBookings": "Pending Bookings",
+    "confirmedBookings": "Confirmed Bookings",
+    "cancelledBookings": "Cancelled Bookings",
+    "completedBookings": "Completed Bookings",
+    "bookingDetails": "Booking Details",
+    "guestInformation": "Guest Information",
+    "hostInformation": "Host Information",
+    "paymentStatus": "Payment Status",
+    "bookingStatus": "Booking Status",
+    "refundBooking": "Refund Booking",
+    "cancelBooking": "Cancel Booking"
+  },
+  "users": {
+    "allUsers": "All Users",
+    "hosts": "Hosts",
+    "guests": "Guests",
+    "admins": "Admins",
+    "activeUsers": "Active Users",
+    "suspendedUsers": "Suspended Users",
+    "bannedUsers": "Banned Users",
+    "userDetails": "User Details",
+    "accountStatus": "Account Status",
+    "userRole": "User Role",
+    "suspendUser": "Suspend User",
+    "banUser": "Ban User",
+    "activateUser": "Activate User",
+    "deleteUser": "Delete User",
+    "viewProfile": "View Profile",
+    "editProfile": "Edit Profile"
+  },
+  "payments": {
+    "allPayments": "All Payments",
+    "pendingPayments": "Pending Payments",
+    "completedPayments": "Completed Payments",
+    "failedPayments": "Failed Payments",
+    "refundedPayments": "Refunded Payments",
+    "paymentDetails": "Payment Details",
+    "paymentMethod": "Payment Method",
+    "paymentAmount": "Payment Amount",
+    "processingFee": "Processing Fee",
+    "netAmount": "Net Amount",
+    "refundPayment": "Refund Payment",
+    "payoutRequests": "Payout Requests",
+    "approvePayout": "Approve Payout",
+    "rejectPayout": "Reject Payout"
+  },
+  "settings": {
+    "generalSettings": "General Settings",
+    "bookingSettings": "Booking Settings",
+    "paymentSettings": "Payment Settings",
+    "notificationSettings": "Notification Settings",
+    "securitySettings": "Security Settings",
+    "contentSettings": "Content Settings",
+    "cancellationSettings": "Cancellation Settings",
+    "platformFee": "Platform Fee",
+    "minimumPayout": "Minimum Payout",
+    "payoutSchedule": "Payout Schedule",
+    "autoApproval": "Auto Approval",
+    "emailNotifications": "Email Notifications",
+    "pushNotifications": "Push Notifications",
+    "maintenanceMode": "Maintenance Mode"
+  },
+  "reports": {
+    "bookingReports": "Booking Reports",
+    "revenueReports": "Revenue Reports",
+    "userReports": "User Reports",
+    "propertyReports": "Property Reports",
+    "paymentReports": "Payment Reports",
+    "exportReport": "Export Report",
+    "generateReport": "Generate Report",
+    "reportPeriod": "Report Period",
+    "dailyReport": "Daily Report",
+    "weeklyReport": "Weekly Report",
+    "monthlyReport": "Monthly Report",
+    "yearlyReport": "Yearly Report"
+  },
+  "actions": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "suspend": "Suspend",
+    "activate": "Activate",
+    "ban": "Ban",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "filter": "Filter",
+    "search": "Search",
+    "bulkAction": "Bulk Action",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All"
+  },
+  "messages": {
+    "propertyApproved": "Property approved successfully",
+    "propertyRejected": "Property rejected successfully",
+    "propertySuspended": "Property suspended successfully",
+    "userSuspended": "User suspended successfully",
+    "userActivated": "User activated successfully",
+    "userBanned": "User banned successfully",
+    "paymentRefunded": "Payment refunded successfully",
+    "payoutApproved": "Payout approved successfully",
+    "payoutRejected": "Payout rejected successfully",
+    "settingsUpdated": "Settings updated successfully",
+    "reportGenerated": "Report generated successfully",
+    "bulkActionCompleted": "Bulk action completed successfully",
+    "confirmAction": "Are you sure you want to perform this action?",
+    "actionCannotBeUndone": "This action cannot be undone"
+  },
+  "login": {
+    "title": "Admin Access",
+    "subtitle": "Nomad Lux Administration",
+    "email": "Admin Email",
+    "passwordPlaceholder": "Enter admin password",
+    "signIn": "Sign In to Admin Panel",
+    "needAccess": "Need admin access?",
+    "requestAccess": "Request Access",
+    "infoTitle": "Admin Access:",
+    "info": "Only accounts with admin or super_admin roles can access the admin panel."
+  },
+  "register": {
+    "title": "Create Admin Account",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "phoneOptional": "Phone Number (Optional)",
+    "reason": "Reason for Admin Access",
+    "reasonPlaceholder": "Please explain why you need admin access to Nomad Lux...",
+    "creating": "Creating Admin Account...",
+    "create": "Create Admin Account",
+    "infoTitle": "Admin Registration:",
+    "info": "Your account will be created with full administrative privileges and immediate access to the admin panel.",
+    "hasAccount": "Already have an admin account?",
+    "signInHere": "Sign in here"
+  },
+  "activity": {
+    "title": "Activity Log",
+    "subtitle": "Monitor all platform activities and events",
+    "advancedFilters": "Advanced Filters",
+    "searchPlaceholder": "Search activities by action, user, target...",
+    "severity": {
+      "label": "Severity",
+      "all": "All Severities",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "tabs": {
+      "allActivities": "All Activities ({{count}})",
+      "users": "Users ({{count}})",
+      "properties": "Properties ({{count}})",
+      "bookings": "Bookings ({{count}})",
+      "payments": "Payments ({{count}})",
+      "security": "Security ({{count}})",
+      "system": "System ({{count}})"
+    },
+    "empty": {
+      "title": "No activities found",
+      "subtitle": "Try adjusting your search filters to see more results."
+    }
+  }
+  ,
+  "analytics": {
+    "title": "Analytics Dashboard",
+    "subtitle": "Detailed insights and platform performance metrics",
+    "subtitleShort": "Platform insights and performance metrics",
+    "vsLastMonth": "vs last month",
+    "period": {
+      "select": "Select period",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "lastYear": "Last year"
+    },
+    "customRange": "Custom Range",
+    "tabs": {
+      "revenue": "Revenue"
+    },
+    "sections": {
+      "revenueTrend": "Revenue Trend",
+      "bookingStatus": "Booking Status",
+      "userGrowth": "User Growth",
+      "platformHealth": "Platform Health"
+    },
+    "revenue": {
+      "monthlyRevenue": "Monthly Revenue",
+      "breakdown": "Revenue Breakdown",
+      "commission": "Commission",
+      "serviceFees": "Service Fees",
+      "premiumFeatures": "Premium Features"
+    },
+    "topPerformingProperties": "Top Performing Properties",
+    "topPerformingHosts": "Top Performing Hosts",
+    "labels": {
+      "bookings": "{{count}} bookings",
+      "revenue": "revenue",
+      "properties": "{{count}} properties",
+      "responseRate": "{{value}}% response rate",
+      "totalRevenue": "total revenue",
+      "host": "Host",
+      "bookingsOnly": "Bookings",
+      "rating": "Rating",
+      "revenueOnly": "Revenue",
+      "avgDays": "Avg. {{value}} days"
+    },
+    "users": {
+      "statistics": "User Statistics",
+      "totalRegistered": "Total Registered Users",
+      "active30Days": "Active Users (30 days)",
+      "newThisMonth": "New Users (This Month)",
+      "retentionRate": "User Retention Rate"
+    },
+    "properties": {
+      "performance": "Property Performance"
+    },
+    "bookings": {
+      "statusDistribution": "Booking Status Distribution",
+      "metrics": "Booking Metrics",
+      "avgValue": "Average Booking Value",
+      "successRate": "Booking Success Rate",
+      "avgStay": "Average Stay Duration",
+      "repeatRate": "Repeat Booking Rate"
+    }
+  }
+  ,
+  "locationVerification": {
+    "title": "Location Verification",
+    "coordsUnavailable": {
+      "title": "Coordinates unavailable",
+      "subtitle": "This property does not have valid location coordinates."
+    },
+    "verified": "Location Verified",
+    "invalid": "Location Invalid",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "verifyButton": "Verify Location",
+    "city": "City",
+    "country": "Country",
+    "neighborhood": "Neighborhood",
+    "address": "Address"
+  }
+}

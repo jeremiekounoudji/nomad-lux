@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Filter, SlidersHorizontal, MapPin, X, AlertCircle, RefreshCw } from 'lucide-react';
 import MainLayout from '../components/layout/MainLayout';
-import { HomePagePropertyCard, PropertyCardSkeleton } from '../components/shared';
+import { HomePagePropertyCard, PropertyCardSkeleton, PageBanner } from '../components/shared';
 import { useSearchFeed } from '../hooks/useSearchFeed';
 import { useAuthStore } from '../lib/stores/authStore';
 import { usePropertyStore } from '../lib/stores/propertyStore';
@@ -10,10 +10,13 @@ import { Property } from '../interfaces';
 import { Button, Input, Chip, Select, SelectItem } from '@heroui/react';
 import toast from 'react-hot-toast';
 import { SearchFilters, MapToggle, PropertiesMap } from '../components/features/search';
+import { getBannerConfig } from '../utils/bannerConfig';
+import { useTranslation } from 'react-i18next';
 
 import { SearchPageProps } from '../interfaces';
 
 const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
+  const { t } = useTranslation(['common', 'property', 'search'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
   const [hasSearched, setHasSearched] = useState(false);
@@ -96,26 +99,14 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
     <>
       {/* Page Header with Banner */}
       <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
-        <div
-          className="relative rounded-xl overflow-hidden border border-gray-200"
-          style={{ minHeight: '180px' }}
-        >
-          {/* Banner background image */}
-          <img
-            src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
-            alt="Banner"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* Overlay with primary color */}
-          <div className="absolute inset-0 bg-primary-500/70" />
-          {/* Banner content */}
-          <div className="relative z-10 p-8 flex flex-col items-start justify-center h-full">
-            <h1 className="text-3xl font-bold text-white mb-2">Find Properties</h1>
-            <p className="text-white text-lg">
-              Use filters to find your perfect stay from {totalResults > 0 ? totalResults : 'thousands of'} properties
-            </p>
-          </div>
-        </div>
+        <PageBanner
+          backgroundImage={getBannerConfig('search').image}
+          title={t('search.findProperties')}
+          subtitle={t('search.useFiltersToFind', { count: totalResults > 0 ? Number(totalResults) : 1000 })}
+          imageAlt={getBannerConfig('search').alt}
+          overlayOpacity={getBannerConfig('search').overlayOpacity}
+          height={getBannerConfig('search').height}
+        />
       </div>
 
       {/* Filter Toggle Button */}
@@ -126,7 +117,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
           onPress={() => setShowFilters((prev) => !prev)}
           className="w-full sm:w-auto bg-primary-500 text-white hover:bg-primary-600"
         >
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
+          {showFilters ? t('search.hideFilters') : t('search.showFilters')}
         </Button>
       </div>
 
@@ -142,12 +133,15 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
         <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-900">
-              {totalResults > 0 ? `${totalResults} properties found` : 'Search Results'}
+              {totalResults > 0 ? t('search.propertiesFound', { count: totalResults }) : t('search.searchResults')}
             </h2>
             <div className="flex items-center gap-4">
               {!searchLoading && totalResults > 0 && (
                 <div className="hidden sm:flex items-center gap-2 text-sm text-gray-600">
-                  <span>Showing {Math.min((searchResults?.length || 0), totalResults)} of {totalResults}</span>
+                  <span>{t('search.showingResults', { 
+                    showing: Math.min((searchResults?.length || 0), totalResults), 
+                    total: totalResults 
+                  })}</span>
                 </div>
               )}
             </div>
@@ -171,7 +165,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
           <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-red-900 mb-2">
-              Failed to Load Properties
+              {t('property.messages.failedToLoad')}
             </h3>
             <p className="text-red-700 mb-4">
               {searchError}
@@ -182,7 +176,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
               onPress={() => performSearch()}
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-              Try Again
+              {t('buttons.tryAgain')}
             </Button>
           </div>
         </div>
@@ -229,10 +223,10 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No Properties Found
+              {t('property.messages.noProperties')}
             </h3>
             <p className="text-gray-600 mb-4">
-              Try adjusting your filters to find more properties
+              {t('search.tryAdjustingFilters')}
             </p>
           </div>
         </div>
@@ -243,10 +237,10 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Ready to Find Your Perfect Stay?
+              {t('search.readyToFind')}
             </h3>
             <p className="text-gray-600 mb-4">
-              Use the filters above to start your search
+              {t('search.useFiltersToStart')}
             </p>
           </div>
         </div>

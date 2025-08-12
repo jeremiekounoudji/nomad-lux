@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider, Pagination } from '@heroui/react'
 import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X, CheckCircle, AlertCircle } from 'lucide-react'
 import MainLayout from '../components/layout/MainLayout'
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
 import { MyBookingsPageProps, Booking, DatabaseBooking } from '../interfaces'
 import { CancelBookingModal } from '../components/shared'
 import { useBookingManagement } from '../hooks/useBookingManagement'
@@ -9,6 +11,7 @@ import { useBookingStore } from '../lib/stores/bookingStore'
 import { BookingStatus } from '../interfaces/Booking'
 import MyBookingCard from '../components/shared/MyBookingCard'
 import { useAuthStore } from '../lib/stores/authStore'
+import { useTranslation } from '../lib/stores/translationStore'
 
 // Extended type for guest bookings with joined properties data
 type GuestBookingWithProperties = DatabaseBooking & {
@@ -50,6 +53,7 @@ const ALL_STATUSES: BookingStatus[] = [
 
 const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const { user } = useAuthStore()
+  const { t } = useTranslation('booking')
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
@@ -201,12 +205,15 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
       {/* Header Section - Full Width */}
       <div className="col-span-full mb-6">
         {/* Banner Header */}
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-          <div className="text-left">
-            <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
-            <p className="text-primary-100 text-lg">Manage your property bookings and travel history</p>
-          </div>
-        </div>
+        <PageBanner
+          backgroundImage={getBannerConfig('myBookings').image}
+          title="My Bookings"
+          subtitle="Manage your property bookings and travel history"
+          imageAlt={getBannerConfig('myBookings').alt}
+          overlayOpacity={getBannerConfig('myBookings').overlayOpacity}
+          height={getBannerConfig('myBookings').height}
+          className="mb-8"
+        />
 
         {/* Tabs */}
         <Tabs

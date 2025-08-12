@@ -1,16 +1,20 @@
 import { FC, useEffect, useState } from 'react'
-import { MainLayout } from '../components/layout'
+// removed unused MainLayout import
 import { useWalletHistory } from '../hooks/useWalletHistory'
-import { LoadingSkeleton } from '../components/shared/LoadingSkeleton'
+// removed unused LoadingSkeleton import
 import { Skeleton } from '@heroui/react'
 import { PaymentRecord } from '../interfaces/PaymentRecord'
 import { useWalletMetrics } from '../hooks/useWalletMetrics'
 import { RequestPayoutModal } from '../components/shared/modals'
 import { usePayoutRequests } from '../hooks/usePayoutRequests'
 import { useAdminSettings } from '../hooks/useAdminSettings'
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
 import { DollarSign, TrendingUp, Clock, CheckCircle, XCircle, CreditCard } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const WalletPage: FC = () => {
+  const { t } = useTranslation(['wallet', 'common'])
   const { 
     payments, 
     isLoading,
@@ -56,22 +60,7 @@ const WalletPage: FC = () => {
     void fetchPayoutRequests()
   }, [loadWalletPayments, fetchWalletMetrics, fetchPayoutRequests])
 
-  const getStatusColor = (status: PaymentRecord['payment_status']): string => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800'
-      case 'pending':
-      case 'processing':
-        return 'bg-yellow-100 text-yellow-800'
-      case 'failed':
-        return 'bg-red-100 text-red-800'
-      case 'refunded':
-      case 'partial_refund':
-        return 'bg-blue-100 text-blue-800'
-      default:
-        return 'bg-gray-100 text-gray-800'
-    }
-  }
+  // removed unused getStatusColor
 
   const getPayoutStatusColor = (status: string): string => {
     switch (status) {
@@ -106,8 +95,16 @@ const WalletPage: FC = () => {
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Wallet</h1>
+        {/* Wallet Banner */}
+        <div className="mb-8">
+          <PageBanner
+            backgroundImage={getBannerConfig('wallet').image}
+            title={t('wallet.banner.title')}
+            subtitle={t('wallet.banner.subtitle')}
+            imageAlt={getBannerConfig('wallet').alt}
+            overlayOpacity={getBannerConfig('wallet').overlayOpacity}
+            height={getBannerConfig('wallet').height}
+          />
         </div>
 
         {/* Summary Cards */}
@@ -120,7 +117,7 @@ const WalletPage: FC = () => {
         ) : metricsError ? (
           <div className="w-full text-center text-red-600">{metricsError}</div>
         ) : metrics ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
             {/* Total Balance Card */}
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
               <div className="flex items-center justify-between mb-2">
@@ -134,7 +131,7 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Total Balance</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.totalBalance')}</p>
                 <h3 className="text-xl font-bold text-primary-600">${metrics.totalBalance.toFixed(2)}</h3>
               </div>
             </div>
@@ -152,9 +149,9 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Pending</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.pending')}</p>
                 <h3 className="text-xl font-bold text-yellow-600">${metrics.pendingAmount.toFixed(2)}</h3>
-                <p className="text-xs text-gray-400">({metrics.pendingCount} transactions)</p>
+                <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.pendingCount })}</p>
               </div>
             </div>
 
@@ -171,9 +168,9 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Failed</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.failed')}</p>
                 <h3 className="text-xl font-bold text-red-600">${metrics.failedAmount.toFixed(2)}</h3>
-                <p className="text-xs text-gray-400">({metrics.failedCount} transactions)</p>
+                <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.failedCount })}</p>
               </div>
             </div>
 
@@ -190,9 +187,9 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Successful</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.successful')}</p>
                 <h3 className="text-xl font-bold text-green-600">${metrics.successfulAmount.toFixed(2)}</h3>
-                <p className="text-xs text-gray-400">({metrics.successfulCount} transactions)</p>
+                <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.successfulCount })}</p>
               </div>
             </div>
 
@@ -209,7 +206,7 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Payout Balance</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.payoutBalance')}</p>
                 <h3 className="text-xl font-bold text-blue-600">${metrics.payoutBalance.toFixed(2)}</h3>
               </div>
             </div>
@@ -227,9 +224,9 @@ const WalletPage: FC = () => {
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">Last Payout</p>
+                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.lastPayout')}</p>
                 <h3 className="text-sm font-bold text-gray-600">
-                  {metrics.lastPayoutDate ? new Date(metrics.lastPayoutDate).toLocaleDateString() : 'Never'}
+                  {metrics.lastPayoutDate ? new Date(metrics.lastPayoutDate).toLocaleDateString() : t('wallet.cards.never')}
                 </h3>
               </div>
             </div>
@@ -247,24 +244,24 @@ const WalletPage: FC = () => {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-2">Available for Payout</h2>
+                    <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('wallet.payout.available')}</h2>
                     <div className="text-3xl font-bold text-primary-600 mb-1">
                       {/* Assuming formatCurrency is defined elsewhere or will be added */}
                       ${metrics.payoutBalance.toFixed(2)}
                     </div>
                     {metrics.nextPayoutAllowedAt && new Date(metrics.nextPayoutAllowedAt) > new Date() ? (
                       <p className="text-sm text-gray-500 mt-1">
-                        Next payout available: {new Date(metrics.nextPayoutAllowedAt).toLocaleDateString()}
+                        {t('wallet.payout.nextPayout')} {new Date(metrics.nextPayoutAllowedAt).toLocaleDateString()}
                       </p>
                     ) : (
-                      <p className="text-sm text-gray-500 mt-1">Ready for payout</p>
+                      <p className="text-sm text-gray-500 mt-1">{t('wallet.payout.ready')}</p>
                     )}
                   </div>
                   <button
                     className="px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:text-gray-500"
                     onClick={() => setPayoutModalOpen(true)}
                   >
-                    Payout
+                    {t('wallet.actions.payout')}
                   </button>
                 </div>
               </div>
@@ -272,7 +269,7 @@ const WalletPage: FC = () => {
 
             {/* Recent Activities */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Wallet Transactions</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('wallet.transactions.title')}</h2>
             
               <div className="space-y-4">
                 {isLoading && !payments.length ? (
@@ -296,7 +293,7 @@ const WalletPage: FC = () => {
                   <>
                     {payments.length === 0 ? (
                       <div className="text-center py-8">
-                        <p className="text-gray-500">No transactions yet</p>
+                        <p className="text-gray-500">{t('wallet.transactions.empty')}</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -314,7 +311,7 @@ const WalletPage: FC = () => {
                               </div>
                               <div>
                                 <p className="font-medium text-gray-900">
-                                  {(payment as any)?.bookings?.properties?.title || 'Payment'}
+                                  {(payment as any)?.bookings?.properties?.title || t('wallet.transactions.payment')}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                   {new Date(payment.created_at).toLocaleDateString()} • {new Date(payment.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -345,11 +342,11 @@ const WalletPage: FC = () => {
                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                             : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                       >
-                        Previous
+                        {t('wallet.pagination.previous')}
                       </button>
                       <div className="flex items-center space-x-4">
                         <span className="text-sm text-gray-700">
-                          Page {pagination.currentPage} of {pagination.totalPages}
+                          {t('wallet.pagination.pageOf', { current: pagination.currentPage, total: pagination.totalPages })}
                         </span>
                         <button
                           onClick={() => void refreshWalletPayments()}
@@ -357,7 +354,7 @@ const WalletPage: FC = () => {
                           className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
                             bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                         >
-                          {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                          {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
                         </button>
                       </div>
                       <button
@@ -368,7 +365,7 @@ const WalletPage: FC = () => {
                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                             : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                       >
-                        Next
+                        {t('wallet.pagination.next')}
                       </button>
                     </div>
                   </>
@@ -381,11 +378,11 @@ const WalletPage: FC = () => {
           <div className="col-span-1">
             <div className="bg-gray-900 text-white rounded-xl shadow-lg">
               <div className="px-6 py-4 border-b border-gray-700">
-                <h2 className="text-lg font-semibold">Payout Requests</h2>
+                <h2 className="text-lg font-semibold">{t('wallet.requests.title')}</h2>
                 <div className="mt-2 grid grid-cols-3 gap-4 text-xs text-gray-400">
-                  <span>Date</span>
-                  <span>Amount</span>
-                  <span>Status</span>
+                  <span>{t('wallet.requests.date')}</span>
+                  <span>{t('wallet.requests.amount')}</span>
+                  <span>{t('wallet.requests.status')}</span>
                 </div>
               </div>
               <div className="p-6">
@@ -401,7 +398,7 @@ const WalletPage: FC = () => {
                   </div>
                 ) : payoutRequests.length === 0 ? (
                   <div className="text-center py-8">
-                    <p className="text-gray-400">No payout requests yet.</p>
+                    <p className="text-gray-400">{t('wallet.requests.empty')}</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -423,7 +420,7 @@ const WalletPage: FC = () => {
                 {payoutRequests.length > 0 && (
                   <div className="mt-6 pt-4 border-t border-gray-700">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Total Requested</span>
+                      <span className="text-gray-400">{t('wallet.requests.totalRequested')}</span>
                       <span className="text-white font-semibold">
                         ${payoutRequests.reduce((sum, req) => sum + req.amount, 0).toFixed(2)}
                       </span>

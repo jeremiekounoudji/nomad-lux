@@ -1,0 +1,12 @@
+{
+  "findProperties": "Find Properties",
+  "useFiltersToFind": "Use filters to find your perfect stay from {{count}} properties",
+  "showFilters": "Show Filters",
+  "hideFilters": "Hide Filters",
+  "propertiesFound": "{{count}} properties found",
+  "searchResults": "Search Results",
+  "showingResults": "Showing {{showing}} of {{total}}",
+  "tryAdjustingFilters": "Try adjusting your filters to find more properties",
+  "readyToFind": "Ready to Find Your Perfect Stay?",
+  "useFiltersToStart": "Use the filters above to start your search"
+} 

@@ -1,0 +1,53 @@
+{
+  "edit": {
+    "title": "Modifier le profil",
+    "subtitle": "Mettez à jour vos informations personnelles et préférences",
+    "validation": {
+      "fillAllPasswordFields": "Veuillez remplir tous les champs de mot de passe",
+      "passwordsDoNotMatch": "Les nouveaux mots de passe ne correspondent pas",
+      "passwordTooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères"
+    },
+    "picture": {
+      "title": "Photo de profil",
+      "upload": "Téléchargez une nouvelle photo de profil",
+      "changePhoto": "Changer la photo"
+    },
+    "basic": {
+      "title": "Informations de base",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Emplacement",
+      "dateOfBirth": "Date de naissance",
+      "preferredLanguage": "Langue préférée",
+      "bio": "Bio",
+      "bioPlaceholder": "Parlez de vous..."
+    },
+    "security": {
+      "title": "Sécurité",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe"
+    },
+    "privacy": {
+      "title": "Confidentialité et notifications",
+      "profileVisibility": "Visibilité du profil",
+      "profileVisibilityDescription": "Contrôlez qui peut voir les informations de votre profil",
+      "visibility": {
+        "public": "Public - Visible par tous",
+        "hostsOnly": "Hôtes uniquement - Seuls les hôtes peuvent voir les détails",
+        "private": "Privé - Seules les informations de base sont visibles"
+      },
+      "emailNotifications": "Notifications par email",
+      "emailDescription": "Recevez les mises à jour de réservation et les messages par email",
+      "smsNotifications": "Notifications par SMS",
+      "smsDescription": "Recevez les notifications urgentes par SMS"
+    },
+    "saveChanges": "Enregistrer les modifications"
+  }
+}
+
+
+
+

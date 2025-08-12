@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import PopularPlaces from '../components/shared/PopularPlaces'
-import { HomePagePropertyCard, PropertyCardSkeleton, CityPropertyCard } from '../components/shared'
+import { HomePagePropertyCard, PropertyCardSkeleton, CityPropertyCard, PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
 import { CityPropertiesView } from '../components/features/search/CityPropertiesView'
 import ProfileModal from '../components/shared/ProfileModal'
 import PropertyDetailPage from './PropertyDetailPage'
@@ -32,6 +33,7 @@ import { SharePropertyModal } from '../components/shared/modals'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import WalletPage from './WalletPage'
+import { useTranslation } from 'react-i18next'
 
 // Add interface for popular place (matching the useHomeFeed hook)
 interface PopularPlace {
@@ -48,6 +50,7 @@ interface PopularPlace {
 }
 
 const HomePage: React.FC = () => {
+  const { t } = useTranslation(['common', 'property'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
   const [selectedProperty, setSelectedPropertyState] = useState<Property | null>(null);
@@ -310,12 +313,12 @@ const HomePage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-            <span className="text-white font-bold text-xl">NL</span>
-          </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading...</h2>
-          <p className="text-gray-600 mb-4">Setting up your experience</p>
+                  <div className="text-center">
+            <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+              <span className="text-white font-bold text-xl">NL</span>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('messages.loading')}</h2>
+            <p className="text-gray-600 mb-4">{t('messages.settingUp')}</p>
           
           {/* Emergency override button */}
           <button
@@ -326,7 +329,7 @@ const HomePage: React.FC = () => {
             }}
             className="text-sm text-gray-500 hover:text-primary-600 underline"
           >
-            Taking too long? Click here to continue
+            {t('messages.takingTooLong')}
           </button>
         </div>
       </div>
@@ -399,6 +402,18 @@ const HomePage: React.FC = () => {
   // Default home page view (protected)
   return (
     <>
+        {/* Home Banner */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+          <PageBanner
+            backgroundImage={getBannerConfig('home').image}
+            title={t('home.discoverLuxury')}
+            subtitle={t('home.findPerfectStay')}
+            imageAlt={getBannerConfig('home').alt}
+            overlayOpacity={getBannerConfig('home').overlayOpacity}
+            height={getBannerConfig('home').height}
+          />
+        </div>
+
         {/* Popular Places Section - Full width across all columns */}
         <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4">
           <PopularPlaces 
@@ -416,7 +431,7 @@ const HomePage: React.FC = () => {
             <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
               <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-red-900 mb-2">
-                Failed to Load Properties
+                {t('property.messages.failedToLoad')}
               </h3>
               <p className="text-red-700 mb-4">{feedError}</p>
               <Button
@@ -425,7 +440,7 @@ const HomePage: React.FC = () => {
                 onPress={handleRetry}
                 startContent={<RefreshCw className="w-4 h-4" />}
               >
-                Try Again
+                {t('buttons.tryAgain')}
               </Button>
             </div>
           </div>
@@ -462,10 +477,10 @@ const HomePage: React.FC = () => {
                 <span className="text-gray-400 text-2xl">🏠</span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No Properties Found
+                {t('property.messages.noProperties')}
               </h3>
               <p className="text-gray-600 mb-4">
-                We couldn't find any properties in your area. Try expanding your search or check back later.
+                {t('property.messages.noPropertiesInArea')}
               </p>
               <div className="flex gap-3 justify-center">
                 <Button
@@ -473,14 +488,14 @@ const HomePage: React.FC = () => {
                   color="primary"
                   onPress={() => getUserLocation()}
                 >
-                  📍 Update Location
+                  📍 {t('buttons.updateLocation')}
                 </Button>
                 <Button
                   variant="flat"
                   onPress={handleRefresh}
                   startContent={<RefreshCw className="w-4 h-4" />}
                 >
-                  Refresh Feed
+                  {t('buttons.refreshFeed')}
                 </Button>
               </div>
             </div>
@@ -518,7 +533,7 @@ const HomePage: React.FC = () => {
         {!hasNextPage && properties.length > 0 && (
           <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-8">
             <p className="text-gray-500">
-              🎉 You've seen all available properties!
+              🎉 {t('property.messages.seenAllProperties')}
             </p>
             <Button
               variant="light"
@@ -527,7 +542,7 @@ const HomePage: React.FC = () => {
               className="mt-2"
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-                          Refresh for new listings
+              {t('buttons.refreshForNewListings')}
           </Button>
         </div>
       )}

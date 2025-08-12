@@ -2,6 +2,7 @@ import React from 'react';
 import { MapPin, Star, Calendar, AlertCircle } from 'lucide-react';
 import { Card, CardBody, Button, Chip } from '@heroui/react';
 import { PaymentButton } from './';
+import { useTranslation } from 'react-i18next';
 
 interface MyBookingCardProps {
   booking: any;
@@ -13,6 +14,30 @@ interface MyBookingCardProps {
 }
 
 const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStatusColor, getStatusActions, onPayNow, onCancelBooking }) => {
+  const { t } = useTranslation(['booking', 'common']);
+
+  const getStatusLabel = (status: string): string => {
+    switch (status) {
+      case 'pending':
+        return t('booking.status.pending');
+      case 'confirmed':
+        return t('booking.status.confirmed');
+      case 'cancelled':
+        return t('booking.status.cancelled');
+      case 'completed':
+        return t('booking.status.completed');
+      case 'no-show':
+        return t('booking.status.noShow');
+      case 'accepted-and-waiting-for-payment':
+        return t('booking.status.acceptedWaitingPayment');
+      case 'payment-failed':
+        return t('booking.status.paymentFailed');
+      case 'rejected':
+        return t('booking.status.rejected');
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  };
   return (
     <div className="h-full">
       <Card className="h-full bg-white rounded-xl shadow hover:shadow-lg transition-shadow duration-200">
@@ -33,7 +58,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
               size="sm"
               className="text-white font-medium"
             >
-              {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+              {getStatusLabel(booking.status)}
             </Chip>
           </div>
         </div>
@@ -45,14 +70,14 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
               onClick={() => onClick(booking)}
             >
               <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 min-h-[2.25rem] leading-tight">
-                {booking.properties?.title || 'Property'}
+                {booking.properties?.title || t('booking.labels.property', 'Property')}
               </h3>
               <div className="flex items-start gap-1 text-xs text-gray-600 mt-1">
                 <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
                 <span className="line-clamp-1 break-words">
                   {booking.properties?.location?.city && booking.properties?.location?.country
                     ? `${booking.properties.location.city}, ${booking.properties.location.country}`
-                    : 'Location not available'}
+                    : t('booking.labels.locationNotAvailable', 'Location not available')}
                 </span>
               </div>
               <div className="flex items-center gap-1 mt-1">
@@ -73,7 +98,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                 ${booking.total_amount}
               </span>
               <span className="text-xs text-gray-500">
-                {booking.guest_count} guest{booking.guest_count > 1 ? 's' : ''}
+                {t('booking.labels.guestsCount', { count: booking.guest_count })}
               </span>
             </div>
             {/* Reject Reason */}
@@ -82,7 +107,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-red-700">Rejection Reason:</p>
+                    <p className="text-xs font-medium text-red-700">{t('booking.labels.rejectionReason', 'Rejection Reason:')}</p>
                     <p className="text-xs text-red-600 mt-0.5">{booking.reject_reason}</p>
                   </div>
                 </div>
@@ -104,7 +129,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                     }}
                     className="mb-2"
                   >
-                    Pay Now
+                    {t('booking.actions.payNow')}
                   </PaymentButton>
                   <Button
                     color="danger"
@@ -114,7 +139,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                     className="font-medium shadow-sm"
                     onPress={() => onCancelBooking?.(booking)}
                   >
-                    Cancel
+                    {t('booking.actions.cancelBooking')}
                   </Button>
                 </>
               )}
@@ -130,7 +155,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                       console.error('Payment retry error:', error);
                     }}
                   >
-                    Retry Payment
+                    {t('booking.actions.retryPayment', 'Retry Payment')}
                   </PaymentButton>
                   <Button
                     color="danger"
@@ -140,7 +165,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                     className="font-medium shadow-sm"
                     onPress={() => onCancelBooking?.(booking)}
                   >
-                    Cancel Booking
+                    {t('booking.actions.cancelBooking')}
                   </Button>
                 </div>
               )}

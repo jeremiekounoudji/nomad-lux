@@ -1,0 +1,91 @@
+{
+  "help": {
+    "header": { "title": "Centre d'aide" },
+    "banner": {
+      "title": "Centre d'aide",
+      "subtitle": "Trouvez des réponses à vos questions et obtenez l'aide dont vous avez besoin"
+    },
+    "search": {
+      "title": "Comment pouvons-nous vous aider ?",
+      "description": "Recherchez dans notre base de connaissances ou parcourez les catégories ci-dessous",
+      "placeholder": "Rechercher des articles d'aide..."
+    },
+    "stats": {
+      "supportAvailable": "Support disponible",
+      "issueResolution": "Résolution des problèmes",
+      "avgResponse": "Temps de réponse moyen",
+      "helpArticles": "Articles d'aide"
+    },
+    "faq": {
+      "title": "Foire aux questions"
+    },
+    "emptyState": {
+      "title": "Aucun résultat trouvé",
+      "description": "Essayez d'ajuster vos termes de recherche ou parcourez nos catégories ci-dessous."
+    },
+    "articlesCount": "{{count}} articles",
+    "categories": {
+      "gettingStarted": {
+        "title": "Bien démarrer",
+        "faqs": {
+          "q1": {
+            "question": "Comment créer un compte ?",
+            "answer": "Créer un compte est simple ! Cliquez sur le bouton 'S'inscrire' sur la page d'accueil, entrez votre adresse e-mail, créez un mot de passe sécurisé et vérifiez votre e-mail. Vous pouvez également vous inscrire avec votre compte Google ou Facebook pour une inscription plus rapide."
+          },
+          "q2": {
+            "question": "Comment réserver mon premier séjour ?",
+            "answer": "Pour réserver votre premier séjour : 1) Utilisez la barre de recherche pour saisir votre destination et vos dates, 2) Parcourez les propriétés disponibles et utilisez les filtres pour affiner votre recherche, 3) Cliquez sur une propriété pour voir les détails, 4) Sélectionnez vos dates et le nombre de voyageurs, 5) Cliquez sur 'Réserver' et terminez le processus de paiement."
+          },
+          "q3": {
+            "question": "Quels moyens de paiement acceptez-vous ?",
+            "answer": "Nous acceptons toutes les principales cartes de crédit (Visa, Mastercard, American Express), cartes de débit, PayPal et divers moyens de paiement locaux selon votre région. Tous les paiements sont traités en toute sécurité via notre système de paiement chiffré."
+          },
+          "q4": {
+            "question": "Comment fonctionne la tarification ?",
+            "answer": "Les prix des propriétés sont fixés par les hôtes et peuvent varier selon la saison, la demande et la durée du séjour. Le prix total inclut le tarif par nuit, les frais de ménage, les frais de service et les taxes applicables. Vous verrez le détail complet avant de confirmer votre réservation."
+          }
+        }
+      },
+      "bookingStays": {
+        "title": "Réservations et séjours",
+        "faqs": {
+          "q1": {
+            "question": "Quelle est la politique d'annulation ?",
+            "answer": "Les politiques d'annulation varient selon la propriété et sont définies par chaque hôte. Les politiques courantes incluent : Flexible (remboursement complet 24h avant l'arrivée), Modérée (remboursement complet 5 jours avant), et Stricte (50% de remboursement jusqu'à 1 semaine avant). Vérifiez la politique spécifique avant de réserver."
+          },
+          "q2": {
+            "question": "Puis-je modifier ma réservation après confirmation ?",
+            "answer": "Oui, vous pouvez demander des modifications à votre réservation via votre tableau de bord. Les changements de dates, du nombre de voyageurs ou d'autres détails sont soumis à la disponibilité et à l'approbation de l'hôte. Des frais supplémentaires peuvent s'appliquer pour les séjours prolongés."
+          },
+          "q3": {
+            "question": "Que faire si j'ai des problèmes pendant mon séjour ?",
+            "answer": "Si vous rencontrez des problèmes pendant votre séjour, contactez d'abord votre hôte via la messagerie. Pour les urgences ou si vous n'arrivez pas à joindre votre hôte, contactez immédiatement notre équipe d'assistance 24/7. Nous sommes là pour résoudre rapidement tout problème."
+          },
+          "q4": {
+            "question": "Comment se déroule l'enregistrement et l'accès à la propriété ?",
+            "answer": "Les procédures d'enregistrement varient selon la propriété. Votre hôte fournira des instructions détaillées avant votre arrivée, notamment le lieu de récupération des clés, les codes d'accès ou les modalités de rencontre. Ces informations sont généralement envoyées 24 à 48 heures avant votre arrivée."
+          }
+        }
+      }
+    },
+    "contact": {
+      "title": "Vous avez encore besoin d'aide ?",
+      "description": "Notre équipe d'assistance est là pour vous aider pour toute question ou problème.",
+      "liveChat": { "title": "Chat en direct", "description": "Obtenez une aide instantanée de notre équipe d'assistance", "available": "24/7" },
+      "email": { "title": "Assistance par e-mail", "description": "Envoyez-nous un message détaillé", "available": "Réponse sous 24h" },
+      "phone": { "title": "Assistance téléphonique", "description": "Parlez directement avec notre équipe", "available": "Lun-Ven 9h-18h" }
+    },
+    "popularArticles": {
+      "title": "Articles populaires",
+      "cancelOrModifyBooking": "Comment annuler ou modifier une réservation",
+      "understandingServiceFees": "Comprendre les frais de service",
+      "guestVerificationProcess": "Processus de vérification des invités",
+      "hostPayoutSchedule": "Calendrier des paiements aux hôtes",
+      "propertySafetyRequirements": "Exigences de sécurité des propriétés"
+    }
+  }
+}
+
+
+
+

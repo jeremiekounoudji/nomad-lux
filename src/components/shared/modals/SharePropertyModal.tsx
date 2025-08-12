@@ -34,12 +34,14 @@ import {
   isWebShareSupported 
 } from '../../../utils/shareUtils'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
   isOpen,
   onClose,
   property
 }) => {
+  const { t } = useTranslation(['property', 'common'])
   const [copied, setCopied] = useState(false)
   const [customMessage, setCustomMessage] = useState('')
   const [webShareSupported, setWebShareSupported] = useState(false)
@@ -59,7 +61,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
 
   const shareOptions = [
     {
-      name: 'Copy Link',
+      name: t('property.share.copyLink'),
       icon: <Copy className="w-5 h-5" />,
       color: 'default',
       bgColor: 'bg-gray-100 hover:bg-gray-200',
@@ -91,7 +93,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       action: () => openSocialShare(socialUrls.twitter)
     },
     {
-      name: 'Email',
+      name: t('property.share.email'),
       icon: <Mail className="w-5 h-5" />,
       color: 'warning',
       bgColor: 'bg-orange-100 hover:bg-orange-200',
@@ -123,17 +125,17 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     try {
       await navigator.clipboard.writeText(shareData.url)
       setCopied(true)
-      toast.success('Link copied to clipboard!')
+      toast.success(t('property.share.linkCopied'))
       setTimeout(() => setCopied(false), 3000)
     } catch (error) {
       console.error('Failed to copy link:', error)
-      toast.error('Failed to copy link')
+      toast.error(t('property.share.copyFailed'))
     }
   }
 
   const handleInstagramShare = () => {
     handleCopyLink()
-    toast.success('Link copied! Paste it in your Instagram story or bio.')
+    toast.success(t('property.share.instagramCopied'))
   }
 
   const handleClose = () => {
@@ -155,9 +157,9 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Share2 className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Share Property</h2>
+                <h2 className="text-xl font-bold">{t('property.share.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">Share this amazing property with friends and family</p>
+              <p className="text-sm text-gray-600">{t('property.share.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
@@ -182,7 +184,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                             <span className="text-sm font-medium">{property.rating}</span>
                           </div>
                           <span className="text-lg font-bold text-primary-600">
-                            ${property.price}/night
+                            ${property.price}{t('property.labels.perNight')}
                           </span>
                         </div>
                       </div>
@@ -201,7 +203,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       startContent={<Send className="w-5 h-5" />}
                       className="font-semibold"
                     >
-                      Quick Share
+                      {t('property.share.quickShare')}
                     </Button>
                     <Divider />
                   </div>
@@ -209,22 +211,22 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
 
                 {/* Custom Message */}
                 <div className="space-y-2">
-                  <label className="font-semibold text-gray-700">Custom Message (Optional)</label>
+                  <label className="font-semibold text-gray-700">{t('property.share.customMessageLabel')}</label>
                   <Input
-                    placeholder="Add a personal message to share with the link..."
+                    placeholder={t('property.share.customMessagePlaceholder')}
                     value={customMessage}
                     onChange={(e) => setCustomMessage(e.target.value)}
                     maxLength={280}
                     variant="bordered"
                   />
                   <p className="text-xs text-gray-500">
-                    {customMessage.length}/280 characters
+                    {t('property.share.charactersCount', { count: customMessage.length, max: 280 })}
                   </p>
                 </div>
 
                 {/* Share URL */}
                 <div className="space-y-2">
-                  <label className="font-semibold text-gray-700">Property Link</label>
+                  <label className="font-semibold text-gray-700">{t('property.share.propertyLink')}</label>
                   <div className="flex gap-2">
                     <Input
                       value={shareData.url}
@@ -243,7 +245,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                     </Button>
                   </div>
                   {copied && (
-                    <p className="text-sm text-success-600">✓ Link copied to clipboard!</p>
+                    <p className="text-sm text-success-600">✓ {t('property.share.linkCopied')}</p>
                   )}
                 </div>
 
@@ -251,7 +253,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
 
                 {/* Social Share Options */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-700">Share on social media</h4>
+                  <h4 className="font-semibold text-gray-700">{t('property.share.shareOnSocial')}</h4>
                   <div className="grid grid-cols-3 gap-4">
                     {shareOptions.map((option) => (
                       <button
@@ -270,25 +272,25 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
 
                 {/* Sharing Tips */}
                 <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-2">💡 Sharing Tips</h4>
+                  <h4 className="font-semibold text-blue-800 mb-2">💡 {t('property.share.tipsTitle')}</h4>
                   <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Add a personal message to increase engagement</li>
-                    <li>• Share in relevant travel groups for better reach</li>
-                    <li>• Tag friends who might be interested in this destination</li>
+                    <li>• {t('property.share.tipAddMessage')}</li>
+                    <li>• {t('property.share.tipShareGroups')}</li>
+                    <li>• {t('property.share.tipTagFriends')}</li>
                   </ul>
                 </div>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Close
+                {t('common.buttons.close')}
               </Button>
               <Button 
                 color="primary" 
                 onPress={handleCopyLink}
                 startContent={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               >
-                {copied ? 'Copied!' : 'Copy Link'}
+                {copied ? t('property.share.copied') : t('property.share.copyLink')}
               </Button>
             </ModalFooter>
           </>

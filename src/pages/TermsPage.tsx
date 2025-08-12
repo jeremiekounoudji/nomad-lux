@@ -1,12 +1,14 @@
 import React from 'react'
 import { Button } from '@heroui/react'
 import { ArrowLeft } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface TermsPageProps {
   onPageChange?: (page: string) => void
 }
 
 const TermsPage: React.FC<TermsPageProps> = ({ onPageChange }) => {
+  const { t } = useTranslation(['terms', 'common'])
   const handleBackToHome = () => {
     onPageChange?.('home')
   }
@@ -25,7 +27,7 @@ const TermsPage: React.FC<TermsPageProps> = ({ onPageChange }) => {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-2xl font-bold text-gray-900">Terms & Conditions</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('terms.title')}</h1>
           </div>
         </div>
       </div>
@@ -34,69 +36,69 @@ const TermsPage: React.FC<TermsPageProps> = ({ onPageChange }) => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
           {/* Last Updated */}
-          <p className="text-sm text-gray-500 mb-8">Last updated: March 2024</p>
+          <p className="text-sm text-gray-500 mb-8">{t('terms.lastUpdated', { date: 'March 2024' })}</p>
 
           {/* Introduction */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">1. Introduction</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.introduction.title')}</h2>
             <p className="text-gray-600 mb-4">
-              Welcome to NomadLux. By accessing or using our platform, you agree to be bound by these Terms and Conditions. Please read them carefully.
+              {t('terms.sections.introduction.content')}
             </p>
           </section>
 
           {/* Definitions */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">2. Definitions</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.definitions.title')}</h2>
             <ul className="list-disc list-inside space-y-2 text-gray-600">
-              <li>"Platform" refers to the NomadLux website and services</li>
-              <li>"User" refers to any person who accesses or uses the Platform</li>
-              <li>"Host" refers to users who list properties on the Platform</li>
-              <li>"Guest" refers to users who book properties through the Platform</li>
+              <li>{t('terms.sections.definitions.items.platform')}</li>
+              <li>{t('terms.sections.definitions.items.user')}</li>
+              <li>{t('terms.sections.definitions.items.host')}</li>
+              <li>{t('terms.sections.definitions.items.guest')}</li>
             </ul>
           </section>
 
           {/* User Responsibilities */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">3. User Responsibilities</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.responsibilities.title')}</h2>
             <p className="text-gray-600 mb-4">
-              Users are responsible for maintaining the confidentiality of their account information and for all activities under their account.
+              {t('terms.sections.responsibilities.content')}
             </p>
           </section>
 
           {/* Booking and Payments */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">4. Booking and Payments</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.booking.title')}</h2>
             <p className="text-gray-600 mb-4">
-              All bookings and payments are processed through our secure platform. Users agree to pay all fees and applicable taxes.
+              {t('terms.sections.booking.content')}
             </p>
           </section>
 
           {/* Cancellation Policy */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">5. Cancellation Policy</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.cancellation.title')}</h2>
             <p className="text-gray-600 mb-4">
-              Cancellation policies vary by property. Users should review the specific cancellation policy before making a booking.
+              {t('terms.sections.cancellation.content')}
             </p>
           </section>
 
           {/* Privacy */}
           <section className="mb-8">
-            <h2 className="text-xl font-semibold mb-4">6. Privacy</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.privacy.title')}</h2>
             <p className="text-gray-600 mb-4">
-              Our privacy practices are governed by our Privacy Policy, which is incorporated into these Terms and Conditions.
+              {t('terms.sections.privacy.content')}
             </p>
           </section>
 
           {/* Contact Information */}
           <section className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('terms.sections.contact.title')}</h2>
             <p className="text-gray-600 mb-4">
-              If you have any questions about these Terms and Conditions, please contact us at:
+              {t('terms.sections.contact.description')}
             </p>
             <p className="text-gray-900">
-              Email: legal@nomadlux.com<br />
-              Address: 123 Luxury Street, Suite 100<br />
-              Phone: +1 (555) 123-4567
+              {t('terms.sections.contact.email', 'Email')}: legal@nomadlux.com<br />
+              {t('terms.sections.contact.address', 'Address')}: 123 Luxury Street, Suite 100<br />
+              {t('terms.sections.contact.phone', 'Phone')}: +1 (555) 123-4567
             </p>
           </section>
         </div>

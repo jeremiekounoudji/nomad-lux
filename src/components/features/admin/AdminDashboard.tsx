@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Button, Chip, useDisclosure } from '@heroui/react'
+import { Card, CardBody, Button, useDisclosure } from '@heroui/react'
 import { 
   Users, 
   Building, 
@@ -9,11 +9,12 @@ import {
   Clock,
   CheckCircle,
   XCircle,
-  ArrowRight,
   AlertTriangle,
   Map
 } from 'lucide-react'
-import { PropertyApprovalModal, PropertyRejectionModal, Property as PropertyType } from './modals'
+import { PageBanner } from '../../shared'
+import { getBannerConfig } from '../../../utils/bannerConfig'
+import { PropertyApprovalModal, PropertyRejectionModal } from './modals'
 import { PayoutRequestsTable } from './PayoutRequestsTable'
 import { ApproveRejectPayoutModal } from './modals/ApproveRejectPayoutModal'
 import { PropertyDistributionMap } from './PropertyDistributionMap'
@@ -21,6 +22,7 @@ import { useAdminPayoutRequests } from '../../../hooks/useAdminPayoutRequests'
 import { useAdminProperty } from '../../../hooks/useAdminProperty'
 import { PayoutRequest } from '../../../interfaces'
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
+import { useTranslation } from 'react-i18next'
 
 interface AdminDashboardProps {
   onSectionChange?: (section: string) => void
@@ -104,6 +106,7 @@ const mockPendingApprovals: Property[] = [
 ]
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange }) => {
+  const { t } = useTranslation(['admin', 'common'])
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [rejectionReason, setRejectionReason] = useState('')
   const [pendingApprovalProperty, setPendingApprovalProperty] = useState<Property | null>(null)
@@ -137,28 +140,40 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
   } = useDisclosure()
 
   // Convert admin property to modal property format
-  const convertToModalProperty = (adminProperty: Property): PropertyType => {
+  const convertToModalProperty = (adminProperty: Property): DatabaseProperty => {
     return {
       id: adminProperty.id.toString(),
       title: adminProperty.title,
       description: '',
-      location: adminProperty.location,
-      coordinates: { lat: 0, lng: 0 },
-      price: 0,
-      images: Array.isArray(adminProperty.images) ? adminProperty.images : [],
-      host: {
-        name: adminProperty.host?.name || '',
-        email: adminProperty.host?.email || '',
-        rating: 4.5,
-        joinDate: '2023-01-01'
+      location: {
+        address: '',
+        city: adminProperty.location,
+        country: '',
+        coordinates: { lat: 0, lng: 0 }
       },
-      submittedDate: adminProperty.submitted,
-      status: 'pending' as const,
+      price_per_night: 0,
+      currency: 'USD',
+      images: Array.isArray(adminProperty.images) ? adminProperty.images : [],
+      video: undefined,
+      host_id: '',
+      property_type: '',
       amenities: [],
-      propertyType: '',
+      max_guests: 0,
       bedrooms: 0,
       bathrooms: 0,
-      maxGuests: 0
+      cleaning_fee: 0,
+      service_fee: 0,
+      rating: 0,
+      review_count: 0,
+      view_count: 0,
+      booking_count: 0,
+      total_revenue: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      status: 'pending' as const,
+      suspended_at: null,
+      suspended_by: null,
+      suspension_reason: null
     }
   }
 
@@ -204,28 +219,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600 mt-1">Overview of platform activity and performance</p>
-        </div>
-        <div className="flex gap-3">
+      {/* Admin Banner */}
+      <PageBanner
+        backgroundImage={getBannerConfig('admin').image}
+        title={t('admin.navigation.dashboard')}
+        subtitle={t('admin.dashboard.overview')}
+        imageAlt={getBannerConfig('admin').alt}
+        overlayOpacity={getBannerConfig('admin').overlayOpacity}
+        height={getBannerConfig('admin').height}
+      >
+        <div className="flex gap-3 mt-4">
           <Button 
-            color="primary" 
+            color="secondary" 
             variant="flat"
             onPress={() => onSectionChange?.('analytics')}
+            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
           >
-            View Analytics
+            {t('admin.reports.generateReport', { defaultValue: 'View Analytics' })}
           </Button>
           <Button 
-            color="primary"
+            color="secondary"
+            variant="flat"
             onPress={() => onSectionChange?.('properties')}
+            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
           >
-            Review Properties
+            {t('admin.properties.pendingApproval')}
           </Button>
         </div>
-      </div>
+      </PageBanner>
+
+
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -234,12 +257,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Users</p>
+                <p className="text-sm font-medium text-gray-600">{t('admin.dashboard.totalUsers')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalUsers.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-2">
                   <TrendingUp className="w-4 h-4 text-green-500" />
                   <span className="text-sm text-green-600">+{mockStats.userGrowth}%</span>
-                  <span className="text-sm text-gray-500">this month</span>
+                  <span className="text-sm text-gray-500">{t('common.time.thisMonth')}</span>
                 </div>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -254,11 +277,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Properties</p>
+                <p className="text-sm font-medium text-gray-600">{t('admin.navigation.properties')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalProperties}</p>
                 <div className="flex items-center gap-1 mt-2">
                   <AlertTriangle className="w-4 h-4 text-orange-500" />
-                  <span className="text-sm text-orange-600">{mockStats.pendingProperties} pending</span>
+                  <span className="text-sm text-orange-600">{mockStats.pendingProperties} {t('admin.properties.pendingApproval')}</span>
                 </div>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -273,11 +296,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Bookings</p>
+                <p className="text-sm font-medium text-gray-600">{t('admin.navigation.bookings')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalBookings.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-2">
                   <Clock className="w-4 h-4 text-blue-500" />
-                  <span className="text-sm text-blue-600">{mockStats.activeBookings} active</span>
+                  <span className="text-sm text-blue-600">{mockStats.activeBookings} {t('common.status.active')}</span>
                 </div>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
@@ -292,12 +315,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Revenue</p>
+                <p className="text-sm font-medium text-gray-600">{t('admin.dashboard.totalRevenue')}</p>
                 <p className="text-3xl font-bold text-gray-900">${mockStats.totalRevenue.toLocaleString()}</p>
                 <div className="flex items-center gap-1 mt-2">
                   <TrendingUp className="w-4 h-4 text-green-500" />
                   <span className="text-sm text-green-600">+{mockStats.revenueGrowth}%</span>
-                  <span className="text-sm text-gray-500">this month</span>
+                  <span className="text-sm text-gray-500">{t('common.time.thisMonth')}</span>
                 </div>
               </div>
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -314,7 +337,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
               <Map className="w-5 h-5 text-primary-600" />
-              <h3 className="text-lg font-semibold text-gray-900">Property Distribution</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('admin.dashboard.popularProperties', { defaultValue: 'Property Distribution' })}</h3>
             </div>
             <Button
               size="sm"
@@ -323,33 +346,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
               onPress={() => setShowPropertyMap(!showPropertyMap)}
               startContent={<Map className="w-4 h-4" />}
             >
-              {showPropertyMap ? 'Hide Map' : 'Show Map'}
+              {showPropertyMap ? t('common.buttons.close', { defaultValue: 'Hide Map' }) : t('common.buttons.view', { defaultValue: 'Show Map' })}
             </Button>
           </div>
           
           {showPropertyMap && filteredProperties.length > 0 ? (
             <PropertyDistributionMap
-              properties={filteredProperties}
+              properties={filteredProperties as unknown as DatabaseProperty[]}
               onPropertyClick={handlePropertyClick}
               height="400px"
             />
           ) : showPropertyMap ? (
             <div className="text-center py-12">
               <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No Properties Available</h3>
-              <p className="text-gray-500">There are no properties to display on the map.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.properties.allProperties', { defaultValue: 'No Properties Available' })}</h3>
+              <p className="text-gray-500">{t('admin.messages.noProperties', { defaultValue: 'There are no properties to display on the map.' })}</p>
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-50 rounded-lg">
               <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Property Distribution Map</h3>
-              <p className="text-gray-500 mb-4">View all properties distributed across locations on an interactive map.</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.dashboard.overview', { defaultValue: 'Property Distribution Map' })}</h3>
+              <p className="text-gray-500 mb-4">{t('admin.messages.propertyMapDescription', { defaultValue: 'View all properties distributed across locations on an interactive map.' })}</p>
               <Button
                 color="primary"
                 onPress={() => setShowPropertyMap(true)}
                 startContent={<Map className="w-4 h-4" />}
               >
-                Show Distribution Map
+                {t('common.buttons.view', { defaultValue: 'Show Distribution Map' })}
               </Button>
             </div>
           )}
@@ -363,14 +386,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <Card className="shadow-sm border border-gray-200 h-full">
             <CardBody className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Pending Property Approvals</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.properties.pendingApproval')}</h3>
                 <Button 
                   size="sm" 
                   color="primary"
                   variant="flat"
                   onPress={() => onSectionChange?.('properties')}
                 >
-                  View All
+                  {t('common.buttons.view', { defaultValue: 'View All' })}
                 </Button>
               </div>
               
@@ -381,9 +404,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                       <h4 className="font-medium text-gray-900">{property.title}</h4>
                       <p className="text-sm text-gray-600">{property.location}</p>
                       <div className="flex items-center gap-4 mt-2">
-                        <span className="text-xs text-gray-500">Submitted {property.submitted}</span>
+                        <span className="text-xs text-gray-500">{t('admin.dashboard.submitted', { defaultValue: 'Submitted' })} {property.submitted}</span>
                         <span className="text-xs text-gray-500">
-                          {Array.isArray(property.images) ? property.images.length : property.images} images
+                          {Array.isArray(property.images) ? property.images.length : property.images} {t('property.labels.images')}
                         </span>
                       </div>
                     </div>
@@ -418,14 +441,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           <Card className="shadow-sm border border-gray-200 h-full">
             <CardBody className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.dashboard.recentActivity')}</h3>
                 <Button 
                   size="sm" 
                   color="primary"
                   variant="flat"
                   onPress={() => onSectionChange?.('activities')}
                 >
-                  View All
+                  {t('common.buttons.view', { defaultValue: 'View All' })}
                 </Button>
               </div>
               
@@ -453,7 +476,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       {/* Quick Actions */}
       <Card className="shadow-sm border border-gray-200">
         <CardBody className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.actions.bulkAction', { defaultValue: 'Quick Actions' })}</h3>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
               <CardBody className="p-6 text-center">
@@ -463,7 +486,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                   onPress={() => onSectionChange?.('users')}
                 >
                   <Users className="w-5 h-5 mb-1" />
-                  <span className="text-sm">Manage Users</span>
+                  <span className="text-sm">{t('admin.users.allUsers')}</span>
                 </Button>
               </CardBody>
             </Card>
@@ -476,7 +499,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                   onPress={() => onSectionChange?.('properties')}
                 >
                   <Building className="w-5 h-5 mb-1" />
-                  <span className="text-sm">Review Properties</span>
+                  <span className="text-sm">{t('admin.properties.pendingApproval')}</span>
                 </Button>
               </CardBody>
             </Card>
@@ -489,7 +512,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                   onPress={() => onSectionChange?.('bookings')}
                 >
                   <Calendar className="w-5 h-5 mb-1" />
-                  <span className="text-sm">Manage Bookings</span>
+                  <span className="text-sm">{t('admin.bookings.allBookings')}</span>
                 </Button>
               </CardBody>
             </Card>
@@ -502,7 +525,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                   onPress={() => onSectionChange?.('analytics')}
                 >
                   <TrendingUp className="w-5 h-5 mb-1" />
-                  <span className="text-sm">View Analytics</span>
+                  <span className="text-sm">{t('admin.reports.bookingReports', { defaultValue: 'View Analytics' })}</span>
                 </Button>
               </CardBody>
             </Card>
@@ -528,7 +551,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       />
 
       <section className="space-y-6">
-        <h2 className="text-xl font-bold mb-4">Payout Requests</h2>
+        <h2 className="text-xl font-bold mb-4">{t('admin.payments.payoutRequests')}</h2>
         <PayoutRequestsTable
           requests={requests}
           isLoading={isLoading}

@@ -2,6 +2,8 @@ import React from 'react'
 import { PropertyCardProps } from '../../interfaces/PropertyCardProps'
 import { Card, CardBody, Button } from '@heroui/react'
 import { Heart, Star, MapPin } from 'lucide-react'
+import { useTranslation } from '../../lib/stores/translationStore'
+import { usePropertyTypeTranslation, useContentTranslation } from '../../hooks/useTranslatedContent'
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   property,
@@ -16,6 +18,25 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   variant
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
+  const { t } = useTranslation('property')
+  
+  // Translate property type
+  const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property.property_type)
+  
+  // Translate property title and description if available
+  const { translatedContent: translatedTitle } = useContentTranslation(
+    'property',
+    property.id,
+    'title',
+    property.title
+  )
+  
+  const { translatedContent: translatedDescription } = useContentTranslation(
+    'property',
+    property.id,
+    'description',
+    property.description
+  )
 
   const nextImage = () => {
     if (property.images && property.images.length > 0) {
@@ -59,11 +80,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <CardBody className="p-4">
           {/* Title and Description */}
           <h3 className="font-semibold text-gray-900 mb-2 truncate text-left">
-            {property.title}
+            {translatedTitle}
           </h3>
 
           <p className="text-gray-600 text-sm mb-3 line-clamp-1 text-left">
-            {property.description}
+            {translatedDescription}
+          </p>
+          
+          {/* Property Type */}
+          <p className="text-xs text-gray-500 mb-2">
+            {propertyTypeTranslation}
           </p>
 
           <div className="flex items-center gap-4 mb-3 text-sm text-gray-500">
@@ -81,15 +107,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {showStats && (
             <div className="grid grid-cols-3 gap-4 mt-4">
               <div className="text-center">
-                <p className="text-sm text-gray-500">Views</p>
+                <p className="text-sm text-gray-500">{t('labels.views', 'Views')}</p>
                 <p className="font-semibold">{property.view_count}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500">Bookings</p>
+                <p className="text-sm text-gray-500">{t('labels.bookings', 'Bookings')}</p>
                 <p className="font-semibold">{property.booking_count}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500">Revenue</p>
+                <p className="text-sm text-gray-500">{t('labels.revenue', 'Revenue')}</p>
                 <p className="font-semibold">${property.total_revenue}</p>
               </div>
             </div>
@@ -99,7 +125,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="flex items-center justify-between mt-2">
             <div className="text-left">
               <p className="font-semibold text-gray-900">${property.price || property.price_per_night}</p>
-              <p className="text-sm text-gray-500">per night</p>
+              <p className="text-sm text-gray-500">{t('labels.perNight', 'per night')}</p>
             </div>
             {showActions && (
               <Button
@@ -107,7 +133,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 onClick={handleViewDetails}
                 className="text-sm bg-primary-600 text-white hover:bg-primary-700"
               >
-                View Details
+                {t('actions.viewDetails')}
               </Button>
             )}
           </div>

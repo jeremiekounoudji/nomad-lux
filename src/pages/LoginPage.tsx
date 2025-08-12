@@ -3,6 +3,7 @@ import { Card, CardBody, Input, Button, Link } from '@heroui/react'
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../lib/stores/authStore'
+import { useTranslation } from '../lib/stores/translationStore'
 import { LoginPageProps } from '../interfaces'
 import toast from 'react-hot-toast'
 
@@ -14,6 +15,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
   const { signIn, isLoading } = useAuth()
   const { isAuthenticated } = useAuthStore()
+  const { t } = useTranslation('auth')
 
   // Auto-redirect if already authenticated
   useEffect(() => {
@@ -29,7 +31,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
     setError('')
     
     if (!email || !password) {
-      setError('Please fill in all fields')
+      setError(t('messages.loginError', 'Please fill in all fields'))
       return
     }
 
@@ -46,13 +48,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       }
 
       console.log('✅ User sign in initiated - waiting for auth state update')
-      toast.success('Welcome back!')
+      toast.success(t('messages.loginSuccess'))
       // The redirect will happen automatically via useEffect when auth state updates
       
     } catch (err: any) {
       console.error('❌ Exception during user sign in:', err)
-      setError(err.message || 'An unexpected error occurred')
-      toast.error(err.message || 'An unexpected error occurred')
+      setError(err.message || t('messages.unexpectedError', 'An unexpected error occurred'))
+      toast.error(err.message || t('messages.unexpectedError', 'An unexpected error occurred'))
     }
   }
 
@@ -99,8 +101,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-white/80 text-sm">Sign in to your NomadLux account</p>
+            <h1 className="text-2xl font-bold text-white mb-2">{t('login.title')}</h1>
+            <p className="text-white/80 text-sm">{t('login.subtitle')}</p>
           </div>
 
           {/* Error Message */}
@@ -114,8 +116,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
           <div className="space-y-6">
             <Input
               type="email"
-              label="Email"
-              placeholder="Enter your email"
+              label={t('login.email')}
+              placeholder={t('login.email')}
               value={email}
               onValueChange={setEmail}
               startContent={<Mail className="w-4 h-4 text-white/60" />}
@@ -130,8 +132,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             />
 
             <Input
-              label="Password"
-              placeholder="Enter your password"
+              label={t('login.password')}
+              placeholder={t('login.password')}
               value={password}
               onValueChange={setPassword}
               startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -160,7 +162,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
                 className="text-sm text-white/80 hover:text-white cursor-pointer"
                 onPress={handleForgotPassword}
               >
-                Forgot password?
+                {t('login.forgotPassword')}
               </Link>
             </div>
 
@@ -172,17 +174,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
               isLoading={isLoading}
               isDisabled={!email || !password}
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('login.signingIn', 'Signing In...') : t('login.signIn')}
             </Button>
 
             <div className="text-center">
               <span className="text-white/80 text-sm">
-                Don't have an account?{' '}
+                {t('login.noAccount')}{' '}
                 <Link 
                   className="text-white font-semibold hover:text-white/80 cursor-pointer"
                   onPress={() => onPageChange?.('register')}
                 >
-                  Sign up
+                  {t('login.signUp')}
                 </Link>
               </span>
             </div>

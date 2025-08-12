@@ -1,68 +1,114 @@
-import React from 'react'
-import { Card, CardBody, Avatar, Button, Chip } from '@heroui/react'
-import { Bell, Heart, Calendar, MessageCircle, Star, Home, Clock, ChevronRight } from 'lucide-react'
-import MainLayout from '../components/layout/MainLayout'
+import React, { useState } from 'react'
+import { Card, CardBody, Avatar, Button, Chip, Spinner, Tabs, Tab } from '@heroui/react'
+import { Bell, Heart, Calendar, MessageCircle, Star, Home, Clock, CheckCheck } from 'lucide-react'
+// removed unused MainLayout import
 import { NotificationsPageProps, Notification } from '../interfaces'
+import { useNotifications } from '../hooks/useNotifications'
+import { useNavigation } from '../hooks/useNavigation'
+import { useBookingManagement } from '../hooks/useBookingManagement'
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
+import { ROUTES } from '../router/types'
+import { useTranslation } from 'react-i18next'
 
-const mockNotifications: Notification[] = [
-  {
-    id: '1',
-    type: 'booking',
-    title: 'New Booking Request',
-    message: 'Sarah Johnson wants to book your Modern Loft in Downtown for 3 nights',
-    time: '2 minutes ago',
-    read: false,
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150'
-  },
-  {
-    id: '2',
-    type: 'like',
-    title: 'Property Liked',
-    message: 'Michael Chen liked your Cozy Beach House listing',
-    time: '15 minutes ago',
-    read: false,
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'
-  },
-  {
-    id: '3',
-    type: 'review',
-    title: 'New Review',
-    message: 'Emma Wilson left a 5-star review for your Mountain Cabin',
-    time: '1 hour ago',
-    read: true,
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150'
-  },
-  {
-    id: '4',
-    type: 'message',
-    title: 'New Message',
-    message: 'David Park sent you a message about the Ocean View Villa',
-    time: '2 hours ago',
-    read: true,
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
-  },
-  {
-    id: '5',
-    type: 'system',
-    title: 'Payment Received',
-    message: 'You received $450 for the booking at Luxury Penthouse',
-    time: '1 day ago',
-    read: true
+const NotificationsPage: React.FC<NotificationsPageProps> = () => {
+  const { t } = useTranslation(['notifications', 'common'])
+  const { 
+    notifications, 
+    unreadCount, 
+    isLoading, 
+    error, 
+    filter,
+    hasMore,
+    fetchNotifications,
+    markNotificationAsRead,
+    markAllNotificationsAsRead,
+    setFilter
+  } = useNotifications()
+
+  const { navigateWithAuth } = useNavigation()
+  const { approveBooking, declineBooking } = useBookingManagement()
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [processingBooking, setProcessingBooking] = useState<string | null>(null)
+  const [navigatingNotification, setNavigatingNotification] = useState<string | null>(null)
+
+  // Helper function to determine the best navigation route for a notification
+  const getNavigationRoute = (notification: Notification): string | null => {
+    if (!notification.related_type || !notification.related_id) {
+      // Handle notifications without related entities
+      switch (notification.type) {
+        case 'account_suspended':
+        case 'profile_updated':
+          return null // Could return profile route when available
+        case 'system_error':
+          return notification.role === 'admin' ? ROUTES.ADMIN : ROUTES.HELP
+        default:
+          return null
+      }
+    }
+
+    // Handle notifications with related entities
+    switch (notification.related_type) {
+      case 'booking':
+        // Different routes based on notification type and user role
+        if (notification.type === 'booking_request_created' || notification.type === 'new_booking_request') {
+          return ROUTES.BOOKING_REQUESTS // Host receiving booking request
+        }
+        return ROUTES.MY_BOOKINGS // Guest booking updates
+      
+      case 'property':
+        return ROUTES.PROPERTY_DETAIL.replace(':id', notification.related_id)
+      
+      case 'payout':
+      case 'payment':
+        return ROUTES.WALLET
+      
+      case 'user':
+        return notification.role === 'admin' ? ROUTES.ADMIN : null
+      
+      case 'dispute':
+        return notification.role === 'admin' ? ROUTES.ADMIN : ROUTES.HELP
+      
+      case 'system':
+        return notification.role === 'admin' ? ROUTES.ADMIN : ROUTES.HELP
+      
+      default:
+        return null
+    }
   }
-]
 
-const NotificationsPage: React.FC<NotificationsPageProps> = ({ onPageChange }) => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
-      case 'booking':
+      case 'booking_request_created':
+      case 'new_booking_request':
+      case 'booking_approved':
+      case 'booking_rejected':
+      case 'booking_cancelled':
+      case 'booking_checked_in':
+      case 'booking_checked_out':
         return <Calendar className="w-4 h-4" />
-      case 'like':
+      case 'property_liked':
         return <Heart className="w-4 h-4" />
-      case 'review':
+      case 'property_approved':
+      case 'property_rejected':
+      case 'property_suspended':
+      case 'property_submitted':
+        return <Home className="w-4 h-4" />
+      case 'payment_success':
+      case 'payment_failed':
+      case 'booking_refunded':
+      case 'payout_approved':
+      case 'payout_rejected':
+      case 'payout_paid':
+      case 'payout_requested':
         return <Star className="w-4 h-4" />
-      case 'message':
+      case 'account_suspended':
+      case 'profile_updated':
+      case 'account_flagged':
+      case 'bulk_action':
         return <MessageCircle className="w-4 h-4" />
-      case 'system':
+      case 'dispute_raised':
+      case 'system_error':
         return <Bell className="w-4 h-4" />
       default:
         return <Bell className="w-4 h-4" />
@@ -71,180 +117,457 @@ const NotificationsPage: React.FC<NotificationsPageProps> = ({ onPageChange }) =
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case 'booking':
+      case 'booking_request_created':
+      case 'new_booking_request':
+      case 'booking_approved':
+      case 'booking_rejected':
+      case 'booking_cancelled':
+      case 'booking_checked_in':
+      case 'booking_checked_out':
         return 'bg-primary-500'
-      case 'like':
+      case 'property_liked':
         return 'bg-red-500'
-      case 'review':
+      case 'property_approved':
+      case 'property_rejected':
+      case 'property_suspended':
+      case 'property_submitted':
+        return 'bg-green-500'
+      case 'payment_success':
+      case 'payment_failed':
+      case 'booking_refunded':
+      case 'payout_approved':
+      case 'payout_rejected':
+      case 'payout_paid':
+      case 'payout_requested':
         return 'bg-yellow-500'
-      case 'message':
+      case 'account_suspended':
+      case 'profile_updated':
+      case 'account_flagged':
+      case 'bulk_action':
         return 'bg-secondary-500'
-      case 'system':
-        return 'bg-gray-500'
+      case 'dispute_raised':
+      case 'system_error':
+        return 'bg-red-600'
       default:
         return 'bg-gray-500'
     }
   }
 
-  const unreadCount = mockNotifications.filter(n => !n.read).length
+  const getTypeDisplayName = (type: string) => {
+    switch (type) {
+      case 'booking_request_created':
+      case 'new_booking_request':
+        return t('notifications.types.newBookingRequest')
+      case 'booking_approved':
+        return t('notifications.types.bookingApproved')
+      case 'booking_rejected':
+        return t('notifications.types.bookingRejected')
+      case 'booking_cancelled':
+        return t('notifications.types.bookingCancelled')
+      case 'booking_checked_in':
+        return t('notifications.types.bookingCheckedIn')
+      case 'booking_checked_out':
+        return t('notifications.types.bookingCheckedOut')
+      case 'property_liked':
+        return t('notifications.types.propertyLiked')
+      case 'property_approved':
+        return t('notifications.types.propertyApproved')
+      case 'property_rejected':
+        return t('notifications.types.propertyRejected')
+      case 'property_suspended':
+        return t('notifications.types.propertySuspended')
+      case 'property_submitted':
+        return t('notifications.types.propertySubmitted')
+      case 'payment_success':
+        return t('notifications.types.paymentSuccess')
+      case 'payment_failed':
+        return t('notifications.types.paymentFailed')
+      case 'booking_refunded':
+        return t('notifications.types.bookingRefunded')
+      case 'payout_approved':
+        return t('notifications.types.payoutApproved')
+      case 'payout_rejected':
+        return t('notifications.types.payoutRejected')
+      case 'payout_paid':
+        return t('notifications.types.payoutPaid')
+      case 'payout_requested':
+        return t('notifications.types.payoutRequested')
+      case 'account_suspended':
+        return t('notifications.types.accountSuspended')
+      case 'profile_updated':
+        return t('notifications.types.profileUpdated')
+      case 'account_flagged':
+        return t('notifications.types.accountFlagged')
+      case 'bulk_action':
+        return t('notifications.types.bulkAction')
+      case 'dispute_raised':
+        return t('notifications.types.disputeRaised')
+      case 'system_error':
+        return t('notifications.types.systemError')
+      default:
+        return t('notifications.labels.notifications')
+    }
+  }
+
+  const formatTime = (dateString: string) => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+    
+    if (diffInMinutes < 1) return t('notifications.time.justNow')
+    if (diffInMinutes < 60) return t('notifications.time.minutesAgo', { minutes: diffInMinutes })
+    
+    const diffInHours = Math.floor(diffInMinutes / 60)
+    if (diffInHours < 24) return t('notifications.time.hoursAgo', { hours: diffInHours })
+    
+    const diffInDays = Math.floor(diffInHours / 24)
+    if (diffInDays < 7) return t('notifications.time.daysAgo', { days: diffInDays })
+    
+    return date.toLocaleDateString()
+  }
+
+  const handleNotificationClick = async (notification: Notification) => {
+    setNavigatingNotification(notification.id)
+    
+    // Mark as read if not already read
+    if (!notification.is_read) {
+      await markNotificationAsRead(notification.id)
+    }
+    
+    // Get the appropriate navigation route
+    const route = getNavigationRoute(notification)
+    
+    if (route) {
+      console.log(`🔗 Navigating to ${route} for notification:`, notification.type)
+      navigateWithAuth(route)
+    } else {
+      console.log('ℹ️ No navigation route defined for notification:', notification.type)
+    }
+    
+    // Reset navigation state after a short delay
+    setTimeout(() => setNavigatingNotification(null), 500)
+  }
+
+  const handleLoadMore = async () => {
+    setLoadingMore(true)
+    await fetchNotifications(50, notifications.length)
+    setLoadingMore(false)
+  }
+
+  const handleMarkAllAsRead = async () => {
+    await markAllNotificationsAsRead()
+  }
+
+  const handleAcceptBooking = async (bookingId: string, notificationId: string) => {
+    try {
+      setProcessingBooking(bookingId)
+      await approveBooking(bookingId, 'Booking request approved via notification')
+      await markNotificationAsRead(notificationId)
+      // Optionally show success message
+      console.log('✅ Booking approved successfully')
+    } catch (error) {
+      console.error('❌ Failed to approve booking:', error)
+      // Optionally show error message
+    } finally {
+      setProcessingBooking(null)
+    }
+  }
+
+  const handleDeclineBooking = async (bookingId: string, notificationId: string) => {
+    try {
+      setProcessingBooking(bookingId)
+      await declineBooking(bookingId, 'Booking request declined via notification')
+      await markNotificationAsRead(notificationId)
+      // Optionally show success message
+      console.log('✅ Booking declined successfully')
+    } catch (error) {
+      console.error('❌ Failed to decline booking:', error)
+      // Optionally show error message
+    } finally {
+      setProcessingBooking(null)
+    }
+  }
+
+  if (error) {
+    return (
+      <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg">
+          <h2 className="text-lg font-semibold mb-2">Error Loading Notifications</h2>
+          <p>{error}</p>
+          <Button 
+            color="primary" 
+            variant="flat" 
+            className="mt-4"
+            onClick={() => fetchNotifications()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
       <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-          <div className="text-left">
-            <h1 className="text-3xl font-bold mb-2">Notifications</h1>
-            <p className="text-primary-100 text-lg">
-              {unreadCount > 0 ? `You have ${unreadCount} unread notifications` : 'All caught up!'}
-            </p>
-          </div>
+        <PageBanner
+          backgroundImage={getBannerConfig('notifications').image}
+          title={t('notifications.labels.notifications')}
+          subtitle={unreadCount > 0 ? t('notifications.banner.subtitleUnread', { count: unreadCount }) : t('notifications.banner.subtitleAllCaughtUp')}
+          imageAlt={getBannerConfig('notifications').alt}
+          overlayOpacity={getBannerConfig('notifications').overlayOpacity}
+          height={getBannerConfig('notifications').height}
+          className="mb-8"
+        >
+          {unreadCount > 0 && (
+            <Button
+              color="secondary"
+              variant="flat"
+              startContent={<CheckCheck className="w-4 h-4" />}
+              onClick={handleMarkAllAsRead}
+              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+            >
+              {t('notifications.actions.markAllAsRead')}
+            </Button>
+          )}
+        </PageBanner>
+
+        {/* Filter Tabs */}
+        <div className="mb-8">
+            <Tabs
+            selectedKey={filter}
+            onSelectionChange={(key) => setFilter(key as 'all' | 'unread' | 'read')}
+            variant="underlined"
+            color="primary"
+            size="lg"
+            className="w-full"
+            classNames={{
+              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+              cursor: "w-full bg-primary-500",
+              tab: "max-w-fit px-0 h-12",
+              tabContent: "group-data-[selected=true]:text-primary-500 font-semibold text-base"
+            }}
+          >
+            <Tab
+              key="all"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>{t('notifications.labels.allNotifications')}</span>
+                  <Chip size="sm" variant="flat" color="default" className="text-xs">
+                    {notifications.length}
+                  </Chip>
+                </div>
+              }
+            />
+            <Tab
+              key="unread"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>{t('notifications.status.unread')}</span>
+                  <Chip size="sm" variant="flat" color="primary" className="text-xs">
+                    {unreadCount}
+                  </Chip>
+                </div>
+              }
+            />
+            <Tab
+              key="read"
+              title={
+                <div className="flex items-center space-x-2">
+                  <span>{t('notifications.status.read')}</span>
+                  <Chip size="sm" variant="flat" color="default" className="text-xs">
+                    {notifications.length - unreadCount}
+                  </Chip>
+                </div>
+              }
+            />
+          </Tabs>
         </div>
 
-        {/* Notifications List */}
-        <div className="space-y-4">
-          {mockNotifications.map((notification) => (
+        {/* Loading State */}
+        {isLoading && notifications.length === 0 && (
+          <div className="flex justify-center items-center py-12">
+            <Spinner size="lg" color="primary" />
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && notifications.length === 0 && (
+          <div className="text-center py-12">
+            <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('notifications.labels.noNotifications')}</h3>
+            <p className="text-gray-500">{t('notifications.banner.emptyDescription')}</p>
+          </div>
+        )}
+
+        {/* Notifications Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {notifications.map((notification) => (
             <Card 
               key={notification.id} 
-              className={`transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer border-0 ${
-                !notification.read 
-                  ? 'bg-white shadow-lg ring-2 ring-primary-100' 
-                  : 'bg-white shadow-md hover:shadow-lg'
+              className={`group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-0 overflow-hidden ${
+                !notification.is_read 
+                  ? 'bg-gradient-to-br from-white to-primary-50 shadow-lg ring-2 ring-primary-200' 
+                  : 'bg-white shadow-md hover:shadow-xl'
+              } ${
+                navigatingNotification === notification.id 
+                  ? 'opacity-75 scale-95' 
+                  : ''
               }`}
+              onClick={() => handleNotificationClick(notification)}
             >
-              <CardBody className="p-0">
-                <div className="flex items-start">
-                  {/* Left colored indicator */}
-                  <div className={`w-1 h-full ${getTypeColor(notification.type)} rounded-l-lg`}></div>
-                  
-                  <div className="flex-1 p-6">
-                    <div className="flex items-start gap-4">
-                      {/* Avatar Section */}
-                      <div className="relative flex-shrink-0">
-                        {notification.avatar ? (
-                          <Avatar
-                            src={notification.avatar}
-                            size="lg"
-                            className="ring-3 ring-white shadow-lg"
-                          />
-                        ) : (
-                          <div className={`w-14 h-14 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-lg`}>
-                            <div className="text-white">
-                              {getNotificationIcon(notification.type)}
-                            </div>
-                          </div>
-                        )}
-                        
-                        {/* Notification type badge */}
-                        <div className={`absolute -bottom-1 -right-1 w-6 h-6 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-md border-2 border-white`}>
-                          <div className="text-white text-xs">
+              <CardBody className="p-0 relative">
+                {/* Unread indicator */}
+                {!notification.is_read && (
+                  <div className="absolute top-3 right-3 w-3 h-3 bg-primary-500 rounded-full animate-pulse z-10 shadow-lg"></div>
+                )}
+
+                {/* Header with Avatar and Type */}
+                <div className="relative p-4 pb-3">
+                  <div className="flex items-center gap-3 mb-3">
+                    {/* Avatar */}
+                    <div className="relative">
+                      {notification.avatar ? (
+                        <Avatar
+                          src={notification.avatar}
+                          size="md"
+                          className="ring-2 ring-white shadow-md"
+                        />
+                      ) : (
+                        <div className={`w-12 h-12 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-lg`}>
+                          <div className="text-white">
                             {getNotificationIcon(notification.type)}
                           </div>
                         </div>
-                      </div>
-
-                      {/* Content Section */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-3 mb-3">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className={`font-bold text-lg leading-tight ${!notification.read ? 'text-gray-900' : 'text-gray-700'}`}>
-                                {notification.title}
-                              </h3>
-                              {!notification.read && (
-                                <div className="w-2.5 h-2.5 bg-primary-500 rounded-full flex-shrink-0 animate-pulse"></div>
-                              )}
-                            </div>
-                            
-                            <p className="text-gray-600 text-base leading-relaxed mb-4 pr-2 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            
-                            <div className="flex items-center gap-3">
-                              <div className="flex items-center gap-1 text-gray-400">
-                                <Clock className="w-3 h-3" />
-                                <span className="text-sm font-medium">
-                                  {notification.time}
-                                </span>
-                              </div>
-                              
-                              <Chip
-                                size="sm"
-                                variant="flat"
-                                className={`text-xs font-semibold ${
-                                  notification.type === 'booking' ? 'bg-primary-100 text-primary-700' :
-                                  notification.type === 'like' ? 'bg-red-100 text-red-700' :
-                                  notification.type === 'review' ? 'bg-yellow-100 text-yellow-700' :
-                                  notification.type === 'message' ? 'bg-secondary-100 text-secondary-700' :
-                                  'bg-gray-100 text-gray-700'
-                                }`}
-                              >
-                                {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
-                              </Chip>
-                            </div>
-                          </div>
-
-                          {/* Chevron for navigation hint */}
-                          <div className="flex-shrink-0 mt-2">
-                            <ChevronRight className="w-5 h-5 text-gray-300" />
-                          </div>
+                      )}
+                      
+                      {/* Type badge */}
+                      <div className={`absolute -bottom-1 -right-1 w-5 h-5 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-md border-2 border-white`}>
+                        <div className="text-white text-xs">
+                          {getNotificationIcon(notification.type)}
                         </div>
-
-                        {/* Action Buttons */}
-                        {(notification.type === 'booking' || notification.type === 'message') && (
-                          <div className="flex gap-3 pt-4 border-t border-gray-100">
-                            {notification.type === 'booking' && (
-                              <>
-                                <Button 
-                                  size="md" 
-                                  color="primary" 
-                                  variant="solid" 
-                                  className="flex-1 font-semibold shadow-md hover:shadow-lg transition-all"
-                                >
-                                  Accept
-                                </Button>
-                                <Button 
-                                  size="md" 
-                                  color="secondary" 
-                                  variant="bordered" 
-                                  className="flex-1 font-semibold border-2 hover:bg-secondary-50 transition-all"
-                                >
-                                  Decline
-                                </Button>
-                              </>
-                            )}
-                            {notification.type === 'message' && (
-                              <Button 
-                                size="md" 
-                                color="secondary" 
-                                variant="solid" 
-                                className="flex-1 font-semibold shadow-md hover:shadow-lg transition-all"
-                              >
-                                Reply
-                              </Button>
-                            )}
-                          </div>
-                        )}
                       </div>
                     </div>
+
+                    {/* Type chip */}
+                    <Chip
+                      size="sm"
+                      variant="flat"
+                      className={`text-xs font-semibold ${
+                        !notification.is_read 
+                          ? 'bg-primary-100 text-primary-700' 
+                          : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {getTypeDisplayName(notification.type)}
+                    </Chip>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className={`font-bold text-base leading-tight mb-2 ${
+                    !notification.is_read ? 'text-gray-900' : 'text-gray-700'
+                  }`}>
+                    {notification.title}
+                  </h3>
+
+                  {/* Message */}
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-3">
+                    {notification.message}
+                  </p>
+
+                  {/* Time */}
+                  <div className="flex items-center gap-1 text-gray-400">
+                    <Clock className="w-3 h-3" />
+                    <span className="text-xs font-medium">
+                      {formatTime(notification.created_at)}
+                    </span>
                   </div>
                 </div>
+
+                {/* Action Buttons */}
+                {(notification.type === 'booking_request_created' || notification.type === 'new_booking_request') && 
+                 notification.related_id && notification.related_type === 'booking' && (
+                  <div className="px-4 pb-4">
+                    <div className="flex gap-2 pt-3 border-t border-gray-100">
+                      <Button 
+                        size="sm" 
+                        color="primary" 
+                        variant="solid" 
+                        className="flex-1 font-semibold text-xs shadow-md hover:shadow-lg transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleAcceptBooking(notification.related_id!, notification.id)
+                        }}
+                        isLoading={processingBooking === notification.related_id}
+                        disabled={processingBooking === notification.related_id}
+                      >
+                        {processingBooking === notification.related_id ? t('notifications.actions.accepting') : t('notifications.actions.accept')}
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        color="secondary" 
+                        variant="bordered" 
+                        className="flex-1 font-semibold text-xs border-2 hover:bg-secondary-50 transition-all"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeclineBooking(notification.related_id!, notification.id)
+                        }}
+                        isLoading={processingBooking === notification.related_id}
+                        disabled={processingBooking === notification.related_id}
+                      >
+                        {processingBooking === notification.related_id ? t('notifications.actions.declining') : t('notifications.actions.decline')}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Hover effect overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </CardBody>
             </Card>
           ))}
         </div>
 
         {/* Load More */}
-        <div className="text-center pt-6">
-          <Button 
-            variant="flat" 
-            color="primary" 
-            size="lg"
-            className="font-semibold px-8 py-3 shadow-md hover:shadow-lg transition-all"
-          >
-            Load More Notifications
-          </Button>
-        </div>
+        {notifications.length > 0 && hasMore && (
+          <div className="flex justify-center pt-12 pb-8">
+            <div className="relative group">
+              {/* Animated background gradient */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 rounded-full opacity-75 group-hover:opacity-100 blur-sm group-hover:blur transition-all duration-300 animate-pulse"></div>
+              
+              <Button 
+                variant="solid" 
+                color="primary" 
+                size="lg"
+                className="relative font-bold px-16 py-4 text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-full transform hover:scale-105 active:scale-95"
+                onClick={handleLoadMore}
+                isLoading={loadingMore}
+                disabled={loadingMore}
+                startContent={!loadingMore && (
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                )}
+              >
+                <span className="relative z-10">
+                  {loadingMore ? t('notifications.actions.loadingMore') : t('notifications.actions.loadMore')}
+                </span>
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* End of notifications indicator */}
+        {notifications.length > 0 && !hasMore && (
+          <div className="flex justify-center pt-12 pb-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <Bell className="w-6 h-6 text-gray-400" />
+              </div>
+              <p className="text-gray-500 font-medium text-lg mb-2">{t('notifications.banner.allCaughtUp')}</p>
+              <p className="text-gray-400 text-sm">{t('notifications.banner.noMore')}</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   )

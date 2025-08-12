@@ -16,6 +16,7 @@ import {
 } from '@heroui/react'
 import { XCircle, AlertTriangle, Calendar, DollarSign } from 'lucide-react'
 import { CancelBookingModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
   isOpen,
@@ -23,18 +24,19 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
   booking,
   onConfirmCancel
 }) => {
+  const { t } = useTranslation(['booking', 'common'])
   const [reason, setReason] = useState('')
   const [customReason, setCustomReason] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const cancellationReasons = [
-    'Change of plans',
-    'Found alternative accommodation',
-    'Emergency situation',
-    'Property not as described',
-    'Host unavailable/unresponsive',
-    'Other'
-  ]
+  const cancellationReasonKeys = [
+    'changePlans',
+    'foundAlternative',
+    'emergency',
+    'notAsDescribed',
+    'hostUnavailable',
+    'other'
+  ] as const
 
   const calculateRefund = () => {
     const checkInDate = new Date(booking.checkIn)
@@ -54,7 +56,7 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
   const serviceFee = booking.totalPrice * 0.1
 
   const handleCancel = async () => {
-    const finalReason = reason === 'Other' ? customReason : reason
+    const finalReason = reason === 'other' ? customReason : t(`booking.cancel.reasons.${reason}`)
     if (!finalReason.trim()) return
 
     setIsLoading(true)
@@ -87,9 +89,9 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <XCircle className="w-6 h-6 text-danger-500" />
-                <h2 className="text-xl font-bold">Cancel Booking</h2>
+                <h2 className="text-xl font-bold">{t('booking.cancel.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">We're sorry to see you cancel your booking</p>
+              <p className="text-sm text-gray-600">{t('booking.cancel.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
@@ -110,9 +112,7 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                             <Calendar className="w-4 h-4" />
                             <span>{new Date(booking.checkIn).toLocaleDateString()} - {new Date(booking.checkOut).toLocaleDateString()}</span>
                           </div>
-                          <Chip size="sm" color="primary" variant="flat">
-                            {booking.guests} guest{booking.guests > 1 ? 's' : ''}
-                          </Chip>
+                          <Chip size="sm" color="primary" variant="flat">{t('booking.labels.guestsCount', { count: booking.guests })}</Chip>
                         </div>
                       </div>
                     </div>
@@ -124,14 +124,12 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-warning-800">Cancellation Policy</h4>
-                      <p className="text-sm text-warning-700 mt-1">
-                        Your refund amount depends on when you cancel:
-                      </p>
+                      <h4 className="font-semibold text-warning-800">{t('booking.cancel.policy.title')}</h4>
+                      <p className="text-sm text-warning-700 mt-1">{t('booking.cancel.policy.description')}</p>
                       <ul className="text-sm text-warning-700 mt-2 space-y-1">
-                        <li>• 7+ days before check-in: 90% refund</li>
-                        <li>• 3-6 days before check-in: 50% refund</li>
-                        <li>• Less than 3 days: No refund</li>
+                        <li>• {t('booking.cancel.policy.rule7')}</li>
+                        <li>• {t('booking.cancel.policy.rule3to6')}</li>
+                        <li>• {t('booking.cancel.policy.ruleLess3')}</li>
                       </ul>
                     </div>
                   </div>
@@ -141,20 +139,20 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                 <div className="space-y-3">
                   <h4 className="font-semibold flex items-center gap-2">
                     <DollarSign className="w-5 h-5" />
-                    Refund Breakdown
+                    {t('booking.cancel.refund.title')}
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span>Original booking total</span>
+                      <span>{t('booking.cancel.refund.originalTotal')}</span>
                       <span>${booking.totalPrice}</span>
                     </div>
                     <div className="flex justify-between text-danger-600">
-                      <span>Service fee (non-refundable)</span>
+                      <span>{t('booking.cancel.refund.serviceFeeNonRefundable')}</span>
                       <span>-${serviceFee.toFixed(2)}</span>
                     </div>
                     <Divider />
                     <div className="flex justify-between font-semibold text-lg">
-                      <span>Refund amount</span>
+                      <span>{t('booking.cancel.refund.refundAmount')}</span>
                       <span className={refundAmount > 0 ? 'text-success-600' : 'text-danger-600'}>
                         ${refundAmount.toFixed(2)}
                       </span>
@@ -164,7 +162,7 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
 
                 {/* Cancellation Reason */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold">Why are you cancelling?</h4>
+                  <h4 className="font-semibold">{t('booking.cancel.reason.title')}</h4>
                   <RadioGroup
                     value={reason}
                     onValueChange={setReason}
@@ -172,17 +170,17 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                       wrapper: "space-y-2"
                     }}
                   >
-                    {cancellationReasons.map((reasonOption) => (
-                      <Radio key={reasonOption} value={reasonOption}>
-                        {reasonOption}
+                    {cancellationReasonKeys.map((key) => (
+                      <Radio key={key} value={key}>
+                        {t(`booking.cancel.reasons.${key}`)}
                       </Radio>
                     ))}
                   </RadioGroup>
 
-                  {reason === 'Other' && (
+                  {reason === 'other' && (
                     <Textarea
-                      label="Please specify"
-                      placeholder="Tell us more about your reason for cancelling"
+                      label={t('booking.cancel.reason.pleaseSpecify')}
+                      placeholder={t('booking.cancel.reason.placeholder')}
                       value={customReason}
                       onChange={(e) => setCustomReason(e.target.value)}
                       minRows={3}
@@ -196,10 +194,8 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="w-5 h-5 text-danger-600 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold text-danger-800">Important</h4>
-                      <p className="text-sm text-danger-700 mt-1">
-                        Once you cancel this booking, it cannot be undone. You'll need to make a new booking if you change your mind.
-                      </p>
+                      <h4 className="font-semibold text-danger-800">{t('booking.cancel.warning.title')}</h4>
+                      <p className="text-sm text-danger-700 mt-1">{t('booking.cancel.warning.message')}</p>
                     </div>
                   </div>
                 </div>
@@ -207,15 +203,15 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Keep Booking
+                {t('booking.actions.keepBooking')}
               </Button>
               <Button 
                 color="danger" 
                 onPress={handleCancel}
                 isLoading={isLoading}
-                isDisabled={!reason || (reason === 'Other' && !customReason.trim())}
+                isDisabled={!reason || (reason === 'other' && !customReason.trim())}
               >
-                {isLoading ? 'Cancelling...' : 'Cancel Booking'}
+                {isLoading ? t('booking.messages.cancelling') : t('booking.actions.cancelBooking')}
               </Button>
             </ModalFooter>
           </>

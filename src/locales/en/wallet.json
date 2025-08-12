@@ -1,0 +1,61 @@
+{
+  "wallet": {
+    "banner": {
+      "title": "Wallet",
+      "subtitle": "Manage your earnings, track payments, and request payouts"
+    },
+    "cards": {
+      "totalBalance": "Total Balance",
+      "pending": "Pending",
+      "failed": "Failed",
+      "successful": "Successful",
+      "transactions": "({{count}} transactions)",
+      "payoutBalance": "Payout Balance",
+      "lastPayout": "Last Payout",
+      "never": "Never"
+    },
+    "payout": {
+      "available": "Available for Payout",
+      "nextPayout": "Next payout available:",
+      "ready": "Ready for payout"
+    },
+    "actions": {
+      "payout": "Payout"
+    },
+    "requestPayout": {
+      "title": "Request Payout",
+      "subtitle": "Your current payout balance is {{balance}}. Minimum payout amount is {{min}}.",
+      "amountLabel": "Amount",
+      "amountPlaceholder": "Enter amount",
+      "submit": "Request Payout",
+      "submitting": "Submitting...",
+      "errors": {
+        "invalidAmount": "Please enter a valid amount.",
+        "exceedsBalance": "Amount exceeds available payout balance.",
+        "minimumAmount": "Minimum payout amount is {{amount}}.",
+        "requestFailed": "Payout request failed."
+      }
+    },
+    "transactions": {
+      "title": "Wallet Transactions",
+      "empty": "No transactions yet",
+      "payment": "Payment"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "refresh": "Refresh",
+      "refreshing": "Refreshing...",
+      "pageOf": "Page {{current}} of {{total}}"
+    },
+    "requests": {
+      "title": "Payout Requests",
+      "date": "Date",
+      "amount": "Amount",
+      "status": "Status",
+      "empty": "No payout requests yet.",
+      "totalRequested": "Total Requested"
+    }
+  }
+}
+

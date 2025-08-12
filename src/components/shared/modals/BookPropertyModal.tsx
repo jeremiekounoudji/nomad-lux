@@ -18,6 +18,7 @@ import {
 } from '@heroui/react'
 import { Calendar, Users, CreditCard, MapPin, Star, DollarSign } from 'lucide-react'
 import { BookPropertyModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
   isOpen,
@@ -25,6 +26,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
   property,
   onBookingConfirm
 }) => {
+  const { t } = useTranslation(['booking', 'common'])
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [guests, setGuests] = useState('1')
@@ -83,8 +85,8 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              <h2 className="text-xl font-bold">Book this Property</h2>
-              <p className="text-sm text-gray-600">Complete your booking details</p>
+              <h2 className="text-xl font-bold">{t('booking.actions.bookNow', 'Book this Property')}</h2>
+              <p className="text-sm text-gray-600">{t('booking.labels.completeDetails', 'Complete your booking details')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
@@ -109,7 +111,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                             <span className="text-sm font-medium">{property.rating}</span>
                           </div>
                           <span className="text-lg font-bold text-primary-600">
-                            ${property.price}/night
+                            ${property.price}/{t('property.labels.night', 'night')}
                           </span>
                         </div>
                       </div>
@@ -131,7 +133,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                   <div className="grid grid-cols-2 gap-4">
                     <Input
                       type="date"
-                      label="Check-in"
+                      label={t('booking.labels.checkIn')}
                       value={checkIn}
                       onChange={(e) => setCheckIn(e.target.value)}
                       startContent={<Calendar className="w-4 h-4 text-gray-400" />}
@@ -139,7 +141,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                     />
                     <Input
                       type="date"
-                      label="Check-out"
+                      label={t('booking.labels.checkOut')}
                       value={checkOut}
                       onChange={(e) => setCheckOut(e.target.value)}
                       startContent={<Calendar className="w-4 h-4 text-gray-400" />}
@@ -148,7 +150,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                   </div>
 
                   <Select
-                    label="Guests"
+                    label={t('booking.labels.guests')}
                     selectedKeys={[guests]}
                     onSelectionChange={(keys) => setGuests(Array.from(keys)[0] as string)}
                     startContent={<Users className="w-4 h-4 text-gray-400" />}
@@ -156,14 +158,14 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                   >
                     {Array.from({ length: property.max_guests }, (_, i) => (
                       <SelectItem key={`${i + 1}`} value={`${i + 1}`}>
-                        {i + 1} guest{i > 0 ? 's' : ''}
+                        {t('booking.labels.guestsCount', { count: i + 1 })}
                       </SelectItem>
                     ))}
                   </Select>
 
                   <Textarea
-                    label="Special Requests (Optional)"
-                    placeholder="Any special requests or notes for your host"
+                    label={t('booking.labels.specialRequests', 'Special Requests (Optional)')}
+                    placeholder={t('booking.labels.specialRequestsPlaceholder', 'Any special requests or notes for your host')}
                     value={specialRequests}
                     onChange={(e) => setSpecialRequests(e.target.value)}
                     minRows={3}
@@ -177,24 +179,24 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                     <div className="space-y-3">
                       <h4 className="font-semibold flex items-center gap-2">
                         <DollarSign className="w-5 h-5" />
-                        Price Breakdown
+                        {t('booking.labels.priceBreakdown', 'Price Breakdown')}
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>${property.price} × {days} night{days > 1 ? 's' : ''}</span>
+                          <span>${property.price} × {days} {days > 1 ? t('property.labels.nights', 'nights') : t('property.labels.night', 'night')}</span>
                           <span>${subtotal.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Service fee</span>
+                          <span>{t('booking.labels.serviceFee', 'Service fee')}</span>
                           <span>${serviceFee.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Taxes</span>
+                          <span>{t('booking.labels.taxes', 'Taxes')}</span>
                           <span>${taxes.toFixed(2)}</span>
                         </div>
                         <Divider />
                         <div className="flex justify-between font-semibold text-lg">
-                          <span>Total</span>
+                          <span>{t('booking.labels.total', 'Total')}</span>
                           <span>${totalPrice.toFixed(2)}</span>
                         </div>
                       </div>
@@ -205,7 +207,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Cancel
+                {t('common.buttons.cancel', 'Cancel')}
               </Button>
               <Button 
                 color="primary" 
@@ -214,7 +216,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                 isDisabled={!checkIn || !checkOut || !guests}
                 startContent={!isLoading && <CreditCard className="w-4 h-4" />}
               >
-                {isLoading ? 'Processing...' : `Book for $${totalPrice.toFixed(2)}`}
+                {isLoading ? t('common.messages.processing', 'Processing...') : t('booking.actions.bookForAmount', { amount: totalPrice.toFixed(2), defaultValue: 'Book for ${{amount}}' })}
               </Button>
             </ModalFooter>
           </>

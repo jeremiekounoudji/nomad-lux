@@ -1,0 +1,137 @@
+{
+  "required": "This field is required",
+  "email": {
+    "invalid": "Please enter a valid email address",
+    "required": "Email address is required",
+    "exists": "This email address is already registered",
+    "notFound": "No account found with this email address"
+  },
+  "password": {
+    "required": "Password is required",
+    "minLength": "Password must be at least {{min}} characters long",
+    "maxLength": "Password must be no more than {{max}} characters long",
+    "weak": "Password is too weak",
+    "mismatch": "Passwords do not match",
+    "incorrect": "Incorrect password",
+    "mustContain": "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+  },
+  "name": {
+    "required": "Name is required",
+    "minLength": "Name must be at least {{min}} characters long",
+    "maxLength": "Name must be no more than {{max}} characters long",
+    "invalid": "Please enter a valid name"
+  },
+  "phone": {
+    "required": "Phone number is required",
+    "invalid": "Please enter a valid phone number",
+    "exists": "This phone number is already registered"
+  },
+  "date": {
+    "required": "Date is required",
+    "invalid": "Please enter a valid date",
+    "past": "Date must be in the past",
+    "future": "Date must be in the future",
+    "minAge": "You must be at least {{age}} years old",
+    "checkIn": "Check-in date is required",
+    "checkOut": "Check-out date is required",
+    "checkOutAfterCheckIn": "Check-out date must be after check-in date",
+    "minimumStay": "Minimum stay is {{nights}} nights",
+    "maximumStay": "Maximum stay is {{nights}} nights",
+    "unavailable": "Selected dates are not available"
+  },
+  "property": {
+    "title": {
+      "required": "Property title is required",
+      "minLength": "Title must be at least {{min}} characters long",
+      "maxLength": "Title must be no more than {{max}} characters long"
+    },
+    "description": {
+      "required": "Property description is required",
+      "minLength": "Description must be at least {{min}} characters long",
+      "maxLength": "Description must be no more than {{max}} characters long"
+    },
+    "price": {
+      "required": "Price is required",
+      "positive": "Price must be greater than 0",
+      "maximum": "Price cannot exceed {{max}}"
+    },
+    "guests": {
+      "required": "Maximum guests is required",
+      "minimum": "Must accommodate at least 1 guest",
+      "maximum": "Cannot accommodate more than {{max}} guests"
+    },
+    "bedrooms": {
+      "required": "Number of bedrooms is required",
+      "minimum": "Must have at least 0 bedrooms",
+      "maximum": "Cannot have more than {{max}} bedrooms"
+    },
+    "bathrooms": {
+      "required": "Number of bathrooms is required",
+      "minimum": "Must have at least 1 bathroom",
+      "maximum": "Cannot have more than {{max}} bathrooms"
+    },
+    "images": {
+      "required": "At least {{min}} images are required",
+      "maximum": "Cannot upload more than {{max}} images",
+      "format": "Only JPEG, PNG, and WebP images are allowed",
+      "size": "Image size cannot exceed {{size}}MB"
+    },
+    "location": {
+      "required": "Property location is required",
+      "invalid": "Please select a valid location"
+    },
+    "amenities": {
+      "required": "Please select at least one amenity"
+    },
+    "type": {
+      "required": "Property type is required"
+    }
+  },
+  "booking": {
+    "guests": {
+      "required": "Number of guests is required",
+      "minimum": "Must have at least 1 guest",
+      "maximum": "Cannot exceed maximum guests allowed ({{max}})"
+    },
+    "specialRequests": {
+      "maxLength": "Special requests cannot exceed {{max}} characters"
+    }
+  },
+  "payment": {
+    "cardNumber": {
+      "required": "Card number is required",
+      "invalid": "Please enter a valid card number"
+    },
+    "expiryDate": {
+      "required": "Expiry date is required",
+      "invalid": "Please enter a valid expiry date",
+      "expired": "Card has expired"
+    },
+    "cvv": {
+      "required": "CVV is required",
+      "invalid": "Please enter a valid CVV"
+    },
+    "billingAddress": {
+      "required": "Billing address is required"
+    }
+  },
+  "file": {
+    "required": "File is required",
+    "format": "Invalid file format",
+    "size": "File size cannot exceed {{size}}MB",
+    "upload": "File upload failed"
+  },
+  "terms": {
+    "required": "You must agree to the terms and conditions"
+  },
+  "general": {
+    "invalid": "Invalid input",
+    "tooShort": "Input is too short",
+    "tooLong": "Input is too long",
+    "numeric": "Must be a number",
+    "positive": "Must be a positive number",
+    "integer": "Must be a whole number",
+    "url": "Must be a valid URL",
+    "unique": "This value already exists"
+  }
+}

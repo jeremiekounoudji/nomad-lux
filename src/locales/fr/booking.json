@@ -1,0 +1,211 @@
+{
+  "steps": {
+    "selectDates": "Sélectionner les dates",
+    "guestInfo": "Informations invité",
+    "payment": "Paiement",
+    "confirmation": "Confirmation"
+  },
+  "labels": {
+    "property": "Propriété",
+    "locationNotAvailable": "Emplacement non disponible",
+    "guestsCount": "{{count}} invité",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "guests": "Invités",
+    "adults": "Adultes",
+    "children": "Enfants",
+    "infants": "Bébés",
+    "specialRequests": "Demandes spéciales",
+    "totalPrice": "Prix total",
+    "priceBreakdown": "Détail des prix",
+    "nightlyRate": "Tarif par nuit",
+    "nights": "nuits",
+    "cleaningFee": "Frais de ménage",
+    "serviceFee": "Frais de service",
+    "taxes": "Taxes",
+    "total": "Total",
+    "paymentMethod": "Mode de paiement",
+    "cardNumber": "Numéro de carte",
+    "expiryDate": "Date d'expiration",
+    "cvv": "CVV",
+    "billingAddress": "Adresse de facturation",
+    "bookingReference": "Référence de réservation",
+    "hostContact": "Contact hôte",
+    "checkInInstructions": "Instructions d'arrivée",
+    "houseRules": "Règles de la maison",
+    "cancellationPolicy": "Politique d'annulation",
+    "completeDetails": "Complétez les détails de votre réservation",
+    "specialRequestsPlaceholder": "Toute demande particulière ou note pour votre hôte"
+  },
+  "actions": {
+    "selectDates": "Sélectionner les dates",
+    "addGuests": "Ajouter des invités",
+    "bookNow": "Réserver maintenant",
+    "confirmBooking": "Confirmer la réservation",
+    "payNow": "Payer maintenant",
+    "keepBooking": "Garder la réservation",
+    "contactHost": "Contacter l'hôte",
+    "viewBooking": "Voir la réservation",
+    "cancelBooking": "Annuler la réservation",
+    "modifyBooking": "Modifier la réservation",
+    "leaveReview": "Laisser un avis",
+    "downloadReceipt": "Télécharger le reçu",
+    "reportIssue": "Signaler un problème",
+    "retryPayment": "Réessayer le paiement",
+    "bookForAmount": "Réserver pour ${{amount}}"
+  },
+  "cancel": {
+    "title": "Annuler la réservation",
+    "subtitle": "Nous sommes désolés de voir que vous annulez votre réservation",
+    "policy": {
+      "title": "Politique d'annulation",
+      "description": "Le montant de votre remboursement dépend du moment de l'annulation :",
+      "rule7": "7+ jours avant l'arrivée : remboursement de 90%",
+      "rule3to6": "3-6 jours avant l'arrivée : remboursement de 50%",
+      "ruleLess3": "Moins de 3 jours : aucun remboursement"
+    },
+    "refund": {
+      "title": "Détail du remboursement",
+      "originalTotal": "Total initial de la réservation",
+      "serviceFeeNonRefundable": "Frais de service (non remboursables)",
+      "refundAmount": "Montant du remboursement"
+    },
+    "reason": {
+      "title": "Pourquoi annulez-vous ?",
+      "pleaseSpecify": "Veuillez préciser",
+      "placeholder": "Dites-nous en plus sur la raison de votre annulation",
+      "changePlans": "Changement de plans",
+      "foundAlternative": "Hébergement alternatif trouvé",
+      "emergency": "Situation d'urgence",
+      "notAsDescribed": "Propriété non conforme à la description",
+      "hostUnavailable": "Hôte indisponible/injoignable",
+      "other": "Autre"
+    },
+    "warning": {
+      "title": "Important",
+      "message": "Une fois que vous annulez cette réservation, cela ne peut pas être annulé. Vous devrez effectuer une nouvelle réservation si vous changez d'avis."
+    }
+  },
+  "status": {
+    "pending": "En attente",
+    "confirmed": "Confirmé",
+    "cancelled": "Annulé",
+    "completed": "Terminé",
+    "noShow": "Absence",
+    "acceptedWaitingPayment": "Accepté - En attente de paiement",
+    "paymentFailed": "Paiement échoué",
+    "rejected": "Rejeté"
+  },
+  "reviews": {
+    "count": "{{count}} avis"
+  },
+  "bookingRequests": {
+    "banner": {
+      "title": "Demandes de réservation",
+      "subtitle": "Gérez et répondez aux demandes de réservation des invités"
+    },
+    "loading": "Chargement des demandes de réservation...",
+    "showingRange": "Affichage de {{from}} à {{to}} sur {{total}} demandes",
+    "emptyTitle": "Aucune demande {{status}}",
+    "emptyDescription": "Vous n'avez aucune demande de réservation {{status}} pour le moment.",
+    "details": {
+      "title": "Détails de la demande de réservation",
+      "subtitle": "Examinez toutes les informations concernant cette demande",
+      "propertyInformation": "Informations sur la propriété",
+      "locationPlaceholder": "Détails de l'emplacement ici",
+      "propertyTypePlaceholder": "Détails du type de propriété",
+      "guestInformation": "Informations sur l'invité",
+      "bookingDetails": "Détails de la réservation",
+      "totalAmount": "Montant total",
+      "paymentStatus": "Statut du paiement",
+      "timeline": "Chronologie de la demande",
+      "requestCreated": "Demande créée"
+    },
+    "decline": {
+      "title": "Refuser la demande de réservation",
+      "description": "Veuillez fournir une raison pour refuser cette demande. Elle sera visible par l'invité.",
+      "placeholder": "Saisissez la raison du refus...",
+      "confirm": "Refuser la réservation"
+    },
+    "approve": {
+      "title": "Confirmer l'approbation",
+      "description": "Êtes-vous sûr de vouloir approuver cette demande ? Cela avertira l'invité et lancera le processus de paiement.",
+      "confirm": "Confirmer l'approbation"
+    }
+  },
+  "messages": {
+    "cancelling": "Annulation...",
+    "bookingSuccess": "Réservation confirmée avec succès !",
+    "bookingPending": "Votre demande de réservation a été envoyée à l'hôte",
+    "bookingCancelled": "Réservation annulée avec succès",
+    "paymentSuccess": "Paiement traité avec succès",
+    "paymentFailed": "Paiement échoué. Veuillez réessayer.",
+    "unavailableDates": "Les dates sélectionnées ne sont pas disponibles",
+    "minimumStay": "Le séjour minimum est de {{nights}} nuits",
+    "maximumGuests": "Maximum {{guests}} invités autorisés",
+    "bookingExpired": "Cette demande de réservation a expiré",
+    "hostApprovalRequired": "Approbation de l'hôte requise pour cette propriété",
+    "instantBookAvailable": "Réservation instantanée disponible",
+    "checkInSoon": "L'arrivée est dans {{hours}} heures",
+    "checkOutSoon": "Le départ est dans {{hours}} heures",
+    "reviewReminder": "N'oubliez pas de laisser un avis pour votre séjour",
+    "dateUnavailableOn": "{{date}} n'est pas disponible pour la réservation",
+    "checkInSelected": "Date d'arrivée sélectionnée",
+    "checkOutSelected": "Date de départ sélectionnée",
+    "checkInUpdated": "Date d'arrivée mise à jour",
+    "datesCleared": "Dates effacées",
+    "checkOutCleared": "Date de départ effacée",
+    "pastDateNotAllowed": "Impossible de sélectionner une date passée",
+    "rangeIncludesUnavailableOn": "La plage de dates sélectionnée comprend une date indisponible : {{date}}",
+    "checkOutClearedDueToCheckIn": "Date de départ effacée en raison de la nouvelle date d'arrivée",
+    "selectCheckInFirst": "Veuillez d'abord sélectionner une date d'arrivée",
+    "checkoutAfterCheckin": "La date de départ doit être après la date d'arrivée",
+    "checkOutUpdated": "Date de départ mise à jour"
+  },
+  "calendar": {
+    "localTimeLabel": "Heure locale :",
+    "timezoneNotice": "Toutes les heures affichées sont dans le fuseau horaire local de la propriété pour éviter toute confusion",
+    "hide": "Masquer le calendrier",
+    "show": "Afficher le calendrier",
+    "helperText": "Utilisez les champs de date ci-dessus ou cliquez sur les dates disponibles dans le calendrier"
+  },
+  "policies": {
+    "cancellation": {
+      "flexible": "Flexible - Remboursement intégral 1 jour avant l'arrivée",
+      "moderate": "Modéré - Remboursement intégral 5 jours avant l'arrivée",
+      "strict": "Strict - Remboursement de 50% jusqu'à 1 semaine avant l'arrivée"
+    },
+    "checkIn": "Arrivée : {{time}}",
+    "checkOut": "Départ : {{time}}",
+    "smoking": "Interdiction de fumer",
+    "pets": "Animaux non autorisés",
+    "parties": "Pas de fêtes ou d'événements",
+    "additionalRules": "Des règles supplémentaires peuvent s'appliquer"
+  },
+  "payment": {
+    "description": "Paiement de la réservation pour {{title}}",
+    "createRecordFailed": "Échec de la création de l'enregistrement de paiement",
+    "initFailed": "Échec de l'initialisation du paiement",
+    "notCompleted": "Le paiement n'a pas été complété avec succès",
+    "cancelledByUser": "Paiement annulé par l'utilisateur",
+    "cancelledWithReason": "Paiement annulé : {{reason}}",
+    "declinedWithReason": "Paiement refusé : {{reason}}",
+    "failedWithCode": "Paiement échoué : {{code}}",
+    "openModalFailed": "Échec de l'ouverture de la fenêtre de paiement",
+    "payWithFedaPay": "Payer avec FedaPay",
+    "methods": {
+      "card": "Carte de crédit/débit",
+      "paypal": "PayPal",
+      "bankTransfer": "Virement bancaire",
+      "fedapayCard": "Carte FedaPay",
+      "fedapayMobile": "Mobile Money",
+      "fedapayBank": "Virement FedaPay"
+    },
+    "security": "Vos informations de paiement sont sécurisées et cryptées",
+    "processing": "Traitement du paiement...",
+    "failed": "Paiement échoué",
+    "success": "Paiement réussi",
+    "refund": "Remboursement traité",
+    "partialRefund": "Remboursement partiel traité"
+  }
+}

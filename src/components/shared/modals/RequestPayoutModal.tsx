@@ -10,6 +10,7 @@ import {
   Spinner
 } from '@heroui/react'
 import { DollarSign } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 export interface RequestPayoutModalProps {
   isOpen: boolean
@@ -26,6 +27,7 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
   minimumPayoutAmount,
   onSubmit
 }) => {
+  const { t } = useTranslation(['wallet', 'common'])
   const [amount, setAmount] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -42,15 +44,15 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
     setError(null)
     const numericAmount = parseFloat(amount)
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      setError('Please enter a valid amount.')
+      setError(t('wallet.requestPayout.errors.invalidAmount'))
       return
     }
     if (numericAmount > payoutBalance) {
-      setError('Amount exceeds available payout balance.')
+      setError(t('wallet.requestPayout.errors.exceedsBalance'))
       return
     }
     if (numericAmount < minimumPayoutAmount) {
-      setError(`Minimum payout amount is ${minimumPayoutAmount.toFixed(2)}.`)
+      setError(t('wallet.requestPayout.errors.minimumAmount', { amount: minimumPayoutAmount.toFixed(2) }))
       return
     }
 
@@ -60,7 +62,7 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
       onClose()
     } catch (err: any) {
       console.error('Payout request failed:', err)
-      setError(err?.message ?? 'Payout request failed.')
+      setError(err?.message ?? t('wallet.requestPayout.errors.requestFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -70,18 +72,17 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} size="md">
       <ModalContent>
         <ModalHeader>
-          <h2 className="text-lg font-bold">Request Payout</h2>
+          <h2 className="text-lg font-bold">{t('wallet.requestPayout.title')}</h2>
         </ModalHeader>
         <ModalBody>
           <p className="text-sm text-gray-600 mb-4">
-            Your current payout balance is <span className="font-semibold">{payoutBalance.toFixed(2)}</span>.
-            Minimum payout amount is {minimumPayoutAmount.toFixed(2)}.
+            {t('wallet.requestPayout.subtitle', { balance: payoutBalance.toFixed(2), min: minimumPayoutAmount.toFixed(2) })}
           </p>
           <Input
             type="number"
-            label="Amount"
+            label={t('wallet.requestPayout.amountLabel')}
             startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
-            placeholder="Enter amount"
+            placeholder={t('wallet.requestPayout.amountPlaceholder')}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             isRequired
@@ -90,7 +91,7 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
-            Cancel
+            {t('common.buttons.cancel')}
           </Button>
           <Button
             className="bg-primary-600 hover:bg-primary-700 text-white"
@@ -98,7 +99,7 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
             disabled={isLoading}
             startContent={isLoading ? <Spinner size="sm" /> : undefined}
           >
-            {isLoading ? 'Submitting...' : 'Request Payout'}
+            {isLoading ? t('wallet.requestPayout.submitting') : t('wallet.requestPayout.submit')}
           </Button>
         </ModalFooter>
       </ModalContent>

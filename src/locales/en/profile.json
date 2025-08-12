@@ -1,0 +1,53 @@
+{
+  "edit": {
+    "title": "Edit Profile",
+    "subtitle": "Update your personal information and preferences",
+    "validation": {
+      "fillAllPasswordFields": "Please fill all password fields",
+      "passwordsDoNotMatch": "New passwords do not match",
+      "passwordTooShort": "New password must be at least 8 characters"
+    },
+    "picture": {
+      "title": "Profile Picture",
+      "upload": "Upload a new profile picture",
+      "changePhoto": "Change Photo"
+    },
+    "basic": {
+      "title": "Basic Information",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "dateOfBirth": "Date of Birth",
+      "preferredLanguage": "Preferred Language",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell others about yourself..."
+    },
+    "security": {
+      "title": "Security",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password"
+    },
+    "privacy": {
+      "title": "Privacy & Notifications",
+      "profileVisibility": "Profile Visibility",
+      "profileVisibilityDescription": "Control who can see your profile information",
+      "visibility": {
+        "public": "Public - Visible to everyone",
+        "hostsOnly": "Hosts Only - Only property hosts can see details",
+        "private": "Private - Only basic info visible"
+      },
+      "emailNotifications": "Email Notifications",
+      "emailDescription": "Receive booking updates and messages via email",
+      "smsNotifications": "SMS Notifications",
+      "smsDescription": "Receive urgent notifications via SMS"
+    },
+    "saveChanges": "Save Changes"
+  }
+}
+
+
+
+

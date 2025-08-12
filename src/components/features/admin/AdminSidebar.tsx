@@ -1,5 +1,6 @@
 import React from 'react'
 import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 interface AdminSidebarProps {
   currentSection: string
@@ -16,14 +17,15 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onToggle,
   onLogout
 }) => {
+  const { t } = useTranslation(['admin', 'auth'])
   const menuItems = [
-    { key: 'dashboard', label: 'Dashboard', icon: Home },
-    { key: 'users', label: 'User Management', icon: Users },
-    { key: 'properties', label: 'Property Approval', icon: Building2 },
-    { key: 'bookings', label: 'Booking Management', icon: Calendar },
-    { key: 'activities', label: 'Activity Log', icon: Clock },
-    { key: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { key: 'settings', label: 'System Settings', icon: Settings },
+    { key: 'dashboard', label: t('admin.navigation.dashboard'), icon: Home },
+    { key: 'users', label: t('admin.navigation.users'), icon: Users },
+    { key: 'properties', label: t('admin.navigation.properties'), icon: Building2 },
+    { key: 'bookings', label: t('admin.navigation.bookings'), icon: Calendar },
+    { key: 'activities', label: t('admin.dashboard.recentActivity', { defaultValue: 'Activity Log' }), icon: Clock },
+    { key: 'analytics', label: t('admin.navigation.reports', { defaultValue: 'Analytics' }), icon: BarChart3 },
+    { key: 'settings', label: t('admin.navigation.settings'), icon: Settings },
   ]
 
   const handleLogout = () => {
@@ -53,7 +55,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
             <div>
               <h1 className="font-script font-bold text-xl text-primary-600">Nomad Lux</h1>
-              <p className="text-xs text-gray-500">Admin Panel</p>
+              <p className="text-xs text-gray-500">{t('admin.banner.title')}</p>
             </div>
           </div>
           
@@ -93,7 +95,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
           >
             <LogOut className="w-5 h-5" />
-            <span>Sign Out</span>
+            <span>{t('auth.actions.logout')}</span>
           </button>
         </div>
       </div>

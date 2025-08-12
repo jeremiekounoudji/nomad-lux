@@ -2,6 +2,7 @@ import React from 'react'
 import { Card, CardBody, Button, Progress } from '@heroui/react'
 import { useAuthStore } from '../../lib/stores/authStore'
 import { UploadProgress } from '../../utils/fileUpload'
+import { useTranslation } from 'react-i18next'
 
 interface LoadingDebugProps {
   isLoading?: boolean;
@@ -16,6 +17,7 @@ const LoadingDebug: React.FC<LoadingDebugProps> = ({
   error = null,
   className = '' 
 }) => {
+  const { t } = useTranslation(['common'])
   const authStore = useAuthStore()
 
   if (!isLoading && uploadProgress.length === 0 && !error) {
@@ -30,15 +32,15 @@ const LoadingDebug: React.FC<LoadingDebugProps> = ({
   return (
     <Card className={`bg-yellow-50 border-yellow-200 ${className}`}>
       <CardBody className="p-4">
-        <h3 className="text-sm font-semibold text-yellow-800 mb-3">🔧 Debug Info</h3>
+        <h3 className="text-sm font-semibold text-yellow-800 mb-3">🔧 {t('common.debug.info', 'Debug Info')}</h3>
         
         {/* Upload Progress Section */}
         {totalUploads > 0 && (
           <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-xs font-medium">Upload Progress</span>
+              <span className="text-xs font-medium">{t('common.upload.progress', 'Upload Progress')}</span>
               <span className="text-xs text-gray-600">
-                {completedUploads}/{totalUploads} completed
+                {t('common.upload.completedOfTotal', { completed: completedUploads, total: totalUploads, defaultValue: '{{completed}}/{{total}} completed' })}
               </span>
             </div>
             
@@ -74,29 +76,29 @@ const LoadingDebug: React.FC<LoadingDebugProps> = ({
 
         {/* Error Section */}
         {error && (
-          <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded">
-            <div className="text-xs font-medium text-red-800">❌ Error</div>
-            <div className="text-xs text-red-600 mt-1">{error}</div>
+            <div className="mb-4 p-2 bg-red-50 border border-red-200 rounded">
+              <div className="text-xs font-medium text-red-800">❌ {t('common.messages.error')}</div>
+              <div className="text-xs text-red-600 mt-1">{error}</div>
           </div>
         )}
 
         {/* Loading State */}
         {isLoading && (
-          <div className="mb-4 p-2 bg-blue-50 border border-blue-200 rounded">
-            <div className="text-xs font-medium text-blue-800">⏳ Loading...</div>
+            <div className="mb-4 p-2 bg-blue-50 border border-blue-200 rounded">
+              <div className="text-xs font-medium text-blue-800">⏳ {t('common.messages.loading')}</div>
           </div>
         )}
 
         {/* Auth Debug Info */}
         <div className="text-xs space-y-1">
           <div>
-            <strong>User Auth Status:</strong>
+            <strong>{t('common.debug.userAuthStatus', 'User Auth Status')}:</strong>
             <div className="ml-2">
-              • isLoading: {authStore.isLoading ? '⏳ true' : '✅ false'}
-              • isAuthenticated: {authStore.isAuthenticated ? '✅ true' : '❌ false'}
-              • isAdmin: {authStore.isAdmin ? '✅ true' : '❌ false'}
-              • user: {authStore.user ? `✅ ${authStore.user.email}` : '❌ null'}
-              • userId: {authStore.user?.id ? `✅ ${authStore.user.id}` : '❌ null'}
+              • {t('common.debug.isLoading', 'isLoading')}: {authStore.isLoading ? '⏳ true' : '✅ false'}
+              • {t('common.debug.isAuthenticated', 'isAuthenticated')}: {authStore.isAuthenticated ? '✅ true' : '❌ false'}
+              • {t('common.debug.isAdmin', 'isAdmin')}: {authStore.isAdmin ? '✅ true' : '❌ false'}
+              • {t('common.debug.user', 'user')}: {authStore.user ? `✅ ${authStore.user.email}` : '❌ null'}
+              • {t('common.debug.userId', 'userId')}: {authStore.user?.id ? `✅ ${authStore.user.id}` : '❌ null'}
             </div>
           </div>
         </div>

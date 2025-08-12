@@ -1,0 +1,298 @@
+{
+  "banner": {
+    "title": "Panneau d'administration",
+    "subtitle": "Gérez les propriétés, les réservations, les utilisateurs et les paramètres de la plateforme"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "properties": "Propriétés",
+    "bookings": "Réservations",
+    "users": "Utilisateurs",
+    "payments": "Paiements",
+    "settings": "Paramètres",
+    "reports": "Rapports",
+    "notifications": "Notifications",
+    "support": "Support"
+  },
+  "dashboard": {
+    "overview": "Aperçu",
+    "totalUsers": "Total des utilisateurs",
+    "totalProperties": "Total des propriétés",
+    "totalBookings": "Total des réservations",
+    "totalRevenue": "Chiffre d'affaires total",
+    "activeProperties": "Propriétés actives",
+    "pendingApprovals": "Approbations en attente",
+    "recentActivity": "Activité récente",
+    "topHosts": "Meilleurs hôtes",
+    "popularProperties": "Propriétés populaires",
+    "bookingTrends": "Tendances des réservations",
+    "revenueTrends": "Tendances des revenus",
+    "submitted": "Soumis"
+  },
+  "messages": {
+    "noProperties": "Il n'y a pas de propriétés à afficher sur la carte.",
+    "propertyMapDescription": "Affichez toutes les propriétés réparties par lieu sur une carte interactive."
+  },
+  "properties": {
+    "allProperties": "Toutes les propriétés",
+    "pendingApproval": "En attente d'approbation",
+    "approved": "Approuvées",
+    "rejected": "Rejetées",
+    "suspended": "Suspendues",
+    "approveProperty": "Approuver la propriété",
+    "rejectProperty": "Rejeter la propriété",
+    "suspendProperty": "Suspendre la propriété",
+    "viewProperty": "Voir la propriété",
+    "editProperty": "Modifier la propriété",
+    "deleteProperty": "Supprimer la propriété",
+    "propertyDetails": "Détails de la propriété",
+    "hostInformation": "Informations de l'hôte",
+    "approvalStatus": "Statut d'approbation",
+    "rejectionReason": "Raison du rejet",
+    "suspensionReason": "Raison de la suspension"
+  },
+  "bookings": {
+    "allBookings": "Toutes les réservations",
+    "pendingBookings": "Réservations en attente",
+    "confirmedBookings": "Réservations confirmées",
+    "cancelledBookings": "Réservations annulées",
+    "completedBookings": "Réservations terminées",
+    "bookingDetails": "Détails de la réservation",
+    "guestInformation": "Informations de l'invité",
+    "hostInformation": "Informations de l'hôte",
+    "paymentStatus": "Statut du paiement",
+    "bookingStatus": "Statut de la réservation",
+    "refundBooking": "Rembourser la réservation",
+    "cancelBooking": "Annuler la réservation"
+  },
+  "users": {
+    "allUsers": "Tous les utilisateurs",
+    "hosts": "Hôtes",
+    "guests": "Invités",
+    "admins": "Administrateurs",
+    "activeUsers": "Utilisateurs actifs",
+    "suspendedUsers": "Utilisateurs suspendus",
+    "bannedUsers": "Utilisateurs bannis",
+    "userDetails": "Détails de l'utilisateur",
+    "accountStatus": "Statut du compte",
+    "userRole": "Rôle de l'utilisateur",
+    "suspendUser": "Suspendre l'utilisateur",
+    "banUser": "Bannir l'utilisateur",
+    "activateUser": "Activer l'utilisateur",
+    "deleteUser": "Supprimer l'utilisateur",
+    "viewProfile": "Voir le profil",
+    "editProfile": "Modifier le profil"
+  },
+  "payments": {
+    "allPayments": "Tous les paiements",
+    "pendingPayments": "Paiements en attente",
+    "completedPayments": "Paiements terminés",
+    "failedPayments": "Paiements échoués",
+    "refundedPayments": "Paiements remboursés",
+    "paymentDetails": "Détails du paiement",
+    "paymentMethod": "Mode de paiement",
+    "paymentAmount": "Montant du paiement",
+    "processingFee": "Frais de traitement",
+    "netAmount": "Montant net",
+    "refundPayment": "Rembourser le paiement",
+    "payoutRequests": "Demandes de paiement",
+    "approvePayout": "Approuver le paiement",
+    "rejectPayout": "Rejeter le paiement"
+  },
+  "settings": {
+    "generalSettings": "Paramètres généraux",
+    "bookingSettings": "Paramètres de réservation",
+    "paymentSettings": "Paramètres de paiement",
+    "notificationSettings": "Paramètres de notification",
+    "securitySettings": "Paramètres de sécurité",
+    "contentSettings": "Paramètres de contenu",
+    "cancellationSettings": "Paramètres d'annulation",
+    "platformFee": "Frais de plateforme",
+    "minimumPayout": "Paiement minimum",
+    "payoutSchedule": "Calendrier de paiement",
+    "autoApproval": "Approbation automatique",
+    "emailNotifications": "Notifications par email",
+    "pushNotifications": "Notifications push",
+    "maintenanceMode": "Mode maintenance"
+  },
+  "reports": {
+    "bookingReports": "Rapports de réservation",
+    "revenueReports": "Rapports de revenus",
+    "userReports": "Rapports d'utilisateurs",
+    "propertyReports": "Rapports de propriétés",
+    "paymentReports": "Rapports de paiement",
+    "exportReport": "Exporter le rapport",
+    "generateReport": "Générer le rapport",
+    "reportPeriod": "Période du rapport",
+    "dailyReport": "Rapport quotidien",
+    "weeklyReport": "Rapport hebdomadaire",
+    "monthlyReport": "Rapport mensuel",
+    "yearlyReport": "Rapport annuel"
+  },
+  "actions": {
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "suspend": "Suspendre",
+    "activate": "Activer",
+    "ban": "Bannir",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "export": "Exporter",
+    "import": "Importer",
+    "refresh": "Actualiser",
+    "filter": "Filtrer",
+    "search": "Rechercher",
+    "bulkAction": "Action groupée",
+    "selectAll": "Tout sélectionner",
+    "deselectAll": "Tout désélectionner"
+  },
+  "messages": {
+    "propertyApproved": "Propriété approuvée avec succès",
+    "propertyRejected": "Propriété rejetée avec succès",
+    "propertySuspended": "Propriété suspendue avec succès",
+    "userSuspended": "Utilisateur suspendu avec succès",
+    "userActivated": "Utilisateur activé avec succès",
+    "userBanned": "Utilisateur banni avec succès",
+    "paymentRefunded": "Paiement remboursé avec succès",
+    "payoutApproved": "Paiement approuvé avec succès",
+    "payoutRejected": "Paiement rejeté avec succès",
+    "settingsUpdated": "Paramètres mis à jour avec succès",
+    "reportGenerated": "Rapport généré avec succès",
+    "bulkActionCompleted": "Action groupée terminée avec succès",
+    "confirmAction": "Êtes-vous sûr de vouloir effectuer cette action ?",
+    "actionCannotBeUndone": "Cette action ne peut pas être annulée"
+  },
+  "login": {
+    "title": "Accès administrateur",
+    "subtitle": "Administration Nomad Lux",
+    "email": "Email administrateur",
+    "passwordPlaceholder": "Saisissez le mot de passe administrateur",
+    "signIn": "Se connecter au panneau d'administration",
+    "needAccess": "Besoin d'un accès administrateur ?",
+    "requestAccess": "Demander un accès",
+    "infoTitle": "Accès administrateur :",
+    "info": "Seuls les comptes avec les rôles admin ou super_admin peuvent accéder au panneau d'administration."
+  },
+  "register": {
+    "title": "Créer un compte administrateur",
+    "fullName": "Nom complet",
+    "fullNamePlaceholder": "Votre nom complet",
+    "phoneOptional": "Numéro de téléphone (facultatif)",
+    "reason": "Raison de la demande d'accès administrateur",
+    "reasonPlaceholder": "Veuillez expliquer pourquoi vous avez besoin d'un accès administrateur à Nomad Lux...",
+    "creating": "Création du compte administrateur...",
+    "create": "Créer un compte administrateur",
+    "infoTitle": "Inscription administrateur :",
+    "info": "Votre compte sera créé avec des privilèges administratifs complets et un accès immédiat au panneau d'administration.",
+    "hasAccount": "Vous avez déjà un compte administrateur ?",
+    "signInHere": "Connectez-vous ici"
+  },
+  "activity": {
+    "title": "Journal d'activité",
+    "subtitle": "Surveillez toutes les activités et événements de la plateforme",
+    "advancedFilters": "Filtres avancés",
+    "searchPlaceholder": "Recherchez des activités par action, utilisateur, cible...",
+    "severity": {
+      "label": "Sévérité",
+      "all": "Toutes les sévérités",
+      "low": "Faible",
+      "medium": "Moyenne",
+      "high": "Élevée",
+      "critical": "Critique"
+    },
+    "tabs": {
+      "allActivities": "Toutes les activités ({{count}})",
+      "users": "Utilisateurs ({{count}})",
+      "properties": "Propriétés ({{count}})",
+      "bookings": "Réservations ({{count}})",
+      "payments": "Paiements ({{count}})",
+      "security": "Sécurité ({{count}})",
+      "system": "Système ({{count}})"
+    },
+    "empty": {
+      "title": "Aucune activité trouvée",
+      "subtitle": "Essayez d'ajuster vos filtres de recherche pour voir plus de résultats."
+    }
+  }
+  ,
+  "analytics": {
+    "title": "Tableau de bord analytique",
+    "subtitle": "Informations détaillées et métriques de performance de la plateforme",
+    "subtitleShort": "Aperçus de la plateforme et métriques de performance",
+    "vsLastMonth": "par rapport au mois dernier",
+    "period": {
+      "select": "Sélectionner une période",
+      "last7": "7 derniers jours",
+      "last30": "30 derniers jours",
+      "last90": "90 derniers jours",
+      "lastYear": "L'année dernière"
+    },
+    "customRange": "Plage personnalisée",
+    "tabs": {
+      "revenue": "Revenus"
+    },
+    "sections": {
+      "revenueTrend": "Tendance des revenus",
+      "bookingStatus": "Statut des réservations",
+      "userGrowth": "Croissance des utilisateurs",
+      "platformHealth": "Santé de la plateforme"
+    },
+    "revenue": {
+      "monthlyRevenue": "Revenus mensuels",
+      "breakdown": "Répartition des revenus",
+      "commission": "Commission",
+      "serviceFees": "Frais de service",
+      "premiumFeatures": "Fonctionnalités premium"
+    },
+    "topPerformingProperties": "Propriétés les plus performantes",
+    "topPerformingHosts": "Hôtes les plus performants",
+    "labels": {
+      "bookings": "{{count}} réservations",
+      "revenue": "revenus",
+      "properties": "{{count}} propriétés",
+      "responseRate": "{{value}}% taux de réponse",
+      "totalRevenue": "revenus totaux",
+      "host": "Hôte",
+      "bookingsOnly": "Réservations",
+      "rating": "Note",
+      "revenueOnly": "Revenus",
+      "avgDays": "Moy. {{value}} jours"
+    },
+    "users": {
+      "statistics": "Statistiques des utilisateurs",
+      "totalRegistered": "Nombre total d'utilisateurs enregistrés",
+      "active30Days": "Utilisateurs actifs (30 jours)",
+      "newThisMonth": "Nouveaux utilisateurs (ce mois-ci)",
+      "retentionRate": "Taux de rétention des utilisateurs"
+    },
+    "properties": {
+      "performance": "Performance des propriétés"
+    },
+    "bookings": {
+      "statusDistribution": "Répartition du statut des réservations",
+      "metrics": "Métriques des réservations",
+      "avgValue": "Valeur moyenne des réservations",
+      "successRate": "Taux de réussite des réservations",
+      "avgStay": "Durée moyenne des séjours",
+      "repeatRate": "Taux de réservations répétées"
+    }
+  }
+  ,
+  "locationVerification": {
+    "title": "Vérification de l'emplacement",
+    "coordsUnavailable": {
+      "title": "Coordonnées indisponibles",
+      "subtitle": "Cette propriété n'a pas de coordonnées d'emplacement valides."
+    },
+    "verified": "Emplacement vérifié",
+    "invalid": "Emplacement invalide",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "verifyButton": "Vérifier l'emplacement",
+    "city": "Ville",
+    "country": "Pays",
+    "neighborhood": "Quartier",
+    "address": "Adresse"
+  }
+}

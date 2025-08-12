@@ -1,0 +1,61 @@
+{
+  "wallet": {
+    "banner": {
+      "title": "Portefeuille",
+      "subtitle": "Gérez vos gains, suivez les paiements et demandez des virements"
+    },
+    "cards": {
+      "totalBalance": "Solde total",
+      "pending": "En attente",
+      "failed": "Échoué",
+      "successful": "Réussi",
+      "transactions": "({{count}} transactions)",
+      "payoutBalance": "Solde disponible",
+      "lastPayout": "Dernier virement",
+      "never": "Jamais"
+    },
+    "payout": {
+      "available": "Disponible pour le virement",
+      "nextPayout": "Prochain virement disponible :",
+      "ready": "Prêt pour le virement"
+    },
+    "actions": {
+      "payout": "Virement"
+    },
+    "requestPayout": {
+      "title": "Demander un virement",
+      "subtitle": "Votre solde disponible est de {{balance}}. Le montant minimum pour un virement est de {{min}}.",
+      "amountLabel": "Montant",
+      "amountPlaceholder": "Saisir le montant",
+      "submit": "Demander un virement",
+      "submitting": "Soumission...",
+      "errors": {
+        "invalidAmount": "Veuillez saisir un montant valide.",
+        "exceedsBalance": "Le montant dépasse le solde disponible.",
+        "minimumAmount": "Le montant minimum pour un virement est de {{amount}}.",
+        "requestFailed": "La demande de virement a échoué."
+      }
+    },
+    "transactions": {
+      "title": "Transactions du portefeuille",
+      "empty": "Aucune transaction pour le moment",
+      "payment": "Paiement"
+    },
+    "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "refresh": "Rafraîchir",
+      "refreshing": "Rafraîchissement...",
+      "pageOf": "Page {{current}} sur {{total}}"
+    },
+    "requests": {
+      "title": "Demandes de virement",
+      "date": "Date",
+      "amount": "Montant",
+      "status": "Statut",
+      "empty": "Aucune demande de virement.",
+      "totalRequested": "Total demandé"
+    }
+  }
+}
+

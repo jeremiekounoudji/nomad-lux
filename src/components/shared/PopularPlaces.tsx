@@ -1,6 +1,7 @@
 import React from 'react'
 import { MapPin } from 'lucide-react'
 import { useHomeFeed } from '../../hooks/useHomeFeed'
+import { useTranslation } from 'react-i18next'
 
 interface PopularPlace {
   id: string
@@ -25,6 +26,7 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
   onExploreClick 
 }) => {
   const { popularPlaces, popularPlacesLoading, popularPlacesError } = useHomeFeed()
+  const { t } = useTranslation(['property', 'common'])
 
   // Transform RPC data to match component expectations
   const transformedPlaces = popularPlaces.map(place => ({
@@ -32,7 +34,7 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
     name: place.name,
     country: place.country,
     image: place.featured_image,
-    propertyCount: `${place.property_count} properties`,
+    propertyCount: t('property.labels.propertiesCount', { count: place.property_count, defaultValue: `${place.property_count} properties` }),
     averagePrice: place.average_price
   }))
 
@@ -40,7 +42,7 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
     return (
       <div className="w-full">
         <div className="flex items-center justify-between mb-4 px-4">
-          <h2 className="text-lg font-semibold text-gray-900">Popular Places</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{t('property.home.popularPlaces', 'Popular Places')}</h2>
         </div>
         <div className="flex gap-3 px-4">
           {Array.from({ length: 6 }).map((_, index) => (
@@ -57,10 +59,10 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
     return (
       <div className="w-full">
         <div className="flex items-center justify-between mb-4 px-4">
-          <h2 className="text-lg font-semibold text-gray-900">Popular Places</h2>
+          <h2 className="text-lg font-semibold text-gray-900">{t('property.home.popularPlaces', 'Popular Places')}</h2>
         </div>
         <div className="text-center py-8 text-gray-500">
-          <p>Failed to load popular destinations</p>
+          <p>{t('property.messages.failedToLoadPopular', 'Failed to load popular destinations')}</p>
         </div>
       </div>
     )
@@ -68,9 +70,9 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4 px-4">
-        <h2 className="text-lg font-semibold text-gray-900">Popular Places</h2>
+        <h2 className="text-lg font-semibold text-gray-900">{t('property.home.popularPlaces', 'Popular Places')}</h2>
         <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-          See all
+          {t('common.buttons.view', 'See all')}
         </button>
       </div>
       
@@ -110,9 +112,7 @@ const PopularPlaces: React.FC<PopularPlacesProps> = ({
               <div className="w-8 h-8 rounded-full bg-gray-200 group-hover:bg-primary-100 flex items-center justify-center mx-auto mb-1">
                 <MapPin className="w-4 h-4 text-gray-500 group-hover:text-primary-500" />
               </div>
-              <p className="text-xs text-gray-600 group-hover:text-primary-600 font-medium">
-                Explore
-              </p>
+              <p className="text-xs text-gray-600 group-hover:text-primary-600 font-medium">{t('common.buttons.explore', 'Explore')}</p>
             </div>
           </div>
         </div>

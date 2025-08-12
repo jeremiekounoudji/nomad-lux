@@ -5,6 +5,9 @@ import { useAuthStore } from '../../lib/stores/authStore'
 import { Outlet, useLocation, NavLink } from 'react-router-dom'
 import { ROUTES } from '../../router/types'
 import { useNavigation } from '../../hooks/useNavigation'
+import { NotificationCenter } from '../shared/NotificationCenter'
+import { CompactLanguageSelector } from '../shared/LanguageSelector'
+import { useTranslation } from '../../lib/stores/translationStore'
 import Sidebar from './Sidebar'
 import toast from 'react-hot-toast'
 
@@ -12,6 +15,7 @@ const MainLayout: React.FC = () => {
   const location = useLocation()
   const { signOut } = useAuth()
   const { isAuthenticated, user } = useAuthStore()
+  const { t } = useTranslation('navigation')
   const { 
     isDrawerOpen,
     closeDrawer,
@@ -21,30 +25,30 @@ const MainLayout: React.FC = () => {
   } = useNavigation()
   
   const drawerItems = [
-    { path: ROUTES.SEARCH, label: 'Search', icon: Search },
-    { path: ROUTES.MY_LISTINGS, label: 'My Listings', icon: Home, requireAuth: true },
-    { path: ROUTES.BOOKING_REQUESTS, label: 'Booking Requests', icon: ClipboardList, requireAuth: true },
-    { path: ROUTES.NOTIFICATIONS, label: 'Notifications', icon: Bell, requireAuth: true },
-    { path: ROUTES.WALLET, label: 'Wallet', icon: Wallet, requireAuth: true },
-    { path: ROUTES.HELP, label: 'Help Center', icon: HelpCircle },
-    { path: ROUTES.TERMS, label: 'Terms & Conditions', icon: Shield },
+    { path: ROUTES.SEARCH, label: t('menu.search'), icon: Search },
+    { path: ROUTES.MY_LISTINGS, label: t('menu.properties'), icon: Home, requireAuth: true },
+    { path: ROUTES.BOOKING_REQUESTS, label: t('menu.bookings'), icon: ClipboardList, requireAuth: true },
+    { path: ROUTES.NOTIFICATIONS, label: t('menu.notifications'), icon: Bell, requireAuth: true },
+    { path: ROUTES.WALLET, label: t('menu.wallet'), icon: Wallet, requireAuth: true },
+    { path: ROUTES.HELP, label: t('menu.help'), icon: HelpCircle },
+    { path: ROUTES.TERMS, label: t('footer.terms'), icon: Shield },
     ...(isAuthenticated ? [] : [
-      { path: ROUTES.LOGIN, label: 'Login', icon: LogIn },
-      { path: ROUTES.REGISTER, label: 'Register', icon: UserPlus },
+      { path: ROUTES.LOGIN, label: t('menu.login'), icon: LogIn },
+      { path: ROUTES.REGISTER, label: t('menu.signup'), icon: UserPlus },
     ]),
-    { path: ROUTES.ADMIN_LOGIN, label: 'Admin Access', icon: Crown }
+    { path: ROUTES.ADMIN_LOGIN, label: t('menu.admin'), icon: Crown }
   ]
 
   const handleLogout = async () => {
     try {
       console.log('🚪 User logout initiated')
       await signOut()
-      toast.success('Logged out successfully')
+      toast.success(t('messages.logoutSuccess', 'Logged out successfully'))
       closeDrawer()
       navigateWithAuth(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       console.error('❌ Logout error:', error)
-      toast.error('Failed to logout')
+      toast.error(t('messages.logoutError', 'Failed to logout'))
     }
   }
 
@@ -76,7 +80,7 @@ const MainLayout: React.FC = () => {
               </span>
             </NavLink>
             
-            {/* Right: Search and Notification */}
+            {/* Right: Search, Language, and Notification */}
             <div className="flex items-center gap-2 flex-shrink-0">
               <NavLink 
                 to={ROUTES.SEARCH}
@@ -84,13 +88,10 @@ const MainLayout: React.FC = () => {
               >
                 <Search className="w-5 h-5" />
               </NavLink>
-              <NavLink 
-                to={ROUTES.NOTIFICATIONS}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
-              >
-                <Bell className="w-5 h-5" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full"></div>
-              </NavLink>
+              <CompactLanguageSelector className="flex-shrink-0" />
+              {isAuthenticated && (
+                <NotificationCenter className="p-2 hover:bg-gray-100 rounded-lg transition-colors" />
+              )}
             </div>
           </div>
         </div>
@@ -143,7 +144,7 @@ const MainLayout: React.FC = () => {
                     )}
                   </div>
                   <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
-                    <span className="capitalize">{user.user_role === 'both' ? 'Host & Guest' : user.user_role}</span>
+                    <span className="capitalize">{user.user_role === 'both' ? t('profile.hostAndGuest', 'Host & Guest') : t(`profile.${user.user_role}`, user.user_role)}</span>
                     <span>⭐ {(user.guest_rating ?? 0).toFixed(1)}</span>
                     {user.is_host && (
                       <span>🏠 {user.total_properties}</span>
@@ -157,8 +158,8 @@ const MainLayout: React.FC = () => {
                   <User className="w-6 h-6 text-gray-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 truncate">Guest User</h3>
-                  <p className="text-sm text-gray-500 truncate">Not signed in</p>
+                  <h3 className="font-semibold text-gray-900 truncate">{t('profile.guestUser', 'Guest User')}</h3>
+                  <p className="text-sm text-gray-500 truncate">{t('profile.notSignedIn', 'Not signed in')}</p>
                 </div>
               </div>
             )}
@@ -190,15 +191,23 @@ const MainLayout: React.FC = () => {
               ))}
             </nav>
 
+            {/* Language Selector */}
+            <div className="mt-6 pt-4 border-t border-gray-100 px-3">
+              <div className="px-4 py-2">
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.language', 'Language')}</p>
+                <CompactLanguageSelector />
+              </div>
+            </div>
+
             {/* Logout */}
             {isAuthenticated && (
-              <div className="mt-8 pt-4 border-t border-gray-100 px-3">
+              <div className="mt-4 pt-4 border-t border-gray-100 px-3">
                 <button 
                   onClick={handleLogout}
                   className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600 min-w-0"
                 >
                   <LogOut className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-base truncate">Logout</span>
+                  <span className="text-base truncate">{t('menu.logout')}</span>
                 </button>
               </div>
             )}
@@ -212,7 +221,7 @@ const MainLayout: React.FC = () => {
               <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search destinations, properties, or hosts..."
+                placeholder={t('search.placeholder', 'Search destinations, properties, or hosts...')}
                 className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -223,6 +232,8 @@ const MainLayout: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-4 ml-6">
+            {/* Language Selector */}
+            <CompactLanguageSelector />
             {/* Admin Panel - always visible */}
             <NavLink 
               to={ROUTES.ADMIN_LOGIN}
@@ -239,14 +250,10 @@ const MainLayout: React.FC = () => {
                 <Plus className="w-5 h-5" />
               </NavLink>
             )}
-            {/* Notification Bell - always visible */}
-            <NavLink 
-              to={ROUTES.NOTIFICATIONS}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors relative"
-            >
-              <Bell className="w-5 h-5" />
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-secondary-500 rounded-full"></div>
-            </NavLink>
+            {/* Notification Center - authenticated only */}
+            {isAuthenticated && (
+              <NotificationCenter className="p-2 hover:bg-gray-100 rounded-lg transition-colors" />
+            )}
             {/* Sign Out - authenticated only */}
             {isAuthenticated && (
               <button 

@@ -16,6 +16,7 @@ import {
 } from '@heroui/react'
 import { User, Mail, Phone, MapPin, Calendar, Camera, Eye, EyeOff } from 'lucide-react'
 import { ProfileEditModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,
@@ -23,6 +24,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   user,
   onSave
 }) => {
+  const { t } = useTranslation(['profile', 'common'])
   const [formData, setFormData] = useState({
     name: user.display_name || '',
     email: user.email || '',
@@ -68,15 +70,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       // Validate password fields if changing password
       if (showPasswordFields) {
         if (!passwords.current || !passwords.new || !passwords.confirm) {
-          alert('Please fill all password fields')
+          alert(t('profile.edit.validation.fillAllPasswordFields'))
           return
         }
         if (passwords.new !== passwords.confirm) {
-          alert('New passwords do not match')
+          alert(t('profile.edit.validation.passwordsDoNotMatch'))
           return
         }
         if (passwords.new.length < 8) {
-          alert('New password must be at least 8 characters')
+          alert(t('profile.edit.validation.passwordTooShort'))
           return
         }
       }
@@ -127,9 +129,9 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <User className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Edit Profile</h2>
+                <h2 className="text-xl font-bold">{t('profile.edit.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">Update your personal information and preferences</p>
+              <p className="text-sm text-gray-600">{t('profile.edit.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
@@ -137,15 +139,15 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <div className="flex items-center gap-4">
                   <Avatar src={user.avatar_url} size="lg" />
                   <div>
-                    <h4 className="font-semibold">Profile Picture</h4>
-                    <p className="text-sm text-gray-600 mb-2">Upload a new profile picture</p>
+                    <h4 className="font-semibold">{t('profile.edit.picture.title')}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{t('profile.edit.picture.upload')}</p>
                     <Button
                       size="sm"
                       variant="flat"
                       color="secondary"
                       startContent={<Camera className="w-4 h-4" />}
                     >
-                      Change Photo
+                      {t('profile.edit.picture.changePhoto')}
                     </Button>
                   </div>
                 </div>
@@ -154,11 +156,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
                 {/* Basic Information */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold">Basic Information</h4>
+                  <h4 className="font-semibold">{t('profile.edit.basic.title')}</h4>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
-                      label="Full Name"
+                      label={t('profile.edit.basic.fullName')}
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       startContent={<User className="w-4 h-4 text-gray-400" />}
@@ -166,7 +168,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                     
                     <Input
-                      label="Email"
+                      label={t('profile.edit.basic.email')}
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
@@ -175,7 +177,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                     
                     <Input
-                      label="Phone"
+                      label={t('profile.edit.basic.phone')}
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
@@ -183,14 +185,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                     
                     <Input
-                      label="Location"
+                      label={t('profile.edit.basic.location')}
                       value={formData.location}
                       onChange={(e) => handleInputChange('location', e.target.value)}
                       startContent={<MapPin className="w-4 h-4 text-gray-400" />}
                     />
                     
                     <Input
-                      label="Date of Birth"
+                      label={t('profile.edit.basic.dateOfBirth')}
                       type="date"
                       value={formData.dateOfBirth}
                       onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
@@ -198,7 +200,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     />
                     
                     <Select
-                      label="Preferred Language"
+                      label={t('profile.edit.basic.preferredLanguage')}
                       selectedKeys={[formData.preferredLanguage]}
                       onSelectionChange={(keys) => handleInputChange('preferredLanguage', Array.from(keys)[0] as string)}
                     >
@@ -211,8 +213,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   </div>
                   
                   <Textarea
-                    label="Bio"
-                    placeholder="Tell others about yourself..."
+                    label={t('profile.edit.basic.bio')}
+                    placeholder={t('profile.edit.basic.bioPlaceholder')}
                     value={formData.bio}
                     onChange={(e) => handleInputChange('bio', e.target.value)}
                     minRows={3}
@@ -225,21 +227,21 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 {/* Password Change */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-semibold">Security</h4>
+                    <h4 className="font-semibold">{t('profile.edit.security.title')}</h4>
                     <Switch
                       size="sm"
                       isSelected={showPasswordFields}
                       onValueChange={setShowPasswordFields}
                       color="primary"
                     >
-                      Change Password
+                      {t('profile.edit.security.changePassword')}
                     </Switch>
                   </div>
                   
                   {showPasswordFields && (
                     <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
                       <Input
-                        label="Current Password"
+                        label={t('profile.edit.security.currentPassword')}
                         type="password"
                         value={passwords.current}
                         onChange={(e) => handlePasswordChange('current', e.target.value)}
@@ -247,7 +249,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         isRequired
                       />
                       <Input
-                        label="New Password"
+                        label={t('profile.edit.security.newPassword')}
                         type="password"
                         value={passwords.new}
                         onChange={(e) => handlePasswordChange('new', e.target.value)}
@@ -255,7 +257,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         isRequired
                       />
                       <Input
-                        label="Confirm New Password"
+                        label={t('profile.edit.security.confirmNewPassword')}
                         type="password"
                         value={passwords.confirm}
                         onChange={(e) => handlePasswordChange('confirm', e.target.value)}
@@ -270,24 +272,24 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
                 {/* Privacy & Notifications */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold">Privacy & Notifications</h4>
+                  <h4 className="font-semibold">{t('profile.edit.privacy.title')}</h4>
                   
                   <Select
-                    label="Profile Visibility"
+                    label={t('profile.edit.privacy.profileVisibility')}
                     selectedKeys={[formData.profileVisibility]}
                     onSelectionChange={(keys) => handleInputChange('profileVisibility', Array.from(keys)[0] as string)}
-                    description="Control who can see your profile information"
+                    description={t('profile.edit.privacy.profileVisibilityDescription')}
                   >
-                    <SelectItem key="public">Public - Visible to everyone</SelectItem>
-                    <SelectItem key="hosts-only">Hosts Only - Only property hosts can see details</SelectItem>
-                    <SelectItem key="private">Private - Only basic info visible</SelectItem>
+                    <SelectItem key="public">{t('profile.edit.privacy.visibility.public')}</SelectItem>
+                    <SelectItem key="hosts-only">{t('profile.edit.privacy.visibility.hostsOnly')}</SelectItem>
+                    <SelectItem key="private">{t('profile.edit.privacy.visibility.private')}</SelectItem>
                   </Select>
                   
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-gray-600">Receive booking updates and messages via email</p>
+                        <p className="font-medium">{t('profile.edit.privacy.emailNotifications')}</p>
+                        <p className="text-sm text-gray-600">{t('profile.edit.privacy.emailDescription')}</p>
                       </div>
                       <Switch
                         isSelected={formData.emailNotifications}
@@ -298,8 +300,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium">SMS Notifications</p>
-                        <p className="text-sm text-gray-600">Receive urgent notifications via SMS</p>
+                        <p className="font-medium">{t('profile.edit.privacy.smsNotifications')}</p>
+                        <p className="text-sm text-gray-600">{t('profile.edit.privacy.smsDescription')}</p>
                       </div>
                       <Switch
                         isSelected={formData.smsNotifications}
@@ -313,14 +315,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Cancel
+                {t('common.buttons.cancel')}
               </Button>
               <Button 
                 color="primary" 
                 onPress={handleSave}
                 isLoading={isLoading}
               >
-                {isLoading ? 'Saving...' : 'Save Changes'}
+                {isLoading ? t('common.messages.saving') : t('profile.edit.saveChanges')}
               </Button>
             </ModalFooter>
           </>

@@ -12,12 +12,14 @@ import {
 } from '@heroui/react'
 import { MessageCircle, Star, MapPin, Phone, Mail, MessageSquare } from 'lucide-react'
 import { ContactHostModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const ContactHostModal: React.FC<ContactHostModalProps> = ({
   isOpen,
   onClose,
   property
 }) => {
+  const { t } = useTranslation(['property', 'common'])
   const handleCall = () => {
     window.location.href = `tel:${property.host.phone}`
   }
@@ -45,9 +47,9 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <MessageCircle className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Contact Host</h2>
+                <h2 className="text-xl font-bold">{t('property.modal.contactHost.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">Choose how you'd like to contact the host</p>
+              <p className="text-sm text-gray-600">{t('property.modal.contactHost.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
@@ -70,7 +72,7 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                           <Star className="w-4 h-4 text-yellow-500 fill-current" />
                           <span className="text-sm font-medium">{property.rating}</span>
                           <span className="text-lg font-bold text-primary-600 ml-2">
-                            ${property.price}/night
+                            ${property.price}{t('property.labels.perNight')}
                           </span>
                         </div>
                       </div>
@@ -85,8 +87,8 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                     <h4 className="font-semibold text-lg">{property.host?.display_name}</h4>
                     <div className="flex items-center gap-1 mt-1">
                       <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium">{property.host.rating.toFixed(1)} host rating</span>
-                      <span className="text-sm text-gray-500">• {property.host.response_time} avg. response</span>
+                      <span className="text-sm font-medium">{property.host.rating.toFixed(1)} {t('property.labels.hostRating')}</span>
+                      <span className="text-sm text-gray-500">• {t('property.labels.avgResponse', { time: property.host.response_time })}</span>
                     </div>
                   </div>
                 </div>
@@ -100,7 +102,7 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                       onClick={handleCall}
                       startContent={<Phone className="w-5 h-5" />}
                     >
-                      Call Host
+                      {t('property.actions.callHost')}
                     </Button>
                   )}
                   
@@ -111,7 +113,7 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                       onClick={handleEmail}
                       startContent={<Mail className="w-5 h-5" />}
                     >
-                      Email Host
+                      {t('property.actions.emailHost')}
                     </Button>
                   )}
 
@@ -122,20 +124,20 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                       onClick={handleWhatsApp}
                       startContent={<MessageSquare className="w-5 h-5" />}
                     >
-                      WhatsApp
+                      {t('property.actions.whatsapp')}
                     </Button>
                   )}
                 </div>
 
                 {/* Note */}
                 <p className="text-sm text-gray-600 text-center">
-                  Response time: {property.host.response_time}
+                  {t('property.labels.responseTime', { time: property.host.response_time })}
                 </p>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={onClose} className="w-full">
-                Close
+                {t('common.buttons.close')}
               </Button>
             </ModalFooter>
           </>

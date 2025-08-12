@@ -1,0 +1,91 @@
+{
+  "help": {
+    "header": { "title": "Help Center" },
+    "banner": {
+      "title": "Help Center",
+      "subtitle": "Find answers to your questions and get the support you need"
+    },
+    "search": {
+      "title": "How can we help you?",
+      "description": "Search our knowledge base or browse categories below",
+      "placeholder": "Search for help articles..."
+    },
+    "stats": {
+      "supportAvailable": "Support Available",
+      "issueResolution": "Issue Resolution",
+      "avgResponse": "Average Response",
+      "helpArticles": "Help Articles"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions"
+    },
+    "emptyState": {
+      "title": "No results found",
+      "description": "Try adjusting your search terms or browse our categories below."
+    },
+    "articlesCount": "{{count}} articles",
+    "categories": {
+      "gettingStarted": {
+        "title": "Getting Started",
+        "faqs": {
+          "q1": {
+            "question": "How do I create an account?",
+            "answer": "Creating an account is simple! Click the 'Sign Up' button on the homepage, enter your email address, create a secure password, and verify your email. You can also sign up using your Google or Facebook account for faster registration."
+          },
+          "q2": {
+            "question": "How do I book my first stay?",
+            "answer": "To book your first stay: 1) Use the search bar to enter your destination and dates, 2) Browse available properties and use filters to narrow your search, 3) Click on a property to view details, 4) Select your dates and number of guests, 5) Click 'Book Now' and complete the payment process."
+          },
+          "q3": {
+            "question": "What payment methods do you accept?",
+            "answer": "We accept all major credit cards (Visa, Mastercard, American Express), debit cards, PayPal, and various local payment methods depending on your region. All payments are processed securely through our encrypted payment system."
+          },
+          "q4": {
+            "question": "How does pricing work?",
+            "answer": "Property prices are set by hosts and may vary based on season, demand, and length of stay. The total price includes the nightly rate, cleaning fees, service fees, and applicable taxes. You'll see the complete breakdown before confirming your booking."
+          }
+        }
+      },
+      "bookingStays": {
+        "title": "Booking & Stays",
+        "faqs": {
+          "q1": {
+            "question": "What is the cancellation policy?",
+            "answer": "Cancellation policies vary by property and are set by individual hosts. Common policies include: Flexible (full refund 24 hours before check-in), Moderate (full refund 5 days before), and Strict (50% refund up to 1 week before). Check the specific policy before booking."
+          },
+          "q2": {
+            "question": "Can I modify my booking after confirmation?",
+            "answer": "Yes, you can request modifications to your booking through your account dashboard. Changes to dates, guest count, or other details are subject to availability and the host's approval. Additional charges may apply for extended stays."
+          },
+          "q3": {
+            "question": "What should I do if I have issues during my stay?",
+            "answer": "If you encounter any issues during your stay, contact your host first through the messaging system. For urgent matters or if you can't reach your host, contact our 24/7 support team immediately. We're here to help resolve any problems quickly."
+          },
+          "q4": {
+            "question": "How do I check in and get access to the property?",
+            "answer": "Check-in procedures vary by property. Your host will provide detailed instructions before your arrival, including key pickup location, access codes, or meeting arrangements. This information is typically sent 24-48 hours before your check-in date."
+          }
+        }
+      }
+    },
+    "contact": {
+      "title": "Still need help?",
+      "description": "Our support team is here to assist you with any questions or issues.",
+      "liveChat": { "title": "Live Chat", "description": "Get instant help from our support team", "available": "24/7" },
+      "email": { "title": "Email Support", "description": "Send us a detailed message", "available": "Response within 24h" },
+      "phone": { "title": "Phone Support", "description": "Speak directly with our team", "available": "Mon-Fri 9AM-6PM" }
+    },
+    "popularArticles": {
+      "title": "Popular Articles",
+      "cancelOrModifyBooking": "How to cancel or modify a booking",
+      "understandingServiceFees": "Understanding service fees",
+      "guestVerificationProcess": "Guest verification process",
+      "hostPayoutSchedule": "Host payout schedule",
+      "propertySafetyRequirements": "Property safety requirements"
+    }
+  }
+}
+
+
+
+

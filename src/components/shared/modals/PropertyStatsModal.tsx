@@ -24,6 +24,7 @@ import {
   BarChart3
 } from 'lucide-react'
 import { PropertyStatsModalProps } from '../../../interfaces/Component'
+import { useTranslation } from 'react-i18next'
 
 export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
   isOpen,
@@ -31,6 +32,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
   property,
   stats
 }) => {
+  const { t } = useTranslation(['property', 'common'])
   // Provide default values if stats is undefined
   const safeStats = stats || {
     views: 0,
@@ -56,7 +58,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Property Statistics</h2>
+                <h2 className="text-xl font-bold">{t('property.stats.title')}</h2>
               </div>
               <p className="text-sm text-gray-600">{property.title}</p>
             </ModalHeader>
@@ -81,7 +83,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                             variant="flat"
                             size="sm"
                           >
-                            {safeStats.status.charAt(0).toUpperCase() + safeStats.status.slice(1)}
+                            {t(`common.status.${safeStats.status}`)}
                           </Chip>
                           <div className="flex items-center gap-1">
                             <Star className="w-4 h-4 text-yellow-500 fill-current" />
@@ -101,7 +103,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                         <Eye className="w-6 h-6 text-secondary-600" />
                       </div>
                       <p className="text-2xl font-bold text-secondary-600">{safeStats.views}</p>
-                      <p className="text-sm text-gray-600">Total Views</p>
+                      <p className="text-sm text-gray-600">{t('property.stats.cards.totalViews')}</p>
                     </CardBody>
                   </Card>
 
@@ -111,7 +113,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                         <Calendar className="w-6 h-6 text-green-600" />
                       </div>
                       <p className="text-2xl font-bold text-green-600">{safeStats.bookings}</p>
-                      <p className="text-sm text-gray-600">Total Bookings</p>
+                      <p className="text-sm text-gray-600">{t('property.stats.cards.totalBookings')}</p>
                     </CardBody>
                   </Card>
 
@@ -121,7 +123,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                         <DollarSign className="w-6 h-6 text-primary-600" />
                       </div>
                       <p className="text-2xl font-bold text-primary-600">${safeStats.revenue}</p>
-                      <p className="text-sm text-gray-600">Total Revenue</p>
+                      <p className="text-sm text-gray-600">{t('property.stats.cards.totalRevenue')}</p>
                     </CardBody>
                   </Card>
 
@@ -131,19 +133,19 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                         <Star className="w-6 h-6 text-yellow-600" />
                       </div>
                       <p className="text-2xl font-bold text-yellow-600">{safeStats.rating}</p>
-                      <p className="text-sm text-gray-600">Average Rating</p>
+                      <p className="text-sm text-gray-600">{t('property.stats.cards.averageRating')}</p>
                     </CardBody>
                   </Card>
                 </div>
 
                 {/* Performance Metrics */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-lg">Performance Metrics</h4>
+                  <h4 className="font-semibold text-lg">{t('property.stats.performanceMetrics')}</h4>
                   
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">Occupancy Rate</span>
+                        <span className="text-sm font-medium">{t('property.stats.metrics.occupancyRate')}</span>
                         <span className="text-sm text-gray-600">{occupancyRate.toFixed(1)}%</span>
                       </div>
                       <Progress 
@@ -155,7 +157,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">Response Rate</span>
+                        <span className="text-sm font-medium">{t('property.stats.metrics.responseRate')}</span>
                         <span className="text-sm text-gray-600">95%</span>
                       </div>
                       <Progress 
@@ -167,7 +169,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
 
                     <div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium">Guest Satisfaction</span>
+                        <span className="text-sm font-medium">{t('property.stats.metrics.guestSatisfaction')}</span>
                         <span className="text-sm text-gray-600">{((safeStats.rating / 5) * 100).toFixed(0)}%</span>
                       </div>
                       <Progress 
@@ -184,12 +186,12 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                 {/* Detailed Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
-                    <h4 className="font-semibold">Engagement</h4>
+                    <h4 className="font-semibold">{t('property.stats.sections.engagement')}</h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Eye className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Views this month</span>
+                          <span className="text-sm">{t('property.stats.engagement.viewsThisMonth')}</span>
                         </div>
                         <span className="font-medium">{Math.floor(safeStats.views * 0.3)}</span>
                       </div>
@@ -197,7 +199,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Heart className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Favorites</span>
+                          <span className="text-sm">{t('property.stats.engagement.favorites')}</span>
                         </div>
                         <span className="font-medium">{Math.floor(safeStats.views * 0.1)}</span>
                       </div>
@@ -205,7 +207,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <MessageCircle className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Inquiries</span>
+                          <span className="text-sm">{t('property.stats.engagement.inquiries')}</span>
                         </div>
                         <span className="font-medium">{Math.floor(safeStats.bookings * 2.5)}</span>
                       </div>
@@ -213,12 +215,12 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                   </div>
 
                   <div className="space-y-4">
-                    <h4 className="font-semibold">Revenue</h4>
+                    <h4 className="font-semibold">{t('property.stats.sections.revenue')}</h4>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <DollarSign className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Avg. nightly rate</span>
+                          <span className="text-sm">{t('property.stats.revenue.avgNightlyRate')}</span>
                         </div>
                         <span className="font-medium">${averageNightlyRevenue.toFixed(0)}</span>
                       </div>
@@ -226,7 +228,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <TrendingUp className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Monthly trend</span>
+                          <span className="text-sm">{t('property.stats.revenue.monthlyTrend')}</span>
                         </div>
                         <span className="font-medium text-success-600">+12%</span>
                       </div>
@@ -234,7 +236,7 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm">Repeat guests</span>
+                          <span className="text-sm">{t('property.stats.revenue.repeatGuests')}</span>
                         </div>
                         <span className="font-medium">{Math.floor(safeStats.bookings * 0.2)}</span>
                       </div>
@@ -244,23 +246,23 @@ export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
 
                 {/* Tips for Improvement */}
                 <div className="p-4 bg-primary-50 border border-primary-200 rounded-lg">
-                  <h4 className="font-semibold text-primary-800 mb-2">Tips to Improve Performance</h4>
+                  <h4 className="font-semibold text-primary-800 mb-2">{t('property.stats.tips.title')}</h4>
                   <ul className="text-sm text-primary-700 space-y-1">
-                    {occupancyRate < 50 && <li>• Consider adjusting your pricing to attract more bookings</li>}
-                    {safeStats.rating < 4.5 && <li>• Focus on guest communication and property cleanliness</li>}
-                    {safeStats.views < 100 && <li>• Add more high-quality photos to increase visibility</li>}
-                    <li>• Update your property description with recent amenities</li>
-                    <li>• Respond quickly to guest inquiries to improve response rate</li>
+                    {occupancyRate < 50 && <li>• {t('property.stats.tips.adjustPricing')}</li>}
+                    {safeStats.rating < 4.5 && <li>• {t('property.stats.tips.improveCommunicationAndCleanliness')}</li>}
+                    {safeStats.views < 100 && <li>• {t('property.stats.tips.addPhotos')}</li>}
+                    <li>• {t('property.stats.tips.updateDescription')}</li>
+                    <li>• {t('property.stats.tips.respondQuickly')}</li>
                   </ul>
                 </div>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={onClose}>
-                Close
+                {t('common.buttons.close')}
               </Button>
               <Button color="primary" onPress={onClose}>
-                View Full Analytics
+                {t('property.actions.viewFullAnalytics')}
               </Button>
             </ModalFooter>
           </>

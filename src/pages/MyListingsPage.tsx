@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { Home, Plus, Eye, Edit, Trash2, Star, Loader2, Pause, Play } from 'lucide-react'
 import { Card, CardBody, Chip, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Pagination } from '@heroui/react'
 import { toast } from 'react-hot-toast'
-import { PropertyStatsModal, PropertyEditConfirmationModal, PropertyListingSkeleton } from '../components/shared'
+import { PropertyStatsModal, PropertyEditConfirmationModal, PropertyListingSkeleton, PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
 import { useUserListings } from '../hooks/useUserListings'
 import { DatabaseProperty, PropertyEditConfirmation } from '../interfaces'
 import { MyListingsPageProps } from '../interfaces'
 import { convertDatabasePropertyToProperty, getStatusColor, getStatusDisplayName } from '../utils/propertyUtils'
 import { useNavigation } from '../hooks/useNavigation'
 import PropertySubmissionForm from '../components/features/property/PropertySubmissionForm'
+import { useTranslation } from 'react-i18next'
 
 // Component implementation
 
 const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
+  const { t } = useTranslation(['property', 'common'])
   // Navigation hook
   const { navigateWithAuth } = useNavigation()
   
@@ -186,40 +189,46 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
     <>
       <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
         {/* Banner Header */}
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-          <div className="text-left">
-            <h1 className="text-3xl font-bold mb-2">My Listings</h1>
-            <p className="text-primary-100 text-lg mb-4">Manage your properties and track performance</p>
-            <Button
-              color="secondary"
-              startContent={<Plus className="w-4 h-4" />}
-              className="bg-white/20 border-white/20 text-white hover:bg-white/30"
-              onPress={handleAddListing}
-            >
-              Add Listing
-            </Button>
-          </div>
-        </div>
+        <PageBanner
+          backgroundImage={getBannerConfig('myListings').image}
+          title={t('property.myListings')}
+          subtitle={t('property.managePropertiesAndTrack')}
+          imageAlt={getBannerConfig('myListings').alt}
+          overlayOpacity={getBannerConfig('myListings').overlayOpacity}
+          height={getBannerConfig('myListings').height}
+          className="mb-8"
+        >
+          <Button
+            color="secondary"
+            startContent={<Plus className="w-4 h-4" />}
+            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
+            onPress={handleAddListing}
+          >
+            {t('property.addListing')}
+          </Button>
+        </PageBanner>
 
         {/* Tabs */}
-        <div className="w-full">
-          <Tabs
-            selectedKey={statusFilter}
-            onSelectionChange={handleTabSelectionChange}
-            variant="underlined"
-            classNames={{
-              tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-              cursor: "w-full bg-primary-500",
-              tab: "max-w-fit px-0 h-12",
-              tabContent: "group-data-[selected=true]:text-primary-600"
-            }}
-          >
-            <Tab key="all" title={`All (${statusCounts.all})`} />
-            <Tab key="approved" title={`Approved (${statusCounts.approved})`} />
-            <Tab key="pending" title={`Pending (${statusCounts.pending})`} />
-            <Tab key="paused" title={`Paused (${statusCounts.paused})`} />
-            <Tab key="rejected" title={`Rejected (${statusCounts.rejected})`} />
-          </Tabs>
+        <div className="w-full overflow-hidden">
+          <div className="overflow-x-auto scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <Tabs
+              selectedKey={statusFilter}
+              onSelectionChange={handleTabSelectionChange}
+              variant="underlined"
+              classNames={{
+                tabList: "gap-3 sm:gap-6 w-max sm:w-full relative rounded-none p-0 border-b border-divider min-w-full",
+                cursor: "w-full bg-primary-500",
+                tab: "max-w-fit px-2 sm:px-0 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-sm sm:text-base whitespace-nowrap"
+              }}
+            >
+              <Tab key="all" title={`All (${statusCounts.all})`} />
+              <Tab key="approved" title={`Approved (${statusCounts.approved})`} />
+              <Tab key="pending" title={`Pending (${statusCounts.pending})`} />
+              <Tab key="paused" title={`Paused (${statusCounts.paused})`} />
+              <Tab key="rejected" title={`Rejected (${statusCounts.rejected})`} />
+            </Tabs>
+          </div>
         </div>
       </div>
 
@@ -241,13 +250,12 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         </div>
       )}
 
-      {/* Listings Container with Fixed Height */}
+      {/* Listings Grid */}
       {!isLoading && !error && filteredListings.length > 0 && (
         <>
-          {/* Fixed Height Scrollable Container */}
+          {/* Listings Container */}
           <div className="col-span-1 md:col-span-2 lg:col-span-3">
-            <div className="h-[600px] overflow-y-auto pr-2 border border-gray-200 rounded-lg bg-gray-50/30">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredListings.map((listing) => {
                   const stats = listingStats[listing.id]
                   const isActionLoading = actionLoading === `toggle-${listing.id}`
@@ -382,22 +390,52 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                     </div>
                   )
                 })}
-              </div>
             </div>
           </div>
           
-          {/* Pagination - Outside Fixed Container */}
+          {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center py-6 bg-white border-t border-gray-200">
-              <div className="flex items-center gap-4">
-                {/* Results info */}
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center mt-6">
+              {/* Mobile Layout - Stacked */}
+              <div className="flex flex-col items-center gap-3 sm:hidden">
+                {/* Results info - Mobile */}
+                <div className="text-xs text-gray-600 text-center">
+                  Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> to{' '}
+                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> of{' '}
+                  <span className="font-medium">{pagination.totalItems}</span> results
+                </div>
+                
+                {/* Pagination - Mobile */}
+                <div className="overflow-x-auto w-full flex justify-center">
+                  <Pagination
+                    page={pagination.currentPage}
+                    total={pagination.totalPages}
+                    onChange={handlePageChange}
+                    size="sm"
+                    variant="bordered"
+                    isDisabled={isLoading}
+                    showControls={true}
+                    siblings={1}
+                    boundaries={1}
+                    classNames={{
+                      wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
+                      item: "w-8 h-8 text-small rounded-none bg-transparent min-w-8",
+                      cursor: "bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white font-medium"
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Desktop Layout - Horizontal */}
+              <div className="hidden sm:flex items-center justify-center gap-4">
+                {/* Results info - Desktop */}
                 <div className="text-sm text-gray-700">
                   Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> to{' '}
                   <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> of{' '}
                   <span className="font-medium">{pagination.totalItems}</span> results
                 </div>
                 
-                {/* HeroUI Pagination */}
+                {/* Pagination - Desktop */}
                 <Pagination
                   page={pagination.currentPage}
                   total={pagination.totalPages}
