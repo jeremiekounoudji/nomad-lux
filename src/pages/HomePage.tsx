@@ -155,13 +155,13 @@ const HomePage: React.FC = () => {
       setCityProperties(properties);
       
       if (properties.length === 0) {
-        setCityPropertiesError(`No properties found in ${city.name}.`);
+        setCityPropertiesError(t('messages.noPropertiesInCity', { city: city.name }));
       }
       
     } catch (error) {
       // The hook already shows a toast, so we just set the local error state
       console.error('❌ Error fetching city properties in component:', error);
-      setCityPropertiesError('Failed to load properties. Please try again.');
+      setCityPropertiesError(t('messages.failedToLoadProperties'));
     } finally {
       setCityPropertiesLoading(false);
     }

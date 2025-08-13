@@ -80,7 +80,18 @@
     "takingTooLong": "Taking too long? Click here to continue",
     "failed": "Failed",
     "notSpecified": "Not specified",
-    "notProvided": "Not provided"
+    "notProvided": "Not provided",
+    "signInRequired": "Please sign in to continue",
+    "signInToBook": "Please sign in to book this property",
+    "signInToAccessProfile": "Please sign in to access your profile",
+    "bookingComingSoon": "Booking feature coming soon!",
+    "feedRefreshed": "Feed refreshed successfully",
+    "failedToLoad": "Failed to load properties",
+    "noProperties": "No properties found",
+    "noPropertiesInArea": "No properties found in your area",
+    "noPropertiesInCity": "No properties found in {{city}}",
+    "failedToLoadProperties": "Failed to load properties. Please try again.",
+    "seenAllProperties": "You've seen all available properties"
   },
   "actions": {
     "close": "Close",

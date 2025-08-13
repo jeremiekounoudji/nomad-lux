@@ -340,13 +340,13 @@ const PropertyDetailPage: React.FC = () => {
 
       // Check minimum stay length
       if (billingNights < minStayNights) {
-        setValidationError(`Minimum stay is ${minStayNights} night(s)`)
+        setValidationError(t('validation.minimumStay', { nights: minStayNights }))
         return
       }
       
       // Check maximum stay length
       if (billingNights > maxStayNights) {
-        setValidationError(`Maximum stay is ${maxStayNights} night(s)`)
+        setValidationError(t('validation.maximumStay', { nights: maxStayNights }))
         return
       }
     }

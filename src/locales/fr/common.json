@@ -85,7 +85,13 @@
     "signInToAccessProfile": "Veuillez vous connecter pour accéder à votre profil",
     "feedRefreshed": "Flux actualisé !",
     "notSpecified": "Non spécifié",
-    "notProvided": "Non fourni"
+    "notProvided": "Non fourni",
+    "failedToLoad": "Échec du chargement des propriétés",
+    "noProperties": "Aucune propriété trouvée",
+    "noPropertiesInArea": "Aucune propriété trouvée dans votre région",
+    "noPropertiesInCity": "Aucune propriété trouvée à {{city}}",
+    "failedToLoadProperties": "Échec du chargement des propriétés. Veuillez réessayer.",
+    "seenAllProperties": "Vous avez vu toutes les propriétés disponibles"
   },
   "actions": {
     "close": "Fermer",
