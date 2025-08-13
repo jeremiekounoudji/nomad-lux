@@ -26,7 +26,7 @@ Guidelines for managing task lists in markdown files to track progress on comple
         git commit -m "feat: add payment validation logic" -m "- Validates card type and expiry" -m "- Adds unit tests for edge cases" -m "Related to T123 in PRD"
         ```
   3. Once all the subtasks are marked completed and changes have been committed, mark the **parent task** as completed.
-- Proceed automatically to the next sub‑task without waiting for user approval.
+- **Pause everytime a task is done** to ask for approval where user will pompt 'y' or 'yes' to aprove to go to nest task
 
 ## Task List Maintenance
 
