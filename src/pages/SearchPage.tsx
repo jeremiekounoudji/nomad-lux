@@ -11,12 +11,12 @@ import { Button, Input, Chip, Select, SelectItem } from '@heroui/react';
 import toast from 'react-hot-toast';
 import { SearchFilters, MapToggle, PropertiesMap } from '../components/features/search';
 import { getBannerConfig } from '../utils/bannerConfig';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../lib/stores/translationStore';
 
 import { SearchPageProps } from '../interfaces';
 
 const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
-  const { t } = useTranslation(['common', 'property', 'search'])
+  const { t } = useTranslation(['search', 'property', 'common'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
   const [hasSearched, setHasSearched] = useState(false);
@@ -103,7 +103,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
           backgroundImage={getBannerConfig('search').image}
           title={t('search.findProperties')}
           subtitle={t('search.useFiltersToFind', { count: totalResults > 0 ? Number(totalResults) : 1000 })}
-          imageAlt={getBannerConfig('search').alt}
+          imageAlt={t('common.pageBanner.search')}
           overlayOpacity={getBannerConfig('search').overlayOpacity}
           height={getBannerConfig('search').height}
         />
@@ -176,7 +176,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
               onPress={() => performSearch()}
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-              {t('buttons.tryAgain')}
+              {t('common.buttons.tryAgain')}
             </Button>
           </div>
         </div>

@@ -11,7 +11,7 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 import { AdminPageProps } from '../interfaces'
 
@@ -98,7 +98,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
           backgroundImage={getBannerConfig('admin').image}
           title={t('admin.banner.title')}
           subtitle={t('admin.banner.subtitle')}
-          imageAlt={getBannerConfig('admin').alt}
+          imageAlt={t('common.pageBanner.admin')}
           overlayOpacity={getBannerConfig('admin').overlayOpacity}
           height={getBannerConfig('admin').height}
         />

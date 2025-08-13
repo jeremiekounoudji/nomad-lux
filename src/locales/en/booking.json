@@ -1,4 +1,10 @@
 {
+  "myBookings": {
+    "banner": {
+      "title": "My Bookings",
+      "subtitle": "Manage your property bookings and travel history"
+    }
+  },
   "steps": {
     "selectDates": "Select Dates",
     "guestInfo": "Guest Information",
@@ -12,6 +18,7 @@
     "checkIn": "Check-in",
     "checkOut": "Check-out",
     "guests": "Guests",
+    "host": "Host",
     "adults": "Adults",
     "children": "Children",
     "infants": "Infants",
@@ -35,7 +42,8 @@
     "houseRules": "House Rules",
     "cancellationPolicy": "Cancellation Policy",
     "completeDetails": "Complete your booking details",
-    "specialRequestsPlaceholder": "Any special requests or notes for your host"
+    "specialRequestsPlaceholder": "Any special requests or notes for your host",
+    "rejectionReason": "Rejection Reason"
   },
   "actions": {
     "selectDates": "Select Dates",
@@ -52,7 +60,10 @@
     "downloadReceipt": "Download Receipt",
     "reportIssue": "Report Issue",
     "retryPayment": "Retry Payment",
-    "bookForAmount": "Book for ${{amount}}"
+    "bookForAmount": "Book for ${{amount}}",
+    "decline": "Decline",
+    "approve": "Approve",
+    "viewDetails": "View Details"
   },
   "cancel": {
     "title": "Cancel Booking",
@@ -135,6 +146,15 @@
   },
   "messages": {
     "cancelling": "Cancelling...",
+    "loading": "Loading bookings...",
+    "noBookings": "No {{status}} bookings",
+    "noPendingBookings": "You don't have any pending bookings at the moment.",
+    "noConfirmedBookings": "You don't have any confirmed bookings at the moment.",
+    "noCancelledBookings": "You don't have any cancelled bookings.",
+    "noCompletedBookings": "You haven't completed any bookings yet.",
+    "noRejectedBookings": "You don't have any rejected bookings.",
+    "noAwaitingPaymentBookings": "You don't have any bookings awaiting payment.",
+    "noFailedPaymentBookings": "You don't have any bookings with failed payment.",
     "bookingSuccess": "Booking confirmed successfully!",
     "bookingPending": "Your booking request has been sent to the host",
     "bookingCancelled": "Booking cancelled successfully",
@@ -181,6 +201,25 @@
     "pets": "No pets allowed",
     "parties": "No parties or events",
     "additionalRules": "Additional house rules may apply"
+  },
+  "details": {
+    "title": "Booking Details",
+    "bookingId": "Booking ID: {{id}}",
+    "locationNotAvailable": "Location not available",
+    "contactNotAvailable": "Contact information not available",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "guest": "guest",
+    "guestsPlural": "guests",
+    "bookingDate": "Booking Date",
+    "accommodation": "Accommodation",
+    "cleaningFee": "Cleaning fee",
+    "serviceFee": "Service fee",
+    "taxes": "Taxes",
+    "total": "Total",
+    "paymentMethod": "Payment method: Not available",
+    "specialRequests": "Special Requests"
   },
   "payment": {
     "description": "Booking payment for {{title}}",

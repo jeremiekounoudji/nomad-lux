@@ -16,7 +16,7 @@ import {
 } from '@heroui/react'
 import { XCircle, AlertTriangle, Calendar, DollarSign } from 'lucide-react'
 import { CancelBookingModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
   isOpen,

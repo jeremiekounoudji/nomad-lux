@@ -1,249 +1,190 @@
-# Product Requirements Document: Comprehensive Translation Verification
+# PRD: Comprehensive Translation Verification
 
 ## Introduction/Overview
 
-This PRD outlines the comprehensive verification and implementation of internationalization (i18n) across all pages and components in the Nomad Lux application. The goal is to ensure that all user-facing text is properly translated and no hardcoded strings remain in the application.
+This PRD outlines a systematic approach to verify and confirm that all components and pages in the Nomad Lux application properly implement translations according to the established translation blueprint. The goal is to ensure consistency, eliminate hardcoded strings, and prevent "dot words" from appearing in the UI.
+
+**Problem Statement**: Despite having a working translation blueprint, there may be inconsistencies across the codebase where some components don't follow the established patterns, leading to translation issues and poor user experience.
+
+**Goal**: Achieve 100% compliance with the translation blueprint across all components and pages, ensuring a consistent and reliable translation system.
 
 ## Goals
 
-1. **Complete Translation Coverage**: Ensure all 17 pages and 50+ components have proper translation implementation
-2. **Eliminate Hardcoded Text**: Remove all hardcoded strings and replace with translation keys
-3. **Consistent Translation Structure**: Maintain consistent translation file organization
-4. **Quality Assurance**: Verify all translation keys exist in both English and French
-5. **User Experience**: Provide seamless language switching across the entire application
+1. **Verify Blueprint Compliance**: Ensure all components follow the established translation patterns from `translation-blueprint.md`
+2. **Eliminate Hardcoded Strings**: Remove any remaining hardcoded text from components
+3. **Prevent "Dot Words"**: Ensure no raw translation keys appear in the UI
+4. **Maintain Working Code**: Preserve existing working implementations without breaking them
+5. **Document Progress**: Track verification progress and maintain implementation summary
 
 ## User Stories
 
-1. **As a user**, I want to see all text in my preferred language (English/French) so that I can use the application comfortably
-2. **As a developer**, I want to easily identify missing translations so that I can maintain translation completeness
-3. **As a content manager**, I want to update translations without touching code so that content can be managed independently
-4. **As a QA tester**, I want to verify all text is translated so that the application meets internationalization standards
+1. **As a developer**, I want all components to follow the same translation pattern so that I can maintain consistency across the codebase.
+
+2. **As a user**, I want all text to be properly translated so that I can use the application in my preferred language without seeing technical errors.
+
+3. **As a QA tester**, I want to verify that language switching works correctly across all pages so that I can ensure a complete multilingual experience.
+
+4. **As a project manager**, I want to track translation implementation progress so that I can ensure the feature is fully delivered.
 
 ## Functional Requirements
 
-### 1. Translation Implementation Requirements
+### 1. Translation Store Usage Verification
+- The system must verify that all components use `import { useTranslation } from '../lib/stores/translationStore'`
+- The system must confirm no components use `react-i18next` directly
+- The system must ensure no hardcoded strings exist in any component
 
-1.1. **All pages must use the `useTranslation` hook**
-   - Import from 'react-i18next' (not from stores)
-   - Use appropriate namespaces for each page
-   - Implement proper error handling for missing translations
+### 2. Namespace Declaration Verification
+- The system must verify proper namespace usage in `useTranslation` hooks
+- The system must confirm single namespace usage: `useTranslation('property')`
+- The system must confirm multiple namespace usage: `useTranslation(['property', 'common'])`
 
-1.2. **All static text must use translation keys**
-   - Page titles and subtitles
-   - Button labels and actions
-   - Form labels and placeholders
-   - Error messages and notifications
-   - Status messages and loading states
-   - Navigation elements
+### 3. Translation Key Format Verification
+- The system must verify DOT format usage for cross-namespace calls: `t('property.myListings')`
+- The system must confirm explicit namespace format: `t('property:myListings')`
+- The system must ensure no colon format usage that causes "dot words": `t('property:myListings')`
 
-1.3. **Translation files must be complete**
-   - All translation keys must exist in both English and French
-   - No missing or placeholder translations
-   - Proper interpolation for dynamic values
+### 4. Translation File Structure Verification
+- The system must verify all translation keys exist in both English and French files
+- The system must confirm proper key structure in JSON files
+- The system must ensure no missing translation keys
 
-### 2. Page-Specific Requirements
+### 5. Component Categorization and Verification
+- The system must verify all page components (HomePage, PropertyDetailPage, etc.)
+- The system must verify all shared components (PropertyCard, PageBanner, etc.)
+- The system must verify all feature components (admin, booking, property, etc.)
+- The system must verify all modal components
 
-2.1. **HelpPage.tsx**
-   - FAQ section translations
-   - Contact information translations
-   - Support form translations
-   - Navigation breadcrumbs
-
-2.2. **WalletPage.tsx**
-   - Balance and transaction labels
-   - Payment method descriptions
-   - Transaction history labels
-   - Withdrawal/deposit form labels
-
-2.3. **BookingRequestsPage.tsx**
-   - Request status labels
-   - Action button texts
-   - Filter and sort options
-   - Confirmation dialogs
-
-2.4. **AdminPage.tsx**
-   - Dashboard labels and metrics
-   - Navigation menu items
-   - Action buttons and confirmations
-   - Status indicators
-
-2.5. **NotificationsPage.tsx**
-   - Notification type labels
-   - Action buttons
-   - Empty state messages
-   - Filter options
-
-2.6. **RegisterPage.tsx**
-   - Form labels and placeholders
-   - Validation messages
-   - Terms and conditions text
-   - Success/error messages
-
-2.7. **TermsPage.tsx**
-   - Legal text sections
-   - Navigation elements
-   - Last updated information
-
-2.8. **AdminLoginPage.tsx & AdminRegisterPage.tsx**
-   - Form labels and validation
-   - Authentication messages
-   - Navigation links
-
-### 3. Component-Specific Requirements
-
-3.1. **Shared Components**
-   - **PropertyCard.tsx** - Property display labels, action buttons
-   - **HomePagePropertyCard.tsx** - Property card labels, like/share buttons
-   - **CityPropertyCard.tsx** - City property display labels
-   - **MyBookingCard.tsx** - Booking status labels, action buttons
-   - **BookingCalendar.tsx** - Calendar labels, date picker text
-   - **PaymentButton.tsx** - Payment form labels, validation messages
-   - **ProfileModal.tsx** - Profile form labels, settings options
-   - **NotificationCenter.tsx** - Notification type labels, action buttons
-   - **NotificationToast.tsx** - Toast message labels, action buttons
-   - **PageBanner.tsx** - Banner title and subtitle placeholders
-   - **PopularPlaces.tsx** - Place category labels, explore button
-   - **FileProgressCard.tsx** - Upload progress labels, status messages
-   - **UploadProgressIndicator.tsx** - Upload status labels, progress text
-   - **LoadingSkeleton.tsx** - Loading state labels
-   - **LoadingDebug.tsx** - Debug information labels
-
-3.2. **Modal Components**
-   - **BookPropertyModal.tsx** - Booking form labels, validation messages
-   - **PropertyQuickViewModal.tsx** - Property details labels, action buttons
-   - **ContactHostModal.tsx** - Contact form labels, message placeholders
-   - **SharePropertyModal.tsx** - Share options labels, social media buttons
-   - **PropertyStatsModal.tsx** - Statistics labels, metric descriptions
-   - **PropertyEditConfirmationModal.tsx** - Confirmation messages, warning text
-   - **ProfileEditModal.tsx** - Profile form labels, validation messages
-   - **NotificationDetailsModal.tsx** - Notification details labels, action buttons
-   - **CancelBookingModal.tsx** - Cancellation confirmation, warning messages
-   - **RequestPayoutModal.tsx** - Payout form labels, validation messages
-
-3.3. **Feature Components**
-   - **SearchFilters.tsx** - Filter labels, option descriptions
-   - **PropertySubmissionForm.tsx** - Form labels, validation messages
-   - **PropertyDetailsStep.tsx** - Property form labels, amenity descriptions
-   - **AdminDashboard.tsx** - Dashboard metrics, action buttons
-   - **UserManagement.tsx** - User management labels, action buttons
-   - **BookingManagement.tsx** - Booking management labels, status indicators
-
-3.4. **Layout Components**
-   - **MainLayout.tsx** - Navigation labels, menu items
-   - **Sidebar.tsx** - Sidebar navigation labels
-   - **LanguageSelector.tsx** - Language option labels (already implemented)
-
-### 4. Translation File Organization
-
-4.1. **Namespace Structure**
-   - `common` - Shared buttons, labels, messages
-   - `property` - Property-related content
-   - `auth` - Authentication and user management
-   - `booking` - Booking and reservation content
-   - `admin` - Admin panel content
-   - `wallet` - Wallet and payment content
-   - `notifications` - Notification system content
-   - `help` - Help and support content
-   - `terms` - Legal and terms content
-   - `navigation` - Navigation and layout content
-   - `modals` - Modal-specific content
-   - `forms` - Form labels and validation messages
-
-4.2. **File Structure**
-   - Maintain existing structure in `src/locales/en/` and `src/locales/fr/`
-   - Add new translation files as needed
-   - Ensure consistent key naming conventions
+### 6. Progress Tracking and Documentation
+- The system must update `translation-implementation-summary.md` with verification progress
+- The system must document any issues found during verification
+- The system must track files that are working correctly vs. those needing fixes
 
 ## Non-Goals (Out of Scope)
 
-1. **Dynamic Content Translation**: This PRD focuses on static UI text, not dynamic content from database
-2. **Third-party Library Translations**: Translations for external libraries are out of scope
-3. **Advanced i18n Features**: Pluralization, date formatting, and number formatting are not included
-4. **RTL Language Support**: Only English and French are supported in this phase
+- Adding new translation keys unless missing
+- Changing working translation implementations
+- Modifying the translation blueprint itself
+- Adding new language support
+- Performance optimization of translation loading
+- Creating new translation patterns
 
 ## Design Considerations
 
-1. **Consistent Translation Keys**: Use descriptive, hierarchical key names (e.g., `buttons.save`, `messages.error`)
-2. **Fallback Handling**: Implement proper fallbacks for missing translations
-3. **Developer Experience**: Make it easy to identify missing translations during development
-4. **Performance**: Ensure translation loading doesn't impact application performance
+### Translation Key Patterns to Verify
+Based on the working blueprint, verify these specific patterns:
+
+1. **Page Banner Pattern**:
+   ```typescript
+   title={t('property.myListings')}
+   subtitle={t('property.managePropertiesAndTrack')}
+   imageAlt={t('common.pageBanner.myListings')}
+   ```
+
+2. **Tab/Button Pattern**:
+   ```typescript
+   <Tab title={`${t('property.listings.tabs.all')} (${count})`} />
+   <Button>{t('property.listings.actions.edit')}</Button>
+   ```
+
+3. **Cross-Namespace Pattern**:
+   ```typescript
+   const { t } = useTranslation(['property', 'common'])
+   t('property.myListings')        // ✅ Works
+   t('common.pageBanner.home')     // ✅ Works
+   ```
 
 ## Technical Considerations
 
-1. **Integration with Existing System**: Use the existing i18next setup and translation store
-2. **Component Library**: Ensure Hero UI components work with translation system
-3. **Build Process**: Verify translations are included in production builds
-4. **Testing**: Implement tests to catch missing translations
+### Verification Process
+1. **Use existing translation blueprint** as the source of truth
+2. **Follow established patterns** that are confirmed working
+3. **Avoid modifying working implementations** unless issues are found
+4. **Update implementation summary** after each file verification
+
+### Dependencies
+- Existing translation store: `src/lib/stores/translationStore.ts`
+- Existing i18n configuration: `src/lib/i18n.ts`
+- Existing translation files: `src/locales/en/` and `src/locales/fr/`
 
 ## Success Metrics
 
-1. **Coverage**: 100% of pages have translation implementation
-2. **Completeness**: 0 hardcoded strings remaining in the application
-3. **Quality**: All translation keys have both English and French translations
-4. **Performance**: No translation-related performance degradation
-5. **Developer Experience**: Clear error messages for missing translations
+1. **100% Blueprint Compliance**: All components follow the established translation patterns
+2. **Zero Hardcoded Strings**: No hardcoded text found in any component
+3. **Zero "Dot Words"**: No raw translation keys appear in the UI
+4. **Complete Translation Coverage**: All text elements use translation keys
+5. **Bilingual Functionality**: All components work correctly in both English and French
+6. **No Console Errors**: No translation-related errors in browser console
+7. **Updated Documentation**: Implementation summary reflects current state
+
+## Implementation Plan
+
+### Phase 1: Page Components Verification
+Verify all pages in `src/pages/` directory following user journey flow:
+1. HomePage, PropertyDetailPage, SearchPage
+2. MyListingsPage, MyBookingsPage, LikedPropertiesPage
+3. CreatePropertyPage, BookingRequestsPage
+4. LoginPage, RegisterPage, WalletPage
+5. NotificationsPage, HelpPage, TermsPage
+6. AdminPage, AdminLoginPage, AdminRegisterPage
+
+### Phase 2: Shared Components Verification
+Verify all components in `src/components/shared/` and `src/components/shared/modals/`
+
+### Phase 3: Feature Components Verification
+Verify all components in `src/components/features/` subdirectories
+
+### Phase 4: Layout and Map Components Verification
+Verify components in `src/components/layout/` and `src/components/map/`
+
+### Phase 5: UI Components Verification
+Verify all components in `src/components/ui/`
 
 ## Open Questions
 
-1. **Translation Management**: Should we implement a translation management system for non-technical users?
-2. **Dynamic Content**: How should we handle user-generated content that needs translation?
-3. **Testing Strategy**: What's the best approach to test translations across different languages?
-4. **Performance Optimization**: Should we implement lazy loading for translation files?
-
-## Component Translation Status
-
-### **Components with Translations (3/50+)**
-- ✅ PropertyCard.tsx
-- ✅ LanguageSelector.tsx  
-- ✅ MainLayout.tsx
-
-### **Components Needing Translations (47+)**
-- ❌ All Modal Components (10)
-- ❌ Most Shared Components (13/16)
-- ❌ All Feature Components (15+)
-- ❌ All Map Components (10+)
-- ❌ Layout Components (1/2)
-
-### **Estimated Scope**
-- **Total Components**: 50+
-- **Completed**: 3 (6%)
-- **Remaining**: 47+ (94%)
-- **Estimated Time**: 20-30 hours
-
-## Implementation Priority
-
-### Phase 1: High Priority (Pages without any translations)
-1. HelpPage.tsx
-2. WalletPage.tsx
-3. BookingRequestsPage.tsx
-4. AdminPage.tsx
-5. NotificationsPage.tsx
-
-### Phase 2: Medium Priority (Pages with partial translations)
-1. RegisterPage.tsx
-2. TermsPage.tsx
-3. AdminLoginPage.tsx
-4. AdminRegisterPage.tsx
-
-### Phase 3: High Priority Components (Components without translations)
-1. **Modal Components** - All 10 modal components
-2. **Shared Components** - All 16 shared components
-3. **Feature Components** - All feature-specific components
-4. **Layout Components** - MainLayout, Sidebar
-
-### Phase 4: Verification and Optimization
-1. Verify all existing translations
-2. Optimize translation file structure
-3. Implement missing translation keys
-4. Add comprehensive testing
+1. **Priority Order**: Should we prioritize pages based on user journey flow or fix issues as we find them?
+2. **Testing Strategy**: How should we test each component after verification to ensure no regressions?
+3. **Documentation Level**: How detailed should the implementation summary be for each verified file?
+4. **Issue Resolution**: Should we fix issues immediately during verification or batch them for later resolution?
+5. **Blueprint Updates**: If we find patterns that work better than the current blueprint, should we update it?
 
 ## Acceptance Criteria
 
-1. **All 17 pages use `useTranslation` hook**
-2. **All 50+ components use `useTranslation` hook**
-3. **No hardcoded strings remain in any page or component**
-4. **All translation keys exist in both English and French files**
-5. **Application works seamlessly in both languages**
-6. **No console errors related to missing translations**
-7. **All UI elements display proper translated text**
-8. **Language switching works across all pages and components** 
+### For Each Component/Page:
+- [ ] Uses correct translation store import
+- [ ] No hardcoded strings present
+- [ ] Uses proper namespace declaration
+- [ ] Uses correct translation key format
+- [ ] All translation keys exist in both language files
+- [ ] No "dot words" appear in UI
+- [ ] Language switching works correctly
+- [ ] No console errors related to translations
+
+### For Overall Project:
+- [ ] All components verified and documented
+- [ ] Implementation summary updated with current state
+- [ ] No regressions introduced
+- [ ] All translation keys verified
+- [ ] Blueprint compliance achieved
+- [ ] Success metrics met
+
+## Timeline Estimate
+
+- **Phase 1 (Pages)**: 2-3 days
+- **Phase 2 (Shared Components)**: 1-2 days  
+- **Phase 3 (Feature Components)**: 2-3 days
+- **Phase 4 (Layout/Map)**: 1 day
+- **Phase 5 (UI Components)**: 1 day
+- **Documentation and Testing**: 1 day
+
+**Total Estimated Time**: 8-11 days
+
+## Success Definition
+
+This project will be considered successful when:
+1. All components and pages follow the translation blueprint
+2. No hardcoded strings remain in the codebase
+3. No "dot words" appear in the UI
+4. All translation keys are properly implemented
+5. Language switching works correctly across all components
+6. Implementation summary accurately reflects the current state
+7. No regressions are introduced to existing functionality 

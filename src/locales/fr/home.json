@@ -1,0 +1,23 @@
+{
+  "discoverLuxury": "Découvrez le Luxe",
+  "findPerfectStay": "Trouvez votre séjour parfait dans les plus belles destinations du monde",
+  "popularPlaces": "Lieux Populaires",
+  "viewAll": "Voir Tout",
+  "explore": "Explorer",
+  "hero": {
+    "title": "Découvrez le Luxe",
+    "subtitle": "Trouvez votre séjour parfait dans les plus belles destinations du monde",
+    "searchPlaceholder": "Où voulez-vous aller ?",
+    "searchButton": "Rechercher"
+  },
+  "sections": {
+    "popularPlaces": "Lieux Populaires",
+    "nearbyListings": "Propriétés à Proximité",
+    "topProperties": "Propriétés Vedettes"
+  },
+  "actions": {
+    "viewAll": "Voir Tout",
+    "explore": "Explorer",
+    "search": "Rechercher"
+  }
+}

@@ -12,7 +12,7 @@ import {
 } from '@heroui/react'
 import { Bell, Calendar, MessageCircle, Home, CreditCard, AlertTriangle } from 'lucide-react'
 import { NotificationDetailsModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> = ({
   isOpen,

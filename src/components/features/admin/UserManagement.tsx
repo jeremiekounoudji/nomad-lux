@@ -31,7 +31,7 @@ import {
   User
 } from './modals'
 import { Search, MoreHorizontal, Eye, Ban, UserCheck, Trash2, MessageSquare, Calendar, DollarSign, Home, Star, Download } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 
 

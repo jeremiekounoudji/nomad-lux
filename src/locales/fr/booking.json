@@ -1,4 +1,10 @@
 {
+  "myBookings": {
+    "banner": {
+      "title": "Mes Réservations",
+      "subtitle": "Gérez vos réservations de propriétés et votre historique de voyage"
+    }
+  },
   "steps": {
     "selectDates": "Sélectionner les dates",
     "guestInfo": "Informations invité",
@@ -12,6 +18,7 @@
     "checkIn": "Arrivée",
     "checkOut": "Départ",
     "guests": "Invités",
+    "host": "Hôte",
     "adults": "Adultes",
     "children": "Enfants",
     "infants": "Bébés",
@@ -35,7 +42,8 @@
     "houseRules": "Règles de la maison",
     "cancellationPolicy": "Politique d'annulation",
     "completeDetails": "Complétez les détails de votre réservation",
-    "specialRequestsPlaceholder": "Toute demande particulière ou note pour votre hôte"
+    "specialRequestsPlaceholder": "Toute demande particulière ou note pour votre hôte",
+    "rejectionReason": "Raison du rejet"
   },
   "actions": {
     "selectDates": "Sélectionner les dates",
@@ -52,7 +60,10 @@
     "downloadReceipt": "Télécharger le reçu",
     "reportIssue": "Signaler un problème",
     "retryPayment": "Réessayer le paiement",
-    "bookForAmount": "Réserver pour ${{amount}}"
+    "bookForAmount": "Réserver pour ${{amount}}",
+    "decline": "Refuser",
+    "approve": "Approuver",
+    "viewDetails": "Voir les détails"
   },
   "cancel": {
     "title": "Annuler la réservation",
@@ -135,6 +146,15 @@
   },
   "messages": {
     "cancelling": "Annulation...",
+    "loading": "Chargement des réservations...",
+    "noBookings": "Aucune réservation {{status}}",
+    "noPendingBookings": "Vous n'avez aucune réservation en attente pour le moment.",
+    "noConfirmedBookings": "Vous n'avez aucune réservation confirmée pour le moment.",
+    "noCancelledBookings": "Vous n'avez aucune réservation annulée.",
+    "noCompletedBookings": "Vous n'avez pas encore terminé de réservations.",
+    "noRejectedBookings": "Vous n'avez aucune réservation rejetée.",
+    "noAwaitingPaymentBookings": "Vous n'avez aucune réservation en attente de paiement.",
+    "noFailedPaymentBookings": "Vous n'avez aucune réservation avec un paiement échoué.",
     "bookingSuccess": "Réservation confirmée avec succès !",
     "bookingPending": "Votre demande de réservation a été envoyée à l'hôte",
     "bookingCancelled": "Réservation annulée avec succès",
@@ -181,6 +201,25 @@
     "pets": "Animaux non autorisés",
     "parties": "Pas de fêtes ou d'événements",
     "additionalRules": "Des règles supplémentaires peuvent s'appliquer"
+  },
+  "details": {
+    "title": "Détails de la Réservation",
+    "bookingId": "ID de réservation : {{id}}",
+    "locationNotAvailable": "Emplacement non disponible",
+    "contactNotAvailable": "Informations de contact non disponibles",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "guests": "Invités",
+    "guest": "invité",
+    "guestsPlural": "invités",
+    "bookingDate": "Date de Réservation",
+    "accommodation": "Hébergement",
+    "cleaningFee": "Frais de ménage",
+    "serviceFee": "Frais de service",
+    "taxes": "Taxes",
+    "total": "Total",
+    "paymentMethod": "Méthode de paiement : Non disponible",
+    "specialRequests": "Demandes Spéciales"
   },
   "payment": {
     "description": "Paiement de la réservation pour {{title}}",

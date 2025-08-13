@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { useNavigation } from '../../hooks/useNavigation'
 import { ROUTES } from '../../router/types'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 const Sidebar: React.FC = () => {
   const { isAuthenticated, user } = useAuthStore()

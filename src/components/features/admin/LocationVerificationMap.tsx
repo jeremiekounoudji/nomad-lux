@@ -6,7 +6,7 @@ import { Button, Chip } from '@heroui/react';
 import { MapPin, Check, AlertTriangle, Search } from 'lucide-react';
 import { convertDatabasePropertyToProperty } from '../../../utils/propertyUtils';
 import { validatePropertyCoordinates, getPropertyCoordinates } from '../../../utils/propertyUtils';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface LocationVerificationMapProps {
   property: DatabaseProperty;

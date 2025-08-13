@@ -11,7 +11,7 @@ import { useAdminSettings } from '../hooks/useAdminSettings'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { DollarSign, TrendingUp, Clock, CheckCircle, XCircle, CreditCard } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 const WalletPage: FC = () => {
   const { t } = useTranslation(['wallet', 'common'])
@@ -101,7 +101,7 @@ const WalletPage: FC = () => {
             backgroundImage={getBannerConfig('wallet').image}
             title={t('wallet.banner.title')}
             subtitle={t('wallet.banner.subtitle')}
-            imageAlt={getBannerConfig('wallet').alt}
+            imageAlt={t('common.pageBanner.wallet')}
             overlayOpacity={getBannerConfig('wallet').overlayOpacity}
             height={getBannerConfig('wallet').height}
           />

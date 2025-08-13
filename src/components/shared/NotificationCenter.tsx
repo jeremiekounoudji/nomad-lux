@@ -5,7 +5,7 @@ import { useNotifications } from '../../hooks/useNotifications'
 import { useNavigation } from '../../hooks/useNavigation'
 import { ROUTES } from '../../router/types'
 import NotificationToast from './NotificationToast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface NotificationCenterProps {
   className?: string

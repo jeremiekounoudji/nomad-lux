@@ -4,7 +4,7 @@ import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 import { useAuthStore } from '../lib/stores/authStore'
 import { AdminLoginPageProps } from '../interfaces'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['admin', 'auth', 'common'])

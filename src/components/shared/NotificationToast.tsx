@@ -3,7 +3,7 @@ import { Card, CardBody, Avatar, Button, Chip } from '@heroui/react'
 import { Bell, Heart, Calendar, MessageCircle, Star, Home, Clock, X } from 'lucide-react'
 import { Notification } from '../../interfaces/Notification'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface NotificationToastProps {
   notification: Notification

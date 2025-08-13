@@ -32,7 +32,7 @@ import {
 import { useAuthStore } from '../../lib/stores/authStore'
 import { useAuth } from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface ProfileModalProps {
   isOpen: boolean

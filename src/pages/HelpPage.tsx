@@ -3,7 +3,7 @@ import { Button, Accordion, AccordionItem, Input, Card, CardBody, Chip } from '@
 import { ArrowLeft, Search, MessageCircle, Mail, Phone, HelpCircle, BookOpen, Home } from 'lucide-react'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 interface HelpPageProps {
   onPageChange?: (page: string) => void
@@ -119,7 +119,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           backgroundImage={getBannerConfig('help').image}
           title={t('help.banner.title')}
           subtitle={t('help.banner.subtitle')}
-          imageAlt={getBannerConfig('help').alt}
+          imageAlt={t('common.pageBanner.help')}
           overlayOpacity={getBannerConfig('help').overlayOpacity}
           height={getBannerConfig('help').height}
           className="mb-8"

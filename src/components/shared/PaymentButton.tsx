@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { config } from '../../lib/config';
 import { useFedaPayPayment } from '../../hooks/useFedaPayPayment';
 import { useBookingManagement } from '../../hooks/useBookingManagement';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface PaymentButtonProps {
   booking: {

@@ -10,7 +10,7 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
 // removed unused LoadingSkeleton
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 const ITEMS_PER_PAGE = 10
 
@@ -273,7 +273,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
           backgroundImage={getBannerConfig('bookingRequests').image}
           title={t('booking.bookingRequests.banner.title')}
           subtitle={t('booking.bookingRequests.banner.subtitle')}
-          imageAlt={getBannerConfig('bookingRequests').alt}
+          imageAlt={t('common.pageBanner.bookingRequests')}
           overlayOpacity={getBannerConfig('bookingRequests').overlayOpacity}
           height={getBannerConfig('bookingRequests').height}
           className="mb-8"

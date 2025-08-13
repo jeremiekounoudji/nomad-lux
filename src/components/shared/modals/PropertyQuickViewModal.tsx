@@ -25,7 +25,7 @@ import {
   Calendar
 } from 'lucide-react'
 import { PropertyQuickViewModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
   isOpen,

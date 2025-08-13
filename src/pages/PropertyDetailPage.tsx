@@ -628,7 +628,7 @@ const PropertyDetailPage: React.FC = () => {
                 <div className="text-right">
                   <div className="text-2xl sm:text-3xl font-bold text-gray-900">
                     ${property.price}
-                    <span className="text-base font-normal text-gray-600 ml-1">/ {t('labels.night', 'night')}</span>
+                    <span className="text-base font-normal text-gray-600 ml-1">/ {t('night')}</span>
                   </div>
                 </div>
               </div>
@@ -637,15 +637,15 @@ const PropertyDetailPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Users className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.max_guests} {t('labels.guests', 'guests')}</span>
+                                      <span className="text-gray-900 font-medium text-sm">{property.max_guests} {t('guests')}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Bed className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bedrooms} {t('labels.bedrooms')}</span>
+                                      <span className="text-gray-900 font-medium text-sm">{property.bedrooms} {t('bedrooms')}</span>
                 </div>
                 <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
                   <Bath className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bathrooms} {t('labels.bathrooms')}</span>
+                                      <span className="text-gray-900 font-medium text-sm">{property.bathrooms} {t('bathrooms')}</span>
                 </div>
               </div>
 
@@ -804,7 +804,7 @@ const PropertyDetailPage: React.FC = () => {
                   <div className="flex items-center justify-between w-full">
                     <div>
                       <span className="text-2xl font-bold text-gray-900">${property.price}</span>
-                      <span className="ml-1 text-gray-600">{t('labels.night', 'night')}</span>
+                      <span className="ml-1 text-gray-600">{t('night')}</span>
                     </div>
                     <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -909,11 +909,11 @@ const PropertyDetailPage: React.FC = () => {
 
                   {/* Guests */}
                   <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">{t('labels.guests', 'GUESTS').toUpperCase()}</label>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">{t('guests').toUpperCase()}</label>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Users className="w-5 h-5 text-gray-500" />
-                        <span className="text-gray-900">{guests} {guests > 1 ? t('labels.guests', 'guests') : t('labels.guest', 'guest')}</span>
+                        <span className="text-gray-900">{guests} {guests > 1 ? t('guests') : t('guest')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Button
@@ -946,7 +946,7 @@ const PropertyDetailPage: React.FC = () => {
                         </Button>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{t('labels.maxGuests', { count: property.max_guests })}</p>
+                                            <p className="text-xs text-gray-500 mt-1">{t('maxGuests', { count: property.max_guests })}</p>
                   </div>
 
                   {/* Special Requests */}

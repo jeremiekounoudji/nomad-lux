@@ -30,7 +30,7 @@ import {
   Shield,
   ArrowLeft
 } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface ActivityLogProps {
   onBack?: () => void

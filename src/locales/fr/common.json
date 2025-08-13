@@ -43,7 +43,12 @@
     "type": "Type",
     "location": "Emplacement",
     "rating": "Note",
-    "reviews": "Avis"
+    "reviews": "Avis",
+    "selectedCount": "{{count}} sélectionné",
+    "language": "Langue",
+    "user": "Utilisateur",
+    "target": "Cible",
+    "ip": "IP"
   },
   "status": {
     "active": "Actif",
@@ -55,7 +60,8 @@
     "completed": "Terminé",
     "failed": "Échoué",
     "processing": "En cours",
-    "suspended": "Suspendu"
+    "suspended": "Suspendu",
+    "unknown": "Inconnu"
   },
   "messages": {
     "loading": "Chargement...",
@@ -71,7 +77,23 @@
     "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "settingUp": "Configuration de votre expérience",
-    "takingTooLong": "Cela prend trop de temps ? Cliquez ici pour continuer"
+    "takingTooLong": "Cela prend trop de temps ? Cliquez ici pour continuer",
+    "failed": "Échec",
+    "signInRequired": "Veuillez vous connecter pour accéder à cette fonctionnalité",
+    "signInToBook": "Veuillez vous connecter pour réserver des propriétés",
+    "bookingComingSoon": "Fonctionnalité de réservation bientôt disponible !",
+    "signInToAccessProfile": "Veuillez vous connecter pour accéder à votre profil",
+    "feedRefreshed": "Flux actualisé !",
+    "notSpecified": "Non spécifié",
+    "notProvided": "Non fourni"
+  },
+  "actions": {
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "clear": "Effacer"
+  },
+  "time": {
+    "thisMonth": "Ce mois-ci"
   },
   "debug": {
     "info": "Infos de débogage",
@@ -92,7 +114,9 @@
     "errorWithReason": "Erreur : {{reason}}",
     "allUploaded": "Tous les fichiers ont été téléversés avec succès",
     "someFailed": "Certains téléversements ont échoué",
-    "uploadingFiles": "Téléversement des fichiers..."
+    "uploadingFiles": "Téléversement des fichiers...",
+    "progress": "Progression du téléversement",
+    "completedOfTotal": "{{completed}}/{{total}} terminé"
   },
   "time": {
     "now": "Maintenant",
@@ -115,16 +139,40 @@
     "months": "mois",
     "year": "année",
     "years": "années",
-    "ago": "il y a"
+    "ago": "il y a",
+    "zones": {
+      "est": "Heure de l'Est",
+      "pst": "Heure du Pacifique"
+    }
   },
   "actions": {
-    "close": "Fermer"
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "clear": "Effacer",
+    "enable": "Activer",
+    "disable": "Désactiver"
   },
   "notSpecified": "Non spécifié",
-  "notProvided": "Non fourni"
-  ,
+  "notProvided": "Non fourni",
   "pageBanner": {
     "alt": "Arrière-plan de la bannière de page",
-    "bannerLabel": "Bannière de page {{title}}"
+    "bannerLabel": "Bannière de page {{title}}",
+    "home": "Arrière-plan de découverte de propriétés de luxe",
+    "search": "Arrière-plan de recherche et découverte de propriétés",
+    "createProperty": "Arrière-plan d'architecture de maison moderne",
+    "myListings": "Arrière-plan de gestion de propriétés",
+    "myBookings": "Arrière-plan de voyage et réservation",
+    "likedProperties": "Arrière-plan de propriétés favorites",
+    "bookingRequests": "Arrière-plan de communication et demandes",
+    "notifications": "Arrière-plan de notifications et alertes",
+    "wallet": "Arrière-plan de gestion financière et portefeuille",
+    "admin": "Arrière-plan de tableau de bord et gestion admin",
+    "help": "Arrière-plan d'aide et support"
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français",
+    "de": "Allemand"
   }
 }

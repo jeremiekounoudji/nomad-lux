@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip } from '@heroui/react'
 import { AlertTriangle, Edit } from 'lucide-react'
 import { PropertyEditConfirmation } from '../../../interfaces'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface PropertyEditConfirmationModalProps {
   isOpen: boolean

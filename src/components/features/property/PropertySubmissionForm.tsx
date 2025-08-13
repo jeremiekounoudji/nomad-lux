@@ -10,7 +10,7 @@ import { useProperty } from '../../../hooks/useProperty';
 import { useAuthStore } from '../../../lib/stores/authStore';
 import { useAdminSettingsStore } from '../../../lib/stores/adminSettingsStore';
 import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 const INITIAL_FORM_DATA: PropertySubmissionData = {
   title: '',

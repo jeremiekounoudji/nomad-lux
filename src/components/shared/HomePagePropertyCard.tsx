@@ -1,7 +1,7 @@
 import React from 'react'
 import { Property } from '../../interfaces/Property'
 import { Heart, MapPin, Users, Bed, Bath, Share2 } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface HomePagePropertyCardProps {
   property: Property
@@ -19,7 +19,7 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
   className = ''
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
-  const { t } = useTranslation(['property', 'common'])
+  const { t } = useTranslation('property')
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -147,15 +147,15 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           <div className="flex items-center gap-4 text-sm text-gray-600 text-left">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />
-              <span>{property.max_guests} {t('property.labels.guests')}</span>
+              <span>{property.max_guests} {t('labels.guests')}</span>
             </div>
             <div className="flex items-center gap-1">
               <Bed className="w-4 h-4" />
-              <span>{property.bedrooms} {t('property.labels.beds', 'beds')}</span>
+              <span>{property.bedrooms} {t('labels.beds')}</span>
             </div>
             <div className="flex items-center gap-1">
               <Bath className="w-4 h-4" />
-              <span>{property.bathrooms} {t('property.labels.baths', 'baths')}</span>
+              <span>{property.bathrooms} {t('labels.baths')}</span>
             </div>
           </div>
 
@@ -164,14 +164,14 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
             <div className="text-left">
               <p className="text-gray-900">
                 <span className="font-semibold text-lg">${property.price}</span>
-                <span className="text-gray-600 text-sm ml-1">{t('property.labels.perNight')}</span>
+                <span className="text-gray-600 text-sm ml-1">{t('perNight')}</span>
               </p>
             </div>
             <button
               onClick={handleCardClick}
               className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
             >
-              {t('property.actions.book')}
+              {t('actions.book')}
             </button>
           </div>
         </div>

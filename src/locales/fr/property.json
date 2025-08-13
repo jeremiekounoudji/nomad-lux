@@ -136,7 +136,11 @@
     "aboutThisPlace": "À propos de cet endroit",
     "more": "de plus",
     "freeCancellation": "Annulation gratuite",
-    "forHours": "pendant {{hours}} heures"
+    "forHours": "pendant {{hours}} heures",
+    "propertiesCount": "{{count}} propriétés",
+    "hostRating": "note de l'hôte",
+    "avgResponse": "réponse moy. {{time}}",
+    "responseTime": "temps de réponse {{time}}"
   },
   "actions": {
     "book": "Réserver maintenant",
@@ -316,5 +320,54 @@
   "exploreProperties": "Explorer les Propriétés",
   "myListings": "Mes Annonces",
   "managePropertiesAndTrack": "Gérez vos propriétés et suivez les performances",
-  "addListing": "Ajouter une Annonce"
+  "addListing": "Ajouter une Annonce",
+  "listings": {
+    "tabs": {
+      "all": "Toutes",
+      "approved": "Approuvées",
+      "pending": "En attente",
+      "paused": "En pause",
+      "rejected": "Rejetées"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "stats": "Statistiques",
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "modals": {
+      "deleteTitle": "Supprimer l'annonce",
+      "deleteConfirmation": "Cette action ne peut pas être annulée",
+      "deleteMessage": "Êtes-vous sûr de vouloir supprimer cette annonce ? Cela supprimera définitivement la propriété de vos annonces et ne peut pas être annulé.",
+      "cancel": "Annuler",
+      "deleteButton": "Supprimer l'annonce",
+      "editTitle": "Modifier l'annonce",
+      "updateDetails": "Mettez à jour les détails de votre propriété"
+    },
+    "stats": {
+      "views": "Vues",
+      "bookings": "Réservations",
+      "revenue": "Revenus"
+    },
+    "errors": {
+      "loadingListings": "Erreur lors du chargement des annonces",
+      "tryAgain": "Réessayer"
+    },
+    "empty": {
+      "noListings": "Aucune annonce {{status}}",
+      "noListingsDescription": "Vous n'avez pas encore créé d'annonces.",
+      "noApproved": "Vous n'avez aucune annonce approuvée.",
+      "noPending": "Vous n'avez aucune annonce en attente.",
+      "noPaused": "Vous n'avez aucune annonce en pause.",
+      "noRejected": "Vous n'avez aucune annonce rejetée.",
+      "createFirst": "Créer votre première annonce"
+    },
+    "pagination": {
+      "showing": "Affichage",
+      "to": "à",
+      "of": "sur",
+      "results": "résultats"
+    }
+  }
 }

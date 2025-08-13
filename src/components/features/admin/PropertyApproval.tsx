@@ -26,7 +26,7 @@ import { useAdminProperty } from '../../../hooks/useAdminProperty'
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
 import { getStatusColor, getStatusDisplayName } from '../../../utils/propertyUtils'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 // props are managed via internal navigation hooks; no external props currently used
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@heroui/react'
 import { ArrowLeft } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 interface TermsPageProps {
   onPageChange?: (page: string) => void

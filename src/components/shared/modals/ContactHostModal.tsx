@@ -12,7 +12,7 @@ import {
 } from '@heroui/react'
 import { MessageCircle, Star, MapPin, Phone, Mail, MessageSquare } from 'lucide-react'
 import { ContactHostModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const ContactHostModal: React.FC<ContactHostModalProps> = ({
   isOpen,

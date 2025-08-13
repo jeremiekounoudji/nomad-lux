@@ -34,7 +34,7 @@ import {
   isWebShareSupported 
 } from '../../../utils/shareUtils'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
   isOpen,

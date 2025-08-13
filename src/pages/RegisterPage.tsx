@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../lib/stores/authStore'
 import { RegisterPageProps } from '../interfaces'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister }) => {
   const { t } = useTranslation(['auth', 'common'])

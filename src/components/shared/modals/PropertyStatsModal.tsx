@@ -24,7 +24,7 @@ import {
   BarChart3
 } from 'lucide-react'
 import { PropertyStatsModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const PropertyStatsModal: React.FC<PropertyStatsModalProps> = ({
   isOpen,

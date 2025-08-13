@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface PageBannerProps {
   backgroundImage: string
@@ -20,9 +20,9 @@ const PageBanner: React.FC<PageBannerProps> = ({
   overlayOpacity = 'medium',
   height = 'medium',
   className = '',
-  imageAlt = 'Page banner background'
+  imageAlt
 }) => {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation('common')
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -53,13 +53,13 @@ const PageBanner: React.FC<PageBannerProps> = ({
     <div 
       className={`relative overflow-hidden rounded-none sm:rounded-xl ${heightClasses[height]} ${className}`}
       role="banner"
-      aria-label={t('common.pageBanner.bannerLabel', { title, defaultValue: `${title} page banner` })}
+      aria-label={t('common.pageBanner.bannerLabel', { title })}
     >
       {/* Background Image */}
       {!imageError && (
         <img
           src={backgroundImage}
-          alt={imageAlt || t('common.pageBanner.alt', 'Page banner background')}
+          alt={imageAlt || t('common.pageBanner.alt')}
           className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}

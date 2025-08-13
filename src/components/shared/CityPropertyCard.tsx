@@ -2,7 +2,7 @@ import React from 'react'
 import { Property } from '../../interfaces/Property'
 import { MapPin, Users, Bed, Bath, Heart, Share2 } from 'lucide-react'
 import { Button } from '@heroui/react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface CityPropertyCardProps {
   property: Property
@@ -19,7 +19,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
   onClick,
   className = ''
 }) => {
-  const { t } = useTranslation(['property', 'common'])
+  const { t } = useTranslation('property')
   const handleCardClick = () => {
     onClick?.(property)
   }
@@ -95,15 +95,15 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
             <div className="flex items-center gap-3 text-xs text-gray-600">
               <div className="flex items-center gap-1">
                 <Users className="w-3 h-3" />
-                <span>{property.max_guests} {t('property.labels.guests')}</span>
+                <span>{property.max_guests} {t('labels.guests')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Bed className="w-3 h-3" />
-                <span>{property.bedrooms} {t('property.labels.beds', 'beds')}</span>
+                <span>{property.bedrooms} {t('labels.beds')}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Bath className="w-3 h-3" />
-                <span>{property.bathrooms} {t('property.labels.baths', 'baths')}</span>
+                <span>{property.bathrooms} {t('labels.baths')}</span>
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
                 <span className="text-lg font-bold text-gray-900">
                   ${property.price}
                 </span>
-                <span className="text-xs text-gray-600">{t('property.labels.perNight')}</span>
+                <span className="text-xs text-gray-600">{t('perNight')}</span>
               </div>
             </div>
 
@@ -126,7 +126,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
               onPress={handleCardClick}
               className="text-xs px-3 py-1 bg-main hover:bg-primary-600"
             >
-              {t('property.actions.viewDetails')}
+              {t('actions.viewDetails')}
             </Button>
           </div>
         </div>

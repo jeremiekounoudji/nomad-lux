@@ -1,6 +1,6 @@
 import React from 'react'
 import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AdminSidebarProps {
   currentSection: string

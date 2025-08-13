@@ -1,0 +1,139 @@
+---
+alwaysApply: true
+description: Blueprint-based task implementation system for consistent and reliable solutions
+---
+
+# Blueprint Management System
+
+## Overview
+This rule establishes a systematic approach to implementing features using blueprint files that contain proven, working implementation patterns. This ensures consistency and prevents breaking working solutions.
+
+## Blueprint File Structure
+
+### 1. Blueprint Files Location
+- **Path**: `blueprints/[task-type]-blueprint.md`
+- **Naming**: Use kebab-case (e.g., `translation-blueprint.md`, `authentication-blueprint.md`)
+
+### 2. Blueprint File Format
+```markdown
+# [Task Type] Blueprint
+
+## Status
+[NEVER UPDATE AGAIN - WORKING] | [TEST IN PROGRESS] | [DRAFT]
+
+## Last Updated
+[Date and brief description of change]
+
+## Implementation Pattern
+[Detailed step-by-step implementation process]
+
+## File Structure
+[Expected file structure and organization]
+
+## Code Patterns
+[Specific code patterns, hooks, stores, etc.]
+
+## Common Pitfalls
+[Known issues and how to avoid them]
+
+## Testing Checklist
+[How to verify the implementation works]
+
+## Related Files
+[List of files typically modified for this task type]
+```
+
+### 3. Implementation Summary Files
+- **Path**: `blueprints/[task-type]-implementation-summary.md`
+- **Purpose**: Track current implementation state and modified files
+- **Updated**: Every time the blueprint is used
+
+## Workflow Process
+
+### Step 1: Task Analysis
+When a user requests a task:
+1. **Identify task type** (translation, authentication, UI component, etc.)
+2. **Check for existing blueprint**: Look in `blueprints/` directory
+3. **Determine action**:
+   - If blueprint exists → Use existing pattern
+   - If no blueprint → Create new blueprint
+
+### Step 2: Blueprint Usage
+If blueprint exists:
+1. **Read the blueprint file** completely
+2. **Check status**:
+   - `NEVER UPDATE AGAIN - WORKING` → Follow exactly, no modifications
+   - `TEST IN PROGRESS` → Follow pattern, update summary file
+   - `DRAFT` → Follow pattern, be prepared to refine
+3. **Read implementation summary** for current state context
+4. **Follow the established pattern** exactly
+
+### Step 3: Blueprint Creation
+If no blueprint exists:
+1. **Create blueprint file** using the standard format
+2. **Set status** to `DRAFT`
+3. **Document implementation pattern** based on current task
+4. **Create implementation summary file**
+5. **Implement following the new blueprint**
+
+### Step 4: Status Management
+- **DRAFT** → **TEST IN PROGRESS**: When implementation is complete
+- **TEST IN PROGRESS** → **NEVER UPDATE AGAIN - WORKING**: Only when user confirms it works
+- **NEVER UPDATE AGAIN - WORKING** → Only update if user explicitly says solution is broken
+
+### Step 5: Implementation Summary Updates
+Always update `[task-type]-implementation-summary.md` with:
+- Files modified in current task
+- Current implementation state
+- Any deviations from blueprint (with justification)
+- Testing results
+
+## Critical Rules
+
+### DO NOT:
+- ❌ Modify blueprint content if status is "NEVER UPDATE AGAIN - WORKING"
+- ❌ Change working implementation patterns
+- ❌ Update files that don't need modification
+- ❌ Deviate from established blueprint without user request
+
+### ALWAYS:
+- ✅ Check for existing blueprints before starting any task
+- ✅ Follow blueprint patterns exactly
+- ✅ Update implementation summary files
+- ✅ Preserve working solutions
+- ✅ Ask user for confirmation before marking blueprint as "WORKING"
+
+## Example Task Types
+- `translation-blueprint.md` - Translation system implementation
+- `authentication-blueprint.md` - Auth flow patterns
+- `ui-component-blueprint.md` - UI component creation
+- `api-integration-blueprint.md` - API integration patterns
+- `state-management-blueprint.md` - Store/state patterns
+- `testing-blueprint.md` - Testing implementation
+- `deployment-blueprint.md` - Deployment processes
+
+## Blueprint Directory Structure
+```
+blueprints/
+├── translation-blueprint.md
+├── translation-implementation-summary.md
+├── authentication-blueprint.md
+├── authentication-implementation-summary.md
+├── ui-component-blueprint.md
+├── ui-component-implementation-summary.md
+└── [other-blueprints...]
+```
+
+## Context Integration
+- Use blueprint files alongside conversation context
+- Reference implementation summaries for current state understanding
+- Maintain consistency across similar tasks
+- Preserve institutional knowledge of working solutions
+
+## User Feedback Integration
+- Only update blueprints when user explicitly reports issues
+- Mark blueprints as "WORKING" only after user confirmation
+- Document user feedback in blueprint updates
+- Maintain change history for accountability
+
+This system ensures that once a working solution is established, it becomes the standard pattern for all future similar tasks, preventing regressions and maintaining consistency across the codebase.

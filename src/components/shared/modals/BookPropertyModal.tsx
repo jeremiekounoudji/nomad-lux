@@ -18,7 +18,7 @@ import {
 } from '@heroui/react'
 import { Calendar, Users, CreditCard, MapPin, Star, DollarSign } from 'lucide-react'
 import { BookPropertyModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
   isOpen,

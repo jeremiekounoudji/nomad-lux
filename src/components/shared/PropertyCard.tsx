@@ -107,15 +107,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {showStats && (
             <div className="grid grid-cols-3 gap-4 mt-4">
               <div className="text-center">
-                <p className="text-sm text-gray-500">{t('labels.views', 'Views')}</p>
+                <p className="text-sm text-gray-500">{t('views')}</p>
                 <p className="font-semibold">{property.view_count}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500">{t('labels.bookings', 'Bookings')}</p>
+                <p className="text-sm text-gray-500">{t('bookings')}</p>
                 <p className="font-semibold">{property.booking_count}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-500">{t('labels.revenue', 'Revenue')}</p>
+                <p className="text-sm text-gray-500">{t('revenue')}</p>
                 <p className="font-semibold">${property.total_revenue}</p>
               </div>
             </div>
@@ -125,7 +125,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <div className="flex items-center justify-between mt-2">
             <div className="text-left">
               <p className="font-semibold text-gray-900">${property.price || property.price_per_night}</p>
-              <p className="text-sm text-gray-500">{t('labels.perNight', 'per night')}</p>
+                              <p className="text-sm text-gray-500">{t('perNight')}</p>
             </div>
             {showActions && (
               <Button

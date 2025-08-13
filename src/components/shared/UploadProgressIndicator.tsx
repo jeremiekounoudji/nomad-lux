@@ -1,7 +1,7 @@
 import React from 'react';
 import { Progress, Card } from '@heroui/react';
 import { UploadProgress } from '../../utils/fileUpload';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface UploadProgressIndicatorProps {
   uploads: UploadProgress[];

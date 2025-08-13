@@ -4,7 +4,7 @@ import { today, getLocalTimeZone } from '@internationalized/date'
 import { Calendar as CalendarIcon, MapPin } from 'lucide-react'
 import { getTimezoneInfo } from '../../utils/propertyUtils'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface BookingCalendarProps {
   propertyId: string

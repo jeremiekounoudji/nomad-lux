@@ -16,7 +16,7 @@ import {
 } from '@heroui/react'
 import { User, Mail, Phone, MapPin, Calendar, Camera, Eye, EyeOff } from 'lucide-react'
 import { ProfileEditModalProps } from '../../../interfaces/Component'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   isOpen,

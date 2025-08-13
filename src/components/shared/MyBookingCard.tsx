@@ -2,7 +2,7 @@ import React from 'react';
 import { MapPin, Star, Calendar, AlertCircle } from 'lucide-react';
 import { Card, CardBody, Button, Chip } from '@heroui/react';
 import { PaymentButton } from './';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface MyBookingCardProps {
   booking: any;

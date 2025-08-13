@@ -3,7 +3,7 @@ import MainLayout from '../components/layout/MainLayout';
 import PropertySubmissionForm from '../components/features/property/PropertySubmissionForm';
 import { PageBanner } from '../components/shared';
 import { getBannerConfig } from '../utils/bannerConfig';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../lib/stores/translationStore';
 
 import { CreatePropertyPageProps } from '../interfaces'
 
@@ -19,7 +19,7 @@ const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange })
             backgroundImage={getBannerConfig('createProperty').image}
             title={t('property.submitYourProperty')}
             subtitle={t('property.shareWithTravelers')}
-            imageAlt={getBannerConfig('createProperty').alt}
+            imageAlt={t('common.pageBanner.createProperty')}
             overlayOpacity={getBannerConfig('createProperty').overlayOpacity}
             height={getBannerConfig('createProperty').height}
             className="mb-4 sm:mb-6"

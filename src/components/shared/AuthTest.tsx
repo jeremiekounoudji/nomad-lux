@@ -1,7 +1,7 @@
 import React from 'react'
 import { useAuthStore } from '../../lib/stores/authStore'
 import { useAuth } from '../../hooks/useAuth'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export const AuthTest: React.FC = () => {
   const authStore = useAuthStore()

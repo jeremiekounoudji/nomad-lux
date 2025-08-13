@@ -106,7 +106,8 @@ export const useTranslationStore = create<TranslationState>()(
       getTranslation: (key: string, namespace?: string, options?: any) => {
         try {
           const fullKey = namespace ? `${namespace}:${key}` : key
-          return i18n.t(fullKey, options)
+          const result = i18n.t(fullKey, options)
+          return typeof result === 'string' ? result : String(result)
         } catch (error) {
           console.warn('🌐 TranslationStore: Translation failed for key:', key, error)
           return key // Return key as fallback
@@ -133,11 +134,28 @@ export const useTranslationStore = create<TranslationState>()(
 )
 
 // Helper hook for easier usage in components
-export const useTranslation = (namespace?: string) => {
+export const useTranslation = (namespace?: string | string[]) => {
   const { currentLanguage, getTranslation, changeLanguage, isLoading } = useTranslationStore()
   
   const t = (key: string, options?: any) => {
-    return getTranslation(key, namespace, options)
+    // Handle cross-namespace keys (e.g., 'common.messages.loading')
+    if (key.includes('.') && key.split('.').length > 1) {
+      const [ns, ...keyParts] = key.split('.')
+      const actualKey = keyParts.join('.')
+      return getTranslation(actualKey, ns, options)
+    }
+    
+    // Use provided namespace
+    if (typeof namespace === 'string') {
+      return getTranslation(key, namespace, options)
+    }
+    
+    // If multiple namespaces provided, use the first as default
+    if (Array.isArray(namespace) && namespace.length > 0) {
+      return getTranslation(key, namespace[0], options)
+    }
+    
+    return getTranslation(key, undefined, options)
   }
   
   return {

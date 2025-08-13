@@ -30,7 +30,7 @@ import {
   PieChart,
   LineChart
 } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AnalyticsDashboardProps {
   onPageChange: (page: string) => void

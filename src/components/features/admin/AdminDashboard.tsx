@@ -22,7 +22,7 @@ import { useAdminPayoutRequests } from '../../../hooks/useAdminPayoutRequests'
 import { useAdminProperty } from '../../../hooks/useAdminProperty'
 import { PayoutRequest } from '../../../interfaces'
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AdminDashboardProps {
   onSectionChange?: (section: string) => void
@@ -224,7 +224,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         backgroundImage={getBannerConfig('admin').image}
         title={t('admin.navigation.dashboard')}
         subtitle={t('admin.dashboard.overview')}
-        imageAlt={getBannerConfig('admin').alt}
+                  imageAlt={t('common.pageBanner.admin')}
         overlayOpacity={getBannerConfig('admin').overlayOpacity}
         height={getBannerConfig('admin').height}
       >

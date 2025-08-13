@@ -10,14 +10,14 @@ import { MyListingsPageProps } from '../interfaces'
 import { convertDatabasePropertyToProperty, getStatusColor, getStatusDisplayName } from '../utils/propertyUtils'
 import { useNavigation } from '../hooks/useNavigation'
 import PropertySubmissionForm from '../components/features/property/PropertySubmissionForm'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 // Component implementation
 
 const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['property', 'common'])
-  // Navigation hook
-  const { navigateWithAuth } = useNavigation()
+  // Navigation hook (available if needed)
+  // const { navigateWithAuth } = useNavigation()
   
   // User listings hook
   const {
@@ -193,7 +193,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           backgroundImage={getBannerConfig('myListings').image}
           title={t('property.myListings')}
           subtitle={t('property.managePropertiesAndTrack')}
-          imageAlt={getBannerConfig('myListings').alt}
+          imageAlt={t('common.pageBanner.myListings')}
           overlayOpacity={getBannerConfig('myListings').overlayOpacity}
           height={getBannerConfig('myListings').height}
           className="mb-8"
@@ -222,11 +222,11 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                 tabContent: "group-data-[selected=true]:text-primary-600 text-sm sm:text-base whitespace-nowrap"
               }}
             >
-              <Tab key="all" title={`All (${statusCounts.all})`} />
-              <Tab key="approved" title={`Approved (${statusCounts.approved})`} />
-              <Tab key="pending" title={`Pending (${statusCounts.pending})`} />
-              <Tab key="paused" title={`Paused (${statusCounts.paused})`} />
-              <Tab key="rejected" title={`Rejected (${statusCounts.rejected})`} />
+              <Tab key="all" title={`${t('property.listings.tabs.all')} (${statusCounts.all})`} />
+              <Tab key="approved" title={`${t('property.listings.tabs.approved')} (${statusCounts.approved})`} />
+              <Tab key="pending" title={`${t('property.listings.tabs.pending')} (${statusCounts.pending})`} />
+              <Tab key="paused" title={`${t('property.listings.tabs.paused')} (${statusCounts.paused})`} />
+              <Tab key="rejected" title={`${t('property.listings.tabs.rejected')} (${statusCounts.rejected})`} />
             </Tabs>
           </div>
         </div>
@@ -241,11 +241,11 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
       {error && (
         <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-red-800 mb-2">Error Loading Listings</h3>
+            <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.listings.errors.loadingListings')}</h3>
             <p className="text-red-600 mb-4">{error}</p>
-            <Button color="primary" onPress={() => fetchUserListings({ force: true })}>
-              Try Again
-            </Button>
+                          <Button color="primary" onPress={() => fetchUserListings({ force: true })}>
+                {t('property.listings.errors.tryAgain')}
+              </Button>
           </div>
         </div>
       )}
@@ -292,7 +292,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 isDisabled={isActionLoading}
                                 className="min-w-0 px-2"
                               >
-                                Pause
+                                {t('property.listings.actions.pause')}
                               </Button>
                             </div>
                           )}
@@ -307,7 +307,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 isDisabled={isActionLoading}
                                 className="min-w-0 px-2"
                               >
-                                Resume
+                                {t('property.listings.actions.resume')}
                               </Button>
                             </div>
                           )}
@@ -337,15 +337,15 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                               <div className="grid grid-cols-3 gap-2 text-center">
                                 <div>
                                   <p className="text-sm font-bold text-secondary-600">{stats.views}</p>
-                                  <p className="text-xs text-gray-500">Views</p>
+                                  <p className="text-xs text-gray-500">{t('property.listings.stats.views')}</p>
                                 </div>
                                 <div>
                                   <p className="text-sm font-bold text-green-600">{stats.bookings}</p>
-                                  <p className="text-xs text-gray-500">Bookings</p>
+                                  <p className="text-xs text-gray-500">{t('property.listings.stats.bookings')}</p>
                                 </div>
                                 <div>
                                   <p className="text-sm font-bold text-primary-600">${stats.revenue}</p>
-                                  <p className="text-xs text-gray-500">Revenue</p>
+                                  <p className="text-xs text-gray-500">{t('property.listings.stats.revenue')}</p>
                                 </div>
                               </div>
                             )}
@@ -360,7 +360,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 onPress={() => handleViewStats(listing)}
                                 className="flex-1"
                               >
-                                Stats
+                                {t('property.listings.actions.stats')}
                               </Button>
                               <Button
                                 size="sm"
@@ -371,7 +371,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 isDisabled={!canEdit}
                                 className="flex-1"
                               >
-                                Edit
+                                {t('property.listings.actions.edit')}
                               </Button>
                               <Button
                                 size="sm"
@@ -381,7 +381,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 onPress={() => handleDelete(listing)}
                                 className="flex-1"
                               >
-                                Delete
+                                {t('property.listings.actions.delete')}
                               </Button>
                             </div>
                           </div>
@@ -400,9 +400,9 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
               <div className="flex flex-col items-center gap-3 sm:hidden">
                 {/* Results info - Mobile */}
                 <div className="text-xs text-gray-600 text-center">
-                  Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> to{' '}
-                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> of{' '}
-                  <span className="font-medium">{pagination.totalItems}</span> results
+                  {t('property.listings.pagination.showing')} <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> {t('property.listings.pagination.to')}{' '}
+                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> {t('property.listings.pagination.of')}{' '}
+                  <span className="font-medium">{pagination.totalItems}</span> {t('property.listings.pagination.results')}
                 </div>
                 
                 {/* Pagination - Mobile */}
@@ -430,9 +430,9 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
               <div className="hidden sm:flex items-center justify-center gap-4">
                 {/* Results info - Desktop */}
                 <div className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> to{' '}
-                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> of{' '}
-                  <span className="font-medium">{pagination.totalItems}</span> results
+                  {t('property.listings.pagination.showing')} <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> {t('property.listings.pagination.to')}{' '}
+                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> {t('property.listings.pagination.of')}{' '}
+                  <span className="font-medium">{pagination.totalItems}</span> {t('property.listings.pagination.results')}
                 </div>
                 
                 {/* Pagination - Desktop */}
@@ -461,21 +461,21 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
           <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No {statusFilter === 'all' ? '' : statusFilter} listings
+            {statusFilter === 'all' ? t('property.listings.empty.noListingsDescription') : t('property.listings.empty.noListings', { status: statusFilter })}
           </h3>
           <p className="text-gray-500 mb-4">
-            {statusFilter === 'all' && "You haven't created any listings yet."}
-            {statusFilter === 'approved' && "You don't have any approved listings."}
-            {statusFilter === 'pending' && "You don't have any pending listings."}
-            {statusFilter === 'paused' && "You don't have any paused listings."}
-            {statusFilter === 'rejected' && "You don't have any rejected listings."}
+            {statusFilter === 'all' && t('property.listings.empty.noListingsDescription')}
+            {statusFilter === 'approved' && t('property.listings.empty.noApproved')}
+            {statusFilter === 'pending' && t('property.listings.empty.noPending')}
+            {statusFilter === 'paused' && t('property.listings.empty.noPaused')}
+            {statusFilter === 'rejected' && t('property.listings.empty.noRejected')}
           </p>
           <Button
             color="primary"
             startContent={<Plus className="w-4 h-4" />}
             onPress={handleAddListing}
           >
-            Create Your First Listing
+            {t('property.listings.empty.createFirst')}
           </Button>
         </div>
       )}
@@ -486,8 +486,8 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Delete Listing</h2>
-                <p className="text-sm text-gray-600">This action cannot be undone</p>
+                <h2 className="text-xl font-bold">{t('property.listings.modals.deleteTitle')}</h2>
+                <p className="text-sm text-gray-600">{t('property.listings.modals.deleteConfirmation')}</p>
               </ModalHeader>
               <ModalBody>
                 {propertyToDelete && (
@@ -506,7 +506,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Are you sure you want to delete this listing? This will permanently remove the property from your listings and cannot be undone.
+                      {t('property.listings.modals.deleteMessage')}
                     </p>
                   </div>
                 )}
@@ -518,14 +518,14 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                   onPress={onClose}
                   disabled={actionLoading === 'delete'}
                 >
-                  Cancel
+                  {t('property.listings.modals.cancel')}
                 </Button>
                 <Button 
                   color="danger" 
                   onPress={confirmDelete}
                   isLoading={actionLoading === 'delete'}
                 >
-                  Delete Listing
+                  {t('property.listings.modals.deleteButton')}
                 </Button>
               </ModalFooter>
             </>
@@ -544,9 +544,9 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Edit Listing</h2>
+                <h2 className="text-xl font-bold">{t('property.listings.modals.editTitle')}</h2>
                 {propertyToEdit && (
-                  <p className="text-sm text-gray-600">Update your property details</p>
+                  <p className="text-sm text-gray-600">{t('property.listings.modals.updateDetails')}</p>
                 )}
               </ModalHeader>
               <ModalBody>

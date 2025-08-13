@@ -11,7 +11,7 @@ import { useHomeFeed } from '../hooks/useHomeFeed';
 import { usePropertyLike } from '../hooks/usePropertyLike';
 import { getBannerConfig } from '../utils/bannerConfig';
 import toast from 'react-hot-toast';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../lib/stores/translationStore';
 
 const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['property'])
@@ -67,7 +67,7 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
           backgroundImage={getBannerConfig('likedProperties').image}
           title={t('property.likedProperties')}
           subtitle={t('property.favoritePlaces')}
-          imageAlt={getBannerConfig('likedProperties').alt}
+          imageAlt={t('common.pageBanner.likedProperties')}
           overlayOpacity={getBannerConfig('likedProperties').overlayOpacity}
           height={getBannerConfig('likedProperties').height}
           className="mb-8"

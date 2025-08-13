@@ -4,7 +4,7 @@ import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone } from 'lucide-r
 import { useAdminAuth } from '../hooks/useAdminAuth'
 import { useAuthStore } from '../lib/stores/authStore'
 import { AdminRegisterPageProps } from '../interfaces'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['admin', 'auth', 'common'])

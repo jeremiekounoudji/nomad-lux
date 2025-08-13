@@ -43,7 +43,12 @@
     "type": "Type",
     "location": "Location",
     "rating": "Rating",
-    "reviews": "Reviews"
+    "reviews": "Reviews",
+    "selectedCount": "{{count}} selected",
+    "language": "Language",
+    "user": "User",
+    "target": "Target",
+    "ip": "IP"
   },
   "status": {
     "active": "Active",
@@ -55,7 +60,8 @@
     "completed": "Completed",
     "failed": "Failed",
     "processing": "Processing",
-    "suspended": "Suspended"
+    "suspended": "Suspended",
+    "unknown": "Unknown"
   },
   "messages": {
     "loading": "Loading...",
@@ -71,7 +77,18 @@
     "unauthorized": "You are not authorized to perform this action.",
     "sessionExpired": "Your session has expired. Please log in again.",
     "settingUp": "Setting up your experience",
-    "takingTooLong": "Taking too long? Click here to continue"
+    "takingTooLong": "Taking too long? Click here to continue",
+    "failed": "Failed",
+    "notSpecified": "Not specified",
+    "notProvided": "Not provided"
+  },
+  "actions": {
+    "close": "Close",
+    "retry": "Retry",
+    "clear": "Clear"
+  },
+  "time": {
+    "thisMonth": "This month"
   },
   "debug": {
     "info": "Debug Info",
@@ -92,16 +109,33 @@
     "errorWithReason": "Error: {{reason}}",
     "allUploaded": "All files uploaded successfully",
     "someFailed": "Some uploads failed",
-    "uploadingFiles": "Uploading files..."
+    "uploadingFiles": "Uploading files...",
+    "progress": "Upload Progress",
+    "completedOfTotal": "{{completed}}/{{total}} completed"
   },
   "actions": {
-    "close": "Close"
+    "close": "Close",
+    "retry": "Retry",
+    "clear": "Clear",
+    "enable": "Enable",
+    "disable": "Disable"
   },
   "notSpecified": "Not specified",
   "notProvided": "Not provided",
   "pageBanner": {
     "alt": "Page banner background",
-    "bannerLabel": "{{title}} page banner"
+    "bannerLabel": "{{title}} page banner",
+    "home": "Luxury property discovery background",
+    "search": "Property search and discovery background",
+    "createProperty": "Modern house architecture background",
+    "myListings": "Property management background",
+    "myBookings": "Travel and booking background",
+    "likedProperties": "Favorite properties background",
+    "bookingRequests": "Communication and requests background",
+    "notifications": "Notifications and alerts background",
+    "wallet": "Financial and wallet management background",
+    "admin": "Admin dashboard and management background",
+    "help": "Help and support background"
   },
   "time": {
     "now": "Now",
@@ -124,6 +158,16 @@
     "months": "months",
     "year": "year",
     "years": "years",
-    "ago": "ago"
+    "ago": "ago",
+    "zones": {
+      "est": "Eastern Time",
+      "pst": "Pacific Time"
+    }
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German"
   }
 }

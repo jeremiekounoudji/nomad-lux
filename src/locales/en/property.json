@@ -98,6 +98,18 @@
   "labels": {
     "title": "Property Title",
     "description": "Description",
+    "guests": "guests",
+    "guest": "guest",
+    "beds": "beds",
+    "baths": "baths",
+    "bedrooms": "bedrooms",
+    "bathrooms": "bathrooms",
+    "night": "night",
+    "perNight": "per night",
+    "views": "Views",
+    "bookings": "Bookings",
+    "revenue": "Revenue",
+    "maxGuests": "Max {{count}} guests",
     "pricePerNight": "Price per Night",
     "perNight": "per night",
     "maxGuests": "Maximum Guests",
@@ -136,7 +148,11 @@
     "aboutThisPlace": "About this place",
     "more": "more",
     "freeCancellation": "Free cancellation",
-    "forHours": "for {{hours}} hours"
+    "forHours": "for {{hours}} hours",
+    "propertiesCount": "{{count}} properties",
+    "hostRating": "host rating",
+    "avgResponse": "avg {{time}} response",
+    "responseTime": "{{time}} response time"
   },
   "actions": {
     "book": "Book Now",
@@ -315,6 +331,55 @@
   "startExploringAndLike": "Start exploring and like properties to see them here",
   "exploreProperties": "Explore Properties",
   "myListings": "My Listings",
-  "managePropertiesAndTrack": "Manage your properties and track performance",
-  "addListing": "Add Listing"
+  "managePropertiesAndTrack": "Manage your properties and track performance", 
+  "addListing": "Add Listing",
+  "listings": {
+    "tabs": {
+      "all": "All",
+      "approved": "Approved", 
+      "pending": "Pending",
+      "paused": "Paused",
+      "rejected": "Rejected"
+    },
+    "actions": {
+      "pause": "Pause",
+      "resume": "Resume",
+      "stats": "Stats",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "modals": {
+      "deleteTitle": "Delete Listing",
+      "deleteConfirmation": "This action cannot be undone",
+      "deleteMessage": "Are you sure you want to delete this listing? This will permanently remove the property from your listings and cannot be undone.",
+      "cancel": "Cancel",
+      "deleteButton": "Delete Listing", 
+      "editTitle": "Edit Listing",
+      "updateDetails": "Update your property details"
+    },
+    "stats": {
+      "views": "Views",
+      "bookings": "Bookings", 
+      "revenue": "Revenue"
+    },
+    "errors": {
+      "loadingListings": "Error Loading Listings",
+      "tryAgain": "Try Again"
+    },
+    "empty": {
+      "noListings": "No {{status}} listings",
+      "noListingsDescription": "You haven't created any listings yet.",
+      "noApproved": "You don't have any approved listings.",
+      "noPending": "You don't have any pending listings.",
+      "noPaused": "You don't have any paused listings.",
+      "noRejected": "You don't have any rejected listings.",
+      "createFirst": "Create Your First Listing"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "to": "to", 
+      "of": "of",
+      "results": "results"
+    }
+  }
 }

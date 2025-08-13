@@ -33,7 +33,7 @@ import { SharePropertyModal } from '../components/shared/modals'
 import toast from 'react-hot-toast'
 import { supabase } from '../lib/supabase'
 import WalletPage from './WalletPage'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 // Add interface for popular place (matching the useHomeFeed hook)
 interface PopularPlace {
@@ -50,7 +50,7 @@ interface PopularPlace {
 }
 
 const HomePage: React.FC = () => {
-  const { t } = useTranslation(['common', 'property'])
+  const { t } = useTranslation(['property', 'common', 'home'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
   const [selectedProperty, setSelectedPropertyState] = useState<Property | null>(null);
@@ -175,8 +175,8 @@ const HomePage: React.FC = () => {
         // If user is not authenticated and trying to access a protected page
         if (!isAuthenticated && protectedPages.includes(currentPage)) {
           console.log('🔒 Protected page access denied - redirecting to login')
-          toast.error('Please sign in to access this feature')
-          setCurrentPage('login')
+                toast.error(t('common.messages.signInRequired'))
+      setCurrentPage('login')
           return
         }
 
@@ -218,13 +218,13 @@ const HomePage: React.FC = () => {
 
   const handleBook = (property: Property) => {
     if (!isAuthenticated) {
-      toast.error('Please sign in to book properties')
+      toast.error(t('common.messages.signInToBook'))
       setCurrentPage('login')
       return
     }
     console.log('📅 Book property:', property.title)
     // TODO: Implement booking modal
-    toast.success('Booking feature coming soon!')
+          toast.success(t('common.messages.bookingComingSoon'))
   }
 
   const handlePropertyClick = useCallback((property: Property) => {
@@ -258,7 +258,7 @@ const HomePage: React.FC = () => {
     // Handle profile modal
     if (page === 'profile') {
       if (!isAuthenticated) {
-        toast.error('Please sign in to access your profile')
+        toast.error(t('common.messages.signInToAccessProfile'))
         setCurrentPage('login')
         return
       }
@@ -269,7 +269,7 @@ const HomePage: React.FC = () => {
     // Check if page requires authentication
     if (protectedPages.includes(page) && !isAuthenticated && !isLoading) {
       console.log('🔒 Protected page access denied:', page)
-      toast.error('Please sign in to access this feature')
+      toast.error(t('common.messages.signInRequired'))
       setCurrentPage('login')
       return
     }
@@ -296,7 +296,7 @@ const HomePage: React.FC = () => {
   const handleRefresh = useCallback(() => {
     console.log('🔄 Refreshing home feed')
     refreshFeed()
-    toast.success('Feed refreshed!')
+          toast.success(t('common.messages.feedRefreshed'))
   }, [refreshFeed])
 
   const handleRetry = useCallback(() => {
@@ -317,8 +317,8 @@ const HomePage: React.FC = () => {
             <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
               <span className="text-white font-bold text-xl">NL</span>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('messages.loading')}</h2>
-            <p className="text-gray-600 mb-4">{t('messages.settingUp')}</p>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('common.messages.loading')}</h2>
+            <p className="text-gray-600 mb-4">{t('common.messages.settingUp')}</p>
           
           {/* Emergency override button */}
           <button
@@ -329,7 +329,7 @@ const HomePage: React.FC = () => {
             }}
             className="text-sm text-gray-500 hover:text-primary-600 underline"
           >
-            {t('messages.takingTooLong')}
+            {t('common.messages.takingTooLong')}
           </button>
         </div>
       </div>
@@ -408,7 +408,7 @@ const HomePage: React.FC = () => {
             backgroundImage={getBannerConfig('home').image}
             title={t('home.discoverLuxury')}
             subtitle={t('home.findPerfectStay')}
-            imageAlt={getBannerConfig('home').alt}
+            imageAlt={t('common.pageBanner.home')}
             overlayOpacity={getBannerConfig('home').overlayOpacity}
             height={getBannerConfig('home').height}
           />
@@ -431,7 +431,7 @@ const HomePage: React.FC = () => {
             <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
               <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-red-900 mb-2">
-                {t('property.messages.failedToLoad')}
+                {t('messages.failedToLoad')}
               </h3>
               <p className="text-red-700 mb-4">{feedError}</p>
               <Button
@@ -440,7 +440,7 @@ const HomePage: React.FC = () => {
                 onPress={handleRetry}
                 startContent={<RefreshCw className="w-4 h-4" />}
               >
-                {t('buttons.tryAgain')}
+                {t('common.buttons.tryAgain')}
               </Button>
             </div>
           </div>
@@ -477,10 +477,10 @@ const HomePage: React.FC = () => {
                 <span className="text-gray-400 text-2xl">🏠</span>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {t('property.messages.noProperties')}
+                {t('messages.noProperties')}
               </h3>
               <p className="text-gray-600 mb-4">
-                {t('property.messages.noPropertiesInArea')}
+                {t('messages.noPropertiesInArea')}
               </p>
               <div className="flex gap-3 justify-center">
                 <Button
@@ -488,14 +488,14 @@ const HomePage: React.FC = () => {
                   color="primary"
                   onPress={() => getUserLocation()}
                 >
-                  📍 {t('buttons.updateLocation')}
+                  📍 {t('common.buttons.updateLocation')}
                 </Button>
                 <Button
                   variant="flat"
                   onPress={handleRefresh}
                   startContent={<RefreshCw className="w-4 h-4" />}
                 >
-                  {t('buttons.refreshFeed')}
+                  {t('common.buttons.refreshFeed')}
                 </Button>
               </div>
             </div>
@@ -533,7 +533,7 @@ const HomePage: React.FC = () => {
         {!hasNextPage && properties.length > 0 && (
           <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-8">
             <p className="text-gray-500">
-              🎉 {t('property.messages.seenAllProperties')}
+              🎉 {t('messages.seenAllProperties')}
             </p>
             <Button
               variant="light"
@@ -542,7 +542,7 @@ const HomePage: React.FC = () => {
               className="mt-2"
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-              {t('buttons.refreshForNewListings')}
+              {t('common.buttons.refreshForNewListings')}
           </Button>
         </div>
       )}

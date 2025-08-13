@@ -10,7 +10,7 @@ import {
   Spinner
 } from '@heroui/react'
 import { DollarSign } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export interface RequestPayoutModalProps {
   isOpen: boolean

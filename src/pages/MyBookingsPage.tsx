@@ -207,9 +207,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('myBookings').image}
-          title="My Bookings"
-          subtitle="Manage your property bookings and travel history"
-          imageAlt={getBannerConfig('myBookings').alt}
+                      title={t('booking.myBookings.banner.title')}
+            subtitle={t('booking.myBookings.banner.subtitle')}
+          imageAlt={t('common.pageBanner.myBookings')}
           overlayOpacity={getBannerConfig('myBookings').overlayOpacity}
           height={getBannerConfig('myBookings').height}
           className="mb-8"
@@ -236,7 +236,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
       {/* Loading State */}
       {isLoadingGuestBookings ? (
         <div className="col-span-full text-center py-12">
-          <span className="text-lg text-gray-500">Loading bookings...</span>
+          <span className="text-lg text-gray-500">{t('booking.messages.loading')}</span>
         </div>
       ) : error ? (
         <div className="col-span-full text-center py-12 text-red-600">
@@ -272,16 +272,16 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
         <div className="col-span-full text-center py-12">
           <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            No {selectedTab} bookings
+            {t('booking.messages.noBookings', { status: selectedTab })}
           </h3>
           <p className="text-gray-500">
-            {selectedTab === 'pending' && "You don't have any pending bookings at the moment."}
-            {selectedTab === 'confirmed' && "You don't have any confirmed bookings at the moment."}
-            {selectedTab === 'cancelled' && "You don't have any cancelled bookings."}
-            {selectedTab === 'completed' && "You haven't completed any bookings yet."}
-            {selectedTab === 'rejected' && "You don't have any rejected bookings."}
-            {selectedTab === 'accepted-and-waiting-for-payment' && "You don't have any bookings awaiting payment."}
-            {selectedTab === 'payment-failed' && "You don't have any bookings with failed payment."}
+            {selectedTab === 'pending' && t('booking.messages.noPendingBookings')}
+            {selectedTab === 'confirmed' && t('booking.messages.noConfirmedBookings')}
+            {selectedTab === 'cancelled' && t('booking.messages.noCancelledBookings')}
+            {selectedTab === 'completed' && t('booking.messages.noCompletedBookings')}
+            {selectedTab === 'rejected' && t('booking.messages.noRejectedBookings')}
+            {selectedTab === 'accepted-and-waiting-for-payment' && t('booking.messages.noAwaitingPaymentBookings')}
+            {selectedTab === 'payment-failed' && t('booking.messages.noFailedPaymentBookings')}
           </p>
         </div>
       )}
@@ -297,9 +297,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Booking Details</h2>
+                <h2 className="text-xl font-bold">{t('booking.details.title')}</h2>
                 {selectedBooking && (
-                  <p className="text-sm text-gray-600">Booking ID: {selectedBooking.id}</p>
+                  <p className="text-sm text-gray-600">{t('booking.details.bookingId', { id: selectedBooking.id })}</p>
                 )}
               </ModalHeader>
               <ModalBody>
@@ -319,7 +319,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           <span>
                             {selectedBooking.properties?.location?.city && selectedBooking.properties?.location?.country 
                               ? `${selectedBooking.properties.location.city}, ${selectedBooking.properties.location.country}`
-                              : 'Location not available'
+                              : t('booking.details.locationNotAvailable')
                             }
                           </span>
                         </div>
@@ -353,7 +353,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           alt={selectedBooking.hosts?.display_name || 'Host'}
                         />
                         <div className="flex-1">
-                          <p className="font-medium">{selectedBooking.hosts?.display_name || 'Host'}</p>
+                          <p className="font-medium">{selectedBooking.hosts?.display_name || t('booking.labels.host')}</p>
                           <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                             {selectedBooking.hosts ? (
                               <>
@@ -364,7 +364,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                                 <span>{selectedBooking.hosts.total_host_reviews || 0} reviews</span>
                               </>
                             ) : (
-                              <span>Contact information not available</span>
+                              <span>{t('booking.details.contactNotAvailable')}</span>
                             )}
                           </div>
                           {selectedBooking.hosts?.email && (
@@ -401,19 +401,19 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       </h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600">Check-in</p>
+                          <p className="text-gray-600">{t('booking.details.checkIn')}</p>
                           <p className="font-medium">{new Date(selectedBooking.check_in_date).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Check-out</p>
+                          <p className="text-gray-600">{t('booking.details.checkOut')}</p>
                           <p className="font-medium">{new Date(selectedBooking.check_out_date).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Guests</p>
-                          <p className="font-medium">{selectedBooking.guest_count} guest{selectedBooking.guest_count > 1 ? 's' : ''}</p>
+                                                <p className="text-gray-600">{t('booking.details.guests')}</p>
+                      <p className="font-medium">{selectedBooking.guest_count} {selectedBooking.guest_count > 1 ? t('booking.details.guestsPlural') : t('booking.details.guest')}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Booking Date</p>
+                          <p className="text-gray-600">{t('booking.details.bookingDate')}</p>
                           <p className="font-medium">{new Date(selectedBooking.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
@@ -429,28 +429,28 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>Accommodation</span>
+                          <span>{t('booking.details.accommodation')}</span>
                           <span>${(selectedBooking.total_amount - (selectedBooking.cleaning_fee || 0) - (selectedBooking.service_fee || 0) - (selectedBooking.taxes || 0)).toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Cleaning fee</span>
+                          <span>{t('booking.details.cleaningFee')}</span>
                           <span>${selectedBooking.cleaning_fee || 0}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Service fee</span>
+                          <span>{t('booking.details.serviceFee')}</span>
                           <span>${selectedBooking.service_fee || 0}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Taxes</span>
+                          <span>{t('booking.details.taxes')}</span>
                           <span>${selectedBooking.taxes || 0}</span>
                         </div>
                         <Divider />
                         <div className="flex justify-between font-semibold">
-                          <span>Total</span>
+                          <span>{t('booking.details.total')}</span>
                           <span>${selectedBooking.total_amount}</span>
                         </div>
                         <div className="mt-2 text-gray-600">
-                          <p>Payment method: Not available</p>
+                          <p>{t('booking.details.paymentMethod')}</p>
                         </div>
                       </div>
                     </div>
@@ -462,7 +462,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       <>
                         <Divider />
                         <div>
-                          <h4 className="font-semibold mb-3">Special Requests</h4>
+                          <h4 className="font-semibold mb-3">{t('booking.details.specialRequests')}</h4>
                           <p className="text-sm text-gray-600">{selectedBooking.special_requests}</p>
                         </div>
                       </>

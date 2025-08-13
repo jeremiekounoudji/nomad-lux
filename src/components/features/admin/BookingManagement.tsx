@@ -24,7 +24,7 @@ import { useAdminBookings, useAdminPaymentRecords } from '../../../hooks/useAdmi
 import { AdminBooking } from '../../../interfaces/Booking'
 import { PaymentRecord } from '../../../interfaces/PaymentRecord';
 import { Search, Calendar, Eye, MessageSquare, AlertTriangle, CreditCard, RefreshCw, Flag } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface BookingManagementProps {
   onPageChange?: (page: string) => void

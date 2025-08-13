@@ -2,7 +2,7 @@ import React from 'react'
 import { Card, CardBody, Button, Progress } from '@heroui/react'
 import { useAuthStore } from '../../lib/stores/authStore'
 import { UploadProgress } from '../../utils/fileUpload'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface LoadingDebugProps {
   isLoading?: boolean;

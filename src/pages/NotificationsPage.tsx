@@ -9,7 +9,7 @@ import { useBookingManagement } from '../hooks/useBookingManagement'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { ROUTES } from '../router/types'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../lib/stores/translationStore'
 
 const NotificationsPage: React.FC<NotificationsPageProps> = () => {
   const { t } = useTranslation(['notifications', 'common'])
@@ -315,7 +315,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
           backgroundImage={getBannerConfig('notifications').image}
           title={t('notifications.labels.notifications')}
           subtitle={unreadCount > 0 ? t('notifications.banner.subtitleUnread', { count: unreadCount }) : t('notifications.banner.subtitleAllCaughtUp')}
-          imageAlt={getBannerConfig('notifications').alt}
+          imageAlt={t('common.pageBanner.notifications')}
           overlayOpacity={getBannerConfig('notifications').overlayOpacity}
           height={getBannerConfig('notifications').height}
           className="mb-8"

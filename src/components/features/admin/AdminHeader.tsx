@@ -1,7 +1,7 @@
 import React from 'react'
 import { Search, Bell, Settings, LogOut, Menu, Crown } from 'lucide-react'
 import { useAuthStore } from '../../../lib/stores/authStore'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AdminHeaderProps {
   onToggleSidebar: () => void

@@ -57,7 +57,7 @@ import {
   SecuritySettings, 
   PaymentSettings 
 } from '../../../interfaces/Settings'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface SettingChange {
   id: string
