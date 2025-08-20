@@ -43,12 +43,12 @@ const MainLayout: React.FC = () => {
     try {
       console.log('🚪 User logout initiated')
       await signOut()
-      toast.success(t('messages.logoutSuccess', 'Logged out successfully'))
+      toast.success(t('messages.logoutSuccess'))
       closeDrawer()
       navigateWithAuth(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       console.error('❌ Logout error:', error)
-      toast.error(t('messages.logoutError', 'Failed to logout'))
+      toast.error(t('messages.logoutError'))
     }
   }
 
@@ -76,7 +76,7 @@ const MainLayout: React.FC = () => {
                 <span className="text-white font-bold text-sm">NL</span>
               </div>
               <span className="font-script font-bold text-xl text-primary-600">
-                Nomad Lux
+                {t('brand.name')}
               </span>
             </NavLink>
             
@@ -116,7 +116,7 @@ const MainLayout: React.FC = () => {
                   <span className="text-white font-bold text-lg">NL</span>
                 </div>
                 <span className="font-script font-bold text-2xl text-primary-600 truncate">
-                  Nomad Lux
+                  {t('brand.name')}
                 </span>
               </NavLink>
               <button 
@@ -158,8 +158,8 @@ const MainLayout: React.FC = () => {
                   <User className="w-6 h-6 text-gray-500" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 truncate">{t('profile.guestUser', 'Guest User')}</h3>
-                  <p className="text-sm text-gray-500 truncate">{t('profile.notSignedIn', 'Not signed in')}</p>
+                  <h3 className="font-semibold text-gray-900 truncate">{t('profile.guestUser')}</h3>
+                  <p className="text-sm text-gray-500 truncate">{t('profile.notSignedIn')}</p>
                 </div>
               </div>
             )}
@@ -194,7 +194,7 @@ const MainLayout: React.FC = () => {
             {/* Language Selector */}
             <div className="mt-6 pt-4 border-t border-gray-100 px-3">
               <div className="px-4 py-2">
-                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.language', 'Language')}</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.language')}</p>
                 <CompactLanguageSelector />
               </div>
             </div>
@@ -221,7 +221,7 @@ const MainLayout: React.FC = () => {
               <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
               <input
                 type="text"
-                placeholder={t('search.placeholder', 'Search destinations, properties, or hosts...')}
+                placeholder={t('search.placeholder')}
                 className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -259,7 +259,7 @@ const MainLayout: React.FC = () => {
               <button 
                 onClick={handleLogout}
                 className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                title="Sign Out"
+                title={t('actions.signOut')}
               >
                 <LogOut className="w-5 h-5 text-red-500" />
               </button>

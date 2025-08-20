@@ -129,7 +129,7 @@
   - [x] 5.24.18 Verify ImageLightboxModal.tsx translation implementation
 
 - [ ] 6.0 Layout and Map Components Verification
-  - [ ] 6.1 Verify MainLayout.tsx translation implementation
+  - [x] 6.1 Verify MainLayout.tsx translation implementation
   - [ ] 6.2 Verify Sidebar.tsx translation implementation
   - [ ] 6.3 Verify MapContainer.tsx translation implementation
   - [ ] 6.4 Verify PropertiesMap.tsx translation implementation
