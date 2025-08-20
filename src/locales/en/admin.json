@@ -724,6 +724,28 @@
     "propertyApproved": "Property approved successfully",
     "propertyRejected": "Property rejected successfully",
     "propertySuspended": "Property suspended successfully",
+    "propertySuspensionModal": {
+      "title": "Suspend Property",
+      "labels": {
+        "hostId": "Host ID:",
+        "reasonForSuspension": "Reason for suspension",
+        "required": "*"
+      },
+      "warnings": {
+        "suspendProperty": "Suspend this property?",
+        "description": "This will temporarily hide the property from guests and prevent new bookings. Existing bookings will remain active. The host will be notified."
+      },
+      "placeholders": {
+        "reason": "Please provide a reason for suspending this property..."
+      },
+      "descriptions": {
+        "reason": "This reason will be sent to the host and recorded in the property history."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "suspendProperty": "Suspend Property"
+      }
+    }
     "userSuspended": "User suspended successfully",
     "userActivated": "User activated successfully",
     "userBanned": "User banned successfully",

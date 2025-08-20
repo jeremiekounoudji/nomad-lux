@@ -724,6 +724,28 @@
     "propertyApproved": "Propriété approuvée avec succès",
     "propertyRejected": "Propriété rejetée avec succès",
     "propertySuspended": "Propriété suspendue avec succès",
+    "propertySuspensionModal": {
+      "title": "Suspendre la propriété",
+      "labels": {
+        "hostId": "ID de l'hôte :",
+        "reasonForSuspension": "Raison de la suspension",
+        "required": "*"
+      },
+      "warnings": {
+        "suspendProperty": "Suspendre cette propriété ?",
+        "description": "Cela masquera temporairement la propriété aux invités et empêchera les nouvelles réservations. Les réservations existantes resteront actives. L'hôte sera notifié."
+      },
+      "placeholders": {
+        "reason": "Veuillez fournir une raison pour suspendre cette propriété..."
+      },
+      "descriptions": {
+        "reason": "Cette raison sera envoyée à l'hôte et enregistrée dans l'historique de la propriété."
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "suspendProperty": "Suspendre la propriété"
+      }
+    }
     "userSuspended": "Utilisateur suspendu avec succès",
     "userActivated": "Utilisateur activé avec succès",
     "userBanned": "Utilisateur banni avec succès",
