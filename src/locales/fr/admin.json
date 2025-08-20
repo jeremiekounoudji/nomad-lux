@@ -134,6 +134,37 @@
     "cancelledBookings": "Réservations annulées",
     "completedBookings": "Réservations terminées",
     "bookingDetails": "Détails de la réservation",
+    "bookingDetailsModal": {
+      "title": "Détails de la réservation - {{id}}",
+      "propertyInformation": "Informations sur la propriété",
+      "guestInformation": "Informations sur l'invité",
+      "bookingDetails": "Détails de la réservation",
+      "paymentInformation": "Informations de paiement",
+      "labels": {
+        "property": "Propriété :",
+        "propertyId": "ID de propriété :",
+        "host": "Hôte :",
+        "hostEmail": "Email de l'hôte :",
+        "guest": "Invitée :",
+        "email": "Email :",
+        "phone": "Téléphone :",
+        "guests": "Invités :",
+        "people": "personnes",
+        "checkIn": "Arrivée :",
+        "checkOut": "Départ :",
+        "nights": "Nuits :",
+        "totalAmount": "Montant total :",
+        "bookingDate": "Date de réservation :",
+        "status": "Statut :",
+        "paymentStatus": "Statut de paiement :",
+        "total": "Total :"
+      },
+      "buttons": {
+        "close": "Fermer",
+        "contactGuest": "Contacter l'invité",
+        "contactHost": "Contacter l'hôte"
+      }
+    }
     "guestInformation": "Informations de l'invité",
     "hostInformation": "Informations de l'hôte",
     "paymentStatus": "Statut du paiement",

@@ -134,6 +134,37 @@
     "cancelledBookings": "Cancelled Bookings",
     "completedBookings": "Completed Bookings",
     "bookingDetails": "Booking Details",
+    "bookingDetailsModal": {
+      "title": "Booking Details - {{id}}",
+      "propertyInformation": "Property Information",
+      "guestInformation": "Guest Information",
+      "bookingDetails": "Booking Details",
+      "paymentInformation": "Payment Information",
+      "labels": {
+        "property": "Property:",
+        "propertyId": "Property ID:",
+        "host": "Host:",
+        "hostEmail": "Host Email:",
+        "guest": "Guest:",
+        "email": "Email:",
+        "phone": "Phone:",
+        "guests": "Guests:",
+        "people": "people",
+        "checkIn": "Check-in:",
+        "checkOut": "Check-out:",
+        "nights": "Nights:",
+        "totalAmount": "Total Amount:",
+        "bookingDate": "Booking Date:",
+        "status": "Status:",
+        "paymentStatus": "Payment Status:",
+        "total": "Total:"
+      },
+      "buttons": {
+        "close": "Close",
+        "contactGuest": "Contact Guest",
+        "contactHost": "Contact Host"
+      }
+    }
     "guestInformation": "Guest Information",
     "hostInformation": "Host Information",
     "paymentStatus": "Payment Status",
