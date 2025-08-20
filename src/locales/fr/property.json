@@ -159,7 +159,10 @@
     "deleteProperty": "Supprimer la propriété",
     "approveProperty": "Approuver la propriété",
     "rejectProperty": "Rejeter la propriété",
-    "suspendProperty": "Suspendre la propriété"
+    "suspendProperty": "Suspendre la propriété",
+    "directions": "Itinéraire",
+    "contact": "Contact",
+    "getDirections": "Obtenir l'itinéraire"
   },
   "messages": {
     "noProperties": "Aucune propriété trouvée",
@@ -185,7 +188,14 @@
     "propertyNotFound": "Propriété non trouvée. Veuillez réessayer depuis la page principale.",
     "seenAllProperties": "Vous avez vu toutes les propriétés disponibles !",
     "failedToLoadPopular": "Échec du chargement des destinations populaires",
-    "propertyIdMissing": "L'ID de la propriété est manquant. Impossible d'ouvrir les détails."
+    "propertyIdMissing": "L'ID de la propriété est manquant. Impossible d'ouvrir les détails.",
+    "mapUnavailable": "Carte indisponible",
+    "locationNotAvailable": "Localisation non disponible",
+    "propertyCoordinatesNotAvailable": "Les coordonnées de la propriété ne sont pas disponibles.",
+    "loadingMap": "Chargement de la carte...",
+    "findingNearbyAmenities": "Recherche d'équipements à proximité...",
+    "nearbyAmenities": "Équipements à proximité",
+    "amenitiesFound": "{{count}} trouvé(s)"
   },
   "share": {
     "title": "Partager la propriété",

@@ -171,7 +171,10 @@
     "deleteProperty": "Delete Property",
     "approveProperty": "Approve Property",
     "rejectProperty": "Reject Property",
-    "suspendProperty": "Suspend Property"
+    "suspendProperty": "Suspend Property",
+    "directions": "Directions",
+    "contact": "Contact",
+    "getDirections": "Get Directions"
   },
   "messages": {
     "noProperties": "No properties found",
@@ -199,7 +202,14 @@
     "couldNotLoad": "Could Not Load Property",
     "seenAllProperties": "You've seen all available properties!",
     "failedToLoadPopular": "Failed to load popular destinations",
-    "propertyIdMissing": "Property ID is missing. Cannot open details."
+    "propertyIdMissing": "Property ID is missing. Cannot open details.",
+    "mapUnavailable": "Map Unavailable",
+    "locationNotAvailable": "Location Not Available",
+    "propertyCoordinatesNotAvailable": "Property coordinates are not available.",
+    "loadingMap": "Loading map...",
+    "findingNearbyAmenities": "Finding nearby amenities...",
+    "nearbyAmenities": "Nearby amenities",
+    "amenitiesFound": "{{count}} found"
   },
   "share": {
     "title": "Share Property",

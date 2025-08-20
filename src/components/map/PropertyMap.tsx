@@ -7,6 +7,7 @@ import type { Property } from '../../interfaces/Property';
 import type { PropertyMapProps, MapCoordinates } from '../../interfaces/Map';
 import { useMap } from '../../hooks/useMap';
 import { useResponsiveMap } from '../../hooks/useResponsiveMap';
+import { useTranslation } from '../../lib/stores/translationStore';
 import { 
   validatePropertyCoordinates, 
   getPropertyCoordinates, 
@@ -100,6 +101,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   ...mapProps
 }) => {
   const { mapState: responsiveMapState, getResponsiveHeight } = useResponsiveMap();
+  const { t } = useTranslation('property');
   const [nearbyAmenities, setNearbyAmenities] = useState<any[]>([]);
   const [isLoadingAmenities, setIsLoadingAmenities] = useState(false);
   const [coordinatesError, setCoordinatesError] = useState<string | null>(null);
@@ -135,10 +137,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
     getDirections
   } = useMap({
     center: propertyCoords ? [propertyCoords.lat, propertyCoords.lng] : [0, 0],
-    zoom: 15,
-    onError: (error) => {
-      console.error('PropertyMap error:', error);
-    }
+    zoom: 15
   });
 
   // Load nearby amenities
@@ -196,16 +195,16 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
       <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${className}`} style={{ height }}>
         <div className="text-center p-6">
           <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Map Unavailable</h3>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('messages.mapUnavailable')}</h3>
           <p className="text-gray-500 mb-4">{errorMessage}</p>
           {!coordinatesError && (
             <Button size="sm" variant="light" onClick={() => window.location.reload()}>
-              Retry
+              {t('common.retry')}
             </Button>
           )}
           {showDirections && (
             <Button size="sm" variant="light" onClick={handleDirections} className="ml-2">
-              Get Directions
+              {t('actions.getDirections')}
             </Button>
           )}
         </div>
@@ -218,8 +217,8 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
       <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${className}`} style={{ height }}>
         <div className="text-center p-6">
           <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">Location Not Available</h3>
-          <p className="text-gray-500">Property coordinates are not available.</p>
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('messages.locationNotAvailable')}</h3>
+          <p className="text-gray-500">{t('messages.propertyCoordinatesNotAvailable')}</p>
         </div>
       </div>
     );
@@ -288,7 +287,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                     onClick={handleDirections}
                     className="flex-1"
                   >
-                    Directions
+                    {t('actions.directions')}
                   </Button>
                 )}
                 <Button
@@ -298,7 +297,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                   onClick={handleContactHost}
                   className="flex-1"
                 >
-                  Contact
+                  {t('actions.contact')}
                 </Button>
               </div>
             </div>
@@ -352,7 +351,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-2"></div>
             <p className="text-sm text-gray-600">
-              {mapState.isLoading ? 'Loading map...' : 'Finding nearby amenities...'}
+              {mapState.isLoading ? t('messages.loadingMap') : t('messages.findingNearbyAmenities')}
             </p>
           </div>
         </div>
@@ -384,9 +383,9 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
             </div>
             {showNearbyAmenities && (
               <div className="text-right">
-                <p className="text-xs text-gray-500">Nearby amenities</p>
+                <p className="text-xs text-gray-500">{t('messages.nearbyAmenities')}</p>
                 <p className="text-sm font-medium text-gray-700">
-                  {isLoadingAmenities ? 'Loading...' : `${nearbyAmenities.length} found`}
+                  {isLoadingAmenities ? t('messages.loadingMap') : t('messages.amenitiesFound', { count: nearbyAmenities.length })}
                 </p>
               </div>
             )}
