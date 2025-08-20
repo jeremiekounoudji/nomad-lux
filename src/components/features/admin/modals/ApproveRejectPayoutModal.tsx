@@ -9,6 +9,7 @@ import {
   Textarea,
   Spinner
 } from '@heroui/react'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import { PayoutRequest } from '../../../../interfaces'
 
 export interface ApproveRejectPayoutModalProps {
@@ -26,6 +27,7 @@ export const ApproveRejectPayoutModal: React.FC<ApproveRejectPayoutModalProps> =
   action,
   onSubmit
 }) => {
+  const { t } = useTranslation('admin')
   const [note, setNote] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -39,7 +41,7 @@ export const ApproveRejectPayoutModal: React.FC<ApproveRejectPayoutModalProps> =
       await onSubmit(note)
       onClose()
     } catch (err: any) {
-      setError(err?.message || 'Action failed')
+      setError(err?.message || t('approveRejectPayoutModal.errors.actionFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -50,21 +52,21 @@ export const ApproveRejectPayoutModal: React.FC<ApproveRejectPayoutModalProps> =
       <ModalContent>
         <ModalHeader>
           <h2 className="text-lg font-bold">
-            {action === 'approve' ? 'Approve' : 'Reject'} Payout Request
+            {action === 'approve' ? t('approveRejectPayoutModal.title.approve') : t('approveRejectPayoutModal.title.reject')}
           </h2>
         </ModalHeader>
         <ModalBody>
           <div className="mb-2">
-            <div className="text-sm text-gray-600 mb-1">Amount:</div>
+            <div className="text-sm text-gray-600 mb-1">{t('approveRejectPayoutModal.labels.amount')}</div>
             <div className="font-semibold">{request.currency} {request.amount.toFixed(2)}</div>
           </div>
           <div className="mb-2">
-            <div className="text-sm text-gray-600 mb-1">Host:</div>
+            <div className="text-sm text-gray-600 mb-1">{t('approveRejectPayoutModal.labels.host')}</div>
             <div className="font-semibold">{request.user_id}</div>
           </div>
           <Textarea
-            label="Note (optional)"
-            placeholder={action === 'approve' ? 'Add a note for approval...' : 'Reason for rejection...'}
+            label={t('approveRejectPayoutModal.labels.note')}
+            placeholder={action === 'approve' ? t('approveRejectPayoutModal.placeholders.approve') : t('approveRejectPayoutModal.placeholders.reject')}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             minRows={3}
@@ -72,14 +74,14 @@ export const ApproveRejectPayoutModal: React.FC<ApproveRejectPayoutModalProps> =
           {error && <div className="text-sm text-red-600 mt-2">{error}</div>}
         </ModalBody>
         <ModalFooter>
-          <Button variant="ghost" onClick={onClose} disabled={isLoading}>Cancel</Button>
+          <Button variant="ghost" onClick={onClose} disabled={isLoading}>{t('approveRejectPayoutModal.buttons.cancel')}</Button>
           <Button
             color={action === 'approve' ? 'primary' : 'danger'}
             onClick={handleSubmit}
             disabled={isLoading}
             startContent={isLoading ? <Spinner size="sm" /> : undefined}
           >
-            {isLoading ? (action === 'approve' ? 'Approving...' : 'Rejecting...') : (action === 'approve' ? 'Approve' : 'Reject')}
+            {isLoading ? (action === 'approve' ? t('approveRejectPayoutModal.buttons.approving') : t('approveRejectPayoutModal.buttons.rejecting')) : (action === 'approve' ? t('approveRejectPayoutModal.buttons.approve') : t('approveRejectPayoutModal.buttons.reject'))}
           </Button>
         </ModalFooter>
       </ModalContent>

@@ -730,6 +730,31 @@
     "paymentRefunded": "Paiement remboursé avec succès",
     "payoutApproved": "Paiement approuvé avec succès",
     "payoutRejected": "Paiement rejeté avec succès",
+    "approveRejectPayoutModal": {
+      "title": {
+        "approve": "Approuver la demande de paiement",
+        "reject": "Rejeter la demande de paiement"
+      },
+      "labels": {
+        "amount": "Montant :",
+        "host": "Hôte :",
+        "note": "Note (optionnel)"
+      },
+      "placeholders": {
+        "approve": "Ajouter une note pour l'approbation...",
+        "reject": "Raison du rejet..."
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "approving": "Approbation...",
+        "rejecting": "Rejet..."
+      },
+      "errors": {
+        "actionFailed": "L'action a échoué"
+      }
+    }
     "settingsUpdated": "Paramètres mis à jour avec succès",
     "reportGenerated": "Rapport généré avec succès",
     "bulkActionCompleted": "Action groupée terminée avec succès",

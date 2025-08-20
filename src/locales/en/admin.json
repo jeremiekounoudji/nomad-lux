@@ -730,6 +730,31 @@
     "paymentRefunded": "Payment refunded successfully",
     "payoutApproved": "Payout approved successfully",
     "payoutRejected": "Payout rejected successfully",
+    "approveRejectPayoutModal": {
+      "title": {
+        "approve": "Approve Payout Request",
+        "reject": "Reject Payout Request"
+      },
+      "labels": {
+        "amount": "Amount:",
+        "host": "Host:",
+        "note": "Note (optional)"
+      },
+      "placeholders": {
+        "approve": "Add a note for approval...",
+        "reject": "Reason for rejection..."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "approve": "Approve",
+        "reject": "Reject",
+        "approving": "Approving...",
+        "rejecting": "Rejecting..."
+      },
+      "errors": {
+        "actionFailed": "Action failed"
+      }
+    }
     "settingsUpdated": "Settings updated successfully",
     "reportGenerated": "Report generated successfully",
     "bulkActionCompleted": "Bulk action completed successfully",
