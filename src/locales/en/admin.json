@@ -757,6 +757,14 @@
         "cancel": "Cancel",
         "confirm": "Confirm"
       }
+    },
+    "imageLightboxModal": {
+      "altText": "Property image {{index}}",
+      "navigation": {
+        "previous": "Previous image",
+        "next": "Next image"
+      },
+      "counter": "{{current}} / {{total}}"
     }
     "propertyRejected": "Property rejected successfully",
     "propertyRejectionModal": {

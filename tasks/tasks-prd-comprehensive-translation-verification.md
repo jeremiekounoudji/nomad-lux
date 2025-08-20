@@ -126,7 +126,7 @@
   - [x] 5.24.15 Verify PropertyApprovalModal.tsx translation implementation
   - [x] 5.24.16 Verify BulkSuspendModal.tsx translation implementation
   - [x] 5.24.17 Verify BulkActionModal.tsx translation implementation
-  - [ ] 5.24.18 Verify ImageLightboxModal.tsx translation implementation
+  - [x] 5.24.18 Verify ImageLightboxModal.tsx translation implementation
 
 - [ ] 6.0 Layout and Map Components Verification
   - [ ] 6.1 Verify MainLayout.tsx translation implementation
