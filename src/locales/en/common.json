@@ -191,5 +191,25 @@
     "es": "Spanish",
     "fr": "French",
     "de": "German"
+  },
+  "map": {
+    "loading": "Loading map...",
+    "initializing": "Initializing map...",
+    "error": {
+      "initialization": "Failed to initialize map",
+      "tileLoading": "Tile loading failed: {{message}}",
+      "retry": "Failed to load map after {{count}} attempts. Please refresh the page.",
+      "timeout": "Map taking longer than expected to load",
+      "generic": "Map loading failed"
+    },
+    "retry": {
+      "attempt": "Retrying map load ({{current}}/{{max}})",
+      "maxReached": "Maximum retry attempts reached"
+    },
+    "tiles": {
+      "loading": "Loading map tiles...",
+      "loaded": "Map tiles loaded successfully",
+      "error": "Tile loading error"
+    }
   }
 }

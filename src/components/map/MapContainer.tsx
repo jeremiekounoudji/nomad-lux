@@ -5,6 +5,7 @@ import MapLoadingState from './MapLoadingState'
 import MapErrorState from './MapErrorState'
 import { DEFAULT_MAP_CONFIG } from '../../interfaces/Map'
 import { useResponsiveMap } from '../../hooks/useResponsiveMap'
+import { useTranslation } from '../../lib/stores/translationStore'
 import 'leaflet/dist/leaflet.css'
 
 export interface MapContainerProps {
@@ -33,6 +34,7 @@ const MapEventHandler: React.FC<{
   onError?: (error: string) => void
 }> = ({ onMapReady, onBoundsChange, onZoomChange, onClick, onError }) => {
   const map = useLeafletMap()
+  const { t } = useTranslation('common')
 
   useEffect(() => {
     if (map && onMapReady) {
@@ -69,7 +71,7 @@ const MapEventHandler: React.FC<{
     const handleTileError = (e: any) => {
       console.warn('⚠️ Tile loading error:', e)
       if (onError) {
-        onError(`Tile loading failed: ${e.message || 'Unknown tile error'}`)
+        onError(t('map.error.tileLoading', { message: e.message || 'Unknown tile error' }))
       }
     }
 
@@ -119,6 +121,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
   enableMobileOptimization = true,
   responsive = true
 }) => {
+  const { t } = useTranslation('common')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [retryCount, setRetryCount] = useState(0)
@@ -162,7 +165,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
       }
     } catch (err) {
       console.error('❌ Error initializing map:', err)
-      const errorMessage = err instanceof Error ? err.message : 'Failed to initialize map'
+      const errorMessage = err instanceof Error ? err.message : t('map.error.initialization')
       setError(errorMessage)
       setIsLoading(false)
     }
@@ -171,7 +174,7 @@ const MapContainer: React.FC<MapContainerProps> = ({
   // Handle retry functionality
   const handleRetry = useCallback(() => {
     if (retryCount < maxRetries) {
-      console.log(`🔄 Retrying map load (${retryCount + 1}/${maxRetries})`)
+      console.log(t('map.retry.attempt', { current: retryCount + 1, max: maxRetries }))
       setRetryCount(prev => prev + 1)
       setError(null)
       setIsLoading(true)
@@ -179,15 +182,15 @@ const MapContainer: React.FC<MapContainerProps> = ({
       // Force re-render by briefly changing key would be ideal, but we'll simulate reset
       setTimeout(() => {
         if (error) { // Still has error after timeout
-          setError('Map initialization failed after retry')
+          setError(t('map.error.generic'))
           setIsLoading(false)
         }
       }, 5000)
     } else {
       console.warn('⚠️ Maximum retry attempts reached')
-      setError(`Failed to load map after ${maxRetries} attempts. Please refresh the page.`)
+      setError(t('map.error.retry', { count: maxRetries }))
     }
-  }, [retryCount, maxRetries, error])
+  }, [retryCount, maxRetries, error, t])
 
   // Error boundary for map loading
   useEffect(() => {

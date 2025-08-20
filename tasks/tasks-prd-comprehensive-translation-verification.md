@@ -131,7 +131,7 @@
 - [ ] 6.0 Layout and Map Components Verification
   - [x] 6.1 Verify MainLayout.tsx translation implementation
   - [x] 6.2 Verify Sidebar.tsx translation implementation
-  - [ ] 6.3 Verify MapContainer.tsx translation implementation
+  - [x] 6.3 Verify MapContainer.tsx translation implementation
   - [ ] 6.4 Verify PropertiesMap.tsx translation implementation
   - [ ] 6.5 Verify PropertyMap.tsx translation implementation
   - [ ] 6.6 Verify PropertyMarker.tsx translation implementation

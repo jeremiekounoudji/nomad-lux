@@ -191,5 +191,25 @@
     "es": "Espagnol",
     "fr": "Français",
     "de": "Allemand"
+  },
+  "map": {
+    "loading": "Chargement de la carte...",
+    "initializing": "Initialisation de la carte...",
+    "error": {
+      "initialization": "Échec de l'initialisation de la carte",
+      "tileLoading": "Échec du chargement des tuiles : {{message}}",
+      "retry": "Échec du chargement de la carte après {{count}} tentatives. Veuillez actualiser la page.",
+      "timeout": "La carte prend plus de temps que prévu à charger",
+      "generic": "Échec du chargement de la carte"
+    },
+    "retry": {
+      "attempt": "Nouvelle tentative de chargement de la carte ({{current}}/{{max}})",
+      "maxReached": "Nombre maximum de tentatives atteint"
+    },
+    "tiles": {
+      "loading": "Chargement des tuiles de carte...",
+      "loaded": "Tuiles de carte chargées avec succès",
+      "error": "Erreur de chargement des tuiles"
+    }
   }
 }
