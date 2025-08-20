@@ -1,4 +1,46 @@
 {
+  "title": "Mon Profil",
+  "subtitle": "Afficher et gérer les informations de votre compte",
+  "roles": {
+    "hostAndGuest": "Hôte et Invité"
+  },
+  "verified": "Vérifié",
+  "status": {
+    "active": "Actif"
+  },
+  "stats": {
+    "properties": "Propriétés",
+    "bookings": "Réservations",
+    "avgRating": "Note Moyenne",
+    "reviews": "Avis"
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Téléphone",
+    "location": "Emplacement"
+  },
+  "accountDetails": "Détails du Compte",
+  "account": {
+    "memberSince": "Membre depuis",
+    "lastActive": "Dernière activité",
+    "preferredLanguage": "Langue Préférée"
+  },
+  "accountSummary": "Résumé du Compte",
+  "summary": {
+    "verificationLevel": "Niveau de Vérification",
+    "complete": "Complet",
+    "accountStatus": "Statut du Compte",
+    "currency": "Devise"
+  },
+  "actions": {
+    "editProfile": "Modifier le Profil"
+  },
+  "revenue": {
+    "totalRevenue": "Revenu Total",
+    "hostSince": "Hôte depuis"
+  },
+  "contactInformation": "Informations de Contact",
+  "defaultLanguage": "Anglais",
   "edit": {
     "title": "Modifier le profil",
     "subtitle": "Mettez à jour vos informations personnelles et préférences",
@@ -45,6 +87,20 @@
       "smsDescription": "Recevez les notifications urgentes par SMS"
     },
     "saveChanges": "Enregistrer les modifications"
+  },
+  "languages": {
+    "english": "Anglais",
+    "spanish": "Espagnol",
+    "french": "Français",
+    "german": "Allemand",
+    "italian": "Italien",
+    "portuguese": "Portugais",
+    "chinese": "Chinois",
+    "japanese": "Japonais",
+    "korean": "Coréen",
+    "arabic": "Arabe",
+    "hindi": "Hindi",
+    "russian": "Russe"
   }
 }
 

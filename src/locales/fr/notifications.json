@@ -1,5 +1,10 @@
 {
   "types": {
+    "booking": "Réservation",
+    "message": "Message",
+    "property": "Propriété",
+    "payment": "Paiement",
+    "alert": "Alerte",
     "bookingRequestCreated": "Nouvelle demande de réservation",
     "bookingApproved": "Réservation approuvée",
     "bookingRejected": "Réservation rejetée",
@@ -51,7 +56,9 @@
     "disputeRaised": "Un litige a été soulevé pour la réservation {{bookingReference}}",
     "systemError": "Une erreur système s'est produite. Notre équipe a été notifiée",
     "accountFlagged": "Votre compte a été signalé pour examen",
-    "bulkAction": "Action groupée terminée avec succès"
+    "bulkAction": "Action groupée terminée avec succès",
+    "bookingApprovedViaNotification": "Demande de réservation approuvée via notification",
+    "bookingDeclinedViaNotification": "Demande de réservation refusée via notification"
   },
   "actions": {
     "open": "Ouvrir les notifications",
@@ -75,7 +82,8 @@
     "markAsRead": "Marquer comme lu",
     "markAllAsRead": "Tout marquer comme lu",
     "deleteNotification": "Supprimer la notification",
-    "clearAll": "Tout effacer"
+    "clearAll": "Tout effacer",
+    "tryAgain": "Réessayer"
   },
   "details": {
     "relatedProperty": "Propriété associée",
@@ -94,11 +102,15 @@
     "noUnread": "Notifications"
   },
   "banner": {
+    "title": "Notifications",
     "subtitleUnread": "Vous avez {{count}} notifications non lues",
     "subtitleAllCaughtUp": "Tout est à jour !",
     "emptyDescription": "Vos notifications apparaîtront ici lorsque vous en recevrez.",
     "allCaughtUp": "Vous êtes à jour !",
     "noMore": "Plus de notifications à charger"
+  },
+  "errors": {
+    "loadingError": "Erreur lors du chargement des notifications"
   },
   "status": {
     "read": "Lu",
@@ -122,6 +134,7 @@
     "never": "Jamais"
   },
   "labels": {
+    "new": "Nouveau",
     "timestamp": "{{ts}}",
     "moreUnread": "notifications non lues supplémentaires",
     "notifications": "Notifications",
@@ -148,5 +161,26 @@
     "daysAgo": "Il y a {{days}} jours",
     "weeksAgo": "Il y a {{weeks}} semaines",
     "monthsAgo": "Il y a {{months}} mois"
+  },
+  "templates": {
+    "title": "Modèles d'email",
+    "new": "Nouveau modèle",
+    "create": "Créer un modèle d'email",
+    "edit": "Modifier le modèle",
+    "name": "Nom du modèle",
+    "namePlaceholder": "Saisir le nom du modèle",
+    "subject": "Ligne d'objet",
+    "subjectPlaceholder": "Saisir l'objet de l'email",
+    "type": "Type de modèle",
+    "typePlaceholder": "Sélectionner le type de modèle",
+    "types": {
+      "email": "Email",
+      "sms": "SMS",
+      "push": "Notification push"
+    },
+    "content": "Contenu du modèle",
+    "contentPlaceholder": "Saisir le contenu du modèle avec des variables comme {{name}}, {{property}}, etc.",
+    "contentDesc": "Utilisez la syntaxe {{variable}} pour le contenu dynamique",
+    "enableNow": "Activer le modèle immédiatement"
   }
 }

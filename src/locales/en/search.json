@@ -8,5 +8,48 @@
   "showingResults": "Showing {{showing}} of {{total}}",
   "tryAdjustingFilters": "Try adjusting your filters to find more properties",
   "readyToFind": "Ready to Find Your Perfect Stay?",
-  "useFiltersToStart": "Use the filters above to start your search"
+  "useFiltersToStart": "Use the filters above to start your search",
+  "backToHome": "Back to Home",
+  "propertiesAvailable": "properties available",
+  "averagePrice": "Average",
+  "perNight": "night",
+  "noPropertiesFound": "No Properties Found",
+  "tryAgain": "Try Again",
+  "filters": {
+    "city": "City",
+    "cityPlaceholder": "Enter city, neighborhood, or address",
+    "country": "Country",
+    "countryPlaceholder": "Enter country",
+    "priceRange": "Price Range (per night)",
+    "propertyType": "Property Type",
+    "roomsAndGuests": "Rooms & Guests",
+    "guests": "Guests",
+    "guestsPlaceholder": "Number of guests",
+    "bedrooms": "Bedrooms",
+    "bedroomsPlaceholder": "0 = Any",
+    "bathrooms": "Bathrooms",
+    "bathroomsPlaceholder": "0 = Any",
+    "amenities": "Amenities",
+    "minimumRating": "Minimum Rating",
+    "selectMinimumRating": "Select minimum rating",
+    "anyRating": "Any rating",
+    "sortBy": "Sort by",
+    "chooseSortOrder": "Choose sort order",
+    "resetAll": "Reset All",
+    "filter": "filter",
+    "filters": "filters",
+    "active": "active",
+    "applyFilters": "Apply Filters",
+    "sortOptions": {
+      "relevance": "Relevance (Default)",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "ratingDesc": "Rating: High to Low",
+      "newest": "Newest First"
+    }
+  },
+  "viewToggle": {
+    "list": "List",
+    "map": "Map"
+  }
 } 

@@ -41,7 +41,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       return false
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError(t('auth.messages.invalidEmail', 'Please enter a valid email address'))
+      setError(t('auth.messages.invalidEmail'))
       return false
     }
     if (!password) {
@@ -49,15 +49,15 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       return false
     }
     if (password.length < 8) {
-      setError(t('auth.messages.passwordTooShort', 'Password must be at least 8 characters long'))
+      setError(t('auth.messages.passwordTooShort'))
       return false
     }
     if (password !== confirmPassword) {
-      setError(t('auth.messages.passwordsDontMatch', 'Passwords do not match'))
+      setError(t('auth.messages.passwordsDontMatch'))
       return false
     }
     if (!agreeToTerms) {
-      setError(t('auth.messages.agreeTerms', 'Please agree to the terms and conditions'))
+      setError(t('auth.messages.agreeTerms'))
       return false
     }
     return true
@@ -156,7 +156,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               <Input
                 type="text"
                 label={t('auth.signup.firstName')}
-                placeholder="John"
+                placeholder={t('auth.signup.firstNamePlaceholder')}
                 value={firstName}
                 onValueChange={setFirstName}
                 startContent={<User className="w-4 h-4 text-white/60" />}
@@ -172,7 +172,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               <Input
                 type="text"
                 label={t('auth.signup.lastName')}
-                placeholder="Doe"
+                placeholder={t('auth.signup.lastNamePlaceholder')}
                 value={lastName}
                 onValueChange={setLastName}
                 classNames={{
@@ -189,7 +189,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             <Input
               type="email"
               label={t('auth.signup.email')}
-              placeholder="john.doe@example.com"
+              placeholder={t('auth.signup.emailPlaceholder')}
               value={email}
               onValueChange={setEmail}
               startContent={<Mail className="w-4 h-4 text-white/60" />}
@@ -205,7 +205,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
 
             <Input
               label={t('auth.signup.password')}
-              placeholder={t('auth.signup.passwordPlaceholder', 'Create a strong password')}
+              placeholder={t('auth.signup.passwordPlaceholder')}
               value={password}
               onValueChange={setPassword}
               startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -231,7 +231,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
 
             <Input
               label={t('auth.signup.confirmPassword')}
-              placeholder={t('auth.signup.confirmPasswordPlaceholder', 'Confirm your password')}
+              placeholder={t('auth.signup.confirmPasswordPlaceholder')}
               value={confirmPassword}
               onValueChange={setConfirmPassword}
               startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -264,13 +264,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
                 wrapper: "before:border-white/30 after:bg-primary-500 after:text-white"
               }}
             >
-              {t('auth.signup.agreePrefix', 'I agree to the')}{' '}
+              {t('auth.signup.agreePrefix')}{' '}
               <Link className="text-white font-semibold hover:text-white/80" href="#">
-                {t('auth.signup.terms', 'Terms of Service')}
+                {t('auth.signup.terms')}
               </Link>
-              {' '}and{' '}
+              {' '}{t('auth.signup.and')}{' '}
               <Link className="text-white font-semibold hover:text-white/80" href="#">
-                {t('auth.signup.privacy', 'Privacy Policy')}
+                {t('auth.signup.privacy')}
               </Link>
             </Checkbox>
 
@@ -282,7 +282,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               isLoading={isLoading}
               isDisabled={!firstName || !lastName || !email || !password || !confirmPassword || !agreeToTerms}
             >
-              {isLoading ? t('auth.signup.creating', 'Creating Account...') : t('auth.signup.createAccount')}
+              {isLoading ? t('auth.signup.creating') : t('auth.signup.createAccount')}
             </Button>
 
             <div className="text-center">

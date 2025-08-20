@@ -22,7 +22,14 @@
     "adults": "Adultes",
     "children": "Enfants",
     "infants": "Bébés",
-    "specialRequests": "Demandes spéciales",
+    "specialRequests": "Demandes spéciales"
+  },
+  "modals": {
+    "confirmReservation": {
+      "title": "Confirmer votre réservation",
+      "subtitle": "Veuillez examiner les détails de votre réservation"
+    }
+  },
     "totalPrice": "Prix total",
     "priceBreakdown": "Détail des prix",
     "nightlyRate": "Tarif par nuit",
@@ -43,7 +50,10 @@
     "cancellationPolicy": "Politique d'annulation",
     "completeDetails": "Complétez les détails de votre réservation",
     "specialRequestsPlaceholder": "Toute demande particulière ou note pour votre hôte",
-    "rejectionReason": "Raison du rejet"
+    "specialRequestsHelper": "Partagez des besoins ou préférences spécifiques",
+    "totalBeforeTaxes": "Total avant taxes",
+    "rejectionReason": "Raison du rejet",
+    "superhost": "Super hôte"
   },
   "actions": {
     "selectDates": "Sélectionner les dates",
@@ -57,13 +67,18 @@
     "cancelBooking": "Annuler la réservation",
     "modifyBooking": "Modifier la réservation",
     "leaveReview": "Laisser un avis",
+    "rebook": "Ré-réserver",
     "downloadReceipt": "Télécharger le reçu",
     "reportIssue": "Signaler un problème",
     "retryPayment": "Réessayer le paiement",
     "bookForAmount": "Réserver pour ${{amount}}",
     "decline": "Refuser",
     "approve": "Approuver",
-    "viewDetails": "Voir les détails"
+    "viewDetails": "Voir les détails",
+    "checkingAvailability": "Vérification de la disponibilité...",
+    "creatingBooking": "Création de la réservation...",
+    "reserveNow": "Réserver maintenant",
+    "viewMyBookings": "Voir mes réservations"
   },
   "cancel": {
     "title": "Annuler la réservation",
@@ -142,6 +157,14 @@
       "title": "Confirmer l'approbation",
       "description": "Êtes-vous sûr de vouloir approuver cette demande ? Cela avertira l'invité et lancera le processus de paiement.",
       "confirm": "Confirmer l'approbation"
+    },
+    "messages": {
+      "failedToLoadCounts": "Échec du chargement des compteurs de réservation",
+      "approvedSuccessfully": "Réservation approuvée avec succès !",
+      "failedToApprove": "Échec de l'approbation de la réservation",
+      "provideRejectReason": "Veuillez fournir une raison pour refuser la réservation",
+      "declinedSuccessfully": "Réservation refusée",
+      "failedToDecline": "Échec du refus de la réservation"
     }
   },
   "messages": {
@@ -182,6 +205,24 @@
     "checkoutAfterCheckin": "La date de départ doit être après la date d'arrivée",
     "checkOutUpdated": "Date de départ mise à jour"
   },
+  "validation": {
+    "selectDates": "Veuillez sélectionner les dates d'arrivée et de départ",
+    "checkoutAfterCheckin": "La date de départ doit être après la date d'arrivée",
+    "minAdvanceBooking": "Réservation minimum {{days}} jour(s) à l'avance requise",
+    "checkInTimeRange": "L'heure d'arrivée doit être entre 6h00 et 22h00",
+    "checkOutTimeRange": "L'heure de départ doit être entre 6h00 et 12h00"
+  },
+  "messages": {
+    "propertyDataMissing": "Impossible de traiter la réservation : les données de la propriété sont manquantes.",
+    "checkInSelected": "Date d'arrivée sélectionnée",
+    "checkOutSelected": "Date de départ sélectionnée",
+    "timeUpdated": "Heure mise à jour",
+    "checkInTimeUpdated": "Heure d'arrivée mise à jour",
+    "checkOutTimeUpdated": "Heure de départ mise à jour",
+    "noChargeYet": "Vous ne serez pas encore facturé",
+    "reservationSubmitted": "Votre réservation a été soumise avec succès. Vous recevrez un email de confirmation sous peu.",
+    "processingReservation": "Traitement de votre réservation..."
+  },
   "calendar": {
     "localTimeLabel": "Heure locale :",
     "timezoneNotice": "Toutes les heures affichées sont dans le fuseau horaire local de la propriété pour éviter toute confusion",
@@ -197,6 +238,8 @@
     },
     "checkIn": "Arrivée : {{time}}",
     "checkOut": "Départ : {{time}}",
+    "checkInAvailable": "Arrivée disponible de 6h00 à 22h00",
+    "checkOutRequired": "Départ requis avant 12h00",
     "smoking": "Interdiction de fumer",
     "pets": "Animaux non autorisés",
     "parties": "Pas de fêtes ou d'événements",
@@ -213,6 +256,9 @@
     "guest": "invité",
     "guestsPlural": "invités",
     "bookingDate": "Date de Réservation",
+    "bookingInformation": "Informations de Réservation",
+    "hostInformation": "Informations sur l'Hôte",
+    "paymentInformation": "Informations de Paiement",
     "accommodation": "Hébergement",
     "cleaningFee": "Frais de ménage",
     "serviceFee": "Frais de service",
@@ -232,6 +278,9 @@
     "failedWithCode": "Paiement échoué : {{code}}",
     "openModalFailed": "Échec de l'ouverture de la fenêtre de paiement",
     "payWithFedaPay": "Payer avec FedaPay",
+    "unknownReason": "Raison inconnue",
+    "transactionDeclined": "Transaction refusée",
+    "completionFailed": "Échec de la finalisation du paiement",
     "methods": {
       "card": "Carte de crédit/débit",
       "paypal": "PayPal",
@@ -245,6 +294,100 @@
     "failed": "Paiement échoué",
     "success": "Paiement réussi",
     "refund": "Remboursement traité",
-    "partialRefund": "Remboursement partiel traité"
+    "partialRefund": "Remboursement partiel traité",
+    "retrying": "Nouvelle tentative...",
+    "initializing": "Initialisation du Paiement",
+    "settingUpAgain": "Configuration du paiement en cours...",
+    "pleaseWait": "Veuillez patienter pendant que nous préparons votre paiement...",
+    "error": "Erreur de Paiement",
+    "tryAgain": "Réessayer",
+    "completePayment": "Finaliser le Paiement",
+    "processingFee": "Frais de Traitement",
+    "platformFee": "Frais de Plateforme",
+    "preparing": "Préparation du paiement...",
+    "methods": {
+      "cards": "Cartes",
+      "mobileMoney": "Mobile Money",
+      "bankTransfer": "Virement Bancaire"
+    }
+  },
+  "host": {
+    "title": "Gestion des Réservations",
+    "subtitle": "Gérez vos réservations de propriétés et demandes d'invités",
+    "loading": "Chargement de vos réservations...",
+    "searchPlaceholder": "Rechercher des réservations...",
+    "filterPlaceholder": "Filtrer par statut",
+    "approveSuccess": "Réservation approuvée avec succès !",
+    "approveFailed": "Échec de l'approbation de la réservation",
+    "declineSuccess": "Réservation refusée",
+    "declineFailed": "Échec du refus de la réservation",
+    "messageSent": "Message envoyé à l'invité !",
+    "messageFailed": "Échec de l'envoi du message",
+    "statuses": {
+      "all": "Tous les Statuts",
+      "pending": "En attente",
+      "approved": "Approuvée",
+      "confirmed": "Confirmée",
+      "completed": "Terminée",
+      "declined": "Refusée",
+      "cancelled": "Annulée"
+    },
+    "tabs": {
+      "all": "Toutes les Réservations",
+      "pending": "En attente",
+      "approved": "Approuvée",
+      "confirmed": "Confirmée",
+      "completed": "Terminée"
+    },
+    "noBookings": {
+      "title": "Aucune réservation trouvée",
+      "tryAdjusting": "Essayez d'ajuster vos critères de recherche ou de filtre",
+      "noneYet": "Vous n'avez pas encore de réservations"
+    },
+    "labels": {
+      "checkIn": "Arrivée",
+      "checkOut": "Départ",
+      "guests": "Invités",
+      "total": "Total"
+    },
+    "actions": {
+      "details": "Détails",
+      "approve": "Approuver",
+      "decline": "Refuser",
+      "contact": "Contact"
+    },
+    "modals": {
+      "details": {
+        "title": "Détails de la Réservation",
+        "guestInfo": "Informations sur l'Invité",
+        "bookingInfo": "Informations de Réservation",
+        "specialRequests": "Demandes Spéciales",
+        "close": "Fermer",
+        "approveBooking": "Approuver la Réservation",
+        "declineBooking": "Refuser la Réservation",
+        "labels": {
+          "property": "Propriété",
+          "bookingId": "ID de Réservation",
+          "checkIn": "Arrivée",
+          "checkOut": "Départ",
+          "guests": "Invités",
+          "totalAmount": "Montant Total"
+        }
+      },
+      "approve": {
+        "title": "Approuver la Réservation",
+        "message": "Êtes-vous sûr de vouloir approuver cette réservation ? L'invité sera notifié et pourra procéder au paiement.",
+        "cancel": "Annuler",
+        "confirm": "Approuver la Réservation"
+      },
+      "decline": {
+        "title": "Refuser la Réservation",
+        "message": "Êtes-vous sûr de vouloir refuser cette réservation ? L'invité sera notifié.",
+        "reasonLabel": "Raison (Optionnel)",
+        "reasonPlaceholder": "Entrez la raison du refus...",
+        "cancel": "Annuler",
+        "confirm": "Refuser la Réservation"
+      }
+    }
   }
 }

@@ -21,7 +21,7 @@ export const AuthTest: React.FC = () => {
 
       <div className="space-y-2">
         <button
-          onClick={() => signIn('test@example.com', 'password123')}
+          onClick={() => signIn(t('auth.test.testEmail'), t('auth.test.testPassword'))}
           className="w-full bg-blue-500 text-white px-3 py-1 rounded text-sm"
         >
           {t('auth.test.signIn', 'Test Sign In')}

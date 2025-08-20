@@ -141,7 +141,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     <p className="text-sm text-gray-600">{t('property.labels.yearsHosting', { years: property.host?.experience || 4, defaultValue: '{{years}} years hosting' })}</p>
                   </div>
                   <Chip color="success" variant="flat" size="sm">
-                    Superhost
+                    {t('booking.labels.superhost')}
                   </Chip>
                 </div>
 

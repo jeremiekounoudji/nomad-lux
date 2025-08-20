@@ -48,7 +48,9 @@
     "language": "Language",
     "user": "User",
     "target": "Target",
-    "ip": "IP"
+    "ip": "IP",
+    "from": "From:",
+    "to": "To:"
   },
   "status": {
     "active": "Active",
@@ -91,12 +93,14 @@
     "noPropertiesInArea": "No properties found in your area",
     "noPropertiesInCity": "No properties found in {{city}}",
     "failedToLoadProperties": "Failed to load properties. Please try again.",
-    "seenAllProperties": "You've seen all available properties"
+    "seenAllProperties": "You've seen all available properties",
+    "unexpectedError": "An unexpected error occurred. Please try again later."
   },
   "actions": {
     "close": "Close",
     "retry": "Retry",
-    "clear": "Clear"
+    "clear": "Clear",
+    "reset": "Reset to Default"
   },
   "time": {
     "thisMonth": "This month"
@@ -122,14 +126,18 @@
     "someFailed": "Some uploads failed",
     "uploadingFiles": "Uploading files...",
     "progress": "Upload Progress",
-    "completedOfTotal": "{{completed}}/{{total}} completed"
+    "completedOfTotal": "{{completed}}/{{total}} completed",
+    "unknown": "Unknown",
+    "overallProgress": "Overall upload progress",
+    "completed": "100%"
   },
   "actions": {
     "close": "Close",
     "retry": "Retry",
     "clear": "Clear",
     "enable": "Enable",
-    "disable": "Disable"
+    "disable": "Disable",
+    "backToHome": "Back to Home"
   },
   "notSpecified": "Not specified",
   "notProvided": "Not provided",
@@ -173,7 +181,10 @@
     "zones": {
       "est": "Eastern Time",
       "pst": "Pacific Time"
-    }
+    },
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
   },
   "languages": {
     "en": "English",

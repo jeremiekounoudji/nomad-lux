@@ -148,9 +148,9 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         if (response.reason === 'DIALOG DISMISSED') {
           errorMessage = t('booking.payment.cancelledByUser');
         } else if (response.transaction?.status === 'canceled') {
-          errorMessage = t('booking.payment.cancelledWithReason', { reason: response.transaction?.last_error_code || 'Unknown reason' });
+          errorMessage = t('booking.payment.cancelledWithReason', { reason: response.transaction?.last_error_code || t('booking.payment.unknownReason') });
         } else if (response.transaction?.status === 'declined') {
-          errorMessage = t('booking.payment.declinedWithReason', { reason: response.transaction?.last_error_code || 'Transaction declined' });
+          errorMessage = t('booking.payment.declinedWithReason', { reason: response.transaction?.last_error_code || t('booking.payment.transactionDeclined') });
         } else if (response.transaction?.last_error_code) {
           errorMessage = t('booking.payment.failedWithCode', { code: response.transaction.last_error_code });
         }
@@ -171,7 +171,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
       }
     } catch (err) {
       console.error('❌ [PaymentButton] Error handling payment completion:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Payment completion failed';
+      const errorMessage = err instanceof Error ? err.message : t('booking.payment.completionFailed');
       toast.error(errorMessage);
       onPaymentError?.(errorMessage);
     } finally {

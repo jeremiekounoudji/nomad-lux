@@ -29,6 +29,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface AdminPropertiesMapProps {
   properties: DatabaseProperty[];
@@ -53,32 +54,33 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
   properties,
   onConfirm
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [reason, setReason] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   const actionConfig = {
     approve: { 
-      title: 'Approve Properties', 
+      title: t('admin.properties.bulkActions.approve.title', { defaultValue: 'Approve Properties' }), 
       color: 'success' as const, 
-      description: 'These properties will be made visible to users and available for booking.',
+      description: t('admin.properties.bulkActions.approve.description', { defaultValue: 'These properties will be made visible to users and available for booking.' }),
       requiresReason: false 
     },
     reject: { 
-      title: 'Reject Properties', 
+      title: t('admin.properties.bulkActions.reject.title', { defaultValue: 'Reject Properties' }), 
       color: 'danger' as const, 
-      description: 'These properties will be rejected and hosts will be notified.',
+      description: t('admin.properties.bulkActions.reject.description', { defaultValue: 'These properties will be rejected and hosts will be notified.' }),
       requiresReason: true 
     },
     suspend: { 
-      title: 'Suspend Properties', 
+      title: t('admin.properties.bulkActions.suspend.title', { defaultValue: 'Suspend Properties' }), 
       color: 'warning' as const, 
-      description: 'These properties will be temporarily suspended from bookings.',
+      description: t('admin.properties.bulkActions.suspend.description', { defaultValue: 'These properties will be temporarily suspended from bookings.' }),
       requiresReason: true 
     },
     delete: { 
-      title: 'Delete Properties', 
+      title: t('admin.properties.bulkActions.delete.title', { defaultValue: 'Delete Properties' }), 
       color: 'danger' as const, 
-      description: 'These properties will be permanently deleted. This action cannot be undone.',
+      description: t('admin.properties.bulkActions.delete.description', { defaultValue: 'These properties will be permanently deleted. This action cannot be undone.' }),
       requiresReason: true 
     }
   };
@@ -87,7 +89,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
 
   const handleConfirm = async () => {
     if (config.requiresReason && !reason.trim()) {
-      toast.error('Please provide a reason for this action');
+      toast.error(t('admin.properties.bulkActions.errors.provideReason', { defaultValue: 'Please provide a reason for this action' }));
       return;
     }
 
@@ -97,7 +99,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Bulk action failed:', error);
-      toast.error('Failed to complete bulk action');
+      toast.error(t('admin.properties.bulkActions.errors.failed', { defaultValue: 'Failed to complete bulk action' }));
     } finally {
       setIsProcessing(false);
     }
@@ -116,7 +118,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-semibold">{config.title}</h2>
-              <p className="text-sm text-gray-600">{properties.length} properties selected</p>
+              <p className="text-sm text-gray-600">{t('admin.properties.bulkActions.selectedCount', { count: properties.length, defaultValue: '{{count}} properties selected' })}</p>
             </div>
           </div>
         </ModalHeader>
@@ -154,12 +156,12 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
             {config.requiresReason && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Reason for {action} <span className="text-red-500">*</span>
+                  {t('admin.properties.bulkActions.reason.label', { action: action, defaultValue: 'Reason for {{action}}' })} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder={`Please provide a reason for ${action}ing these properties...`}
+                  placeholder={t('admin.properties.bulkActions.reason.placeholder', { action: action, defaultValue: 'Please provide a reason for {{action}}ing these properties...' })}
                   rows={3}
                   className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
@@ -170,7 +172,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose} disabled={isProcessing}>
-            Cancel
+            {t('common.buttons.cancel', { defaultValue: 'Cancel' })}
           </Button>
           <Button 
             color={config.color}
@@ -178,7 +180,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
             isLoading={isProcessing}
             disabled={isProcessing}
           >
-            {isProcessing ? 'Processing...' : `${config.title.split(' ')[0]} ${properties.length} Properties`}
+            {isProcessing ? t('common.messages.processing', { defaultValue: 'Processing...' }) : t('admin.properties.bulkActions.confirmButton', { action: config.title.split(' ')[0], count: properties.length, defaultValue: '{{action}} {{count}} Properties' })}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -193,6 +195,7 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
   className = '',
   height = '600px'
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   // State management
   const [selectedProperties, setSelectedProperties] = useState<DatabaseProperty[]>([]);
   const [filteredProperties, setFilteredProperties] = useState<DatabaseProperty[]>(properties);
@@ -276,8 +279,8 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
              lng >= bounds.west && lng <= bounds.east;
     });
     setSelectedProperties(propertiesInArea);
-    toast.success(`Selected ${propertiesInArea.length} properties in area`);
-  }, [filteredProperties]);
+    toast.success(t('admin.properties.map.selectedInArea', { count: propertiesInArea.length, defaultValue: 'Selected {{count}} properties in area' }));
+  }, [filteredProperties, t]);
 
   // Toolbar handlers
   const handleFilterChange = useCallback((filters: MapFilter) => {
@@ -315,12 +318,12 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
       // Clear selection
       setSelectedProperties([]);
       
-      toast.success(`Successfully ${action}ed ${properties.length} properties`);
+      toast.success(t('admin.properties.bulkActions.success', { action: action, count: properties.length, defaultValue: 'Successfully {{action}}ed {{count}} properties' }));
     } catch (error) {
       console.error('Bulk action failed:', error);
       throw error;
     }
-  }, [onPropertiesUpdate]);
+  }, [onPropertiesUpdate, t]);
 
   const handleExport = useCallback((properties: DatabaseProperty[], format: 'csv' | 'json' | 'excel') => {
     console.log(`Exporting ${properties.length} properties as ${format}:`, properties);
@@ -358,14 +361,14 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
       linkElement.click();
     }
     
-    toast.success(`Exported ${properties.length} properties as ${format.toUpperCase()}`);
-  }, []);
+    toast.success(t('admin.properties.export.success', { count: properties.length, format: format.toUpperCase(), defaultValue: 'Exported {{count}} properties as {{format}}' }));
+  }, [t]);
 
   const handleRefresh = useCallback(() => {
     console.log('Refreshing properties...');
     // In real implementation, this would refetch data from the API
-    toast.success('Properties refreshed');
-  }, []);
+    toast.success(t('admin.properties.refresh.success', { defaultValue: 'Properties refreshed' }));
+  }, [t]);
 
   return (
     <div className={`space-y-4 ${className}`}>

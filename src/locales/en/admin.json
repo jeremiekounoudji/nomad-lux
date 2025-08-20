@@ -12,7 +12,18 @@
     "settings": "Settings",
     "reports": "Reports",
     "notifications": "Notifications",
-    "support": "Support"
+    "support": "Support",
+    "login": "admin-login",
+    "register": "admin-register"
+  },
+  "sections": {
+    "dashboard": "dashboard",
+    "users": "users",
+    "properties": "properties",
+    "bookings": "bookings",
+    "analytics": "analytics",
+    "settings": "settings",
+    "activities": "activities"
   },
   "dashboard": {
     "overview": "Overview",
@@ -49,7 +60,72 @@
     "hostInformation": "Host Information",
     "approvalStatus": "Approval Status",
     "rejectionReason": "Rejection Reason",
-    "suspensionReason": "Suspension Reason"
+    "suspensionReason": "Suspension Reason",
+    "noMatch": "No properties match \"{{query}}\"",
+    "noneAvailable": "No {{status}} properties available.",
+    "createdYear": "Created {{year}}"
+  },
+  "bulkActions": {
+    "approve": {
+      "title": "Approve Properties",
+      "description": "These properties will be made visible to users and available for booking."
+    },
+    "reject": {
+      "title": "Reject Properties",
+      "description": "These properties will be rejected and hosts will be notified."
+    },
+    "suspend": {
+      "title": "Suspend Properties",
+      "description": "These properties will be temporarily suspended from bookings."
+    },
+    "delete": {
+      "title": "Delete Properties",
+      "description": "These properties will be permanently deleted. This action cannot be undone."
+    },
+    "selectedCount": "{{count}} properties selected",
+    "reason": {
+      "label": "Reason for {{action}}",
+      "placeholder": "Please provide a reason for {{action}}ing these properties..."
+    },
+    "confirmButton": "{{action}} {{count}} Properties",
+    "success": "Successfully {{action}}ed {{count}} properties",
+    "errors": {
+      "provideReason": "Please provide a reason for this action",
+      "failed": "Failed to complete bulk action"
+    }
+  },
+  "map": {
+    "selectedInArea": "Selected {{count}} properties in area"
+  },
+  "export": {
+    "success": "Exported {{count}} properties as {{format}}"
+  },
+  "refresh": {
+    "success": "Properties refreshed"
+  },
+  "distribution": {
+    "title": "Property Distribution",
+    "propertiesCount": "{{count}} Properties",
+    "locationsCount": "{{count}} Locations",
+    "topLocations": "Top Locations",
+    "properties": "properties",
+    "statusDistribution": "Status Distribution",
+    "statusLabels": {
+      "approved": "Approved Properties",
+      "pending": "Pending Review",
+      "rejected": "Rejected Properties",
+      "suspended": "Suspended Properties"
+    },
+    "locationBreakdown": "Location Breakdown",
+    "viewDetails": "View Details",
+    "table": {
+      "location": "Location",
+      "total": "Total",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "suspended": "Suspended"
+    }
   },
   "bookings": {
     "allBookings": "All Bookings",
@@ -63,7 +139,63 @@
     "paymentStatus": "Payment Status",
     "bookingStatus": "Booking Status",
     "refundBooking": "Refund Booking",
-    "cancelBooking": "Cancel Booking"
+    "cancelBooking": "Cancel Booking",
+    "requireAttention": "Requires attention",
+    "errorLoading": "Error Loading Bookings",
+    "currentlyConfirmed": "Currently confirmed",
+    "activeDisputes": "Active Disputes",
+    "revenueCompleted": "Revenue (Completed)",
+    "searchPlaceholder": "Search by booking ID, guest name, or property...",
+    "filterByStatus": "Filter by status",
+    "allStatus": "All Status",
+    "disputes": "Disputes",
+    "loading": "Loading bookings...",
+    "labels": {
+      "id": "ID:",
+      "guest": "Guest:",
+      "host": "Host:",
+      "bookingId": "Booking ID:",
+      "type": "Type:",
+      "reporter": "Reporter:",
+      "created": "Created:",
+      "assignedTo": "Assigned to:"
+    },
+    "bookedOn": "Booked on {{date}}",
+    "disputeFiledOn": "Dispute filed on {{date}}",
+    "manageDispute": "Manage Dispute",
+    "contactParties": "Contact Parties",
+    "openDisputes": "Open Disputes",
+    "underInvestigation": "Under Investigation",
+    "urgentPriority": "Urgent Priority",
+    "disputeNumber": "Dispute #{{id}}",
+    "priorityLabel": "Priority",
+    "messagesCount": "{{count}} message"
+  },
+  "disputes": {
+    "management": {
+      "title": "Dispute Management - #{{id}}",
+      "disputeInformation": "Dispute Information",
+      "assignment": "Assignment",
+      "description": "Description",
+      "communicationThread": "Communication Thread",
+      "addResponse": "Add Response",
+      "labels": {
+        "type": "Type:",
+        "priority": "Priority:",
+        "reporter": "Reporter:",
+        "status": "Status:",
+        "created": "Created:",
+        "assignedTo": "Assigned to:",
+        "bookingId": "Booking ID:"
+      },
+      "unassigned": "Unassigned",
+      "responsePlaceholder": "Type your response...",
+      "buttons": {
+        "close": "Close",
+        "sendResponse": "Send Response",
+        "resolveDispute": "Resolve Dispute"
+      }
+    }
   },
   "users": {
     "allUsers": "All Users",
@@ -81,7 +213,148 @@
     "activateUser": "Activate User",
     "deleteUser": "Delete User",
     "viewProfile": "View Profile",
-    "editProfile": "Edit Profile"
+    "editProfile": "Edit Profile",
+    "adminUser": "Admin User",
+    "activation": {
+      "title": "Activate User Account",
+      "subtitle": "Restore full platform access for this user",
+      "notice": {
+        "title": "Account Activation",
+        "description": "This user will regain full access to the platform including booking properties and listing new accommodations."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login"
+      },
+      "effects": {
+        "title": "What happens when you activate this account:",
+        "login": "User can log in and access their dashboard",
+        "booking": "Booking and property listing capabilities restored",
+        "features": "All platform features become available",
+        "status": "User status changes to \"Active\""
+      },
+      "confirmButton": "Activate User Account"
+    },
+    "deletion": {
+      "title": "Delete User Account",
+      "subtitle": "This action cannot be undone",
+      "notice": {
+        "title": "Permanent Account Deletion",
+        "description": "This will permanently delete the user's account, all their data, bookings, and properties. This action cannot be reversed."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login",
+        "totalRevenue": "Total Revenue"
+      },
+      "dataImpact": {
+        "title": "Data That Will Be Permanently Deleted:",
+        "profile": "User profile and personal information",
+        "bookings": "All booking history and records",
+        "properties": "Property listings and related data",
+        "payments": "Payment history and financial records",
+        "reviews": "Reviews and ratings given/received"
+      },
+      "reason": {
+        "label": "Reason for Deletion",
+        "placeholder": "Please provide a detailed reason for permanently deleting this user account...",
+        "help": "This reason will be logged for audit purposes and legal compliance."
+      },
+      "confirmation": {
+        "text": "I understand that this action is permanent and cannot be undone. All user data will be permanently deleted."
+      },
+      "confirmButton": "Permanently Delete Account"
+    },
+    "suspension": {
+      "title": "Suspend User Account",
+      "subtitle": "This action will temporarily disable the user's access",
+      "notice": {
+        "title": "Important Notice",
+        "description": "Suspending this user will immediately restrict their access to the platform. They will not be able to make new bookings or list properties."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login"
+      },
+      "reason": {
+        "label": "Reason for Suspension",
+        "placeholder": "Please provide a detailed reason for suspending this user account...",
+        "help": "This reason will be logged and may be shared with the user upon request."
+      },
+      "confirmButton": "Suspend User Account"
+    },
+    "bulkActions": {
+      "suspend": {
+        "title": "Suspend Users",
+        "description": "You are about to suspend {{count}} users. This will prevent them from accessing the platform."
+      },
+      "activate": {
+        "title": "Activate Users",
+        "description": "You are about to activate {{count}} users. This will restore their platform access."
+      },
+      "delete": {
+        "title": "Delete Users",
+        "description": "You are about to permanently delete {{count}} users and all their data. This action cannot be undone."
+      },
+      "destructiveAction": "Destructive Action",
+      "bulkAction": "Bulk Action",
+      "selectedUsers": "Selected Users ({{count}})",
+      "reason": {
+        "label": "Reason for {{action}}",
+        "placeholder": "Provide a reason for {{action}} these users..."
+      },
+      "deleteConfirmation": "I understand that this action is permanent and cannot be undone. All user data, including bookings, properties, and payment history will be permanently deleted.",
+      "summary": {
+        "title": "Action Summary",
+        "usersAffected": "{{count}} users will be {{action}}",
+        "suspendEffect": "Users will lose platform access immediately",
+        "activateEffect": "Users will regain platform access immediately",
+        "deleteEffect1": "All user data will be permanently removed",
+        "deleteEffect2": "Associated bookings and properties will be affected",
+        "auditTrail": "Action will be logged in the audit trail"
+      }
+    },
+    "messages": {
+      "sendToMultiple": "Send Message to {{count}} Users",
+      "sendToUser": "Send Message to {{name}}",
+      "recipients": "Recipients",
+      "recipient": "Recipient",
+      "messageType": "Message Type",
+      "types": {
+        "email": "Email",
+        "sms": "SMS",
+        "push": "Push Notification"
+      },
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter email subject...",
+      "message": "Message",
+      "characterCount": "{{current}}/{{max}} characters",
+      "placeholders": {
+        "email": "Enter your email message here...\n\nThis email will be sent to the selected user(s) with your admin signature.",
+        "sms": "Enter your SMS message here (160 characters max)...",
+        "push": "Enter your push notification message here...",
+        "default": "Enter your message here..."
+      },
+      "preview": "Preview",
+      "previewPlaceholder": "Your message will appear here...",
+      "signature": {
+        "bestRegards": "Best regards,",
+        "team": "Nomad Lux Admin Team",
+        "email": "admin@nomadlux.com"
+      },
+      "sendEmail": "Send Email",
+      "sendSMS": "Send SMS",
+      "sendNotification": "Send Notification"
+    }
   },
   "payments": {
     "allPayments": "All Payments",
@@ -97,7 +370,43 @@
     "refundPayment": "Refund Payment",
     "payoutRequests": "Payout Requests",
     "approvePayout": "Approve Payout",
-    "rejectPayout": "Reject Payout"
+    "rejectPayout": "Reject Payout",
+    "paymentTracking": "Payment Tracking",
+    "paymentRecords": "Payment Records",
+    "loadingRecords": "Loading payment records...",
+    "noRecords": "No payment records found.",
+    "noRequests": "No payout requests found.",
+    "recordDetails": "Payment Record Details",
+    "labels": {
+      "id": "ID",
+      "bookingId": "Booking ID",
+      "amount": "Amount",
+      "status": "Status",
+      "method": "Method",
+      "provider": "Provider",
+      "intentId": "Intent ID",
+      "processingFee": "Processing Fee",
+      "platformFee": "Platform Fee",
+      "netAmount": "Net Amount",
+      "payoutStatus": "Payout Status",
+      "payoutDate": "Payout Date",
+      "payoutReference": "Payout Reference",
+      "failureReason": "Failure Reason",
+      "refundAmount": "Refund Amount",
+      "refundReason": "Refund Reason",
+      "initiatedAt": "Initiated At",
+      "completedAt": "Completed At",
+      "refundedAt": "Refunded At",
+      "createdAt": "Created At",
+      "updatedAt": "Updated At",
+      "metadata": "Metadata"
+    },
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "refunded": "Refunded",
+      "partial_refund": "Partial Refund"
+    }
   },
   "settings": {
     "generalSettings": "General Settings",
@@ -113,7 +422,124 @@
     "autoApproval": "Auto Approval",
     "emailNotifications": "Email Notifications",
     "pushNotifications": "Push Notifications",
-    "maintenanceMode": "Maintenance Mode"
+    "maintenanceMode": "Maintenance Mode",
+    "siteName": "Site Name",
+    "contactEmail": "Contact Email",
+    "supportEmail": "Support Email",
+    "defaultLanguage": "Default Language",
+    "timezone": "Timezone",
+    "siteDescription": "Site Description",
+    "systemStatus": "System Status",
+    "maintenanceModeDesc": "Temporarily disable public access",
+    "userRegistration": "User Registration",
+    "userRegistrationDesc": "Allow new users to register",
+    "fileUpload": "File Upload Settings",
+    "maxFileSize": "Maximum File Size (MB)",
+    "currentValue": "Current: {{value}} MB",
+    "allowedImageFormats": "Allowed Image Formats",
+    "format": "format",
+    "commissionRate": "Commission Rate (%)",
+    "currentPercent": "Current: {{value}}%",
+    "paymentProcessingFee": "Payment Processing Fee (%)",
+    "maxAdvanceBooking": "Maximum Advance Booking (days)",
+    "minAdvanceBooking": "Minimum Advance Booking (days)",
+    "cancellationGrace": "Cancellation Grace Period (hours)",
+    "minimumStay": "Minimum Stay (nights)",
+    "maximumStay": "Maximum Stay (nights)",
+    "bookingFeatures": "Booking Features",
+    "autoApprovalDesc": "Automatically approve eligible bookings",
+    "instantBooking": "Instant Booking",
+    "instantBookingDesc": "Allow guests to book instantly without host approval",
+    "stripe": "Stripe Configuration",
+    "stripePublicKey": "Stripe Public Key",
+    "stripeSecretKey": "Stripe Secret Key",
+    "paypal": "PayPal Configuration",
+    "paypalClientId": "PayPal Client ID",
+    "paypalClientSecret": "PayPal Client Secret",
+    "currencyAndPayout": "Currency & Payout Settings",
+    "defaultCurrency": "Default Currency",
+    "minimumPayout": "Minimum Payout Amount",
+    "paymentHoldDays": "Payment Hold Days",
+    "paymentHoldDesc": "Days to hold payment before making it eligible for payout",
+    "taxRate": "Tax Rate (%)",
+    "paymentFeatures": "Payment Features",
+    "autoPayout": "Auto-Payout",
+    "autoPayoutDesc": "Automatically process host payouts",
+    "chargeTaxes": "Charge Taxes",
+    "chargeTaxesDesc": "Automatically calculate and charge taxes",
+    "notificationChannels": "Notification Channels",
+    "emailNotificationsDesc": "Send notifications via email",
+    "smsNotifications": "SMS Notifications",
+    "smsNotificationsDesc": "Send notifications via SMS",
+    "pushNotificationsDesc": "Send browser push notifications",
+    "notificationTypes": "Notification Types",
+    "authentication": "Authentication Settings",
+    "passwordMin": "Minimum Password Length",
+    "sessionTimeout": "Session Timeout (minutes)",
+    "maxLoginAttempts": "Max Login Attempts",
+    "apiRateLimit": "API Rate Limit (per hour)",
+    "securityFeatures": "Security Features",
+    "twoFactorRequired": "Two-Factor Authentication Required",
+    "twoFactorRequiredDesc": "Require 2FA for all admin accounts",
+    "requireSpecialChars": "Require Special Characters",
+    "requireSpecialCharsDesc": "Passwords must contain special characters",
+    "enableAuditLog": "Enable Audit Log",
+    "enableAuditLogDesc": "Log all admin actions and changes",
+    "encryptUserData": "Encrypt User Data",
+    "encryptUserDataDesc": "Encrypt sensitive user information",
+    "accessControl": "Access Control",
+    "ipWhitelist": "IP Whitelist",
+    "ipWhitelistPlaceholder": "Enter IP addresses (one per line)",
+    "ipWhitelistDesc": "Restrict admin access to specific IP addresses",
+    "dataRetention": "Data Retention Period (days)",
+    "dataRetentionDesc": "How long to keep user data after account deletion",
+    "termsOfService": "Terms of Service",
+    "termsPlaceholder": "Enter terms of service content...",
+    "privacyPolicy": "Privacy Policy",
+    "privacyPlaceholder": "Enter privacy policy content...",
+    "hostGuidelines": "Host Guidelines",
+    "hostGuidelinesPlaceholder": "Enter host guidelines...",
+    "guestGuidelines": "Guest Guidelines",
+    "guestGuidelinesPlaceholder": "Enter guest guidelines...",
+    "cancellationPolicy": "Cancellation Policy",
+    "cancellationPolicyPlaceholder": "Enter cancellation policy...",
+    "cacheManagement": "Cache Management",
+    "cacheManagementDesc": "Manage application cache to resolve loading issues and improve performance",
+    "browserCache": "Browser Cache",
+    "browserCacheDesc": "HTTP cache and service workers",
+    "appCache": "App Cache",
+    "appCacheDesc": "Zustand stores and localStorage",
+    "supabaseCache": "Supabase Cache",
+    "supabaseCacheDesc": "API response cache",
+    "clearAppCache": "Clear App Cache",
+    "clearAppCacheDesc": "Clear Zustand stores & localStorage",
+    "clearAllCache": "Clear All Cache",
+    "clearAllCacheDesc": "Clear everything & restart",
+    "detectIssues": "Detect Issues",
+    "detectIssuesDesc": "Check for cache problems",
+    "forceRefresh": "Force Refresh",
+    "forceRefreshDesc": "Reload with cache busting",
+    "cacheSettings": "Cache Settings",
+    "cacheDuration": "Cache Duration (minutes)",
+    "cacheDurationDesc": "How long to cache API responses",
+    "autoClearInterval": "Auto-clear interval (hours)",
+    "autoClearIntervalDesc": "Automatically clear stale cache",
+    "enableCacheBusting": "Enable cache busting in development",
+    "showCacheDebug": "Show cache debug information",
+    "whenToClear": "💡 When to Clear Cache",
+    "clearTip1": "GET requests not returning updated data",
+    "clearTip2": "Properties or settings showing old values",
+    "clearTip3": "App behaving unexpectedly after updates",
+    "clearTip4": "Before reporting bugs to ensure it's not cache-related",
+    "testConfiguration": "Test Configuration",
+    "changeLog": "Settings Change Log",
+    "categories": {
+      "booking": "Booking",
+      "security": "Security",
+      "general": "General"
+    },
+    "changedBy": "Changed by:",
+    "exportLog": "Export Log"
   },
   "reports": {
     "bookingReports": "Booking Reports",
@@ -145,7 +571,19 @@
     "search": "Search",
     "bulkAction": "Bulk Action",
     "selectAll": "Select All",
-    "deselectAll": "Deselect All"
+    "deselectAll": "Deselect All",
+    "viewActivities": "View all activities",
+    "message": "Send Message"
+  },
+  "roles": {
+    "super_admin": "Super Administrator",
+    "admin": "Administrator",
+    "host": "Host",
+    "guest": "Guest",
+    "user": "User"
+  },
+  "search": {
+    "placeholder": "Search users, properties, bookings..."
   },
   "messages": {
     "propertyApproved": "Property approved successfully",
@@ -161,7 +599,9 @@
     "reportGenerated": "Report generated successfully",
     "bulkActionCompleted": "Bulk action completed successfully",
     "confirmAction": "Are you sure you want to perform this action?",
-    "actionCannotBeUndone": "This action cannot be undone"
+    "actionCannotBeUndone": "This action cannot be undone",
+    "loadingSettings": "Loading admin settings...",
+    "settingsLoadFailed": "Failed to load admin settings"
   },
   "login": {
     "title": "Admin Access",
@@ -172,7 +612,9 @@
     "needAccess": "Need admin access?",
     "requestAccess": "Request Access",
     "infoTitle": "Admin Access:",
-    "info": "Only accounts with admin or super_admin roles can access the admin panel."
+    "info": "Only accounts with admin or super_admin roles can access the admin panel.",
+    "emailPlaceholder": "admin@nomadlux.com",
+    "unexpectedError": "An unexpected error occurred"
   },
   "register": {
     "title": "Create Admin Account",
@@ -276,6 +718,12 @@
       "successRate": "Booking Success Rate",
       "avgStay": "Average Stay Duration",
       "repeatRate": "Repeat Booking Rate"
+    },
+    "stats": {
+      "avgResponseTime": "Average Response Time",
+      "customerSatisfaction": "Customer Satisfaction",
+      "propertyApprovalRate": "Property Approval Rate",
+      "platformUptime": "Platform Uptime"
     }
   }
   ,
@@ -294,5 +742,49 @@
     "country": "Country",
     "neighborhood": "Neighborhood",
     "address": "Address"
+  },
+  "mapToolbar": {
+    "searchPlaceholder": "Search by location, property name...",
+    "filters": "Filters",
+    "statusLabels": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "suspended": "Suspended"
+    },
+    "tools": {
+      "selection": "Toggle selection mode",
+      "measurement": "Distance measurement",
+      "areaSelection": "Area selection"
+    },
+    "refresh": "Refresh",
+    "export": "Export",
+    "exportOptions": "Export options",
+    "exportAs": {
+      "csv": "Export as CSV",
+      "json": "Export as JSON",
+      "excel": "Export as Excel"
+    },
+    "selectedCount": "{{count}} propert{{count === 1 ? 'y' : 'ies'}} selected",
+    "bulkActions": {
+      "approve": "Approve selected",
+      "approveButton": "Approve",
+      "reject": "Reject selected",
+      "rejectButton": "Reject",
+      "suspend": "Suspend selected",
+      "suspendButton": "Suspend"
+    },
+    "advancedFilters": {
+      "title": "Advanced Filters",
+      "clearAll": "Clear All",
+      "priceRange": "Price Range (per night)",
+      "min": "Min",
+      "max": "Max",
+      "dateRange": "Created Date Range",
+      "quickStats": "Quick Stats",
+      "totalProperties": "Total Properties",
+      "visible": "Visible",
+      "selected": "Selected"
+    }
   }
 }

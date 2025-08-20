@@ -63,7 +63,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
       description: t('help.contact.liveChat.description'),
       icon: MessageCircle,
       color: 'primary',
-      action: () => console.log('Open live chat'),
+      action: () => console.log(t('help.contact.liveChat.action')),
       available: t('help.contact.liveChat.available')
     },
     {
@@ -71,7 +71,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
       description: t('help.contact.email.description'),
       icon: Mail,
       color: 'secondary',
-      action: () => (window.location.href = 'mailto:support@nomadlux.com'),
+      action: () => (window.location.href = `mailto:${t('help.contact.email.address')}`),
       available: t('help.contact.email.available')
     },
     {
@@ -79,7 +79,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
       description: t('help.contact.phone.description'),
       icon: Phone,
       color: 'success',
-      action: () => (window.location.href = 'tel:+1-800-NOMAD-LUX'),
+      action: () => (window.location.href = `tel:${t('help.contact.phone.number')}`),
       available: t('help.contact.phone.available')
     }
   ]), [t])

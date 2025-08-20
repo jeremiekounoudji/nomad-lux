@@ -41,12 +41,14 @@ import { useBookingManagement } from '../../../hooks/useBookingManagement'
 import { useAuthStore } from '../../../lib/stores/authStore'
 import { BookingRequest, BookingStatus } from '../../../interfaces'
 import toast from 'react-hot-toast'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface HostBookingManagementProps {
   propertyId?: string // Optional: filter by specific property
 }
 
 const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyId }) => {
+  const { t } = useTranslation(['booking', 'common']);
   const [selectedTab, setSelectedTab] = useState<string>('pending')
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<BookingStatus | 'all'>('all')
@@ -134,11 +136,11 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
     try {
       console.log('🔄 Approving booking:', bookingId)
       await approveBooking(bookingId)
-      toast.success('Booking approved successfully!')
+      toast.success(t('booking.host.approveSuccess', { defaultValue: 'Booking approved successfully!' }))
       onApproveClose()
     } catch (error) {
       console.error('❌ Error approving booking:', error)
-      toast.error('Failed to approve booking')
+      toast.error(t('booking.host.approveFailed', { defaultValue: 'Failed to approve booking' }))
     }
   }
 
@@ -146,11 +148,11 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
     try {
       console.log('🔄 Declining booking:', bookingId)
       await declineBooking(bookingId, reason)
-      toast.success('Booking declined')
+      toast.success(t('booking.host.declineSuccess', { defaultValue: 'Booking declined' }))
       onDeclineClose()
     } catch (error) {
       console.error('❌ Error declining booking:', error)
-      toast.error('Failed to decline booking')
+      toast.error(t('booking.host.declineFailed', { defaultValue: 'Failed to decline booking' }))
     }
   }
 
@@ -158,10 +160,10 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
     try {
       console.log('🔄 Contacting guest for booking:', booking.id)
       await contactGuest(booking.id, message)
-      toast.success('Message sent to guest!')
+      toast.success(t('booking.host.messageSent', { defaultValue: 'Message sent to guest!' }))
     } catch (error) {
       console.error('❌ Error contacting guest:', error)
-      toast.error('Failed to send message')
+      toast.error(t('booking.host.messageFailed', { defaultValue: 'Failed to send message' }))
     }
   }
 
@@ -194,7 +196,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <Spinner size="lg" color="primary" />
-          <p className="text-gray-600 mt-4">Loading your bookings...</p>
+          <p className="text-gray-600 mt-4">{t('booking.host.loading', { defaultValue: 'Loading your bookings...' })}</p>
         </div>
       </div>
     )
@@ -204,13 +206,13 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Booking Management</h2>
-          <p className="text-gray-600">Manage your property bookings and guest requests</p>
+          <h2 className="text-2xl font-bold text-gray-900">{t('booking.host.title', { defaultValue: 'Booking Management' })}</h2>
+          <p className="text-gray-600">{t('booking.host.subtitle', { defaultValue: 'Manage your property bookings and guest requests' })}</p>
         </div>
         
         <div className="flex items-center gap-3">
           <Input
-            placeholder="Search bookings..."
+            placeholder={t('booking.host.searchPlaceholder', { defaultValue: 'Search bookings...' })}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             startContent={<Search className="w-4 h-4 text-gray-400" />}
@@ -219,7 +221,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
           />
           
           <Select
-            placeholder="Filter by status"
+            placeholder={t('booking.host.filterPlaceholder', { defaultValue: 'Filter by status' })}
             selectedKeys={statusFilter !== 'all' ? [statusFilter] : []}
             onSelectionChange={(keys) => {
               const status = Array.from(keys)[0] as BookingStatus | 'all'
@@ -229,13 +231,13 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
             size="sm"
             startContent={<Filter className="w-4 h-4" />}
           >
-            <SelectItem key="all">All Statuses</SelectItem>
-            <SelectItem key="pending">Pending</SelectItem>
-            <SelectItem key="approved">Approved</SelectItem>
-            <SelectItem key="confirmed">Confirmed</SelectItem>
-            <SelectItem key="completed">Completed</SelectItem>
-            <SelectItem key="declined">Declined</SelectItem>
-            <SelectItem key="cancelled">Cancelled</SelectItem>
+            <SelectItem key="all">{t('booking.host.statuses.all', { defaultValue: 'All Statuses' })}</SelectItem>
+            <SelectItem key="pending">{t('booking.host.statuses.pending', { defaultValue: 'Pending' })}</SelectItem>
+            <SelectItem key="approved">{t('booking.host.statuses.approved', { defaultValue: 'Approved' })}</SelectItem>
+            <SelectItem key="confirmed">{t('booking.host.statuses.confirmed', { defaultValue: 'Confirmed' })}</SelectItem>
+            <SelectItem key="completed">{t('booking.host.statuses.completed', { defaultValue: 'Completed' })}</SelectItem>
+            <SelectItem key="declined">{t('booking.host.statuses.declined', { defaultValue: 'Declined' })}</SelectItem>
+            <SelectItem key="cancelled">{t('booking.host.statuses.cancelled', { defaultValue: 'Cancelled' })}</SelectItem>
           </Select>
         </div>
       </div>
@@ -256,7 +258,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               key="all"
               title={
                 <div className="flex items-center gap-2">
-                  <span>All Bookings</span>
+                  <span>{t('booking.host.tabs.all', { defaultValue: 'All Bookings' })}</span>
                   <Badge content={bookingCounts.all} color="default" size="sm" />
                 </div>
               }
@@ -265,7 +267,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               key="pending"
               title={
                 <div className="flex items-center gap-2">
-                  <span>Pending</span>
+                  <span>{t('booking.host.tabs.pending', { defaultValue: 'Pending' })}</span>
                   <Badge content={bookingCounts.pending} color="warning" size="sm" />
                 </div>
               }
@@ -274,7 +276,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               key="approved"
               title={
                 <div className="flex items-center gap-2">
-                  <span>Approved</span>
+                  <span>{t('booking.host.tabs.approved', { defaultValue: 'Approved' })}</span>
                   <Badge content={bookingCounts.approved} color="success" size="sm" />
                 </div>
               }
@@ -283,7 +285,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               key="confirmed"
               title={
                 <div className="flex items-center gap-2">
-                  <span>Confirmed</span>
+                  <span>{t('booking.host.tabs.confirmed', { defaultValue: 'Confirmed' })}</span>
                   <Badge content={bookingCounts.confirmed} color="primary" size="sm" />
                 </div>
               }
@@ -292,7 +294,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               key="completed"
               title={
                 <div className="flex items-center gap-2">
-                  <span>Completed</span>
+                  <span>{t('booking.host.tabs.completed', { defaultValue: 'Completed' })}</span>
                   <Badge content={bookingCounts.completed} color="success" size="sm" />
                 </div>
               }
@@ -307,11 +309,11 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
           <Card>
             <CardBody className="text-center py-12">
               <Calendar className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('booking.host.noBookings.title', { defaultValue: 'No bookings found' })}</h3>
               <p className="text-gray-600">
                 {searchTerm || statusFilter !== 'all' 
-                  ? 'Try adjusting your search or filter criteria'
-                  : 'You don\'t have any bookings yet'}
+                  ? t('booking.host.noBookings.tryAdjusting', { defaultValue: 'Try adjusting your search or filter criteria' })
+                  : t('booking.host.noBookings.noneYet', { defaultValue: 'You don\'t have any bookings yet' })}
               </p>
             </CardBody>
           </Card>
@@ -341,19 +343,19 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                   {/* Booking Details */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
                     <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-in</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('booking.host.labels.checkIn', { defaultValue: 'Check-in' })}</p>
                       <p className="font-semibold">{new Date(booking.check_in).toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Check-out</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('booking.host.labels.checkOut', { defaultValue: 'Check-out' })}</p>
                       <p className="font-semibold">{new Date(booking.check_out).toLocaleDateString()}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Guests</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('booking.host.labels.guests', { defaultValue: 'Guests' })}</p>
                       <p className="font-semibold">{booking.guest_count}</p>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total</p>
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('booking.host.labels.total', { defaultValue: 'Total' })}</p>
                       <p className="font-semibold text-green-600">${booking.total_amount}</p>
                     </div>
                   </div>
@@ -376,7 +378,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         startContent={<Eye className="w-4 h-4" />}
                         onPress={() => handleViewDetails(booking)}
                       >
-                        Details
+                        {t('booking.host.actions.details', { defaultValue: 'Details' })}
                       </Button>
 
                       {booking.status === 'pending' && (
@@ -392,7 +394,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                             }}
                             isLoading={isUpdatingBooking}
                           >
-                            Approve
+                            {t('booking.host.actions.approve', { defaultValue: 'Approve' })}
                           </Button>
                           <Button
                             size="sm"
@@ -405,7 +407,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                             }}
                             isLoading={isUpdatingBooking}
                           >
-                            Decline
+                            {t('booking.host.actions.decline', { defaultValue: 'Decline' })}
                           </Button>
                         </>
                       )}
@@ -419,7 +421,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                           // Open contact modal (you can implement this)
                         }}
                       >
-                        Contact
+                        {t('booking.host.actions.contact', { defaultValue: 'Contact' })}
                       </Button>
                     </div>
                   </div>
@@ -436,14 +438,14 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
           {(onClose) => (
             <>
               <ModalHeader>
-                <h2 className="text-xl font-bold">Booking Details</h2>
+                <h2 className="text-xl font-bold">{t('booking.host.modals.details.title', { defaultValue: 'Booking Details' })}</h2>
               </ModalHeader>
               <ModalBody>
                 {selectedBooking && (
                   <div className="space-y-6">
                     {/* Guest Information */}
                     <div>
-                      <h3 className="font-semibold text-lg mb-3">Guest Information</h3>
+                      <h3 className="font-semibold text-lg mb-3">{t('booking.host.modals.details.guestInfo', { defaultValue: 'Guest Information' })}</h3>
                       <div className="flex items-center gap-4 mb-4">
                         <Avatar
                           src={selectedBooking.guest_avatar}
@@ -464,30 +466,30 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
 
                     {/* Booking Information */}
                     <div>
-                      <h3 className="font-semibold text-lg mb-3">Booking Information</h3>
+                      <h3 className="font-semibold text-lg mb-3">{t('booking.host.modals.details.bookingInfo', { defaultValue: 'Booking Information' })}</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Property</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.property', { defaultValue: 'Property' })}</p>
                           <p className="font-semibold">{selectedBooking.property_title}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Booking ID</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.bookingId', { defaultValue: 'Booking ID' })}</p>
                           <p className="font-mono text-sm">{selectedBooking.id}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Check-in</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.checkIn', { defaultValue: 'Check-in' })}</p>
                           <p className="font-semibold">{new Date(selectedBooking.check_in).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Check-out</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.checkOut', { defaultValue: 'Check-out' })}</p>
                           <p className="font-semibold">{new Date(selectedBooking.check_out).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Guests</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.guests', { defaultValue: 'Guests' })}</p>
                           <p className="font-semibold">{selectedBooking.guest_count}</p>
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Total Amount</p>
+                          <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.totalAmount', { defaultValue: 'Total Amount' })}</p>
                           <p className="font-semibold text-green-600">${selectedBooking.total_amount}</p>
                         </div>
                       </div>
@@ -497,7 +499,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                       <>
                         <Divider />
                         <div>
-                          <h3 className="font-semibold text-lg mb-3">Special Requests</h3>
+                          <h3 className="font-semibold text-lg mb-3">{t('booking.host.modals.details.specialRequests', { defaultValue: 'Special Requests' })}</h3>
                           <p className="text-gray-700 bg-gray-50 p-3 rounded-lg">
                             {selectedBooking.special_requests}
                           </p>
@@ -509,7 +511,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose}>
-                  Close
+                  {t('booking.host.modals.details.close', { defaultValue: 'Close' })}
                 </Button>
                 {selectedBooking?.status === 'pending' && (
                   <>
@@ -522,7 +524,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                       }}
                       isLoading={isUpdatingBooking}
                     >
-                      Approve Booking
+                      {t('booking.host.modals.details.approveBooking', { defaultValue: 'Approve Booking' })}
                     </Button>
                     <Button
                       color="danger"
@@ -532,7 +534,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         onDeclineOpen()
                       }}
                     >
-                      Decline Booking
+                      {t('booking.host.modals.details.declineBooking', { defaultValue: 'Decline Booking' })}
                     </Button>
                   </>
                 )}
@@ -548,14 +550,14 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
           {(onClose) => (
             <>
               <ModalHeader>
-                <h2 className="text-xl font-bold">Approve Booking</h2>
+                <h2 className="text-xl font-bold">{t('booking.host.modals.approve.title', { defaultValue: 'Approve Booking' })}</h2>
               </ModalHeader>
               <ModalBody>
-                <p>Are you sure you want to approve this booking? The guest will be notified and can proceed with payment.</p>
+                <p>{t('booking.host.modals.approve.message', { defaultValue: 'Are you sure you want to approve this booking? The guest will be notified and can proceed with payment.' })}</p>
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose}>
-                  Cancel
+                  {t('booking.host.modals.approve.cancel', { defaultValue: 'Cancel' })}
                 </Button>
                 <Button
                   color="success"
@@ -566,7 +568,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                   }}
                   isLoading={isUpdatingBooking}
                 >
-                  Approve Booking
+                  {t('booking.host.modals.approve.confirm', { defaultValue: 'Approve Booking' })}
                 </Button>
               </ModalFooter>
             </>
@@ -580,19 +582,19 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
           {(onClose) => (
             <>
               <ModalHeader>
-                <h2 className="text-xl font-bold">Decline Booking</h2>
+                <h2 className="text-xl font-bold">{t('booking.host.modals.decline.title', { defaultValue: 'Decline Booking' })}</h2>
               </ModalHeader>
               <ModalBody>
-                <p className="mb-4">Are you sure you want to decline this booking? The guest will be notified.</p>
+                <p className="mb-4">{t('booking.host.modals.decline.message', { defaultValue: 'Are you sure you want to decline this booking? The guest will be notified.' })}</p>
                 <Input
-                  label="Reason (Optional)"
-                  placeholder="Enter reason for declining..."
+                  label={t('booking.host.modals.decline.reasonLabel', { defaultValue: 'Reason (Optional)' })}
+                  placeholder={t('booking.host.modals.decline.reasonPlaceholder', { defaultValue: 'Enter reason for declining...' })}
                   className="w-full"
                 />
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={onClose}>
-                  Cancel
+                  {t('booking.host.modals.decline.cancel', { defaultValue: 'Cancel' })}
                 </Button>
                 <Button
                   color="danger"
@@ -603,7 +605,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                   }}
                   isLoading={isUpdatingBooking}
                 >
-                  Decline Booking
+                  {t('booking.host.modals.decline.confirm', { defaultValue: 'Decline Booking' })}
                 </Button>
               </ModalFooter>
             </>

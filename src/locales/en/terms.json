@@ -37,7 +37,10 @@
         "description": "If you have any questions about these Terms and Conditions, please contact us at:",
         "email": "Email",
         "address": "Address",
-        "phone": "Phone"
+        "phone": "Phone",
+        "emailAddress": "legal@nomadlux.com",
+        "streetAddress": "123 Luxury Street, Suite 100",
+        "phoneNumber": "+1 (555) 123-4567"
       }
     }
   }

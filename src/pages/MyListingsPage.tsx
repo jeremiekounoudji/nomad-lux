@@ -114,17 +114,17 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         const result = await updateListing(propertyToEdit.id, updates)
         
         if (result.success) {
-          toast.success('Property updated successfully! 🎉')
+          toast.success(t('property.listings.messages.updateSuccess'))
           onEditClose()
           setPropertyToEdit(null)
           // Data will be refreshed automatically by the updateListing function
         } else {
-          toast.error(result.error || 'Failed to update property')
+          toast.error(result.error || t('property.listings.messages.updateFailed'))
         }
       } catch (error) {
         console.error('❌ Error updating property:', error)
         const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-        toast.error(`Update failed: ${errorMessage}`)
+        toast.error(t('property.listings.messages.updateFailedWithError', { error: errorMessage }))
       } finally {
         setIsEditSubmitting(false)
       }

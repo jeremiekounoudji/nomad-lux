@@ -8,7 +8,7 @@ import { useTranslation } from '../lib/stores/translationStore';
 import { CreatePropertyPageProps } from '../interfaces'
 
 const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange }) => {
-  const { t } = useTranslation(['property'])
+  const { t } = useTranslation(['property', 'common'])
   return (
     <>
       <div className="col-span-1 md:col-span-2 lg:col-span-3 min-h-screen">

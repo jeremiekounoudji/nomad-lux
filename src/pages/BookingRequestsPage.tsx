@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Tabs, Tab, Pagination } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, User, Home, Eye, DollarSign, Check, X, ClipboardList } from 'lucide-react'
+import { Button, useDisclosure, Tabs, Tab, Pagination } from '@heroui/react'
+import { ClipboardList } from 'lucide-react'
 
-import { PageBanner } from '../components/shared'
+import { PageBanner, BookingRequestCard, BookingRequestDetailsModal, DeclineBookingModal, ConfirmApprovalModal } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { BookingRequestsPageProps, BookingRequest, BookingStatus, PaginationParams } from '../interfaces'
 import { useBookingManagement } from '../hooks/useBookingManagement'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
-// removed unused LoadingSkeleton
 import toast from 'react-hot-toast'
 import { useTranslation } from '../lib/stores/translationStore'
 
@@ -130,7 +129,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
         })
         .catch(error => {
           console.error('❌ Error loading booking counts:', error)
-          toast.error('Failed to load booking counts')
+          toast.error(t('booking.bookingRequests.messages.failedToLoadCounts'))
           setRequestCounts({
             pending: 0,
             confirmed: 0,
@@ -186,7 +185,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
     try {
       console.log('🔄 Approving booking:', requestId)
       await approveBooking(requestId)
-      toast.success('Booking approved successfully!')
+      toast.success(t('booking.bookingRequests.messages.approvedSuccessfully'))
       
       // Reload current page data
       if (user?.id) {
@@ -195,7 +194,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
       }
     } catch (error) {
       console.error('❌ Error approving booking:', error)
-      toast.error('Failed to approve booking')
+      toast.error(t('booking.bookingRequests.messages.failedToApprove'))
     } finally {
       setUpdatingBookingId(null)
       setUpdatingAction(null)
@@ -204,7 +203,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
 
   const handleDecline = async (requestId: string) => {
     if (!rejectReason.trim()) {
-      toast.error('Please provide a reason for rejecting the booking')
+      toast.error(t('booking.bookingRequests.messages.provideRejectReason'))
       return
     }
 
@@ -213,7 +212,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
     try {
       console.log('🔄 Declining booking:', requestId)
       await declineBooking(requestId, rejectReason)
-      toast.success('Booking declined')
+      toast.success(t('booking.bookingRequests.messages.declinedSuccessfully'))
       
       // Reload current page data
       if (user?.id) {
@@ -224,7 +223,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
       setRejectReason('') // Reset the reason
     } catch (error) {
       console.error('❌ Error declining booking:', error)
-      toast.error('Failed to decline booking')
+      toast.error(t('booking.bookingRequests.messages.failedToDecline'))
     } finally {
       setUpdatingBookingId(null)
       setUpdatingAction(null)
@@ -319,174 +318,27 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
           {/* Requests Grid */}
           <div className="col-span-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
-                {requests.map((request) => (
-                  <Card key={request.id} className="overflow-hidden w-full min-w-0">
-                    <CardBody className="p-3 sm:p-4">
-                      {/* Property Image */}
-                      <div className="relative w-full h-32 sm:h-40 rounded-lg overflow-hidden mb-3">
-                        <img
-                          src={request.property_images[0]}
-                          alt={request.property_title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                        <div className="absolute bottom-2 left-2 right-2">
-                          <h4 className="text-white text-sm font-medium line-clamp-1">
-                            {request.property_title}
-                          </h4>
-                        </div>
-                      </div>
-
-                      {/* Guest Info */}
-                      <div className="flex items-center gap-2 sm:gap-3 mb-3">
-                        <Avatar
-                          src={request.guest_avatar_url}
-                          name={request.guest_display_name}
-                          size="sm"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900 text-sm truncate">
-                            {request.guest_display_name}
-                          </p>
-                          <div className="flex items-center gap-1 text-xs text-gray-600">
-                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                          <span>{request.guest_rating} ({t('booking.reviews.count', { count: request.total_guest_reviews })})</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Booking Details */}
-                      <div className="space-y-2 text-xs sm:text-sm mb-3">
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span className="truncate">
-                            {new Date(request.check_in_date).toLocaleDateString()} - {new Date(request.check_out_date).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span>{t('booking.labels.guests')}: {request.guest_count}</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-gray-600">
-                            <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
-                            <span className="font-medium">${request.total_amount}</span>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 text-gray-600">
-                          <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                          <span className="truncate">
-                            {request.check_in_time} - {request.check_out_time}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Contact Info - Mobile Optimized */}
-                      <div className="flex flex-col sm:flex-row gap-2 mb-3">
-                        <Button
-                          size="sm"
-                          variant="light"
-                          color="primary"
-                          startContent={<Mail className="w-3 h-3 sm:w-4 sm:h-4" />}
-                          onClick={() => window.location.href = `mailto:${request.guest_email}`}
-                          className="text-xs sm:text-sm justify-start min-w-0"
-                        >
-                          <span className="truncate">{request.guest_email}</span>
-                        </Button>
-                        {request.guest_phone && (
-                          <Button
-                            size="sm"
-                            variant="light"
-                            color="primary"
-                            startContent={<Phone className="w-3 h-3 sm:w-4 sm:h-4" />}
-                            onClick={() => window.location.href = `tel:${request.guest_phone}`}
-                            className="text-xs sm:text-sm justify-start"
-                          >
-                            {request.guest_phone}
-                          </Button>
-                        )}
-                      </div>
-
-
-
-                      {/* Status Badge */}
-                      <div className="mb-3">
-                        <Chip
-                          color={getStatusColor(request.status as BookingStatus | 'no_shows')}
-                          variant="flat"
-                          size="sm"
-                          className="text-xs"
-                        >
-                          {t(`booking.status.${mapStatusKey(request.status as BookingStatus)}`)}
-                        </Chip>
-                      </div>
-
-                      {/* Actions */}
-                      {request.status === 'pending' && (
-                        <div className="space-y-2">
-                          {/* Primary Actions */}
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              color="danger"
-                              variant="flat"
-                              startContent={<X className="w-4 h-4" />}
-                              onPress={() => {
-                                setSelectedRequest(request)
-                                onDeclineModalOpen()
-                              }}
-                              className="flex-1 font-medium"
-                              isLoading={updatingBookingId === request.id && updatingAction === 'decline'}
-                              disabled={updatingBookingId === request.id}
-                            >
-                              {t('booking.actions.decline')}
-                            </Button>
-                            <Button
-                              size="sm"
-                              color="success"
-                              startContent={<Check className="w-4 h-4" />}
-                              onPress={() => {
-                                setSelectedRequest(request)
-                                onConfirmModalOpen()
-                              }}
-                              className="flex-1 font-medium"
-                              isLoading={updatingBookingId === request.id && updatingAction === 'approve'}
-                              disabled={updatingBookingId === request.id}
-                            >
-                              {t('booking.actions.approve')}
-                            </Button>
-                          </div>
-                          {/* Secondary Action */}
-                          <Button
-                            size="sm"
-                            variant="bordered"
-                            color="default"
-                            startContent={<Eye className="w-4 h-4" />}
-                            onPress={() => handleRequestClick(request)}
-                            disabled={updatingBookingId === request.id}
-                            className="w-full font-medium"
-                          >
-                            {t('booking.actions.viewDetails')}
-                          </Button>
-                        </div>
-                      )}
-
-                      {/* View Details for non-pending requests */}
-                      {request.status !== 'pending' && (
-                        <Button
-                          size="sm"
-                          variant="bordered"
-                          color="default"
-                          startContent={<Eye className="w-4 h-4" />}
-                          onPress={() => handleRequestClick(request)}
-                          className="w-full font-medium"
-                        >
-                          {t('booking.actions.viewDetails')}
-                        </Button>
-                      )}
-                    </CardBody>
-                  </Card>
-                ))}
+              {requests.map((request) => (
+                <BookingRequestCard
+                  key={request.id}
+                  request={request}
+                  onRequestClick={handleRequestClick}
+                  onApprove={handleApprove}
+                  onDecline={handleDecline}
+                  onConfirmModalOpen={() => {
+                    setSelectedRequest(request);
+                    onConfirmModalOpen();
+                  }}
+                  onDeclineModalOpen={() => {
+                    setSelectedRequest(request);
+                    onDeclineModalOpen();
+                  }}
+                  updatingBookingId={updatingBookingId}
+                  updatingAction={updatingAction}
+                  getStatusColor={getStatusColor}
+                  mapStatusKey={mapStatusKey}
+                />
+              ))}
             </div>
           </div>
           
@@ -520,310 +372,34 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
       )}
 
       {/* Request Details Modal */}
-      <Modal 
-        isOpen={isOpen} 
+      <BookingRequestDetailsModal
+        isOpen={isOpen}
         onClose={onClose}
-        size="2xl"
-        scrollBehavior="inside"
-        classNames={{
-          base: "mx-2 my-2 sm:mx-6 sm:my-6",
-          wrapper: "items-end sm:items-center"
-        }}
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 p-4 sm:p-6 pb-2 sm:pb-4">
-                <h2 className="text-lg sm:text-xl font-bold">{t('booking.bookingRequests.details.title')}</h2>
-                <p className="text-xs sm:text-sm text-gray-600">{t('booking.bookingRequests.details.subtitle')}</p>
-              </ModalHeader>
-              <ModalBody className="px-4 sm:px-6 py-2 sm:py-4">
-                {selectedRequest && (
-                  <div className="space-y-4 sm:space-y-8">
-                    {/* Property Details */}
-                    <div>
-                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.propertyInformation')}</h4>
-                      <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
-                        <img
-                          src={selectedRequest.property_images[0]}
-                          alt={selectedRequest.property_title}
-                          className="w-24 h-24 object-cover rounded-lg"
-                        />
-                        <div>
-                          <h3 className="font-semibold">{selectedRequest.property_title}</h3>
-                          <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{t('booking.bookingRequests.details.locationPlaceholder')}</span>
-                          </div>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Home className="w-4 h-4 text-gray-600" />
-                            <span className="text-sm text-gray-600">{t('booking.bookingRequests.details.propertyTypePlaceholder')}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Guest Information */}
-                    <div>
-                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.guestInformation')}</h4>
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Avatar
-                            src={selectedRequest.guest_avatar_url}
-                            name={selectedRequest.guest_display_name}
-                            size="lg"
-                          />
-                          <div>
-                            <p className="font-medium text-lg">
-                              {selectedRequest.guest_display_name}
-                            </p>
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                              <span>
-                                {selectedRequest.guest_rating} ({t('booking.reviews.count', { count: selectedRequest.total_guest_reviews })})
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <Button
-                            size="sm"
-                            variant="light"
-                            color="primary"
-                            startContent={<Mail className="w-4 h-4" />}
-                            className="justify-start"
-                          >
-                            {selectedRequest.guest_email}
-                          </Button>
-                          {selectedRequest.guest_phone && (
-                            <Button
-                              size="sm"
-                              variant="light"
-                              color="primary"
-                              startContent={<Phone className="w-4 h-4" />}
-                              className="justify-start"
-                            >
-                              {selectedRequest.guest_phone}
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Booking Details */}
-                    <div>
-                      <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.bookingDetails')}</h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-5 h-5 text-gray-600" />
-                              <div>
-                                <p className="text-sm font-medium">{t('booking.labels.checkIn')}</p>
-                                <p className="text-gray-600">
-                                  {new Date(selectedRequest.check_in_date).toLocaleDateString()}
-                                  <span className="ml-2">{selectedRequest.check_in_time}</span>
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-5 h-5 text-gray-600" />
-                              <div>
-                                <p className="text-sm font-medium">{t('booking.labels.checkOut')}</p>
-                                <p className="text-gray-600">
-                                  {new Date(selectedRequest.check_out_date).toLocaleDateString()}
-                                  <span className="ml-2">{selectedRequest.check_out_time}</span>
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <User className="w-5 h-5 text-gray-600" />
-                              <div>
-                                <p className="text-sm font-medium">{t('booking.labels.guests')}</p>
-                                <p className="text-gray-600">{selectedRequest.guest_count} {t('booking.labels.guests')}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <DollarSign className="w-5 h-5 text-gray-600" />
-                              <div>
-                                <p className="text-sm font-medium">{t('booking.bookingRequests.details.totalAmount')}</p>
-                                <p className="text-gray-600">${selectedRequest.total_amount}</p>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <CreditCard className="w-5 h-5 text-gray-600" />
-                              <div>
-                                <p className="text-sm font-medium">{t('booking.bookingRequests.details.paymentStatus')}</p>
-                                <p className="text-gray-600">{t('booking.payment.pending')}</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Special Requests */}
-                    {selectedRequest.special_requests && (
-                      <div>
-                        <h4 className="font-semibold mb-3">{t('booking.labels.specialRequests')}</h4>
-                        <div className="p-3 sm:p-4 bg-gray-50 rounded-lg">
-                          <p className="text-gray-600 break-words whitespace-pre-wrap text-sm sm:text-base leading-relaxed">
-                            {selectedRequest.special_requests}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Status Timeline */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
-                        {t('booking.bookingRequests.details.timeline')}
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex gap-3">
-                          <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <p className="font-medium text-sm">{t('booking.bookingRequests.details.requestCreated')}</p>
-                            <p className="text-sm text-gray-600">
-                              {new Date(selectedRequest.created_at).toLocaleString()}
-                            </p>
-                          </div>
-                        </div>
-                        {/* Add more timeline events based on booking status changes */}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </ModalBody>
-              <ModalFooter className="p-4 sm:p-6 pt-2 sm:pt-4">
-                <Button color="default" variant="light" onPress={onClose}>
-                  {t('common.buttons.close')}
-                </Button>
-                {selectedRequest && selectedRequest.status === 'pending' && (
-                  <div className="flex gap-2">
-                    <Button
-                      color="danger"
-                      variant="flat"
-                      startContent={<X className="w-4 h-4" />}
-                      onPress={() => {
-                        onClose()
-                        onDeclineModalOpen()
-                      }}
-                      isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'decline'}
-                      disabled={updatingBookingId === selectedRequest.id}
-                    >
-                      {t('booking.actions.decline')}
-                    </Button>
-                    <Button
-                      color="success"
-                      startContent={<Check className="w-4 h-4" />}
-                      onPress={() => {
-                        onClose()
-                        onConfirmModalOpen()
-                      }}
-                      isLoading={updatingBookingId === selectedRequest.id && updatingAction === 'approve'}
-                      disabled={updatingBookingId === selectedRequest.id}
-                    >
-                      {t('booking.actions.approve')}
-                    </Button>
-                  </div>
-                )}
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        selectedRequest={selectedRequest}
+        updatingBookingId={updatingBookingId}
+        updatingAction={updatingAction}
+        onDeclineModalOpen={onDeclineModalOpen}
+        onConfirmModalOpen={onConfirmModalOpen}
+      />
 
       {/* Decline Booking Modal */}
-      <Modal 
-        isOpen={isDeclineModalOpen} 
-        onClose={() => {
-          onDeclineModalClose()
-          setRejectReason('')
-        }}
-        size="md"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>
-                <h2 className="text-xl font-bold">{t('booking.bookingRequests.decline.title')}</h2>
-              </ModalHeader>
-              <ModalBody>
-                <div className="space-y-4">
-                  <p className="text-gray-600">{t('booking.bookingRequests.decline.description')}</p>
-                  <textarea
-                    value={rejectReason}
-                    onChange={(e) => setRejectReason(e.target.value)}
-                    placeholder={t('booking.bookingRequests.decline.placeholder')}
-                    className="w-full h-32 p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    maxLength={500}
-                  />
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  variant="light"
-                  onPress={() => {
-                    onClose()
-                    setRejectReason('')
-                  }}
-                >
-                  {t('common.buttons.cancel')}
-                </Button>
-                <Button
-                  color="danger"
-                  onPress={() => selectedRequest && handleDecline(selectedRequest.id)}
-                  isLoading={updatingBookingId === selectedRequest?.id}
-                  disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
-                >
-                  {t('booking.bookingRequests.decline.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <DeclineBookingModal
+        isOpen={isDeclineModalOpen}
+        onClose={onDeclineModalClose}
+        rejectReason={rejectReason}
+        setRejectReason={setRejectReason}
+        onDecline={() => selectedRequest && handleDecline(selectedRequest.id)}
+        isLoading={updatingBookingId === selectedRequest?.id}
+        disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
+      />
 
       {/* Confirm Approval Modal */}
-      <Modal 
-        isOpen={isConfirmModalOpen} 
+      <ConfirmApprovalModal
+        isOpen={isConfirmModalOpen}
         onClose={onConfirmModalClose}
-        size="sm"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>
-                <h2 className="text-xl font-bold">{t('booking.bookingRequests.approve.title')}</h2>
-              </ModalHeader>
-              <ModalBody>
-                <p className="text-gray-600">{t('booking.bookingRequests.approve.description')}</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button
-                  variant="light"
-                  onPress={onClose}
-                >
-                  {t('common.buttons.cancel')}
-                </Button>
-                <Button
-                  color="success"
-                  onPress={handleApproveConfirm}
-                  isLoading={updatingBookingId === selectedRequest?.id}
-                >
-                  {t('booking.bookingRequests.approve.confirm')}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+        onConfirm={handleApproveConfirm}
+        isLoading={updatingBookingId === selectedRequest?.id}
+      />
     </>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useRef } from 'react';
 import { Button, Card, Chip } from '@heroui/react';
+import { useTranslation } from '../../../../lib/stores/translationStore';
 import type { PropertySubmissionData } from '../../../../interfaces';
 import { useAdminSettingsStore } from '../../../../lib/stores/adminSettingsStore';
 import { useProperty } from '../../../../hooks/useProperty';
@@ -14,6 +15,7 @@ interface MediaUploadStepProps {
 const MIN_IMAGES = 4;
 
 const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData }) => {
+  const { t } = useTranslation(['property', 'common']);
   // Track if video was intentionally removed to prevent old video from reappearing
   const [videoRemovedByUser, setVideoRemovedByUser] = useState(false);
   
@@ -126,16 +128,15 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Media Upload</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t('property.mediaUpload.title')}</h2>
         <p className="text-gray-600 mb-6">
-          Upload at least {MIN_IMAGES} images and 1 video of your property. Each file should not exceed{' '}
-          {MAX_FILE_SIZE / (1024 * 1024)}MB.
+          {t('property.mediaUpload.description', { minImages: MIN_IMAGES, maxSize: (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0) })}
         </p>
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-4">Property Images</label>
+          <label className="block text-sm font-medium mb-4">{t('property.mediaUpload.propertyImages')}</label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
             {formData.images.map((image: File | string, index: number) => {
               const fileName = typeof image === 'string' ? image.split('/').pop() || 'Unknown' : image.name;
@@ -178,12 +179,12 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Images</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('property.mediaUpload.uploadImages')}</h3>
               <p className="text-sm text-gray-500 text-center">
-                Click to browse or drag and drop your images here
+                {t('property.mediaUpload.uploadImagesDescription')}
               </p>
               <p className="text-xs text-gray-400 mt-2">
-                {allowedImageFormats.map(f => f.toUpperCase()).join(', ')} up to {MAX_FILE_SIZE / (1024 * 1024)}MB
+                {t('property.mediaUpload.imageFormats', { formats: allowedImageFormats.map(f => f.toUpperCase()).join(', '), maxSize: (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0) })}
               </p>
               <input
                 type="file"
@@ -197,7 +198,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
           
           <div className="flex items-center justify-between mt-3">
             <p className="text-sm text-gray-500">
-              {formData.images.length} of {MIN_IMAGES} images uploaded
+              {t('property.mediaUpload.imagesUploaded', { count: formData.images.length, min: MIN_IMAGES })}
             </p>
             {formData.images.length >= MIN_IMAGES && (
               <Chip 
@@ -210,14 +211,14 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                   </svg>
                 }
               >
-                Minimum requirement met
+                {t('property.mediaUpload.minimumRequirementMet')}
               </Chip>
             )}
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-4">Property Video</label>
+          <label className="block text-sm font-medium mb-4">{t('property.mediaUpload.propertyVideo')}</label>
           {shouldShowVideoUploadCard() ? (
             <Card className="border-2 border-dashed border-gray-300 hover:border-secondary-400 transition-colors duration-200">
               <label className="w-full flex flex-col items-center justify-center px-6 py-8 cursor-pointer group">

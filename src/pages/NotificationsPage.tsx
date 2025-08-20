@@ -261,7 +261,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
   const handleAcceptBooking = async (bookingId: string, notificationId: string) => {
     try {
       setProcessingBooking(bookingId)
-      await approveBooking(bookingId, 'Booking request approved via notification')
+      await approveBooking(bookingId, t('notifications.messages.bookingApprovedViaNotification'))
       await markNotificationAsRead(notificationId)
       // Optionally show success message
       console.log('✅ Booking approved successfully')
@@ -276,7 +276,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
   const handleDeclineBooking = async (bookingId: string, notificationId: string) => {
     try {
       setProcessingBooking(bookingId)
-      await declineBooking(bookingId, 'Booking request declined via notification')
+      await declineBooking(bookingId, t('notifications.messages.bookingDeclinedViaNotification'))
       await markNotificationAsRead(notificationId)
       // Optionally show success message
       console.log('✅ Booking declined successfully')
@@ -292,7 +292,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
     return (
       <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
         <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2">Error Loading Notifications</h2>
+          <h2 className="text-lg font-semibold mb-2">{t('notifications.errors.loadingError')}</h2>
           <p>{error}</p>
           <Button 
             color="primary" 
@@ -300,7 +300,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
             className="mt-4"
             onClick={() => fetchNotifications()}
           >
-            Try Again
+            {t('notifications.actions.tryAgain')}
           </Button>
         </div>
       </div>

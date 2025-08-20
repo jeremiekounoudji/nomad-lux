@@ -15,6 +15,7 @@ import { useSearchFeed } from '../../../hooks/useSearchFeed'
 import { useAdminSettings } from '../../../hooks/useAdminSettings'
 import { PropertyType } from '../../../interfaces/Settings'
 import { usePropertyTypes, useAmenities } from '../../../hooks/useTranslatedContent'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 // Add onSearch prop to the component
 interface SearchFiltersProps {
@@ -22,6 +23,8 @@ interface SearchFiltersProps {
 }
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
+  const { t } = useTranslation(['search', 'common']);
+  
   // Use our search feed hook
   const { 
     filters, 
@@ -194,16 +197,16 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       {/* Location */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
-          label="City"
-          placeholder="Enter city, neighborhood, or address"
+          label={t('search.filters.city', { defaultValue: 'City' })}
+          placeholder={t('search.filters.cityPlaceholder', { defaultValue: 'Enter city, neighborhood, or address' })}
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           startContent={<MapPin className="w-4 h-4 text-gray-400" />}
           className="w-full"
         />
         <Input
-          label="Country"
-          placeholder="Enter country"
+          label={t('search.filters.country', { defaultValue: 'Country' })}
+          placeholder={t('search.filters.countryPlaceholder', { defaultValue: 'Enter country' })}
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           startContent={<MapPin className="w-4 h-4 text-gray-400" />}
@@ -217,10 +220,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div className="space-y-4">
         <h3 className="font-semibold flex items-center gap-2">
           <DollarSign className="w-5 h-5" />
-          Price Range (per night)
+          {t('search.filters.priceRange', { defaultValue: 'Price Range (per night)' })}
         </h3>
         <Slider
-          label="Price Range"
+          label={t('search.filters.priceRange', { defaultValue: 'Price Range' })}
           step={10}
           minValue={0}
           maxValue={1000}
@@ -247,7 +250,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div>
         <h3 className="font-semibold flex items-center gap-2 mb-3">
           <Home className="w-5 h-5" />
-          Property Type
+          {t('search.filters.propertyType', { defaultValue: 'Property Type' })}
         </h3>
         <CheckboxGroup
           value={propertyTypes}
@@ -279,13 +282,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div>
         <h3 className="font-semibold flex items-center gap-2 mb-3">
           <Users className="w-5 h-5" />
-          Rooms & Guests
+          {t('search.filters.roomsAndGuests', { defaultValue: 'Rooms & Guests' })}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Input
             type="number"
-            label="Guests"
-            placeholder="Number of guests"
+            label={t('search.filters.guests', { defaultValue: 'Guests' })}
+            placeholder={t('search.filters.guestsPlaceholder', { defaultValue: 'Number of guests' })}
             value={guests.toString()}
             onChange={(e) => {
               const value = parseInt(e.target.value) || 1
@@ -301,8 +304,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
           <Input
             type="number"
-            label="Bedrooms"
-            placeholder="0 = Any"
+            label={t('search.filters.bedrooms', { defaultValue: 'Bedrooms' })}
+            placeholder={t('search.filters.bedroomsPlaceholder', { defaultValue: '0 = Any' })}
             value={bedrooms > 0 ? bedrooms.toString() : ''}
             onChange={(e) => {
               const value = parseInt(e.target.value) || 0
@@ -318,8 +321,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
           <Input
             type="number"
-            label="Bathrooms"
-            placeholder="0 = Any"
+            label={t('search.filters.bathrooms', { defaultValue: 'Bathrooms' })}
+            placeholder={t('search.filters.bathroomsPlaceholder', { defaultValue: '0 = Any' })}
             value={bathrooms > 0 ? bathrooms.toString() : ''}
             onChange={(e) => {
               const value = parseInt(e.target.value) || 0
@@ -341,7 +344,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div>
         <h3 className="font-semibold flex items-center gap-2 mb-3">
           <Settings className="w-5 h-5" />
-          Amenities
+          {t('search.filters.amenities', { defaultValue: 'Amenities' })}
         </h3>
         <CheckboxGroup
           value={amenities}
@@ -373,11 +376,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div className="flex flex-col items-start">
         <h3 className="font-semibold flex items-center gap-2 mb-3">
           <Star className="w-5 h-5" />
-          Minimum Rating
+          {t('search.filters.minimumRating', { defaultValue: 'Minimum Rating' })}
         </h3>
         <Select
-          label="Minimum Rating"
-          placeholder="Select minimum rating"
+          label={t('search.filters.minimumRating', { defaultValue: 'Minimum Rating' })}
+          placeholder={t('search.filters.selectMinimumRating', { defaultValue: 'Select minimum rating' })}
           selectedKeys={rating > 0 ? new Set([rating.toString()]) : new Set()}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string
@@ -395,8 +398,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             base: "min-w-[200px]"
           }}
         >
-          <SelectItem key="0" textValue="Any rating">
-            Any rating
+          <SelectItem key="0" textValue={t('search.filters.anyRating', { defaultValue: 'Any rating' })}>
+            {t('search.filters.anyRating', { defaultValue: 'Any rating' })}
           </SelectItem>
           <SelectItem key="3" textValue="3+ stars">
             <div className="flex items-center gap-2">
@@ -438,11 +441,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
       <div className="flex flex-col items-start">
         <h3 className="font-semibold flex items-center gap-2 mb-3">
           <Filter className="w-5 h-5" />
-          Sort by
+          {t('search.filters.sortBy', { defaultValue: 'Sort by' })}
         </h3>
         <Select
-          label="Sort by"
-          placeholder="Choose sort order"
+          label={t('search.filters.sortBy', { defaultValue: 'Sort by' })}
+          placeholder={t('search.filters.chooseSortOrder', { defaultValue: 'Choose sort order' })}
           selectedKeys={new Set([localSortBy])}
           onSelectionChange={(keys) => {
             const value = Array.from(keys)[0] as string
@@ -456,20 +459,20 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             base: "min-w-[200px]"
           }}
         >
-          <SelectItem key="relevance" textValue="Relevance (Default)">
-            Relevance (Default)
+          <SelectItem key="relevance" textValue={t('search.filters.sortOptions.relevance', { defaultValue: 'Relevance (Default)' })}>
+            {t('search.filters.sortOptions.relevance', { defaultValue: 'Relevance (Default)' })}
           </SelectItem>
-          <SelectItem key="price_asc" textValue="Price: Low to High">
-            Price: Low to High
+          <SelectItem key="price_asc" textValue={t('search.filters.sortOptions.priceAsc', { defaultValue: 'Price: Low to High' })}>
+            {t('search.filters.sortOptions.priceAsc', { defaultValue: 'Price: Low to High' })}
           </SelectItem>
-          <SelectItem key="price_desc" textValue="Price: High to Low">
-            Price: High to Low
+          <SelectItem key="price_desc" textValue={t('search.filters.sortOptions.priceDesc', { defaultValue: 'Price: High to Low' })}>
+            {t('search.filters.sortOptions.priceDesc', { defaultValue: 'Price: High to Low' })}
           </SelectItem>
-          <SelectItem key="rating_desc" textValue="Rating: High to Low">
-            Rating: High to Low
+          <SelectItem key="rating_desc" textValue={t('search.filters.sortOptions.ratingDesc', { defaultValue: 'Rating: High to Low' })}>
+            {t('search.filters.sortOptions.ratingDesc', { defaultValue: 'Rating: High to Low' })}
           </SelectItem>
-          <SelectItem key="newest" textValue="Newest First">
-            Newest First
+          <SelectItem key="newest" textValue={t('search.filters.sortOptions.newest', { defaultValue: 'Newest First' })}>
+            {t('search.filters.sortOptions.newest', { defaultValue: 'Newest First' })}
           </SelectItem>
         </Select>
       </div>
@@ -483,7 +486,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
           className="text-gray-600"
           isDisabled={activeFiltersCount === 0}
         >
-          Reset All
+          {t('search.filters.resetAll', { defaultValue: 'Reset All' })}
         </Button>
 
         <div className="flex items-center gap-3">
@@ -493,7 +496,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
               variant="flat"
               className="bg-primary-50 text-primary-700"
             >
-              {activeFiltersCount} {activeFiltersCount === 1 ? 'filter' : 'filters'} active
+              {activeFiltersCount} {activeFiltersCount === 1 ? t('search.filters.filter', { defaultValue: 'filter' }) : t('search.filters.filters', { defaultValue: 'filters' })} {t('search.filters.active', { defaultValue: 'active' })}
             </Chip>
           )}
           <Button
@@ -503,7 +506,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             isLoading={isApplying}
             className="bg-primary-500 hover:bg-primary-600 text-white"
           >
-            Apply Filters
+            {t('search.filters.applyFilters', { defaultValue: 'Apply Filters' })}
           </Button>
         </div>
       </div>

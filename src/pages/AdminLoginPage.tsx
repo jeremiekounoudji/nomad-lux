@@ -20,9 +20,9 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
   useEffect(() => {
     if (isAuthenticated && isAdmin) {
       console.log('✅ Already authenticated as admin - redirecting to dashboard')
-      onPageChange?.('admin')
+      onPageChange?.(t('admin.navigation.dashboard'))
     }
-  }, [isAuthenticated, isAdmin, onPageChange])
+  }, [isAuthenticated, isAdmin, onPageChange, t])
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
@@ -45,7 +45,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
       
     } catch (err: any) {
       console.error('❌ Exception during admin sign in:', err)
-      setError(err.message || 'An unexpected error occurred')
+      setError(err.message || t('admin.login.unexpectedError'))
     }
   }
 
@@ -84,8 +84,8 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
             <div className="w-16 h-16 bg-primary-600/80 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
               <Crown className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('admin.login.title', 'Admin Access')}</h1>
-            <p className="text-white/80 text-sm font-script">{t('admin.login.subtitle', 'Nomad Lux Administration')}</p>
+            <h1 className="text-2xl font-bold text-white mb-2">{t('admin.login.title')}</h1>
+            <p className="text-white/80 text-sm font-script">{t('admin.login.subtitle')}</p>
           </div>
 
           {/* Form */}
@@ -93,8 +93,8 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
             {/* Email Field */}
             <Input
               type="email"
-              label={t('admin.login.email', 'Admin Email')}
-              placeholder="admin@nomadlux.com"
+              label={t('admin.login.email')}
+              placeholder={t('admin.login.emailPlaceholder')}
               value={email}
               onValueChange={setEmail}
               startContent={<Mail className="w-4 h-4 text-white/60" />}
@@ -111,7 +111,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
             {/* Password Field */}
             <Input
               label={t('auth.login.password')}
-              placeholder={t('admin.login.passwordPlaceholder', 'Enter admin password')}
+              placeholder={t('admin.login.passwordPlaceholder')}
               value={password}
               onValueChange={setPassword}
               startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -155,27 +155,27 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
               isLoading={isLoading}
               isDisabled={!email || !password}
             >
-              {isLoading ? t('auth.login.signingIn') : t('admin.login.signIn', 'Sign In to Admin Panel')}
+              {isLoading ? t('auth.login.signingIn') : t('admin.login.signIn')}
             </Button>
           </div>
 
           {/* Development Note */}
           <div className="mt-6 p-4 bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-lg">
             <p className="text-sm text-blue-100">
-              <strong>{t('admin.login.infoTitle', 'Admin Access:')}</strong><br />
-              {t('admin.login.info', 'Only accounts with admin or super_admin roles can access the admin panel.')}
+              <strong>{t('admin.login.infoTitle')}</strong><br />
+              {t('admin.login.info')}
             </p>
           </div>
 
           {/* Admin Register Link */}
           <div className="mt-6 text-center">
             <span className="text-white/80 text-sm">
-              {t('admin.login.needAccess', 'Need admin access?')}{' '}
+              {t('admin.login.needAccess')}{' '}
               <Link 
                 className="text-white font-semibold hover:text-white/80"
-                onPress={() => onPageChange?.('admin-register')}
+                onPress={() => onPageChange?.(t('admin.navigation.register'))}
               >
-                {t('admin.login.requestAccess', 'Request Access')}
+                {t('admin.login.requestAccess')}
               </Link>
             </span>
           </div>

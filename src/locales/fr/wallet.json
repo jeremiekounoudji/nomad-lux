@@ -39,7 +39,12 @@
     "transactions": {
       "title": "Transactions du portefeuille",
       "empty": "Aucune transaction pour le moment",
-      "payment": "Paiement"
+      "payment": "Paiement",
+      "status": {
+        "completed": "Terminé",
+        "pending": "En attente",
+        "failed": "Échoué"
+      }
     },
     "pagination": {
       "previous": "Précédent",
@@ -56,6 +61,12 @@
       "empty": "Aucune demande de virement.",
       "totalRequested": "Total demandé"
     }
+  },
+  "currency": {
+    "usd": "Dollar américain",
+    "eur": "Euro",
+    "gbp": "Livre sterling",
+    "cad": "Dollar canadien"
   }
 }
 

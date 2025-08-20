@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Input, Select, SelectItem, Textarea, Button, Card, CardBody } from '@heroui/react';
 import { Wifi, Car, Utensils, Waves, Shield, Dumbbell, TreePine, Home, Flame, Heart, Tv, Gamepad2, Wind, Coffee, WashingMachine, Sparkles } from 'lucide-react';
+import { useTranslation } from '../../../../lib/stores/translationStore';
 import type { PropertySubmissionData } from '../../../../interfaces';
 import type { PropertyType } from '../../../../interfaces/Settings';
 import { useAdminSettings } from '../../../../hooks/useAdminSettings';
@@ -70,6 +71,7 @@ const CURRENCIES = [
 ];
 
 const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, setFormData }) => {
+  const { t } = useTranslation(['property', 'common']);
   // Use admin settings hook to get property types
   const { settings } = useAdminSettings();
 
@@ -183,9 +185,9 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Property Details</h2>
+        <h2 className="text-2xl font-semibold mb-4">{t('property.details.title')}</h2>
         <p className="text-gray-600 mb-6">
-          Provide information about your property, its location, and available amenities.
+          {t('property.details.description')}
         </p>
       </div>
 

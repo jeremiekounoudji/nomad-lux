@@ -70,14 +70,14 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
               onClick={() => onClick(booking)}
             >
               <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 min-h-[2.25rem] leading-tight">
-                {booking.properties?.title || t('booking.labels.property', 'Property')}
+                {booking.properties?.title || t('booking.labels.property')}
               </h3>
               <div className="flex items-start gap-1 text-xs text-gray-600 mt-1">
                 <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
                 <span className="line-clamp-1 break-words">
                   {booking.properties?.location?.city && booking.properties?.location?.country
                     ? `${booking.properties.location.city}, ${booking.properties.location.country}`
-                    : t('booking.labels.locationNotAvailable', 'Location not available')}
+                    : t('booking.labels.locationNotAvailable')}
                 </span>
               </div>
               <div className="flex items-center gap-1 mt-1">
@@ -107,7 +107,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-red-700">{t('booking.labels.rejectionReason', 'Rejection Reason:')}</p>
+                    <p className="text-xs font-medium text-red-700">{t('booking.labels.rejectionReason')}</p>
                     <p className="text-xs text-red-600 mt-0.5">{booking.reject_reason}</p>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
                       console.error('Payment retry error:', error);
                     }}
                   >
-                    {t('booking.actions.retryPayment', 'Retry Payment')}
+                    {t('booking.actions.retryPayment')}
                   </PaymentButton>
                   <Button
                     color="danger"

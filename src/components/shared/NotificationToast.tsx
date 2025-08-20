@@ -119,7 +119,7 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
       case 'property_suspended':
         return t('notifications.types.propertySuspended')
       case 'property_submitted':
-        return t('notifications.types.propertySubmitted', 'Property Submitted')
+        return t('notifications.types.propertySubmitted')
       case 'payment_success':
         return t('notifications.types.paymentSuccess')
       case 'payment_failed':

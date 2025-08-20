@@ -1,5 +1,10 @@
 {
   "types": {
+    "booking": "Booking",
+    "message": "Message",
+    "property": "Property",
+    "payment": "Payment",
+    "alert": "Alert",
     "bookingRequestCreated": "New Booking Request",
     "bookingApproved": "Booking Approved",
     "bookingRejected": "Booking Rejected",
@@ -51,7 +56,9 @@
     "disputeRaised": "A dispute has been raised for booking {{bookingReference}}",
     "systemError": "A system error occurred. Our team has been notified",
     "accountFlagged": "Your account has been flagged for review",
-    "bulkAction": "Bulk action completed successfully"
+    "bulkAction": "Bulk action completed successfully",
+    "bookingApprovedViaNotification": "Booking request approved via notification",
+    "bookingDeclinedViaNotification": "Booking request declined via notification"
   },
   "actions": {
     "open": "Open notifications",
@@ -75,7 +82,8 @@
     "markAsRead": "Mark as Read",
     "markAllAsRead": "Mark All as Read",
     "deleteNotification": "Delete Notification",
-    "clearAll": "Clear All"
+    "clearAll": "Clear All",
+    "tryAgain": "Try Again"
   },
   "details": {
     "relatedProperty": "Related Property",
@@ -94,11 +102,15 @@
     "noUnread": "Notifications"
   },
   "banner": {
+    "title": "Notifications",
     "subtitleUnread": "You have {{count}} unread notifications",
     "subtitleAllCaughtUp": "All caught up!",
     "emptyDescription": "You'll see your notifications here when you receive them.",
     "allCaughtUp": "You're all caught up!",
     "noMore": "No more notifications to load"
+  },
+  "errors": {
+    "loadingError": "Error Loading Notifications"
   },
   "status": {
     "read": "Read",
@@ -122,6 +134,7 @@
     "never": "Never"
   },
   "labels": {
+    "new": "New",
     "timestamp": "{{ts}}",
     "moreUnread": "more unread notifications",
     "notifications": "Notifications",
@@ -148,5 +161,26 @@
     "daysAgo": "{{days}} days ago",
     "weeksAgo": "{{weeks}} weeks ago",
     "monthsAgo": "{{months}} months ago"
+  },
+  "templates": {
+    "title": "Email Templates",
+    "new": "New Template",
+    "create": "Create Email Template",
+    "edit": "Edit Template",
+    "name": "Template Name",
+    "namePlaceholder": "Enter template name",
+    "subject": "Subject Line",
+    "subjectPlaceholder": "Enter email subject",
+    "type": "Template Type",
+    "typePlaceholder": "Select template type",
+    "types": {
+      "email": "Email",
+      "sms": "SMS",
+      "push": "Push Notification"
+    },
+    "content": "Template Content",
+    "contentPlaceholder": "Enter template content with variables like {{name}}, {{property}}, etc.",
+    "contentDesc": "Use {{variable}} syntax for dynamic content",
+    "enableNow": "Enable template immediately"
   }
 }

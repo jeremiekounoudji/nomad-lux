@@ -26,7 +26,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
   property,
   onBookingConfirm
 }) => {
-  const { t } = useTranslation(['booking', 'common'])
+  const { t } = useTranslation(['booking', 'property', 'common'])
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
   const [guests, setGuests] = useState('1')
@@ -122,10 +122,10 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                 {/* Host Info */}
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                                           <Avatar src={property.host?.avatar_url} size="md" />
-                        <div>
-                          <p className="font-medium">Hosted by {property.host?.display_name}</p>
-                          <p className="text-sm text-gray-600">Superhost • {property.host?.experience || 4} years hosting</p>
-                  </div>
+                                                <div>
+                          <p className="font-medium">{t('property.labels.hostedBy', { name: property.host?.display_name || t('common.notProvided') })}</p>
+                          <p className="text-sm text-gray-600">{t('booking.labels.superhost')} • {t('property.labels.yearsHosting', { years: property.host?.experience || 4 })}</p>
+                        </div>
                 </div>
 
                 {/* Booking Form */}

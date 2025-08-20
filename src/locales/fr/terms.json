@@ -37,7 +37,10 @@
         "description": "Si vous avez des questions concernant ces Conditions générales, veuillez nous contacter :",
         "email": "Email",
         "address": "Adresse",
-        "phone": "Téléphone"
+        "phone": "Téléphone",
+        "emailAddress": "legal@nomadlux.com",
+        "streetAddress": "123 Luxury Street, Suite 100",
+        "phoneNumber": "+1 (555) 123-4567"
       }
     }
   }

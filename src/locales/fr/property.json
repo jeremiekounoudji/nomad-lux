@@ -112,6 +112,7 @@
     "location": "Emplacement",
     "images": "Images",
     "video": "Vidéo",
+    "images": "Images",
     "availability": "Disponibilité",
     "checkIn": "Arrivée",
     "checkOut": "Départ",
@@ -175,10 +176,16 @@
     "unavailableDates": "Les dates sélectionnées ne sont pas disponibles",
     "minimumStayNotMet": "Durée minimum de séjour non respectée",
     "maximumGuestsExceeded": "Nombre maximum d'invités dépassé",
+    "validation": {
+      "minimumStay": "Le séjour minimum est de {{nights}} nuit(s)",
+      "maximumStay": "Le séjour maximum est de {{nights}} nuit(s)"
+    },
     "failedToLoad": "Échec du chargement des propriétés",
     "noPropertiesInArea": "Nous n'avons trouvé aucune propriété dans votre région. Essayez d'élargir votre recherche ou revenez plus tard.",
+    "propertyNotFound": "Propriété non trouvée. Veuillez réessayer depuis la page principale.",
     "seenAllProperties": "Vous avez vu toutes les propriétés disponibles !",
-    "failedToLoadPopular": "Échec du chargement des destinations populaires"
+    "failedToLoadPopular": "Échec du chargement des destinations populaires",
+    "propertyIdMissing": "L'ID de la propriété est manquant. Impossible d'ouvrir les détails."
   },
   "share": {
     "title": "Partager la propriété",
@@ -199,7 +206,10 @@
     "copyFailed": "Échec de la copie du lien",
     "instagramCopied": "Lien copié ! Collez-le dans votre story ou bio Instagram.",
     "email": "Email",
-    "copy": "Copier"
+    "copy": "Copier",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "instagram": "Instagram"
   },
   "editConfirm": {
     "title": "Confirmer la modification de la propriété",
@@ -311,6 +321,48 @@
       "generic": "Échec de la soumission : {{error}}"
     }
   },
+  "settings": {
+    "title": "Paramètres de la Propriété",
+    "description": "Choisissez des paramètres existants ou créez-en de nouveaux. Ces paramètres contrôleront les règles de réservation, les préférences de paiement et la disponibilité de votre propriété.",
+    "loading": "Chargement de vos paramètres de propriété...",
+    "success": "Paramètres de propriété créés avec succès !",
+    "paymentMethods": {
+      "card": "Carte de Crédit/Débit",
+      "paypal": "PayPal",
+      "bankTransfer": "Virement Bancaire"
+    },
+    "errors": {
+      "signInRequired": "Veuillez vous connecter pour créer des paramètres de propriété",
+      "nameRequired": "Veuillez saisir un nom pour vos paramètres",
+      "createFailed": "Échec de la création des paramètres de propriété",
+      "atLeastOnePaymentMethod": "Au moins une méthode de paiement doit être sélectionnée"
+    }
+  },
+  "hostDetails": {
+    "title": "Informations de l'Hôte",
+    "description": "Veuillez fournir vos coordonnées. Ces informations seront utilisées pour la vérification de la propriété et la communication.",
+    "fullName": "Nom Complet",
+    "fullNamePlaceholder": "Saisissez votre nom complet",
+    "username": "Nom d'Utilisateur",
+    "usernamePlaceholder": "Saisissez votre nom d'utilisateur",
+    "emailPlaceholder": "Saisissez votre adresse email",
+    "phonePlaceholder": "Saisissez votre numéro de téléphone"
+  },
+  "details": {
+    "title": "Détails de la Propriété",
+    "description": "Fournissez des informations sur votre propriété, son emplacement et les équipements disponibles."
+  },
+  "mediaUpload": {
+    "title": "Téléversement de Médias",
+    "description": "Téléversez au moins {{minImages}} images et 1 vidéo de votre propriété. Chaque fichier ne doit pas dépasser {{maxSize}}MB.",
+    "propertyImages": "Images de la Propriété",
+    "uploadImages": "Téléverser des Images",
+    "uploadImagesDescription": "Cliquez pour parcourir ou glissez-déposez vos images ici",
+    "imageFormats": "{{formats}} jusqu'à {{maxSize}}MB",
+    "imagesUploaded": "{{count}} sur {{min}} images téléversées",
+    "minimumRequirementMet": "Exigence minimum satisfaite",
+    "propertyVideo": "Vidéo de la Propriété"
+  },
   "submitYourProperty": "Soumettre Votre Propriété",
   "shareWithTravelers": "Partagez votre propriété avec des voyageurs du monde entier. Remplissez le formulaire ci-dessous pour soumettre votre propriété pour examen.",
   "likedProperties": "Propriétés Aimées",
@@ -354,6 +406,11 @@
       "loadingListings": "Erreur lors du chargement des annonces",
       "tryAgain": "Réessayer"
     },
+    "messages": {
+      "updateSuccess": "Propriété mise à jour avec succès ! 🎉",
+      "updateFailed": "Échec de la mise à jour de la propriété",
+      "updateFailedWithError": "Échec de la mise à jour : {{error}}"
+    },
     "empty": {
       "noListings": "Aucune annonce {{status}}",
       "noListingsDescription": "Vous n'avez pas encore créé d'annonces.",
@@ -369,5 +426,17 @@
       "of": "sur",
       "results": "résultats"
     }
+  },
+  "host": {
+    "title": "Rencontrez votre hôte",
+    "defaultBio": "Je suis un hôte passionné qui aime partager de beaux espaces avec des voyageurs du monde entier.",
+    "emailVerified": "Email vérifié",
+    "phoneVerified": "Téléphone vérifié"
+  },
+  "location": {
+    "title": "Où vous serez"
+  },
+  "amenities": {
+    "title": "Ce que cet endroit propose"
   }
 }

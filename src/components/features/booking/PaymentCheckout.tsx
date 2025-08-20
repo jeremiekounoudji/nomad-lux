@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useFedaPayPayment } from '../../../hooks/useFedaPayPayment'
 import { config } from '../../../lib/config'
 import { FedaCheckoutContainer } from 'fedapay-reactjs'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface PaymentCheckoutProps {
   bookingId: string
@@ -26,6 +27,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   onPaymentError,
   onPaymentCancel
 }) => {
+  const { t } = useTranslation(['booking', 'common']);
   const [isRetrying, setIsRetrying] = useState(false)
   const [paymentAttempts, setPaymentAttempts] = useState(0)
   
@@ -112,12 +114,12 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
       <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          {isRetrying ? 'Retrying...' : 'Initializing Payment'}
+          {isRetrying ? t('booking.payment.retrying', { defaultValue: 'Retrying...' }) : t('booking.payment.initializing', { defaultValue: 'Initializing Payment' })}
         </h3>
         <p className="text-sm text-gray-600 text-center">
           {isRetrying 
-            ? 'Setting up payment again...' 
-            : 'Please wait while we prepare your payment...'
+            ? t('booking.payment.settingUpAgain', { defaultValue: 'Setting up payment again...' })
+            : t('booking.payment.pleaseWait', { defaultValue: 'Please wait while we prepare your payment...' })
           }
         </p>
       </div>
@@ -133,13 +135,13 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">Payment Error</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('booking.payment.error', { defaultValue: 'Payment Error' })}</h3>
         <p className="text-sm text-red-600 text-center mb-4">{error}</p>
         <button
           onClick={retryPayment}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
         >
-          Try Again
+          {t('booking.payment.tryAgain', { defaultValue: 'Try Again' })}
         </button>
       </div>
     )
@@ -151,7 +153,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         {/* Payment Header */}
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Complete Payment</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('booking.payment.completePayment', { defaultValue: 'Complete Payment' })}</h3>
           <div className="mt-2 flex items-center justify-between">
             <div>
               <p className="text-2xl font-bold text-gray-900">
@@ -160,8 +162,8 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
               <p className="text-sm text-gray-600">{description}</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-500">Processing Fee: {paymentData.fees.processing_fee}</p>
-              <p className="text-xs text-gray-500">Platform Fee: {paymentData.fees.platform_fee}</p>
+              <p className="text-xs text-gray-500">{t('booking.payment.processingFee', { defaultValue: 'Processing Fee' })}: {paymentData.fees?.processing_fee || 'N/A'}</p>
+              <p className="text-xs text-gray-500">{t('booking.payment.platformFee', { defaultValue: 'Platform Fee' })}: {paymentData.fees?.platform_fee || 'N/A'}</p>
             </div>
           </div>
         </div>
@@ -173,19 +175,19 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a2 2 0 114 0 2 2 0 01-4 0zm8-2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
-              <span>Cards</span>
+              <span>{t('booking.payment.methods.cards', { defaultValue: 'Cards' })}</span>
             </div>
             <div className="flex items-center space-x-1">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
               </svg>
-              <span>Mobile Money</span>
+              <span>{t('booking.payment.methods.mobileMoney', { defaultValue: 'Mobile Money' })}</span>
             </div>
             <div className="flex items-center space-x-1">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a2 2 0 114 0 2 2 0 01-4 0zm8-2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
-              <span>Bank Transfer</span>
+              <span>{t('booking.payment.methods.bankTransfer', { defaultValue: 'Bank Transfer' })}</span>
             </div>
           </div>
         </div>
@@ -219,7 +221,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
             <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
             </svg>
-            <span>Your payment is secured with SSL encryption</span>
+            <span>{t('booking.payment.security', { defaultValue: 'Your payment is secured with SSL encryption' })}</span>
           </div>
         </div>
       </div>
@@ -229,7 +231,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   // Fallback state
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
-      <p className="text-gray-600">Preparing payment...</p>
+      <p className="text-gray-600">{t('booking.payment.preparing', { defaultValue: 'Preparing payment...' })}</p>
     </div>
   )
 }

@@ -39,7 +39,12 @@
     "transactions": {
       "title": "Wallet Transactions",
       "empty": "No transactions yet",
-      "payment": "Payment"
+      "payment": "Payment",
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "failed": "Failed"
+      }
     },
     "pagination": {
       "previous": "Previous",
@@ -56,6 +61,12 @@
       "empty": "No payout requests yet.",
       "totalRequested": "Total Requested"
     }
+  },
+  "currency": {
+    "usd": "US Dollar",
+    "eur": "Euro",
+    "gbp": "British Pound",
+    "cad": "Canadian Dollar"
   }
 }
 

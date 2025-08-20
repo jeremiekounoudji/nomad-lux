@@ -8,45 +8,12 @@ import {
   Share, 
   Star, 
   MapPin, 
-  Users, 
-  Bed, 
-  Bath, 
-  Wifi, 
-  Car, 
-  Utensils, 
-  Waves, 
-  ChevronLeft, 
-  ChevronRight, 
-  Shield, 
   Award, 
   MessageCircle, 
-  CheckCircle,
   Eye,
-  Calendar,
   DollarSign,
   AlertCircle,
   X,
-  Clock,
-  MessageSquare,
-  CheckCircle2,
-  Mail,
-  Phone,
-  Home,
-  Tv,
-  Coffee,
-  Snowflake,
-  Flame,
-  DoorClosed,
-  Shirt,
-  Dumbbell,
-  Waves as Pool,
-  TreeDeciduous as TreePine,
-  Dog as PawPrint,
-  Baby,
-  Car as Parking,
-  Wind,
-  Play,
-  Image as ImageIcon,
   Navigation
 } from 'lucide-react'
 import { 
@@ -54,24 +21,20 @@ import {
   CardBody, 
   CardHeader, 
   Chip, 
-  Avatar, 
   Button, 
   Divider, 
-  Badge, 
-  useDisclosure,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  useDisclosure
 } from '@heroui/react'
 import { PropertyDetailPageProps } from '../interfaces/Component'
 import { Property } from '../interfaces/Property'
 import { 
   SharePropertyModal, 
-  ContactHostModal
+  ContactHostModal,
+  BookingConfirmationModal,
+  BookingSuccessModal,
+  BookingErrorModal
 } from '../components/shared/modals'
-import { BookingCalendar } from '../components/shared'
+import { BookingLoadingOverlay, PropertyHeader, PropertyMediaGallery, PropertyAmenities, PropertyHostInfo, PropertyBookingCard } from '../components/shared'
 import { LazyMapWrapper } from '../components/map'
 import { usePropertySettings } from '../hooks/usePropertySettings'
 import { useBookingFlow } from '../hooks/useBookingFlow'
@@ -87,27 +50,7 @@ import { usePropertyLike } from '../hooks/usePropertyLike'
 import { usePropertyStore } from '../lib/stores/propertyStore';
 import { PropertyCardSkeleton } from '../components/shared';
 
-const getAmenityIcon = (amenity: string) => {
-  const amenityMap: { [key: string]: React.ReactNode } = {
-    'wifi': <Wifi className="w-5 h-5" />,
-    'tv': <Tv className="w-5 h-5" />,
-    'kitchen': <Utensils className="w-5 h-5" />,
-    'air_conditioning': <Wind className="w-5 h-5" />,
-    'heating': <Flame className="w-5 h-5" />,
-    'washer': <Shirt className="w-5 h-5" />,
-    'dryer': <Shirt className="w-5 h-5" />,
-    'gym': <Dumbbell className="w-5 h-5" />,
-    'pool': <Pool className="w-5 h-5" />,
-    'parking': <Parking className="w-5 h-5" />,
-    'elevator': <DoorClosed className="w-5 h-5" />,
-    'coffee_maker': <Coffee className="w-5 h-5" />,
-    'workspace': <Home className="w-5 h-5" />,
-    'pet_friendly': <PawPrint className="w-5 h-5" />,
-    'baby_friendly': <Baby className="w-5 h-5" />,
-    'garden_view': <TreePine className="w-5 h-5" />
-  }
-  return amenityMap[amenity.toLowerCase()] || <CheckCircle2 className="w-5 h-5" />
-}
+
 
 const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -124,7 +67,7 @@ const PropertyDetailPage: React.FC = () => {
     if (!property) {
       const timer = setTimeout(() => {
         console.log('❌ No property data available, redirecting to home');
-        toast.error("Property not found. Please try again from the main page.");
+        toast.error(t('property.messages.propertyNotFound'));
         navigate('/');
       }, 1000); // Give 1 second for any store updates
 
@@ -155,11 +98,7 @@ const PropertyDetailPage: React.FC = () => {
   const [specialRequests, setSpecialRequests] = useState('')
   const [isLiked, setIsLiked] = useState(property?.is_liked);
 
-  // Combine all media for the counter
-  const allMedia = [...(property?.images || []), ...(property?.videos || [])];
-  const currentOverallIndex = mediaType === 'image' 
-    ? currentImageIndex 
-    : (property?.images?.length || 0) + currentVideoIndex;
+
 
   // Translation hooks
   const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property?.property_type || '')
@@ -305,18 +244,18 @@ const PropertyDetailPage: React.FC = () => {
   const handleReserveClick = async () => {
     // Validate authentication
     if (!user) {
-      toast.error('Please sign in to make a booking')
+      toast.error(t('auth.messages.signInToBook'))
       return
     }
 
     // Validate required fields
     if (!checkIn || !checkOut) {
-      setValidationError('Please select check-in and check-out dates')
+      setValidationError(t('booking.validation.selectDates'))
       return
     }
     
     if (new Date(checkIn) >= new Date(checkOut)) {
-      setValidationError('Check-out date must be after check-in date')
+      setValidationError(t('booking.validation.checkoutAfterCheckin'))
       return
     }
 
@@ -334,7 +273,7 @@ const PropertyDetailPage: React.FC = () => {
       // Check minimum advance booking
       const daysDifference = Math.ceil((startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
       if (daysDifference < minAdvanceBooking) {
-        setValidationError(`Minimum ${minAdvanceBooking} day(s) advance booking required`)
+        setValidationError(t('booking.validation.minAdvanceBooking', { days: minAdvanceBooking }))
         return
       }
 
@@ -362,12 +301,12 @@ const PropertyDetailPage: React.FC = () => {
 
   const handleConfirmBooking = async () => {
     if (!user) {
-      toast.error('Please sign in to make a booking')
+      toast.error(t('auth.messages.signInToBook'))
       return
     }
 
     if (!property) {
-      toast.error('Cannot process booking: property data is missing.')
+      toast.error(t('booking.messages.propertyDataMissing'))
       onConfirmClose()
       return
     }
@@ -413,7 +352,7 @@ const PropertyDetailPage: React.FC = () => {
       }
     } catch (error) {
       console.error('❌ Booking creation failed:', error)
-      const errorMsg = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again later.'
+      const errorMsg = error instanceof Error ? error.message : t('common.messages.unexpectedError')
       setErrorMessage(errorMsg)
       onErrorOpen()
     }
@@ -430,7 +369,7 @@ const PropertyDetailPage: React.FC = () => {
       <div className="h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <PropertyCardSkeleton />
-          <p className="mt-4 text-gray-600">Loading property details...</p>
+          <p className="mt-4 text-gray-600">{t('property.messages.loadingDetails')}</p>
         </div>
       </div>
     );
@@ -440,10 +379,10 @@ const PropertyDetailPage: React.FC = () => {
     return (
       <div className="h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
         <AlertCircle className="w-16 h-16 text-danger-500 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Could Not Load Property</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('property.messages.couldNotLoad')}</h2>
         <p className="text-gray-600 text-center mb-6">{error}</p>
         <Button onClick={() => navigate('/')} startContent={<ArrowLeft />}>
-          Back to Home
+          {t('common.actions.backToHome')}
         </Button>
       </div>
     );
@@ -483,267 +422,39 @@ const PropertyDetailPage: React.FC = () => {
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
-          {/* Main Content */}
+                    {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Image/Video Gallery */}
-            <div className="relative mb-8">
-              <div className="relative h-64 sm:h-80 lg:h-96 overflow-hidden rounded-xl">
-                {mediaType === 'image' ? (
-                  <img
-                    src={property.images[currentImageIndex]}
-                    alt={property.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <video
-                    src={property.videos[currentVideoIndex]}
-                    className="w-full h-full object-cover"
-                    controls
-                    autoPlay
-                    playsInline
-                  />
-                )}
-                
-                {/* Navigation Buttons */}
-                {allMedia.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevMedia}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-gray-700" />
-                    </button>
-                    <button
-                      onClick={nextMedia}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-700" />
-                    </button>
-                  </>
-                )}
+            <PropertyMediaGallery
+              property={property}
+              currentImageIndex={currentImageIndex}
+              setCurrentImageIndex={setCurrentImageIndex}
+              mediaType={mediaType}
+              setMediaType={setMediaType}
+              currentVideoIndex={currentVideoIndex}
+              setCurrentVideoIndex={setCurrentVideoIndex}
+              nextMedia={nextMedia}
+              prevMedia={prevMedia}
+            />
 
-                {/* Media Counter */}
-                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-                  {currentOverallIndex + 1} / {allMedia.length}
-                </div>
+            <PropertyHeader
+              property={property}
+              translatedTitle={translatedTitle}
+              translatedDescription={translatedDescription}
+            />
 
-                {/* Media Type Indicator */}
-                <div className="absolute bottom-4 left-4 flex gap-2">
-                  <button 
-                    onClick={() => {
-                      if (property.images.length > 0) {
-                        setMediaType('image')
-                        setCurrentImageIndex(0)
-                      }
-                    }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all ${
-                      mediaType === 'image' && property.images.length > 0
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-white/90 text-gray-700 hover:bg-white'
-                    }`}
-                    disabled={property.images.length === 0}
-                  >
-                    <ImageIcon className="w-4 h-4" />
-                    Photos ({property.images.length})
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (property.videos.length > 0) {
-                        setMediaType('video')
-                        setCurrentVideoIndex(0)
-                      }
-                    }}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all ${
-                      mediaType === 'video' && property.videos.length > 0
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-white/90 text-gray-700 hover:bg-white'
-                    }`}
-                    disabled={property.videos.length === 0}
-                  >
-                    <Play className="w-4 h-4" />
-                    Videos ({property.videos.length})
-                  </button>
-                </div>
-              </div>
+            <PropertyAmenities
+              amenities={property.amenities}
+              amenityTranslations={amenityTranslations}
+            />
 
-              {/* Thumbnail Strip */}
-              <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-                {property.images.map((image, index) => (
-                  <button
-                    key={`img-${index}`}
-                    onClick={() => {
-                      setMediaType('image')
-                      setCurrentImageIndex(index)
-                    }}
-                    className={`flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      mediaType === 'image' && index === currentImageIndex 
-                        ? 'border-primary-500' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <img src={image} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-                {property.videos.map((video, index) => (
-                  <button
-                    key={`vid-${index}`}
-                    onClick={() => {
-                      setMediaType('video')
-                      setCurrentVideoIndex(index)
-                    }}
-                    className={`relative flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      mediaType === 'video' && index === currentVideoIndex 
-                        ? 'border-primary-500' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <video src={video} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                      <Play className="w-6 h-6 text-white" />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Property Header */}
-            <div className="mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Dancing Script, cursive' }}>
-                    {translatedTitle}
-                  </h1>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{property.rating}</span>
-                      <span>({property.review_count} reviews)</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{`${property.location.city}, ${property.location.country}`}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-                    ${property.price}
-                    <span className="text-base font-normal text-gray-600 ml-1">/ {t('night')}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Property Stats */}
-              <div className="flex flex-wrap items-center gap-4 mb-6">
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Users className="w-4 h-4 text-gray-700" />
-                                      <span className="text-gray-900 font-medium text-sm">{property.max_guests} {t('guests')}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Bed className="w-4 h-4 text-gray-700" />
-                                      <span className="text-gray-900 font-medium text-sm">{property.bedrooms} {t('bedrooms')}</span>
-                </div>
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Bath className="w-4 h-4 text-gray-700" />
-                                      <span className="text-gray-900 font-medium text-sm">{property.bathrooms} {t('bathrooms')}</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <p className="text-gray-700 leading-relaxed">
-                  {translatedDescription}
-                </p>
-              </div>
-            </div>
-
-            {/* Amenities */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">What this place offers</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50">
-                      {getAmenityIcon(amenity)}
-                      <span className="text-gray-700">
-                        {amenityTranslations[amenity] || amenity.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Host Info */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Meet your host</h2>
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <div className="flex items-start gap-6">
-                  <Avatar
-                    src={property.host.avatar_url}
-                    alt={property.host.name}
-                    className="w-16 h-16"
-                  />
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-xl font-medium">{property.host.display_name}</h3>
-                      {property.host.is_identity_verified && (
-                        <Badge color="success" className="flex items-center gap-1">
-                          <Shield className="w-4 h-4" />
-                          Verified
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-400" />
-                        <span>{property.host.rating.toFixed(1)} Rating</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>Host since {new Date(property.created_at).getFullYear()}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageSquare className="w-4 h-4" />
-                        <span>{property.host.response_rate}% Response rate</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        <span>{property.host.response_time} avg. response time</span>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-4">{property.host.bio || "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world."}</p>
-                    <div className="flex flex-wrap gap-4">
-                      {property.host.is_email_verified && (
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                          <Mail className="w-4 h-4" />
-                          <span>Email verified</span>
-                        </div>
-                      )}
-                      {property.host.phone && (
-                        <div className="flex items-center gap-1 text-sm text-gray-600">
-                          <Phone className="w-4 h-4" />
-                          <span>Phone verified</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <Button 
-                    variant="flat" 
-                    onClick={onContactOpen}
-                    className="w-full sm:w-auto bg-primary-500 text-white"
-                  >
-                    Contact Host
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <PropertyHostInfo
+              property={property}
+              onContactOpen={onContactOpen}
+            />
 
             {/* Location */}
             <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">Where you'll be</h2>
+              <h2 className="text-2xl font-semibold mb-4">{t('property.location.title')}</h2>
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <LazyMapWrapper
                   key={property.id}
@@ -796,423 +507,70 @@ const PropertyDetailPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Booking Card */}
+                    {/* Booking Card */}
           <div className="lg:col-span-1">
-            <div className="lg:sticky lg:top-6 lg:h-fit">
-              <Card className="shadow-lg border border-gray-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between w-full">
-                    <div>
-                      <span className="text-2xl font-bold text-gray-900">${property.price}</span>
-                      <span className="ml-1 text-gray-600">{t('night')}</span>
-                    </div>
-                    <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-gray-900">{property.rating}</span>
-                      <span className="text-gray-600 text-sm">({property.review_count} reviews)</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardBody className="pt-6">
-                  {/* Visual Calendar with Availability */}
-                  <div className="mb-4">
-                    <BookingCalendar
-                      propertyId={property.id}
-                      unavailableDates={property.unavailable_dates}
-                      timezone={property.timezone}
-                      city={property.location.city}
-                      country={property.location.country}
-                      selectedCheckIn={checkIn}
-                      selectedCheckOut={checkOut}
-                      onDateChange={(checkInDate, checkOutDate) => {
-                        console.log('📅 Date change:', { checkInDate, checkOutDate })
-                        if (checkInDate !== checkIn || checkOutDate !== checkOut) {
-                          setCheckIn(checkInDate)
-                          setCheckOut(checkOutDate)
-                          setValidationError('')
-                          // Show toast for date selection
-                          if (checkInDate && !checkOutDate) {
-                            toast.success('Check-in date selected')
-                          } else if (checkInDate && checkOutDate) {
-                            toast.success('Check-out date selected')
-                          }
-                        }
-                      }}
-                      onTimeChange={(checkInTimeNew, checkOutTimeNew) => {
-                        console.log('🕒 Time change:', { checkInTimeNew, checkOutTimeNew })
-                        if (checkInTimeNew !== checkInTime || checkOutTimeNew !== checkOutTime) {
-                          setCheckInTime(checkInTimeNew)
-                          setCheckOutTime(checkOutTimeNew)
-                          toast.success('Time updated')
-                        }
-                      }}
-                    />
-                  </div>
-
-                  {/* Time Selection (Manual Override) */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-IN TIME</label>
-                      <input
-                        type="time"
-                        value={checkInTime}
-                        onChange={(e) => {
-                          const newTime = e.target.value;
-                          const [hours, minutes] = newTime.split(':').map(Number);
-                          const timeInMinutes = hours * 60 + minutes;
-                          
-                          // Validate check-in time (6:00 AM - 10:00 PM)
-                          if (timeInMinutes < 360 || timeInMinutes > 1320) {
-                            toast.error('Check-in time must be between 6:00 AM and 10:00 PM');
-                            return;
-                          }
-                          
-                          console.log('🕒 Setting check-in time:', newTime);
-                          setCheckInTime(newTime);
-                          toast.success('Check-in time updated');
-                        }}
-                        min="06:00"
-                        max="22:00"
-                        step="1800"
-                        className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">Check-in available 6:00 AM - 10:00 PM</p>
-                    </div>
-                    <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-OUT TIME</label>
-                      <input
-                        type="time"
-                        value={checkOutTime}
-                        onChange={(e) => {
-                          const newTime = e.target.value;
-                          const [hours, minutes] = newTime.split(':').map(Number);
-                          const timeInMinutes = hours * 60 + minutes;
-                          
-                          // Validate check-out time (6:00 AM - 12:00 PM)
-                          if (timeInMinutes < 360 || timeInMinutes > 720) {
-                            toast.error('Check-out time must be between 6:00 AM and 12:00 PM');
-                            return;
-                          }
-                          
-                          console.log('🕒 Setting check-out time:', newTime);
-                          setCheckOutTime(newTime);
-                          toast.success('Check-out time updated');
-                        }}
-                        min="06:00"
-                        max="12:00"
-                        step="1800"
-                        className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                      />
-                      <p className="text-xs text-gray-500 mt-1">Check-out required by 12:00 PM</p>
-                    </div>
-                  </div>
-
-                  {/* Guests */}
-                  <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">{t('guests').toUpperCase()}</label>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Users className="w-5 h-5 text-gray-500" />
-                        <span className="text-gray-900">{guests} {guests > 1 ? t('guests') : t('guest')}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          onPress={() => {
-                            if (guests > 1) {
-                              console.log('Decreasing guests from', guests, 'to', guests - 1)
-                              setGuests(prev => Math.max(1, prev - 1))
-                            }
-                          }}
-                          isDisabled={guests <= 1}
-                        >
-                          <span className="text-2xl font-bold">-</span>
-                        </Button>
-                        <Button
-                          isIconOnly
-                          size="sm"
-                          variant="light"
-                          onPress={() => {
-                            if (guests < property.max_guests) {
-                              console.log('Increasing guests from', guests, 'to', guests + 1)
-                              setGuests(prev => Math.min(property.max_guests, prev + 1))
-                            }
-                          }}
-                          isDisabled={guests >= property.max_guests}
-                        >
-                          <span className="text-2xl font-bold">+</span>
-                        </Button>
-                      </div>
-                    </div>
-                                            <p className="text-xs text-gray-500 mt-1">{t('maxGuests', { count: property.max_guests })}</p>
-                  </div>
-
-                  {/* Special Requests */}
-                  <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">SPECIAL REQUESTS (OPTIONAL)</label>
-                    <textarea
-                      value={specialRequests}
-                      onChange={(e) => setSpecialRequests(e.target.value)}
-                      placeholder="Any special requests or notes for your host..."
-                      rows={3}
-                      maxLength={500}
-                      className="w-full text-sm focus:outline-none bg-transparent text-gray-900 resize-none placeholder-gray-500"
-                    />
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-gray-500">Share any specific needs or preferences</span>
-                      <span className="text-xs text-gray-400">{specialRequests.length}/500</span>
-                    </div>
-                  </div>
-
-                  {/* Reserve Button */}
-                  <div className="mb-4">
-                    <Button 
-                      color="primary" 
-                      size="lg" 
-                      className="w-full font-bold text-lg py-4 bg-primary-600 hover:bg-primary-700"
-                      radius="lg"
-                      onPress={handleReserveClick}
-                      startContent={<Calendar className="w-5 h-5" />}
-                      isLoading={isCheckingAvailability || isCreatingBooking}
-                      disabled={isCheckingAvailability || isCreatingBooking || !checkIn || !checkOut}
-                    >
-                      {isCheckingAvailability ? 'Checking Availability...' : 
-                       isCreatingBooking ? 'Creating Booking...' : 
-                       !checkIn || !checkOut ? 'Select dates' : 'Reserve Now'}
-                    </Button>
-                  </div>
-
-                  {/* Validation Error Message */}
-                  {validationError && (
-                    <div className="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 text-danger-600" />
-                        <p className="text-sm text-danger-700 font-medium">{validationError}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Booking Status */}
-                  {(checkIn && checkOut) && (
-                    <div className="mb-4 p-3 bg-primary-50 border border-primary-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-primary-600" />
-                        <p className="text-sm text-primary-700">
-                          {billingNights} night{billingNights > 1 ? 's' : ''} · {guests} guest{guests > 1 ? 's' : ''}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  <p className="text-center text-sm text-gray-600 mb-4">
-                    You won't be charged yet
-                  </p>
-
-                  <Divider className="my-4" />
-
-                  {/* Price Breakdown */}
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">${property.price} x {billingNights} nights</span>
-                      <span className="font-medium text-gray-900">${basePrice}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Cleaning fee</span>
-                      <span className="font-medium text-gray-900">${cleaningFee}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Service fee</span>
-                      <span className="font-medium text-gray-900">${serviceFee}</span>
-                    </div>
-                    <Divider className="my-3" />
-                    <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="font-bold text-gray-900">Total before taxes</span>
-                      <span className="font-bold text-gray-900 text-lg">${totalAmount}</span>
-                    </div>
-                  </div>
-                </CardBody>
-              </Card>
-            </div>
+            <PropertyBookingCard
+              property={property}
+              checkIn={checkIn}
+              setCheckIn={setCheckIn}
+              checkOut={checkOut}
+              setCheckOut={setCheckOut}
+              checkInTime={checkInTime}
+              setCheckInTime={setCheckInTime}
+              checkOutTime={checkOutTime}
+              setCheckOutTime={setCheckOutTime}
+              guests={guests}
+              setGuests={setGuests}
+              specialRequests={specialRequests}
+              setSpecialRequests={setSpecialRequests}
+              validationError={validationError}
+              setValidationError={setValidationError}
+              billingNights={billingNights}
+              basePrice={basePrice}
+              cleaningFee={cleaningFee}
+              serviceFee={serviceFee}
+              totalAmount={totalAmount}
+              isCheckingAvailability={isCheckingAvailability}
+              isCreatingBooking={isCreatingBooking}
+              onReserveClick={handleReserveClick}
+            />
           </div>
         </div>
         </div>
       </div>
 
       {/* Modals */}
-      
-      {/* Booking Confirmation Dialog */}
-      <Modal isOpen={isConfirmOpen} onClose={onConfirmClose} size="lg">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Confirm Your Reservation</h2>
-                <p className="text-sm text-gray-600">Please review your booking details</p>
-              </ModalHeader>
-              <ModalBody>
-                <div className="space-y-4">
-                  {/* Property Info */}
-                  <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
-                    <img
-                      src={property.images[0]}
-                      alt={property.title}
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{property.title}</h3>
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <MapPin className="w-4 h-4" />
-                        <span>{`${property.location.city}, ${property.location.country}`}</span>
-                      </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-medium">{property.rating}</span>
-                        <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
-                      </div>
-                    </div>
-                  </div>
+      <BookingConfirmationModal
+        isOpen={isConfirmOpen}
+        onClose={onConfirmClose}
+        property={property}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        guests={guests}
+        billingNights={billingNights}
+        specialRequests={specialRequests}
+        basePrice={basePrice}
+        cleaningFee={cleaningFee}
+        serviceFee={serviceFee}
+        totalAmount={totalAmount}
+        isCreatingBooking={isCreatingBooking}
+        onConfirmBooking={handleConfirmBooking}
+      />
 
-                  {/* Booking Details */}
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Check-in</p>
-                        <p className="text-lg">{new Date(checkIn).toLocaleDateString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Check-out</p>
-                        <p className="text-lg">{new Date(checkOut).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Guests</p>
-                        <p className="text-lg">{guests} guest{guests > 1 ? 's' : ''}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Nights</p>
-                        <p className="text-lg">{billingNights} night{billingNights > 1 ? 's' : ''}</p>
-                      </div>
-                    </div>
+      <BookingSuccessModal
+        isOpen={isSuccessOpen}
+        onClose={onSuccessClose}
+        totalAmount={totalAmount}
+      />
 
-                    {specialRequests && (
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Special Requests</p>
-                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{specialRequests}</p>
-                      </div>
-                    )}
-                  </div>
+      <BookingErrorModal
+        isOpen={isErrorOpen}
+        onClose={onErrorClose}
+        errorMessage={errorMessage}
+        onTryAgain={onConfirmOpen}
+      />
 
-                  <Divider />
-
-                  {/* Price Breakdown */}
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>${property.price} × {billingNights} nights</span>
-                      <span>${basePrice}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Cleaning fee</span>
-                      <span>${cleaningFee}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Service fee</span>
-                      <span>${serviceFee}</span>
-                    </div>
-                    <Divider className="my-2" />
-                    <div className="flex justify-between font-bold text-lg">
-                      <span>Total</span>
-                      <span>${totalAmount}</span>
-                    </div>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button 
-                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold"
-                  onPress={handleConfirmBooking}
-                  startContent={!isCreatingBooking && <CheckCircle className="w-4 h-4" />}
-                  isLoading={isCreatingBooking}
-                  disabled={isCreatingBooking}
-                >
-                  {isCreatingBooking ? 'Creating Booking...' : 'Confirm Reservation'}
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Success Dialog */}
-      <Modal isOpen={isSuccessOpen} onClose={onSuccessClose} size="md" hideCloseButton>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalBody className="text-center py-8">
-                <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-success-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-                <p className="text-gray-600 mb-6">
-                  Your reservation has been successfully submitted. You'll receive a confirmation email shortly.
-                </p>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p><strong>Booking Reference:</strong> NL{Date.now().toString().slice(-6)}</p>
-                  <p><strong>Total Amount:</strong> ${totalAmount}</p>
-                </div>
-              </ModalBody>
-              <ModalFooter className="justify-center">
-                <Button color="primary" onPress={onClose} size="lg">
-                  View My Bookings
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Error Dialog */}
-      <Modal isOpen={isErrorOpen} onClose={onErrorClose} size="md" hideCloseButton>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalBody className="text-center py-8">
-                <div className="w-16 h-16 bg-danger-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-danger-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Failed</h2>
-                <p className="text-gray-600 mb-6">
-                  {errorMessage}
-                </p>
-              </ModalBody>
-              <ModalFooter className="justify-center">
-                <Button color="default" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="primary" onPress={() => { onClose(); onConfirmOpen(); }}>
-                  Try Again
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Loading Overlay */}
-      {isCreatingBooking && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Processing your reservation...</p>
-          </div>
-        </div>
-      )}
+      <BookingLoadingOverlay isVisible={isCreatingBooking} />
 
       <ContactHostModal
         isOpen={isContactOpen}

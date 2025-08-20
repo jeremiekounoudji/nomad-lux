@@ -30,6 +30,7 @@ import { usePropertySettings } from '../../../../hooks/usePropertySettings'
 import { usePropertySettingsStore } from '../../../../lib/stores/propertySettingsStore'
 import { useAuthStore } from '../../../../lib/stores/authStore'
 import { useAdminSettingsStore } from '../../../../lib/stores/adminSettingsStore'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import toast from 'react-hot-toast'
 
 interface PropertySettingsStepProps {
@@ -54,6 +55,7 @@ const DEFAULT_SETTINGS: PropertySettingsFormData = {
 }
 
 const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, setFormData }) => {
+  const { t } = useTranslation(['property', 'common'])
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [newSettings, setNewSettings] = useState<PropertySettingsFormData>(DEFAULT_SETTINGS)
   const [selectedSettingsId, setSelectedSettingsId] = useState<string>('')
@@ -93,11 +95,11 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
     const methods = adminSettings?.booking?.supportedPaymentMethods || ['card']
     return methods.map(method => ({
       value: method,
-      label: method === 'card' ? 'Credit/Debit Card' : 
-             method === 'paypal' ? 'PayPal' : 
-             method === 'bank_transfer' ? 'Bank Transfer' : method
+      label: method === 'card' ? t('property.settings.paymentMethods.card') : 
+             method === 'paypal' ? t('property.settings.paymentMethods.paypal') : 
+             method === 'bank_transfer' ? t('property.settings.paymentMethods.bankTransfer') : method
     }))
-  }, [adminSettings?.booking?.supportedPaymentMethods])
+  }, [adminSettings?.booking?.supportedPaymentMethods, t])
 
   const handleSelectExistingSettings = (settingsId: string) => {
     setSelectedSettingsId(settingsId)
@@ -153,12 +155,12 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
 
   const handleCreateAndSaveSettings = async () => {
     if (!user?.id) {
-      toast.error('Please sign in to create property settings')
+      toast.error(t('property.settings.errors.signInRequired'))
       return
     }
 
     if (!newSettings.settings_name.trim()) {
-      toast.error('Please enter a name for your settings')
+      toast.error(t('property.settings.errors.nameRequired'))
       return
     }
 
@@ -178,11 +180,11 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
       setShowCreateForm(false)
       setNewSettings(DEFAULT_SETTINGS)
       
-      toast.success('Property settings created successfully!')
+      toast.success(t('property.settings.success'))
       
     } catch (error) {
       console.error('❌ Error creating settings:', error)
-      toast.error('Failed to create property settings')
+      toast.error(t('property.settings.errors.createFailed'))
     }
   }
 
@@ -198,7 +200,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
     
     // Ensure at least one payment method is selected
     if (updatedMethods.length === 0) {
-      toast.error('At least one payment method must be selected')
+      toast.error(t('property.settings.errors.atLeastOnePaymentMethod'))
       return
     }
     
@@ -210,10 +212,10 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
   if (isLoadingHostSettings) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <Spinner size="lg" color="primary" />
-          <p className="text-gray-600 mt-4">Loading your property settings...</p>
-        </div>
+              <div className="text-center">
+        <Spinner size="lg" color="primary" />
+        <p className="text-gray-600 mt-4">{t('property.settings.loading')}</p>
+      </div>
       </div>
     )
   }
@@ -223,11 +225,10 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
       <div>
         <h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
           <Settings className="w-6 h-6 text-primary-600" />
-          Property Settings
+          {t('property.settings.title')}
         </h2>
         <p className="text-gray-600 mb-6">
-          Choose existing property settings or create new ones. These settings will control booking rules, 
-          payment preferences, and availability for your property.
+          {t('property.settings.description')}
         </p>
       </div>
 

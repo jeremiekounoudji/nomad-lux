@@ -14,6 +14,7 @@ import {
 } from '@heroui/react'
 import { Users, Ban, UserCheck, Trash2, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
 import { AdminUser } from '../../../../interfaces'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 
 interface BulkUserActionsModalProps {
   isOpen: boolean
@@ -30,6 +31,7 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
   action,
   onConfirm
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [reason, setReason] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -47,28 +49,28 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
     switch (action) {
       case 'suspend':
         return {
-          title: 'Suspend Users',
+          title: t('admin.users.bulkActions.suspend.title', { defaultValue: 'Suspend Users' }),
           color: 'warning' as const,
           icon: <Ban className="w-5 h-5" />,
-          description: `You are about to suspend ${users.length} users. This will prevent them from accessing the platform.`,
+          description: t('admin.users.bulkActions.suspend.description', { defaultValue: `You are about to suspend ${users.length} users. This will prevent them from accessing the platform.` }),
           requiresReason: true,
           destructive: false
         }
       case 'activate':
         return {
-          title: 'Activate Users',
+          title: t('admin.users.bulkActions.activate.title', { defaultValue: 'Activate Users' }),
           color: 'success' as const,
           icon: <UserCheck className="w-5 h-5" />,
-          description: `You are about to activate ${users.length} users. This will restore their platform access.`,
+          description: t('admin.users.bulkActions.activate.description', { defaultValue: `You are about to activate ${users.length} users. This will restore their platform access.` }),
           requiresReason: false,
           destructive: false
         }
       case 'delete':
         return {
-          title: 'Delete Users',
+          title: t('admin.users.bulkActions.delete.title', { defaultValue: 'Delete Users' }),
           color: 'danger' as const,
           icon: <Trash2 className="w-5 h-5" />,
-          description: `You are about to permanently delete ${users.length} users and all their data. This action cannot be undone.`,
+          description: t('admin.users.bulkActions.delete.description', { defaultValue: `You are about to permanently delete ${users.length} users and all their data. This action cannot be undone.` }),
           requiresReason: true,
           destructive: true
         }
@@ -111,7 +113,7 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
                   ? 'text-yellow-900' 
                   : 'text-green-900'
               }`}>
-                {config.destructive ? 'Destructive Action' : 'Bulk Action'}
+                {config.destructive ? t('admin.users.bulkActions.destructiveAction', { defaultValue: 'Destructive Action' }) : t('admin.users.bulkActions.bulkAction', { defaultValue: 'Bulk Action' })}
               </h4>
             </div>
             <p className={`text-sm ${
@@ -128,7 +130,7 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
           {/* Users List */}
           <div>
             <h4 className="font-semibold text-gray-900 mb-3">
-              Selected Users ({users.length})
+              {t('admin.users.bulkActions.selectedUsers', { defaultValue: `Selected Users (${users.length})` })}
             </h4>
             <div className="max-h-64 overflow-y-auto space-y-2 border border-gray-200 rounded-lg p-4">
               {users.map((user) => (
@@ -165,8 +167,8 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
           {config.requiresReason && (
             <div>
               <Textarea
-                label={`Reason for ${action}${action === 'delete' ? 'ion' : 'ing'}`}
-                placeholder={`Provide a reason for ${action === 'delete' ? 'deleting' : action === 'suspend' ? 'suspending' : ''} these users...`}
+                label={t('admin.users.bulkActions.reason.label', { defaultValue: `Reason for ${action}${action === 'delete' ? 'ion' : 'ing'}` })}
+                placeholder={t('admin.users.bulkActions.reason.placeholder', { defaultValue: `Provide a reason for ${action === 'delete' ? 'deleting' : action === 'suspend' ? 'suspending' : ''} these users...` })}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 minRows={3}
@@ -184,7 +186,7 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
                 color="danger"
               >
                 <span className="text-sm text-red-800">
-                  I understand that this action is permanent and cannot be undone. All user data, including bookings, properties, and payment history will be permanently deleted.
+                  {t('admin.users.bulkActions.deleteConfirmation', { defaultValue: 'I understand that this action is permanent and cannot be undone. All user data, including bookings, properties, and payment history will be permanently deleted.' })}
                 </span>
               </Checkbox>
             </div>
@@ -192,25 +194,25 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
 
           {/* Summary */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-semibold text-gray-900 mb-2">Action Summary</h4>
+            <h4 className="font-semibold text-gray-900 mb-2">{t('admin.users.bulkActions.summary.title', { defaultValue: 'Action Summary' })}</h4>
             <div className="text-sm text-gray-700 space-y-1">
-              <div>• {users.length} users will be {action === 'delete' ? 'deleted' : action}d</div>
-              {action === 'suspend' && <div>• Users will lose platform access immediately</div>}
-              {action === 'activate' && <div>• Users will regain platform access immediately</div>}
+              <div>• {t('admin.users.bulkActions.summary.usersAffected', { defaultValue: `${users.length} users will be ${action === 'delete' ? 'deleted' : action}d` })}</div>
+              {action === 'suspend' && <div>• {t('admin.users.bulkActions.summary.suspendEffect', { defaultValue: 'Users will lose platform access immediately' })}</div>}
+              {action === 'activate' && <div>• {t('admin.users.bulkActions.summary.activateEffect', { defaultValue: 'Users will regain platform access immediately' })}</div>}
               {action === 'delete' && (
                 <>
-                  <div>• All user data will be permanently removed</div>
-                  <div>• Associated bookings and properties will be affected</div>
+                  <div>• {t('admin.users.bulkActions.summary.deleteEffect1', { defaultValue: 'All user data will be permanently removed' })}</div>
+                  <div>• {t('admin.users.bulkActions.summary.deleteEffect2', { defaultValue: 'Associated bookings and properties will be affected' })}</div>
                 </>
               )}
-              <div>• Action will be logged in the audit trail</div>
+              <div>• {t('admin.users.bulkActions.summary.auditTrail', { defaultValue: 'Action will be logged in the audit trail' })}</div>
             </div>
           </div>
         </ModalBody>
         
         <ModalFooter>
           <Button variant="flat" onPress={onClose}>
-            Cancel
+            {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
           <Button
             color={config.color}

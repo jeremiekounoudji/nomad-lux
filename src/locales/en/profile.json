@@ -1,4 +1,46 @@
 {
+  "title": "My Profile",
+  "subtitle": "View and manage your account information",
+  "roles": {
+    "hostAndGuest": "Host & Guest"
+  },
+  "verified": "Verified",
+  "status": {
+    "active": "Active"
+  },
+  "stats": {
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "avgRating": "Avg Rating",
+    "reviews": "Reviews"
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location"
+  },
+  "accountDetails": "Account Details",
+  "account": {
+    "memberSince": "Member since",
+    "lastActive": "Last active",
+    "preferredLanguage": "Preferred Language"
+  },
+  "accountSummary": "Account Summary",
+  "summary": {
+    "verificationLevel": "Verification Level",
+    "complete": "Complete",
+    "accountStatus": "Account Status",
+    "currency": "Currency"
+  },
+  "actions": {
+    "editProfile": "Edit Profile"
+  },
+  "revenue": {
+    "totalRevenue": "Total Revenue",
+    "hostSince": "Host since"
+  },
+  "contactInformation": "Contact Information",
+  "defaultLanguage": "English",
   "edit": {
     "title": "Edit Profile",
     "subtitle": "Update your personal information and preferences",
@@ -45,6 +87,20 @@
       "smsDescription": "Receive urgent notifications via SMS"
     },
     "saveChanges": "Save Changes"
+  },
+  "languages": {
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "French",
+    "german": "German",
+    "italian": "Italian",
+    "portuguese": "Portuguese",
+    "chinese": "Chinese",
+    "japanese": "Japanese",
+    "korean": "Korean",
+    "arabic": "Arabic",
+    "hindi": "Hindi",
+    "russian": "Russian"
   }
 }
 

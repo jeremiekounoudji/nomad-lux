@@ -48,7 +48,9 @@
     "language": "Langue",
     "user": "Utilisateur",
     "target": "Cible",
-    "ip": "IP"
+    "ip": "IP",
+    "from": "De :",
+    "to": "À :"
   },
   "status": {
     "active": "Actif",
@@ -91,12 +93,14 @@
     "noPropertiesInArea": "Aucune propriété trouvée dans votre région",
     "noPropertiesInCity": "Aucune propriété trouvée à {{city}}",
     "failedToLoadProperties": "Échec du chargement des propriétés. Veuillez réessayer.",
-    "seenAllProperties": "Vous avez vu toutes les propriétés disponibles"
+    "seenAllProperties": "Vous avez vu toutes les propriétés disponibles",
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
   },
   "actions": {
     "close": "Fermer",
     "retry": "Réessayer",
-    "clear": "Effacer"
+    "clear": "Effacer",
+    "reset": "Réinitialiser aux valeurs par défaut"
   },
   "time": {
     "thisMonth": "Ce mois-ci"
@@ -122,7 +126,10 @@
     "someFailed": "Certains téléversements ont échoué",
     "uploadingFiles": "Téléversement des fichiers...",
     "progress": "Progression du téléversement",
-    "completedOfTotal": "{{completed}}/{{total}} terminé"
+    "completedOfTotal": "{{completed}}/{{total}} terminé",
+    "unknown": "Inconnu",
+    "overallProgress": "Progression générale du téléversement",
+    "completed": "100%"
   },
   "time": {
     "now": "Maintenant",
@@ -149,14 +156,18 @@
     "zones": {
       "est": "Heure de l'Est",
       "pst": "Heure du Pacifique"
-    }
+    },
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "monthly": "Mensuel"
   },
   "actions": {
     "close": "Fermer",
     "retry": "Réessayer",
     "clear": "Effacer",
     "enable": "Activer",
-    "disable": "Désactiver"
+    "disable": "Désactiver",
+    "backToHome": "Retour à l'accueil"
   },
   "notSpecified": "Non spécifié",
   "notProvided": "Non fourni",

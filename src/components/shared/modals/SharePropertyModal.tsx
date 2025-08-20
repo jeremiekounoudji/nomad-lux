@@ -69,7 +69,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       action: () => handleCopyLink()
     },
     {
-      name: 'WhatsApp',
+      name: t('property.actions.whatsapp'),
       icon: <MessageCircle className="w-5 h-5" />,
       color: 'success',
       bgColor: 'bg-green-100 hover:bg-green-200',
@@ -77,7 +77,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       action: () => openSocialShare(socialUrls.whatsapp)
     },
     {
-      name: 'Facebook',
+      name: t('property.share.facebook'),
       icon: <Facebook className="w-5 h-5" />,
       color: 'primary',
       bgColor: 'bg-blue-100 hover:bg-blue-200',
@@ -85,7 +85,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       action: () => openSocialShare(socialUrls.facebook)
     },
     {
-      name: 'Twitter',
+      name: t('property.share.twitter'),
       icon: <Twitter className="w-5 h-5" />,
       color: 'secondary',
       bgColor: 'bg-sky-100 hover:bg-sky-200',
@@ -101,7 +101,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       action: () => window.location.href = socialUrls.email
     },
     {
-      name: 'Instagram',
+      name: t('property.share.instagram'),
       icon: <Instagram className="w-5 h-5" />,
       color: 'danger',
       bgColor: 'bg-pink-100 hover:bg-pink-200',

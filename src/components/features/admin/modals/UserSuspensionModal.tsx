@@ -13,6 +13,7 @@ import {
 } from '@heroui/react'
 import { Ban, AlertTriangle } from 'lucide-react'
 import { AdminUser } from '../../../../interfaces'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 
 interface UserSuspensionModalProps {
   isOpen: boolean
@@ -27,6 +28,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
   user,
   onConfirm
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [reason, setReason] = useState('')
 
   const handleSubmit = () => {
@@ -50,8 +52,8 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
             <Ban className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-bold">Suspend User Account</h3>
-            <p className="text-sm font-normal text-orange-700">This action will temporarily disable the user's access</p>
+            <h3 className="text-lg font-bold">{t('admin.users.suspension.title', { defaultValue: 'Suspend User Account' })}</h3>
+            <p className="text-sm font-normal text-orange-700">{t('admin.users.suspension.subtitle', { defaultValue: 'This action will temporarily disable the user\'s access' })}</p>
           </div>
         </ModalHeader>
         
@@ -63,9 +65,9 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
                 <div className="flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-amber-800">Important Notice</h4>
+                    <h4 className="font-medium text-amber-800">{t('admin.users.suspension.notice.title', { defaultValue: 'Important Notice' })}</h4>
                     <p className="text-sm text-amber-700 mt-1">
-                      Suspending this user will immediately restrict their access to the platform. They will not be able to make new bookings or list properties.
+                      {t('admin.users.suspension.notice.description', { defaultValue: 'Suspending this user will immediately restrict their access to the platform. They will not be able to make new bookings or list properties.' })}
                     </p>
                   </div>
                 </div>
@@ -73,7 +75,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
 
               {/* User Information */}
               <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">User Details</h4>
+                <h4 className="font-semibold text-gray-900 mb-3">{t('admin.users.suspension.userDetails', { defaultValue: 'User Details' })}</h4>
                 <div className="flex items-center gap-3 mb-4">
                   <Avatar src={user.avatar} name={user.name} size="md" />
                   <div>
@@ -101,10 +103,10 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><strong>Total Bookings:</strong> {user.totalBookings}</div>
-                  <div><strong>Properties:</strong> {user.totalProperties}</div>
-                  <div><strong>Member Since:</strong> {user.joinDate}</div>
-                  <div><strong>Last Login:</strong> {user.lastLogin}</div>
+                  <div><strong>{t('admin.users.suspension.labels.totalBookings', { defaultValue: 'Total Bookings' })}:</strong> {user.totalBookings}</div>
+                  <div><strong>{t('admin.users.suspension.labels.properties', { defaultValue: 'Properties' })}:</strong> {user.totalProperties}</div>
+                  <div><strong>{t('admin.users.suspension.labels.memberSince', { defaultValue: 'Member Since' })}:</strong> {user.joinDate}</div>
+                  <div><strong>{t('admin.users.suspension.labels.lastLogin', { defaultValue: 'Last Login' })}:</strong> {user.lastLogin}</div>
                 </div>
               </div>
 
@@ -113,17 +115,17 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
               {/* Suspension Reason */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Reason for Suspension <span className="text-red-500">*</span>
+                  {t('admin.users.suspension.reason.label', { defaultValue: 'Reason for Suspension' })} <span className="text-red-500">*</span>
                 </label>
                 <Textarea
-                  placeholder="Please provide a detailed reason for suspending this user account..."
+                  placeholder={t('admin.users.suspension.reason.placeholder', { defaultValue: 'Please provide a detailed reason for suspending this user account...' })}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   minRows={4}
                   className="w-full"
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  This reason will be logged and may be shared with the user upon request.
+                  {t('admin.users.suspension.reason.help', { defaultValue: 'This reason will be logged and may be shared with the user upon request.' })}
                 </p>
               </div>
             </>
@@ -132,7 +134,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
         
         <ModalFooter className="bg-gray-50 rounded-b-lg">
           <Button variant="flat" onPress={handleClose}>
-            Cancel
+            {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
           <Button
             color="warning"
@@ -140,7 +142,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
             isDisabled={!reason.trim()}
             className="bg-orange-600 hover:bg-orange-700 text-white"
           >
-            Suspend User Account
+            {t('admin.users.suspension.confirmButton', { defaultValue: 'Suspend User Account' })}
           </Button>
         </ModalFooter>
       </ModalContent>

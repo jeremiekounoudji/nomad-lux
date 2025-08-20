@@ -29,6 +29,7 @@ import {
   Pause
 } from 'lucide-react';
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 export interface MapFilter {
   status: ('approved' | 'pending' | 'rejected' | 'suspended')[];
@@ -66,6 +67,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
   onRefresh,
   className = ''
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
@@ -124,7 +126,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1">
           <div className="flex items-center gap-2">
             <Input
-              placeholder="Search by location, property name..."
+              placeholder={t('admin.mapToolbar.searchPlaceholder', { defaultValue: 'Search by location, property name...' })}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -141,17 +143,17 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
               className={showFilters ? 'bg-primary-100 text-primary-700' : ''}
             >
               <Filter className="w-4 h-4" />
-              Filters
+              {t('admin.mapToolbar.filters', { defaultValue: 'Filters' })}
             </Button>
           </div>
 
           {/* Status Filter Chips */}
           <div className="flex flex-wrap items-center gap-2">
             {[
-              { key: 'approved', label: 'Approved', color: 'success', count: stats.approved },
-              { key: 'pending', label: 'Pending', color: 'warning', count: stats.pending },
-              { key: 'rejected', label: 'danger', count: stats.rejected },
-              { key: 'suspended', label: 'Suspended', color: 'default', count: stats.suspended }
+              { key: 'approved', label: t('admin.mapToolbar.statusLabels.approved', { defaultValue: 'Approved' }), color: 'success', count: stats.approved },
+              { key: 'pending', label: t('admin.mapToolbar.statusLabels.pending', { defaultValue: 'Pending' }), color: 'warning', count: stats.pending },
+              { key: 'rejected', label: t('admin.mapToolbar.statusLabels.rejected', { defaultValue: 'Rejected' }), color: 'danger', count: stats.rejected },
+              { key: 'suspended', label: t('admin.mapToolbar.statusLabels.suspended', { defaultValue: 'Suspended' }), color: 'default', count: stats.suspended }
             ].map(({ key, label, color, count }) => (
               <Chip
                 key={key}
@@ -171,7 +173,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
         <div className="flex items-center gap-2">
           {/* Map Tools */}
           <ButtonGroup size="sm" variant="light">
-            <Tooltip content="Toggle selection mode">
+            <Tooltip content={t('admin.mapToolbar.tools.selection', { defaultValue: 'Toggle selection mode' })}>
               <Button
                 isIconOnly
                 onClick={() => onToolToggle('selection', !activeTools.selection)}
@@ -180,7 +182,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 <Square className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content="Distance measurement">
+            <Tooltip content={t('admin.mapToolbar.tools.measurement', { defaultValue: 'Distance measurement' })}>
               <Button
                 isIconOnly
                 onClick={() => onToolToggle('measurement', !activeTools.measurement)}
@@ -189,7 +191,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 <Ruler className="w-4 h-4" />
               </Button>
             </Tooltip>
-            <Tooltip content="Area selection">
+            <Tooltip content={t('admin.mapToolbar.tools.areaSelection', { defaultValue: 'Area selection' })}>
               <Button
                 isIconOnly
                 onClick={() => onToolToggle('areaSelection', !activeTools.areaSelection)}
@@ -206,7 +208,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             onClick={onRefresh}
             startContent={<RefreshCw className="w-4 h-4" />}
           >
-            Refresh
+            {t('admin.mapToolbar.refresh', { defaultValue: 'Refresh' })}
           </Button>
 
           {/* Export Dropdown */}
@@ -217,18 +219,18 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 size="sm"
                 startContent={<Download className="w-4 h-4" />}
               >
-                Export
+                {t('admin.mapToolbar.export', { defaultValue: 'Export' })}
               </Button>
             </DropdownTrigger>
-            <DropdownMenu aria-label="Export options">
+            <DropdownMenu aria-label={t('admin.mapToolbar.exportOptions', { defaultValue: 'Export options' })}>
               <DropdownItem key="csv" onClick={() => onExport(selectedProperties.length > 0 ? selectedProperties : properties, 'csv')}>
-                Export as CSV
+                {t('admin.mapToolbar.exportAs.csv', { defaultValue: 'Export as CSV' })}
               </DropdownItem>
               <DropdownItem key="json" onClick={() => onExport(selectedProperties.length > 0 ? selectedProperties : properties, 'json')}>
-                Export as JSON
+                {t('admin.mapToolbar.exportAs.json', { defaultValue: 'Export as JSON' })}
               </DropdownItem>
               <DropdownItem key="excel" onClick={() => onExport(selectedProperties.length > 0 ? selectedProperties : properties, 'excel')}>
-                Export as Excel
+                {t('admin.mapToolbar.exportAs.excel', { defaultValue: 'Export as Excel' })}
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
@@ -243,40 +245,40 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
               <CheckCircle className="w-5 h-5 text-primary-600" />
             </Badge>
             <span className="text-sm font-medium text-primary-700">
-              {stats.selected} propert{stats.selected === 1 ? 'y' : 'ies'} selected
+              {t('admin.mapToolbar.selectedCount', { count: stats.selected, defaultValue: '{{count}} propert{{count === 1 ? "y" : "ies"}} selected' })}
             </span>
           </div>
           
           <div className="flex items-center gap-2">
             <ButtonGroup size="sm">
-              <Tooltip content="Approve selected">
+              <Tooltip content={t('admin.mapToolbar.bulkActions.approve', { defaultValue: 'Approve selected' })}>
                 <Button
                   color="success"
                   variant="light"
                   onClick={() => handleBulkActionClick('approve')}
                   startContent={<CheckCircle className="w-4 h-4" />}
                 >
-                  Approve
+                  {t('admin.mapToolbar.bulkActions.approveButton', { defaultValue: 'Approve' })}
                 </Button>
               </Tooltip>
-              <Tooltip content="Reject selected">
+              <Tooltip content={t('admin.mapToolbar.bulkActions.reject', { defaultValue: 'Reject selected' })}>
                 <Button
                   color="danger"
                   variant="light"
                   onClick={() => handleBulkActionClick('reject')}
                   startContent={<XCircle className="w-4 h-4" />}
                 >
-                  Reject
+                  {t('admin.mapToolbar.bulkActions.rejectButton', { defaultValue: 'Reject' })}
                 </Button>
               </Tooltip>
-              <Tooltip content="Suspend selected">
+              <Tooltip content={t('admin.mapToolbar.bulkActions.suspend', { defaultValue: 'Suspend selected' })}>
                 <Button
                   color="warning"
                   variant="light"
                   onClick={() => handleBulkActionClick('suspend')}
                   startContent={<Pause className="w-4 h-4" />}
                 >
-                  Suspend
+                  {t('admin.mapToolbar.bulkActions.suspendButton', { defaultValue: 'Suspend' })}
                 </Button>
               </Tooltip>
             </ButtonGroup>
@@ -288,14 +290,14 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
       {showFilters && (
         <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-gray-700">Advanced Filters</h3>
+            <h3 className="text-sm font-semibold text-gray-700">{t('admin.mapToolbar.advancedFilters.title', { defaultValue: 'Advanced Filters' })}</h3>
             <Button
               size="sm"
               variant="light"
               onClick={clearAllFilters}
               className="text-primary-600 hover:text-primary-700"
             >
-              Clear All
+              {t('admin.mapToolbar.advancedFilters.clearAll', { defaultValue: 'Clear All' })}
             </Button>
           </div>
           
@@ -303,12 +305,12 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             {/* Price Range */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                Price Range (per night)
+                {t('admin.mapToolbar.advancedFilters.priceRange', { defaultValue: 'Price Range (per night)' })}
               </label>
               <div className="flex items-center gap-2">
                 <Input
                   size="sm"
-                  placeholder="Min"
+                  placeholder={t('admin.mapToolbar.advancedFilters.min', { defaultValue: 'Min' })}
                   type="number"
                   value={activeFilters.priceRange.min.toString()}
                   onChange={(e) => onFilterChange({
@@ -319,7 +321,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 <span className="text-gray-400">-</span>
                 <Input
                   size="sm"
-                  placeholder="Max"
+                  placeholder={t('admin.mapToolbar.advancedFilters.max', { defaultValue: 'Max' })}
                   type="number"
                   value={activeFilters.priceRange.max.toString()}
                   onChange={(e) => onFilterChange({
@@ -333,7 +335,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             {/* Date Range */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                Created Date Range
+                {t('admin.mapToolbar.advancedFilters.dateRange', { defaultValue: 'Created Date Range' })}
               </label>
               <div className="flex items-center gap-2">
                 <Input
@@ -365,12 +367,12 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             {/* Quick Stats */}
             <div className="space-y-2">
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
-                Quick Stats
+                {t('admin.mapToolbar.advancedFilters.quickStats', { defaultValue: 'Quick Stats' })}
               </label>
               <div className="text-sm text-gray-600 space-y-1">
-                <div>Total Properties: {stats.total}</div>
-                <div>Visible: {properties.length}</div>
-                <div>Selected: {stats.selected}</div>
+                <div>{t('admin.mapToolbar.advancedFilters.totalProperties', { defaultValue: 'Total Properties' })}: {stats.total}</div>
+                <div>{t('admin.mapToolbar.advancedFilters.visible', { defaultValue: 'Visible' })}: {properties.length}</div>
+                <div>{t('admin.mapToolbar.advancedFilters.selected', { defaultValue: 'Selected' })}: {stats.selected}</div>
               </div>
             </div>
           </div>

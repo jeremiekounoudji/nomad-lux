@@ -218,12 +218,12 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                       <DollarSign className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 font-medium">Total Revenue</p>
+                      <p className="text-sm text-gray-600 font-medium">{t('profile.revenue.totalRevenue')}</p>
                       <p className="text-2xl font-bold text-purple-700">${user.total_revenue.toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-600">Host since</p>
+                    <p className="text-sm text-gray-600">{t('profile.revenue.hostSince')}</p>
                     <p className="text-sm font-medium text-gray-900">{formatDate(user.host_since)}</p>
                   </div>
                 </div>
@@ -237,7 +237,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
               <CardBody className="p-6">
                 <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Mail className="w-5 h-5 text-primary-600" />
-                  Contact Information
+                  {t('profile.contactInformation')}
                 </h4>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -316,7 +316,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-500">{t('profile.account.preferredLanguage', 'Preferred Language')}</p>
-                      <p className="font-medium text-gray-900">{user.language_preference || 'English'}</p>
+                      <p className="font-medium text-gray-900">{user.language_preference || t('profile.defaultLanguage')}</p>
                     </div>
                   </div>
                 </div>

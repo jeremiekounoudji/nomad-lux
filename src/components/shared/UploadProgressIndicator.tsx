@@ -37,7 +37,7 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
           color="primary"
           size="sm"
           className="w-full"
-          aria-label="Overall upload progress"
+          aria-label={t('common.upload.overallProgress')}
         />
 
         {/* Individual File Progress */}
@@ -69,7 +69,7 @@ const UploadProgressIndicator: React.FC<UploadProgressIndicatorProps> = ({
                     upload.status === 'error' ? 'text-red-600' :
                     'text-blue-600'
                   }`}>
-                    {upload.status === 'completed' ? '100%' : 
+                    {upload.status === 'completed' ? t('common.upload.completed') : 
                      upload.status === 'error' ? t('common.upload.error', 'Error') :
                      `${Math.round(upload.progress)}%`}
                   </span>

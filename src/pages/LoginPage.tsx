@@ -15,7 +15,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
   const { signIn, isLoading } = useAuth()
   const { isAuthenticated } = useAuthStore()
-  const { t } = useTranslation('auth')
+  const { t } = useTranslation(['auth', 'common'])
 
   // Auto-redirect if already authenticated
   useEffect(() => {
@@ -31,7 +31,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
     setError('')
     
     if (!email || !password) {
-      setError(t('messages.loginError', 'Please fill in all fields'))
+      setError(t('auth.messages.fillAllFields'))
       return
     }
 
@@ -48,13 +48,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       }
 
       console.log('✅ User sign in initiated - waiting for auth state update')
-      toast.success(t('messages.loginSuccess'))
+      toast.success(t('auth.messages.loginSuccess'))
       // The redirect will happen automatically via useEffect when auth state updates
       
     } catch (err: any) {
       console.error('❌ Exception during user sign in:', err)
-      setError(err.message || t('messages.unexpectedError', 'An unexpected error occurred'))
-      toast.error(err.message || t('messages.unexpectedError', 'An unexpected error occurred'))
+      setError(err.message || t('auth.messages.unexpectedError'))
+      toast.error(err.message || t('auth.messages.unexpectedError'))
     }
   }
 
@@ -65,7 +65,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
   const handleForgotPassword = () => {
     // TODO: Implement forgot password functionality
     console.log('Forgot password clicked')
-    toast('Forgot password feature coming soon!', { icon: 'ℹ️' })
+    toast(t('auth.messages.forgotPasswordComingSoon'), { icon: 'ℹ️' })
   }
 
 
@@ -101,8 +101,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <span className="text-white font-bold text-xl">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('login.title')}</h1>
-            <p className="text-white/80 text-sm">{t('login.subtitle')}</p>
+            <h1 className="text-2xl font-bold text-white mb-2">{t('auth.login.title')}</h1>
+            <p className="text-white/80 text-sm">{t('auth.login.subtitle')}</p>
           </div>
 
           {/* Error Message */}
@@ -116,8 +116,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
           <div className="space-y-6">
             <Input
               type="email"
-              label={t('login.email')}
-              placeholder={t('login.email')}
+              label={t('auth.login.email')}
+              placeholder={t('auth.login.email')}
               value={email}
               onValueChange={setEmail}
               startContent={<Mail className="w-4 h-4 text-white/60" />}
@@ -132,8 +132,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             />
 
             <Input
-              label={t('login.password')}
-              placeholder={t('login.password')}
+              label={t('auth.login.password')}
+              placeholder={t('auth.login.password')}
               value={password}
               onValueChange={setPassword}
               startContent={<Lock className="w-4 h-4 text-white/60" />}
@@ -162,7 +162,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
                 className="text-sm text-white/80 hover:text-white cursor-pointer"
                 onPress={handleForgotPassword}
               >
-                {t('login.forgotPassword')}
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
 
@@ -174,17 +174,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
               isLoading={isLoading}
               isDisabled={!email || !password}
             >
-              {isLoading ? t('login.signingIn', 'Signing In...') : t('login.signIn')}
+              {isLoading ? t('auth.login.signingIn') : t('auth.login.signIn')}
             </Button>
 
             <div className="text-center">
               <span className="text-white/80 text-sm">
-                {t('login.noAccount')}{' '}
+                {t('auth.login.noAccount')}{' '}
                 <Link 
                   className="text-white font-semibold hover:text-white/80 cursor-pointer"
                   onPress={() => onPageChange?.('register')}
                 >
-                  {t('login.signUp')}
+                  {t('auth.login.signUp')}
                 </Link>
               </span>
             </div>

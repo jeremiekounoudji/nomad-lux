@@ -71,9 +71,9 @@
     "contact": {
       "title": "Vous avez encore besoin d'aide ?",
       "description": "Notre équipe d'assistance est là pour vous aider pour toute question ou problème.",
-      "liveChat": { "title": "Chat en direct", "description": "Obtenez une aide instantanée de notre équipe d'assistance", "available": "24/7" },
-      "email": { "title": "Assistance par e-mail", "description": "Envoyez-nous un message détaillé", "available": "Réponse sous 24h" },
-      "phone": { "title": "Assistance téléphonique", "description": "Parlez directement avec notre équipe", "available": "Lun-Ven 9h-18h" }
+      "liveChat": { "title": "Chat en direct", "description": "Obtenez une aide instantanée de notre équipe d'assistance", "available": "24/7", "action": "Ouvrir le chat en direct" },
+      "email": { "title": "Assistance par e-mail", "description": "Envoyez-nous un message détaillé", "available": "Réponse sous 24h", "address": "support@nomadlux.com" },
+      "phone": { "title": "Assistance téléphonique", "description": "Parlez directement avec notre équipe", "available": "Lun-Ven 9h-18h", "number": "+1-800-NOMAD-LUX" }
     },
     "popularArticles": {
       "title": "Articles populaires",

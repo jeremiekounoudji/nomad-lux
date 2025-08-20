@@ -324,7 +324,7 @@ const WalletPage: FC = () => {
                                 payment.payment_status === 'completed' ? 'text-green-600' : 
                                 payment.payment_status === 'pending' ? 'text-yellow-600' : 'text-red-600'
                               }`}>
-                                {payment.payment_status}
+                                {t(`wallet.transactions.status.${payment.payment_status}`)}
                               </p>
                             </div>
                           </div>

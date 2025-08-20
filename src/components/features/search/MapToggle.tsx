@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@heroui/react';
 import { Grid, Map } from 'lucide-react';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface MapToggleProps {
   view: 'list' | 'map';
@@ -9,6 +10,8 @@ interface MapToggleProps {
 }
 
 export const MapToggle: React.FC<MapToggleProps> = ({ view, onViewChange, className = '' }) => {
+  const { t } = useTranslation(['search', 'common']);
+  
   return (
     <div className={`inline-flex rounded-lg border border-gray-200 bg-white shadow-sm ${className}`}>
       <Button
@@ -20,7 +23,7 @@ export const MapToggle: React.FC<MapToggleProps> = ({ view, onViewChange, classN
         onClick={() => onViewChange('list')}
       >
         <Grid className="w-4 h-4" />
-        <span className="hidden sm:inline">List</span>
+        <span className="hidden sm:inline">{t('search.viewToggle.list', { defaultValue: 'List' })}</span>
       </Button>
       <Button
         className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors rounded-r-lg ${
@@ -31,7 +34,7 @@ export const MapToggle: React.FC<MapToggleProps> = ({ view, onViewChange, classN
         onClick={() => onViewChange('map')}
       >
         <Map className="w-4 h-4" />
-        <span className="hidden sm:inline">Map</span>
+        <span className="hidden sm:inline">{t('search.viewToggle.map', { defaultValue: 'Map' })}</span>
       </Button>
     </div>
   );

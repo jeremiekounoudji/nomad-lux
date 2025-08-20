@@ -20,6 +20,7 @@ import {
 } from '@heroui/react'
 import { MessageSquare, Mail, Smartphone, Bell, Send } from 'lucide-react'
 import { AdminUser } from '../../../../interfaces'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 
 interface SendMessageModalProps {
   isOpen: boolean
@@ -43,6 +44,7 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
   users = [],
   onSend
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [messageType, setMessageType] = useState<'email' | 'sms' | 'push'>('email')
   const [subject, setSubject] = useState('')
   const [message, setMessage] = useState('')
@@ -82,13 +84,13 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
   const getPlaceholderText = () => {
     switch (messageType) {
       case 'email':
-        return 'Enter your email message here...\n\nThis email will be sent to the selected user(s) with your admin signature.'
+        return t('admin.messages.placeholders.email', { defaultValue: 'Enter your email message here...\n\nThis email will be sent to the selected user(s) with your admin signature.' })
       case 'sms':
-        return 'Enter your SMS message here (160 characters max)...'
+        return t('admin.messages.placeholders.sms', { defaultValue: 'Enter your SMS message here (160 characters max)...' })
       case 'push':
-        return 'Enter your push notification message here...'
+        return t('admin.messages.placeholders.push', { defaultValue: 'Enter your push notification message here...' })
       default:
-        return 'Enter your message here...'
+        return t('admin.messages.placeholders.default', { defaultValue: 'Enter your message here...' })
     }
   }
 
@@ -105,13 +107,16 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary-500" />
-          Send Message{isMultiple ? ` to ${recipientList.length} Users` : ` to ${user?.name}`}
+          {isMultiple 
+            ? t('admin.messages.sendToMultiple', { defaultValue: `Send Message to ${recipientList.length} Users` })
+            : t('admin.messages.sendToUser', { defaultValue: `Send Message to ${user?.name}` })
+          }
         </ModalHeader>
         <ModalBody className="gap-6">
           {/* Recipients Section */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              {isMultiple ? 'Recipients' : 'Recipient'}
+              {isMultiple ? t('admin.messages.recipients', { defaultValue: 'Recipients' }) : t('admin.messages.recipient', { defaultValue: 'Recipient' })}
             </label>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {recipientList.map((recipient) => (
@@ -153,7 +158,7 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
           {/* Message Type Selection */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
-              Message Type
+              {t('admin.messages.messageType', { defaultValue: 'Message Type' })}
             </label>
             <Tabs
               selectedKey={messageType}
@@ -163,19 +168,19 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
               <Tab key="email" title={
                 <div className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  Email
+                  {t('admin.messages.types.email', { defaultValue: 'Email' })}
                 </div>
               } />
               <Tab key="sms" title={
                 <div className="flex items-center gap-2">
                   <Smartphone className="w-4 h-4" />
-                  SMS
+                  {t('admin.messages.types.sms', { defaultValue: 'SMS' })}
                 </div>
               } />
               <Tab key="push" title={
                 <div className="flex items-center gap-2">
                   <Bell className="w-4 h-4" />
-                  Push Notification
+                  {t('admin.messages.types.push', { defaultValue: 'Push Notification' })}
                 </div>
               } />
             </Tabs>
@@ -185,8 +190,8 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
           {messageType === 'email' && (
             <div>
               <Input
-                label="Subject"
-                placeholder="Enter email subject..."
+                label={t('admin.messages.subject', { defaultValue: 'Subject' })}
+                placeholder={t('admin.messages.subjectPlaceholder', { defaultValue: 'Enter email subject...' })}
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 startContent={<Mail className="w-4 h-4 text-gray-400" />}
@@ -198,41 +203,41 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
           {/* Message Content */}
           <div>
             <Textarea
-              label="Message"
+              label={t('admin.messages.message', { defaultValue: 'Message' })}
               placeholder={getPlaceholderText()}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               minRows={4}
               maxRows={8}
               maxLength={getMaxLength()}
-              description={`${message.length}/${getMaxLength()} characters`}
+              description={t('admin.messages.characterCount', { defaultValue: `${message.length}/${getMaxLength()} characters` })}
               isRequired
             />
           </div>
 
           {/* Message Preview */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">Preview</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">{t('admin.messages.preview', { defaultValue: 'Preview' })}</label>
             <Card className="bg-gray-50 border-dashed border-2 border-gray-200">
               <CardBody className="p-4">
                 <div className="flex items-center gap-2 mb-2">
                   {getMessageTypeIcon(messageType)}
-                  <span className="text-sm font-medium text-gray-700">Preview</span>
+                  <span className="text-sm font-medium text-gray-700">{t('admin.messages.preview', { defaultValue: 'Preview' })}</span>
                 </div>
                 <div className="text-sm text-gray-600">
                   {messageType === 'email' && subject && (
                     <div className="mb-2">
-                      <strong>Subject:</strong> {subject}
+                      <strong>{t('admin.messages.subject', { defaultValue: 'Subject' })}:</strong> {subject}
                     </div>
                   )}
                   <div>
-                    {message || 'Your message will appear here...'}
+                    {message || t('admin.messages.previewPlaceholder', { defaultValue: 'Your message will appear here...' })}
                   </div>
                   {messageType === 'email' && (
                     <div className="mt-3 pt-3 border-t border-gray-300 text-xs text-gray-500">
-                      <p>Best regards,</p>
-                      <p>Nomad Lux Admin Team</p>
-                      <p>admin@nomadlux.com</p>
+                      <p>{t('admin.messages.signature.bestRegards', { defaultValue: 'Best regards,' })}</p>
+                      <p>{t('admin.messages.signature.team', { defaultValue: 'Nomad Lux Admin Team' })}</p>
+                      <p>{t('admin.messages.signature.email', { defaultValue: 'admin@nomadlux.com' })}</p>
                     </div>
                   )}
                 </div>
@@ -243,7 +248,7 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
         
         <ModalFooter className="bg-gray-50 rounded-b-lg">
           <Button variant="flat" onPress={handleClose}>
-            Cancel
+            {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
           <Button
             color="primary"
@@ -252,7 +257,12 @@ export const SendMessageModal: React.FC<SendMessageModalProps> = ({
             startContent={<Send className="w-4 h-4" />}
             className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            Send {messageType === 'email' ? 'Email' : messageType === 'sms' ? 'SMS' : 'Notification'}
+            {messageType === 'email' 
+              ? t('admin.messages.sendEmail', { defaultValue: 'Send Email' })
+              : messageType === 'sms' 
+              ? t('admin.messages.sendSMS', { defaultValue: 'Send SMS' })
+              : t('admin.messages.sendNotification', { defaultValue: 'Send Notification' })
+            }
           </Button>
         </ModalFooter>
       </ModalContent>

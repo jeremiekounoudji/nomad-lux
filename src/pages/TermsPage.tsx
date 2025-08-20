@@ -96,9 +96,9 @@ const TermsPage: React.FC<TermsPageProps> = ({ onPageChange }) => {
               {t('terms.sections.contact.description')}
             </p>
             <p className="text-gray-900">
-              {t('terms.sections.contact.email', 'Email')}: legal@nomadlux.com<br />
-              {t('terms.sections.contact.address', 'Address')}: 123 Luxury Street, Suite 100<br />
-              {t('terms.sections.contact.phone', 'Phone')}: +1 (555) 123-4567
+              {t('terms.sections.contact.email')}: {t('terms.sections.contact.emailAddress')}<br />
+              {t('terms.sections.contact.address')}: {t('terms.sections.contact.streetAddress')}<br />
+              {t('terms.sections.contact.phone')}: {t('terms.sections.contact.phoneNumber')}
             </p>
           </section>
         </div>

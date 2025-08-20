@@ -12,8 +12,8 @@ interface LanguageSelectorProps {
 }
 
 const languages = [
-  { code: 'en' as Language, name: 'English', flag: '🇺🇸' },
-  { code: 'fr' as Language, name: 'Français', flag: '🇫🇷' }
+  { code: 'en' as Language, name: 'languages.en', flag: '🇺🇸' },
+  { code: 'fr' as Language, name: 'languages.fr', flag: '🇫🇷' }
 ]
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
@@ -80,7 +80,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           startContent={showFlags ? currentLang?.flag : <Languages className="w-4 h-4" />}
           endContent={<ChevronDown className="w-3 h-3" />}
         >
-          {currentLang?.name}
+          {t(currentLang?.name || 'languages.en')}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-2 min-w-[160px]">
@@ -101,7 +101,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             >
               <div className="flex items-center gap-2">
                 {showFlags && <span className="text-lg">{language.flag}</span>}
-                <span className="font-medium">{language.name}</span>
+                <span className="font-medium">{t(language.name)}</span>
               </div>
               {currentLanguage === language.code && (
                 <Check className="w-4 h-4 text-primary-600" />
@@ -157,7 +157,7 @@ export const CompactLanguageSelector: React.FC<{ className?: string }> = ({ clas
             >
               <div className="flex items-center gap-2">
                 <span className="text-base">{language.flag}</span>
-                <span className="text-sm font-medium">{language.name}</span>
+                <span className="text-sm font-medium">{t(language.name)}</span>
               </div>
               {currentLanguage === language.code && (
                 <Check className="w-3 h-3 text-primary-600" />
@@ -197,7 +197,7 @@ export const FullLanguageSelector: React.FC<{ className?: string }> = ({ classNa
           >
             <div className="flex items-center gap-3">
               <span className="text-xl">{language.flag}</span>
-              <span className="font-medium">{language.name}</span>
+              <span className="font-medium">{t(language.name)}</span>
             </div>
             {currentLanguage === language.code && (
               <Check className="w-5 h-5 text-primary" />

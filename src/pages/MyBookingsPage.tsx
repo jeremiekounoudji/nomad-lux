@@ -53,7 +53,7 @@ const ALL_STATUSES: BookingStatus[] = [
 
 const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const { user } = useAuthStore()
-  const { t } = useTranslation('booking')
+  const { t } = useTranslation(['booking', 'common'])
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
@@ -113,29 +113,29 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               onPress={() => handleCancelBooking(booking)}
               startContent={<X className="w-4 h-4" />}
             >
-              Cancel
+              {t('booking.actions.cancelBooking')}
             </Button>
             <Button size="sm" color="secondary" variant="flat">
-              Message Host
+              {t('booking.actions.contactHost')}
             </Button>
           </div>
         )
       case 'completed':
         return (
-          <div className="flex gap-2">
-            <Button size="sm" variant="flat">
-              Re-Book
-            </Button>
-            <Button size="sm" color="primary">
-              Write Review
-            </Button>
-          </div>
+                  <div className="flex gap-2">
+          <Button size="sm" variant="flat">
+            {t('booking.actions.rebook')}
+          </Button>
+          <Button size="sm" color="primary">
+            {t('booking.actions.leaveReview')}
+          </Button>
+        </div>
         )
       case 'cancelled':
         return (
-          <Button size="sm" variant="flat">
-            Re-Book
-          </Button>
+                  <Button size="sm" variant="flat">
+          {t('booking.actions.rebook')}
+        </Button>
         )
       default:
         return null
@@ -344,7 +344,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <User className="w-5 h-5" />
-                        Host Information
+                        {t('booking.details.hostInformation')}
                       </h4>
                       <div className="flex items-center gap-3">
                         <Avatar 
@@ -386,7 +386,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           variant="flat"
                           startContent={<MessageCircle className="w-4 h-4" />}
                         >
-                          Message
+                          {t('booking.actions.contactHost')}
                         </Button>
                       </div>
                     </div>
@@ -397,7 +397,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <Calendar className="w-5 h-5" />
-                        Booking Information
+                        {t('booking.details.bookingInformation')}
                       </h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
@@ -425,7 +425,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                     <div>
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <CreditCard className="w-5 h-5" />
-                        Payment Information
+                        {t('booking.details.paymentInformation')}
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
@@ -472,7 +472,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  {t('common.buttons.close')}
                 </Button>
                 {selectedBooking && (
                   <div className="flex gap-2">

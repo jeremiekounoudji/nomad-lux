@@ -31,11 +31,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     phone: user.phone || '',
     bio: user.bio || '',
     location: user.location || '',
-    dateOfBirth: user.dateOfBirth || '',
-    preferredLanguage: user.preferredLanguage || 'English',
-    emailNotifications: user.emailNotifications !== false,
-    smsNotifications: user.smsNotifications !== false,
-    profileVisibility: user.profileVisibility || 'public'
+          dateOfBirth: user.date_of_birth || '',
+      preferredLanguage: 'English',
+      emailNotifications: true,
+      smsNotifications: true,
+      profileVisibility: 'public'
   })
   const [isLoading, setIsLoading] = useState(false)
   const [showPasswordFields, setShowPasswordFields] = useState(false)
@@ -46,8 +46,18 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   })
 
   const languageOptions = [
-    'English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 
-    'Chinese', 'Japanese', 'Korean', 'Arabic', 'Hindi', 'Russian'
+    { key: 'English', label: t('profile.languages.english') },
+    { key: 'Spanish', label: t('profile.languages.spanish') },
+    { key: 'French', label: t('profile.languages.french') },
+    { key: 'German', label: t('profile.languages.german') },
+    { key: 'Italian', label: t('profile.languages.italian') },
+    { key: 'Portuguese', label: t('profile.languages.portuguese') },
+    { key: 'Chinese', label: t('profile.languages.chinese') },
+    { key: 'Japanese', label: t('profile.languages.japanese') },
+    { key: 'Korean', label: t('profile.languages.korean') },
+    { key: 'Arabic', label: t('profile.languages.arabic') },
+    { key: 'Hindi', label: t('profile.languages.hindi') },
+    { key: 'Russian', label: t('profile.languages.russian') }
   ]
 
   const handleInputChange = (field: string, value: string | boolean) => {
@@ -105,11 +115,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       phone: user.phone || '',
       bio: user.bio || '',
       location: user.location || '',
-      dateOfBirth: user.dateOfBirth || '',
-      preferredLanguage: user.preferredLanguage || 'English',
-      emailNotifications: user.emailNotifications !== false,
-      smsNotifications: user.smsNotifications !== false,
-      profileVisibility: user.profileVisibility || 'public'
+      dateOfBirth: user.date_of_birth || '',
+      preferredLanguage: 'English',
+      emailNotifications: true,
+      smsNotifications: true,
+      profileVisibility: 'public'
     })
     setPasswords({ current: '', new: '', confirm: '' })
     setShowPasswordFields(false)
@@ -205,8 +215,8 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       onSelectionChange={(keys) => handleInputChange('preferredLanguage', Array.from(keys)[0] as string)}
                     >
                       {languageOptions.map((language) => (
-                        <SelectItem key={language}>
-                          {language}
+                        <SelectItem key={language.key}>
+                          {language.label}
                         </SelectItem>
                       ))}
                     </Select>

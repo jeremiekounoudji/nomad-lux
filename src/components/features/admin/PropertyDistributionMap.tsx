@@ -4,6 +4,7 @@ import { DatabaseProperty } from '../../../interfaces/DatabaseProperty';
 import { MapCoordinates } from '../../../interfaces/Map';
 import { Card, CardBody, Chip, Button } from '@heroui/react';
 import { MapPin, Building, TrendingUp, Users, Eye } from 'lucide-react';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface PropertyDistributionMapProps {
   properties: DatabaseProperty[];
@@ -29,6 +30,7 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
   className = '',
   height = '500px'
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   // Calculate location statistics
   const locationStats = useMemo(() => {
     const statsMap = new Map<string, LocationStats>();
@@ -116,16 +118,16 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MapPin className="w-5 h-5 text-gray-600" />
-          <h3 className="font-semibold text-gray-900">Property Distribution</h3>
+          <h3 className="font-semibold text-gray-900">{t('admin.properties.distribution.title', { defaultValue: 'Property Distribution' })}</h3>
         </div>
         <div className="flex items-center gap-2">
           <Chip size="sm" variant="flat" color="default">
             <Building className="w-3 h-3 mr-1" />
-            {properties.length} Properties
+            {t('admin.properties.distribution.propertiesCount', { count: properties.length, defaultValue: '{{count}} Properties' })}
           </Chip>
           <Chip size="sm" variant="flat" color="default">
             <MapPin className="w-3 h-3 mr-1" />
-            {locationStats.length} Locations
+            {t('admin.properties.distribution.locationsCount', { count: locationStats.length, defaultValue: '{{count}} Locations' })}
           </Chip>
         </div>
       </div>
@@ -154,7 +156,7 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
           <CardBody className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-5 h-5 text-primary-600" />
-              <h4 className="font-semibold text-gray-900">Top Locations</h4>
+              <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.topLocations', { defaultValue: 'Top Locations' })}</h4>
             </div>
             <div className="space-y-3">
               {locationStats.slice(0, 5).map((location, index) => (
@@ -170,7 +172,7 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-gray-900">{location.count}</p>
-                    <p className="text-xs text-gray-500">properties</p>
+                    <p className="text-xs text-gray-500">{t('admin.properties.distribution.properties', { defaultValue: 'properties' })}</p>
                   </div>
                 </div>
               ))}
@@ -183,32 +185,32 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
           <CardBody className="p-6">
             <div className="flex items-center gap-2 mb-4">
               <Users className="w-5 h-5 text-primary-600" />
-              <h4 className="font-semibold text-gray-900">Status Distribution</h4>
+              <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.statusDistribution', { defaultValue: 'Status Distribution' })}</h4>
             </div>
             <div className="space-y-3">
               {[
                 { 
                   status: 'approved', 
                   count: properties.filter(p => p.status === 'approved').length,
-                  label: 'Approved Properties',
+                  label: t('admin.properties.distribution.statusLabels.approved', { defaultValue: 'Approved Properties' }),
                   color: 'success' as const
                 },
                 { 
                   status: 'pending', 
                   count: properties.filter(p => p.status === 'pending').length,
-                  label: 'Pending Review',
+                  label: t('admin.properties.distribution.statusLabels.pending', { defaultValue: 'Pending Review' }),
                   color: 'warning' as const
                 },
                 { 
                   status: 'rejected', 
                   count: properties.filter(p => p.status === 'rejected').length,
-                  label: 'Rejected Properties',
+                  label: t('admin.properties.distribution.statusLabels.rejected', { defaultValue: 'Rejected Properties' }),
                   color: 'danger' as const
                 },
                 { 
                   status: 'suspended', 
                   count: properties.filter(p => p.status === 'suspended').length,
-                  label: 'Suspended Properties',
+                  label: t('admin.properties.distribution.statusLabels.suspended', { defaultValue: 'Suspended Properties' }),
                   color: 'secondary' as const
                 }
               ].map((item) => (
@@ -238,22 +240,22 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <MapPin className="w-5 h-5 text-primary-600" />
-              <h4 className="font-semibold text-gray-900">Location Breakdown</h4>
+              <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.locationBreakdown', { defaultValue: 'Location Breakdown' })}</h4>
             </div>
             <Button size="sm" variant="flat" color="primary" startContent={<Eye className="w-4 h-4" />}>
-              View Details
+              {t('admin.properties.distribution.viewDetails', { defaultValue: 'View Details' })}
             </Button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-2 font-medium text-gray-700">Location</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">Total</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">Approved</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">Pending</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">Rejected</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">Suspended</th>
+                  <th className="text-left py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.location', { defaultValue: 'Location' })}</th>
+                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.total', { defaultValue: 'Total' })}</th>
+                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.approved', { defaultValue: 'Approved' })}</th>
+                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.pending', { defaultValue: 'Pending' })}</th>
+                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.rejected', { defaultValue: 'Rejected' })}</th>
+                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.suspended', { defaultValue: 'Suspended' })}</th>
                 </tr>
               </thead>
               <tbody>

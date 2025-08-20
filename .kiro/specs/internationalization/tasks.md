@@ -211,7 +211,7 @@
 
 **Priority:** High  
 **Estimated Time:** 5 hours  
-**Dependencies:** Task 3.1  
+**Dependencies:** Task 3.1
 **Status:** ✅ 90% COMPLETE
 
 **Description:** Implement translation for property types and amenities

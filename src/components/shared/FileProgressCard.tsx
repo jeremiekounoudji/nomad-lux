@@ -17,7 +17,7 @@ const FileProgressCard: React.FC<FileProgressCardProps> = ({
   type 
 }) => {
   const { t } = useTranslation(['common', 'modals', 'property', 'upload']);
-  const fileName = typeof file === 'string' ? file.split('/').pop() || 'Unknown' : file.name;
+  const fileName = typeof file === 'string' ? file.split('/').pop() || t('common.upload.unknown') : file.name;
   const fileUrl = typeof file === 'string' ? file : URL.createObjectURL(file);
   
   const isUploading = progress?.status === 'uploading';

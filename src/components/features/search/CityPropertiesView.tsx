@@ -3,6 +3,7 @@ import { Button } from "@heroui/react";
 import { City, Property } from "../../../interfaces/Property";
 import { PropertyCardSkeleton, CityPropertySkeleton } from "../../shared/LoadingSkeleton";
 import CityPropertyCard from "../../shared/CityPropertyCard";
+import { useTranslation } from "../../../lib/stores/translationStore";
 
 interface CityPropertiesViewProps {
   selectedCity: City;
@@ -27,6 +28,8 @@ export const CityPropertiesView = ({
   onShare,
   onPropertyClick,
 }: CityPropertiesViewProps) => {
+  const { t } = useTranslation(['search', 'common']);
+  
   return (
     <>
       {/* City Header */}
@@ -38,7 +41,7 @@ export const CityPropertiesView = ({
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
+              <span>{t('search.backToHome', { defaultValue: 'Back to Home' })}</span>
             </button>
           </div>
           
@@ -55,10 +58,10 @@ export const CityPropertiesView = ({
               <div className="flex items-center gap-4 text-gray-600">
                 <div className="flex items-center gap-1">
                   <MapPin className="w-4 h-4" />
-                  <span>{selectedCity.property_count} properties available</span>
+                  <span>{selectedCity.property_count} {t('search.propertiesAvailable', { defaultValue: 'properties available' })}</span>
                 </div>
                 <div>
-                  <span>Average ${selectedCity.average_price}/night</span>
+                  <span>{t('search.averagePrice', { defaultValue: 'Average' })} ${selectedCity.average_price}/{t('search.perNight', { defaultValue: 'night' })}</span>
                 </div>
               </div>
             </div>
@@ -72,7 +75,7 @@ export const CityPropertiesView = ({
           <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
             <h3 className="text-lg font-semibold text-red-900 mb-2">
-              No Properties Found
+              {t('search.noPropertiesFound', { defaultValue: 'No Properties Found' })}
             </h3>
             <p className="text-red-700 mb-4">{cityPropertiesError}</p>
             <Button
@@ -81,7 +84,7 @@ export const CityPropertiesView = ({
               onPress={() => onRefetch(selectedCity)}
               startContent={<RefreshCw className="w-4 h-4" />}
             >
-              Try Again
+              {t('search.tryAgain', { defaultValue: 'Try Again' })}
             </Button>
           </div>
         </div>

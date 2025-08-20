@@ -124,6 +124,7 @@
     "location": "Location",
     "images": "Images",
     "video": "Video",
+    "images": "Images",
     "availability": "Availability",
     "checkIn": "Check-in",
     "checkOut": "Check-out",
@@ -187,10 +188,18 @@
     "unavailableDates": "Selected dates are not available",
     "minimumStayNotMet": "Minimum stay requirement not met",
     "maximumGuestsExceeded": "Maximum guest limit exceeded",
+    "validation": {
+      "minimumStay": "Minimum stay is {{nights}} night(s)",
+      "maximumStay": "Maximum stay is {{nights}} night(s)"
+    },
     "failedToLoad": "Failed to Load Properties",
     "noPropertiesInArea": "We couldn't find any properties in your area. Try expanding your search or check back later.",
+    "propertyNotFound": "Property not found. Please try again from the main page.",
+    "loadingDetails": "Loading property details...",
+    "couldNotLoad": "Could Not Load Property",
     "seenAllProperties": "You've seen all available properties!",
-    "failedToLoadPopular": "Failed to load popular destinations"
+    "failedToLoadPopular": "Failed to load popular destinations",
+    "propertyIdMissing": "Property ID is missing. Cannot open details."
   },
   "share": {
     "title": "Share Property",
@@ -211,7 +220,10 @@
     "copyFailed": "Failed to copy link",
     "instagramCopied": "Link copied! Paste it in your Instagram story or bio.",
     "email": "Email",
-    "copy": "Copy"
+    "copy": "Copy",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "instagram": "Instagram"
   },
   "editConfirm": {
     "title": "Confirm Property Edit",
@@ -323,6 +335,48 @@
       "generic": "Submission failed: {{error}}"
     }
   },
+  "settings": {
+    "title": "Property Settings",
+    "description": "Choose existing property settings or create new ones. These settings will control booking rules, payment preferences, and availability for your property.",
+    "loading": "Loading your property settings...",
+    "success": "Property settings created successfully!",
+    "paymentMethods": {
+      "card": "Credit/Debit Card",
+      "paypal": "PayPal",
+      "bankTransfer": "Bank Transfer"
+    },
+    "errors": {
+      "signInRequired": "Please sign in to create property settings",
+      "nameRequired": "Please enter a name for your settings",
+      "createFailed": "Failed to create property settings",
+      "atLeastOnePaymentMethod": "At least one payment method must be selected"
+    }
+  },
+  "hostDetails": {
+    "title": "Host Information",
+    "description": "Please provide your contact details. This information will be used for property verification and communication.",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "emailPlaceholder": "Enter your email address",
+    "phonePlaceholder": "Enter your phone number"
+  },
+  "details": {
+    "title": "Property Details",
+    "description": "Provide information about your property, its location, and available amenities."
+  },
+  "mediaUpload": {
+    "title": "Media Upload",
+    "description": "Upload at least {{minImages}} images and 1 video of your property. Each file should not exceed {{maxSize}}MB.",
+    "propertyImages": "Property Images",
+    "uploadImages": "Upload Images",
+    "uploadImagesDescription": "Click to browse or drag and drop your images here",
+    "imageFormats": "{{formats}} up to {{maxSize}}MB",
+    "imagesUploaded": "{{count}} of {{min}} images uploaded",
+    "minimumRequirementMet": "Minimum requirement met",
+    "propertyVideo": "Property Video"
+  },
   "submitYourProperty": "Submit Your Property",
   "shareWithTravelers": "Share your property with travelers around the world. Fill out the form below to submit your property for review.",
   "likedProperties": "Liked Properties",
@@ -366,6 +420,11 @@
       "loadingListings": "Error Loading Listings",
       "tryAgain": "Try Again"
     },
+    "messages": {
+      "updateSuccess": "Property updated successfully! 🎉",
+      "updateFailed": "Failed to update property",
+      "updateFailedWithError": "Update failed: {{error}}"
+    },
     "empty": {
       "noListings": "No {{status}} listings",
       "noListingsDescription": "You haven't created any listings yet.",
@@ -381,5 +440,17 @@
       "of": "of",
       "results": "results"
     }
+  },
+  "host": {
+    "title": "Meet your host",
+    "defaultBio": "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world.",
+    "emailVerified": "Email verified",
+    "phoneVerified": "Phone verified"
+  },
+  "location": {
+    "title": "Where you'll be"
+  },
+  "amenities": {
+    "title": "What this place offers"
   }
 }

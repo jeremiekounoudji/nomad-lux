@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 import { useTranslation } from '../lib/stores/translationStore';
 
 const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange }) => {
-  const { t } = useTranslation(['property'])
+  const { t } = useTranslation(['property', 'common'])
   const navigate = useNavigate();
   const { properties, likedPropertyIds, likedProperties, isLikeLoading, setSelectedProperty } = usePropertyStore();
   const { fetchLikedProperties } = usePropertyLike();
@@ -48,7 +48,7 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
     const resolvedId = property.id ?? property.property_id;
     console.log('View property:', property, 'resolvedId:', resolvedId);
     if (!resolvedId) {
-      toast.error('Property ID is missing. Cannot open details.');
+      toast.error(t('property.messages.propertyIdMissing'));
       console.error('Property object missing id and property_id:', property);
       return;
     }

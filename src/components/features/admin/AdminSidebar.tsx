@@ -23,8 +23,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { key: 'users', label: t('admin.navigation.users'), icon: Users },
     { key: 'properties', label: t('admin.navigation.properties'), icon: Building2 },
     { key: 'bookings', label: t('admin.navigation.bookings'), icon: Calendar },
-    { key: 'activities', label: t('admin.dashboard.recentActivity', { defaultValue: 'Activity Log' }), icon: Clock },
-    { key: 'analytics', label: t('admin.navigation.reports', { defaultValue: 'Analytics' }), icon: BarChart3 },
+    { key: 'activities', label: t('admin.activity.title'), icon: Clock },
+    { key: 'analytics', label: t('admin.analytics.title'), icon: BarChart3 },
     { key: 'settings', label: t('admin.navigation.settings'), icon: Settings },
   ]
 

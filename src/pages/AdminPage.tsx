@@ -17,7 +17,7 @@ import { AdminPageProps } from '../interfaces'
 
 export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['admin', 'common'])
-  const [currentSection, setCurrentSection] = useState('dashboard')
+  const [currentSection, setCurrentSection] = useState(t('admin.sections.dashboard'))
   
   const { isAuthenticated, isAdmin, user } = useAuthStore()
   const { signOut } = useAdminAuth()
@@ -33,12 +33,12 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
   useEffect(() => {
     if (!isAuthenticated || !isAdmin) {
       console.log('❌ Admin access denied - redirecting to login')
-      onPageChange?.('admin-login')
+      onPageChange?.(t('admin.navigation.login'))
       return
     }
 
     console.log('✅ Admin authenticated successfully:', user?.email)
-  }, [isAuthenticated, isAdmin, user, onPageChange])
+  }, [isAuthenticated, isAdmin, user, onPageChange, t])
 
   // Handle logout
   const handleLogout = async () => {
@@ -49,13 +49,13 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
       
       // Small delay to ensure auth state is cleared
       setTimeout(() => {
-        onPageChange?.('admin-login')
+        onPageChange?.(t('admin.navigation.login'))
       }, 100)
     } catch (error) {
       console.error('❌ Logout error:', error)
       // Force redirect even if logout fails
       setTimeout(() => {
-        onPageChange?.('admin-login')
+        onPageChange?.(t('admin.navigation.login'))
       }, 100)
     }
   }
@@ -67,20 +67,20 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
 
   const renderContent = () => {
     switch (currentSection) {
-      case 'dashboard':
+      case t('admin.sections.dashboard'):
         return <AdminDashboard onSectionChange={setCurrentSection} />
-      case 'users':
+      case t('admin.sections.users'):
         return <UserManagement />
-      case 'properties':
+      case t('admin.sections.properties'):
         return <PropertyApproval />
-      case 'bookings':
+      case t('admin.sections.bookings'):
         return <BookingManagement />
-      case 'analytics':
+      case t('admin.sections.analytics'):
         return <AnalyticsDashboard />
-      case 'settings':
+      case t('admin.sections.settings'):
         return <SystemSettings />
-      case 'activities':
-        return <ActivityLog onBack={() => setCurrentSection('dashboard')} />
+      case t('admin.sections.activities'):
+        return <ActivityLog onBack={() => setCurrentSection(t('admin.sections.dashboard'))} />
       default:
         return <AdminDashboard onSectionChange={setCurrentSection} />
     }
