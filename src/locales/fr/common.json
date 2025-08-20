@@ -20,6 +20,8 @@
     "share": "Partager",
     "like": "J'aime",
     "unlike": "Je n'aime plus",
+    "list": "Liste",
+    "map": "Carte",
     "tryAgain": "Réessayer",
     "updateLocation": "Mettre à jour l'emplacement",
     "refreshFeed": "Actualiser le flux",

@@ -135,7 +135,7 @@
   - [x] 6.4 Verify PropertiesMap.tsx translation implementation
   - [x] 6.5 Verify PropertyMap.tsx translation implementation
   - [x] 6.6 Verify PropertyMarker.tsx translation implementation
-  - [ ] 6.7 Verify MapToggle.tsx translation implementation
+  - [x] 6.7 Verify MapToggle.tsx translation implementation
   - [ ] 6.8 Verify MapLoadingState.tsx translation implementation
   - [ ] 6.9 Verify MapErrorState.tsx translation implementation
   - [ ] 6.10 Verify LazyMapWrapper.tsx translation implementation

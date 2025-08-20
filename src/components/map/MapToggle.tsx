@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@heroui/react'
 import { Map, List } from 'lucide-react'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export interface MapToggleProps {
   isMapView: boolean
@@ -15,6 +16,7 @@ const MapToggle: React.FC<MapToggleProps> = ({
   className = '',
   size = 'md'
 }) => {
+  const { t } = useTranslation('common');
   // Placeholder implementation - will be implemented in task 4.1
   return (
     <div className={`flex items-center gap-2 ${className}`}>
@@ -25,7 +27,7 @@ const MapToggle: React.FC<MapToggleProps> = ({
         startContent={<List size={16} />}
         onClick={() => onToggle(false)}
       >
-        List
+        {t('list')}
       </Button>
       <Button
         variant={isMapView ? 'solid' : 'bordered'}
@@ -34,7 +36,7 @@ const MapToggle: React.FC<MapToggleProps> = ({
         startContent={<Map size={16} />}
         onClick={() => onToggle(true)}
       >
-        Map
+        {t('map')}
       </Button>
     </div>
   )

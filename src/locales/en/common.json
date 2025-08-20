@@ -20,6 +20,8 @@
     "share": "Share",
     "like": "Like",
     "unlike": "Unlike",
+    "list": "List",
+    "map": "Map",
     "tryAgain": "Try Again",
     "updateLocation": "Update Location",
     "refreshFeed": "Refresh Feed",
