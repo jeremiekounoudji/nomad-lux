@@ -1022,6 +1022,44 @@
       "totalProperties": "Propriétés totales",
       "visible": "Visibles",
       "selected": "Sélectionnées"
+    },
+    "marker": {
+      "quickActions": "Actions rapides",
+      "viewDetails": "Voir les détails",
+      "editProperty": "Modifier la propriété",
+      "contactHost": "Contacter l'hôte",
+      "photos": "photos",
+      "created": "Créé",
+      "hostSince": "Hôte depuis",
+      "current": "Actuel",
+      "night": "/nuit",
+      "statusChange": {
+        "approveProperty": "Approuver la propriété",
+        "rejectProperty": "Rejeter la propriété",
+        "suspendProperty": "Suspendre la propriété",
+        "setToPending": "Mettre en attente",
+        "descriptions": {
+          "approve": "Cette propriété sera visible pour les utilisateurs et disponible pour la réservation.",
+          "reject": "Cette propriété sera rejetée et l'hôte sera notifié.",
+          "suspend": "Cette propriété sera temporairement suspendue des réservations.",
+          "pending": "Cette propriété sera remise en statut d'attente pour examen."
+        },
+        "reasonLabel": "Raison pour {{action}}",
+        "reasonPlaceholder": "Veuillez fournir une raison pour {{action}}er cette propriété...",
+        "cancel": "Annuler",
+        "processing": "Traitement...",
+        "actions": {
+          "approve": "Approuver",
+          "reject": "Rejeter",
+          "suspend": "Suspendre",
+          "pending": "En attente"
+        },
+        "messages": {
+          "reasonRequired": "Veuillez fournir une raison pour cette action",
+          "statusChangeFailed": "Échec du changement de statut de la propriété",
+          "propertyStatusChanged": "Propriété {{status}} avec succès"
+        }
+      }
     }
   }
 }

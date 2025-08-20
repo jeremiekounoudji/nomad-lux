@@ -1022,6 +1022,44 @@
       "totalProperties": "Total Properties",
       "visible": "Visible",
       "selected": "Selected"
+    },
+    "marker": {
+      "quickActions": "Quick Actions",
+      "viewDetails": "View Details",
+      "editProperty": "Edit Property",
+      "contactHost": "Contact Host",
+      "photos": "photos",
+      "created": "Created",
+      "hostSince": "Host since",
+      "current": "Current",
+      "night": "/night",
+      "statusChange": {
+        "approveProperty": "Approve Property",
+        "rejectProperty": "Reject Property",
+        "suspendProperty": "Suspend Property",
+        "setToPending": "Set to Pending",
+        "descriptions": {
+          "approve": "This property will be made visible to users and available for booking.",
+          "reject": "This property will be rejected and the host will be notified.",
+          "suspend": "This property will be temporarily suspended from bookings.",
+          "pending": "This property will be moved back to pending status for review."
+        },
+        "reasonLabel": "Reason for {{action}}",
+        "reasonPlaceholder": "Please provide a reason for {{action}}ing this property...",
+        "cancel": "Cancel",
+        "processing": "Processing...",
+        "actions": {
+          "approve": "Approve",
+          "reject": "Reject",
+          "suspend": "Suspend",
+          "pending": "Pending"
+        },
+        "messages": {
+          "reasonRequired": "Please provide a reason for this action",
+          "statusChangeFailed": "Failed to change property status",
+          "propertyStatusChanged": "Property {{status}} successfully"
+        }
+      }
     }
   }
 }

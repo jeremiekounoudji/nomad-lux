@@ -143,7 +143,7 @@
   - [x] 6.12 Verify DirectionsButton.tsx translation implementation
   - [x] 6.13 Verify VirtualizedMarkerRenderer.tsx translation implementation
   - [x] 6.14 Verify AdminMarkerStyles.tsx translation implementation
-  - [ ] 6.15 Verify AdminPropertyMarker.tsx translation implementation
+  - [x] 6.15 Verify AdminPropertyMarker.tsx translation implementation
 
 - [ ] 7.0 UI Components Verification
   - [ ] 7.1 Verify all components in src/components/ui/ directory

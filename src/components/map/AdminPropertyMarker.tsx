@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { DatabaseProperty } from '../../interfaces/DatabaseProperty';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface AdminPropertyMarkerProps {
   property: DatabaseProperty;
@@ -64,35 +65,36 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
   newStatus,
   onConfirm
 }) => {
+  const { t } = useTranslation('admin');
   const [reason, setReason] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
 
   const statusConfig = {
     approved: { 
-      title: 'Approve Property', 
+      title: t('marker.statusChange.approveProperty'), 
       color: 'success' as const, 
-      description: 'This property will be made visible to users and available for booking.',
+      description: t('marker.statusChange.descriptions.approve'),
       requiresReason: false,
       icon: <CheckCircle className="w-5 h-5" />
     },
     rejected: { 
-      title: 'Reject Property', 
+      title: t('marker.statusChange.rejectProperty'), 
       color: 'danger' as const, 
-      description: 'This property will be rejected and the host will be notified.',
+      description: t('marker.statusChange.descriptions.reject'),
       requiresReason: true,
       icon: <XCircle className="w-5 h-5" />
     },
     suspended: { 
-      title: 'Suspend Property', 
+      title: t('marker.statusChange.suspendProperty'), 
       color: 'warning' as const, 
-      description: 'This property will be temporarily suspended from bookings.',
+      description: t('marker.statusChange.descriptions.suspend'),
       requiresReason: true,
       icon: <Pause className="w-5 h-5" />
     },
     pending: { 
-      title: 'Set to Pending', 
+      title: t('marker.statusChange.setToPending'), 
       color: 'warning' as const, 
-      description: 'This property will be moved back to pending status for review.',
+      description: t('marker.statusChange.descriptions.pending'),
       requiresReason: false,
       icon: <Clock className="w-5 h-5" />
     }
@@ -102,7 +104,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
 
   const handleConfirm = async () => {
     if (config.requiresReason && !reason.trim()) {
-      toast.error('Please provide a reason for this action');
+      toast.error(t('marker.statusChange.messages.reasonRequired'));
       return;
     }
 
@@ -112,7 +114,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Status change failed:', error);
-      toast.error('Failed to change property status');
+      toast.error(t('marker.statusChange.messages.statusChangeFailed'));
     } finally {
       setIsProcessing(false);
     }
@@ -162,7 +164,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
                     property.approval_status === 'rejected' ? 'danger' : 'default'
                   }
                 >
-                  Current: {property.approval_status}
+                  {t('marker.statusChange.current')}: {property.approval_status}
                 </Chip>
               </div>
             </div>
@@ -171,12 +173,12 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
             {config.requiresReason && (
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Reason for {newStatus} <span className="text-red-500">*</span>
+                  {t('marker.statusChange.reasonLabel', { action: newStatus })} <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder={`Please provide a reason for ${newStatus}ing this property...`}
+                  placeholder={t('marker.statusChange.reasonPlaceholder', { action: newStatus })}
                   rows={3}
                   className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   required
@@ -187,7 +189,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="light" onPress={onClose} disabled={isProcessing}>
-            Cancel
+            {t('marker.statusChange.cancel')}
           </Button>
           <Button 
             color={config.color}
@@ -195,7 +197,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
             isLoading={isProcessing}
             disabled={isProcessing}
           >
-            {isProcessing ? 'Processing...' : config.title}
+            {isProcessing ? t('marker.statusChange.processing') : config.title}
           </Button>
         </ModalFooter>
       </ModalContent>
@@ -212,6 +214,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
   onSelectionChange,
   showQuickActions = true
 }) => {
+  const { t } = useTranslation('admin');
   const { isOpen: isStatusModalOpen, onOpen: onStatusModalOpen, onClose: onStatusModalClose } = useDisclosure();
   const [pendingStatus, setPendingStatus] = useState<'approved' | 'pending' | 'rejected' | 'suspended'>('approved');
 
@@ -222,7 +225,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
 
   const handleStatusConfirm = (reason?: string) => {
     onStatusChange(property.id, pendingStatus, reason);
-    toast.success(`Property ${pendingStatus} successfully`);
+    toast.success(t('marker.statusChange.messages.propertyStatusChanged', { status: pendingStatus }));
   };
 
   const getStatusColor = (status: string) => {
@@ -287,7 +290,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
               className="w-full h-32 object-cover rounded-lg"
             />
             <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
-              {property.images.length} photos
+              {property.images.length} {t('marker.photos')}
             </div>
           </div>
 
@@ -317,10 +320,10 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 ${property.price}
-                <span className="text-sm font-normal text-gray-600">/night</span>
+                <span className="text-sm font-normal text-gray-600">{t('marker.night')}</span>
               </div>
               <div className="text-sm text-gray-600">
-                Created: {new Date(property.created_at).toLocaleDateString()}
+                {t('marker.created')}: {new Date(property.created_at).toLocaleDateString()}
               </div>
             </div>
 
@@ -333,7 +336,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
               />
               <div className="flex-1">
                 <p className="text-sm font-medium">{property.host.display_name}</p>
-                <p className="text-xs text-gray-600">Host since {new Date(property.host.created_at).getFullYear()}</p>
+                <p className="text-xs text-gray-600">{t('marker.hostSince')} {new Date(property.host.created_at).getFullYear()}</p>
               </div>
             </div>
 
@@ -344,7 +347,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                 {/* Quick Actions */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Quick Actions</span>
+                    <span className="text-sm font-medium text-gray-700">{t('marker.quickActions')}</span>
                     <Dropdown>
                       <DropdownTrigger>
                         <Button size="sm" variant="light" isIconOnly>
@@ -353,13 +356,13 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                       </DropdownTrigger>
                       <DropdownMenu aria-label="Property actions">
                         <DropdownItem key="view" startContent={<Eye className="w-4 h-4" />} onPress={() => onPropertyView(property)}>
-                          View Details
+                          {t('marker.viewDetails')}
                         </DropdownItem>
                         <DropdownItem key="edit" startContent={<Edit className="w-4 h-4" />} onPress={() => onPropertyEdit(property)}>
-                          Edit Property
+                          {t('marker.editProperty')}
                         </DropdownItem>
                         <DropdownItem key="contact" startContent={<MessageSquare className="w-4 h-4" />}>
-                          Contact Host
+                          {t('marker.contactHost')}
                         </DropdownItem>
                       </DropdownMenu>
                     </Dropdown>
@@ -375,7 +378,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         startContent={<CheckCircle className="w-4 h-4" />}
                         onPress={() => handleStatusChange('approved')}
                       >
-                        Approve
+                        {t('marker.statusChange.actions.approve')}
                       </Button>
                     )}
                     {property.approval_status !== 'rejected' && (
@@ -386,7 +389,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         startContent={<XCircle className="w-4 h-4" />}
                         onPress={() => handleStatusChange('rejected')}
                       >
-                        Reject
+                        {t('marker.statusChange.actions.reject')}
                       </Button>
                     )}
                     {property.approval_status !== 'suspended' && (
@@ -397,7 +400,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         startContent={<Pause className="w-4 h-4" />}
                         onPress={() => handleStatusChange('suspended')}
                       >
-                        Suspend
+                        {t('marker.statusChange.actions.suspend')}
                       </Button>
                     )}
                     {property.approval_status !== 'pending' && (
@@ -408,7 +411,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         startContent={<Clock className="w-4 h-4" />}
                         onPress={() => handleStatusChange('pending')}
                       >
-                        Pending
+                        {t('marker.statusChange.actions.pending')}
                       </Button>
                     )}
                   </div>
