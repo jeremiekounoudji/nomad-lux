@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip, Checkbox, Avatar } from '@heroui/react'
 import { CheckCircle, XCircle, Ban } from 'lucide-react'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import { PropertyDetailsModalProps } from '../../../../interfaces/Component'
 import { LocationVerificationMap } from '../LocationVerificationMap'
 
@@ -13,7 +14,10 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
   allChecked,
   onRejectOpen,
   handleApproveConfirm
-}) => (
+}) => {
+  const { t } = useTranslation('admin')
+
+  return (
   <Modal 
     isOpen={isOpen} 
     onClose={onClose} 
@@ -23,14 +27,14 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
   >
     <ModalContent>
       <ModalHeader>
-        Property Review: {selectedProperty?.title}
+        {t('propertyDetailsModal.title', { title: selectedProperty?.title })}
       </ModalHeader>
       <ModalBody>
         {selectedProperty && (
           <div className="space-y-6">
             {/* Image Gallery */}
             <div>
-              <h4 className="font-semibold text-gray-900 mb-3">Property Images</h4>
+              <h4 className="font-semibold text-gray-900 mb-3">{t('propertyDetailsModal.propertyImages')}</h4>
               <div className="grid grid-cols-4 gap-2">
                 {selectedProperty.images.map((image: string, index: number) => (
                   <div
@@ -43,7 +47,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity">
-                      <span className="text-white text-lg">Zoom</span>
+                      <span className="text-white text-lg">{t('propertyDetailsModal.zoom')}</span>
                     </div>
                   </div>
                 ))}
@@ -65,50 +69,50 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Property Type</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.propertyType')}</label>
                   <p className="text-sm text-gray-900">{selectedProperty.property_type}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Location</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.location')}</label>
                   <p className="text-sm text-gray-900">{selectedProperty.location.city}, {selectedProperty.location.country}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Host</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.host')}</label>
                   <div className="flex items-center gap-2">
                     <Avatar name="Host" size="sm" />
-                    <div>
-                      <p className="text-sm text-gray-900 font-medium">Host ID: {selectedProperty.host_id}</p>
-                      <p className="text-xs text-gray-600">Created: {new Date(selectedProperty.created_at).toLocaleDateString()}</p>
-                    </div>
+                                          <div>
+                        <p className="text-sm text-gray-900 font-medium">{t('propertyDetailsModal.labels.hostId')} {selectedProperty.host_id}</p>
+                        <p className="text-xs text-gray-600">{t('propertyDetailsModal.labels.created')} {new Date(selectedProperty.created_at).toLocaleDateString()}</p>
+                      </div>
                   </div>
                 </div>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Price per night</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.pricePerNight')}</label>
                   <p className="text-sm text-gray-900">${selectedProperty.price_per_night}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Capacity</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.capacity')}</label>
                   <p className="text-sm text-gray-900">
-                    {selectedProperty.bedrooms} bed • {selectedProperty.bathrooms} bath • {selectedProperty.max_guests} guests
+                    {selectedProperty.bedrooms} {t('propertyDetailsModal.labels.bed')} • {selectedProperty.bathrooms} {t('propertyDetailsModal.labels.bath')} • {selectedProperty.max_guests} {t('propertyDetailsModal.labels.guests')}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-600">Submitted</label>
+                  <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.submitted')}</label>
                   <p className="text-sm text-gray-900">{new Date(selectedProperty.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600">Description</label>
+              <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.description')}</label>
               <p className="text-sm text-gray-900 mt-1">{selectedProperty.description}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-600">Amenities</label>
+              <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.amenities')}</label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedProperty.amenities.map((amenity: string) => (
                   <Chip key={amenity} size="sm" variant="flat">
@@ -125,19 +129,19 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                   <CheckCircle className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-xl text-gray-900">Review Checklist</h4>
-                  <p className="text-sm text-gray-600">Complete all items before approval</p>
+                  <h4 className="font-bold text-xl text-gray-900">{t('propertyDetailsModal.reviewChecklist.title')}</h4>
+                  <p className="text-sm text-gray-600">{t('propertyDetailsModal.reviewChecklist.subtitle')}</p>
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
-                  { key: 'title', label: 'Title is descriptive and appropriate', icon: '📝' },
-                  { key: 'description', label: 'Description is detailed and accurate', icon: '📄' },
-                  { key: 'images', label: 'Images are high quality and representative', icon: '📸' },
-                  { key: 'location', label: 'Location is verified and accurate', icon: '📍' },
-                  { key: 'price', label: 'Price is reasonable for the market', icon: '💰' },
-                  { key: 'amenities', label: 'Amenities list is accurate and complete', icon: '✨' },
-                  { key: 'policies', label: 'House rules and policies are appropriate', icon: '📋' }
+                  { key: 'title', label: t('propertyDetailsModal.reviewChecklist.items.title'), icon: '📝' },
+                  { key: 'description', label: t('propertyDetailsModal.reviewChecklist.items.description'), icon: '📄' },
+                  { key: 'images', label: t('propertyDetailsModal.reviewChecklist.items.images'), icon: '📸' },
+                  { key: 'location', label: t('propertyDetailsModal.reviewChecklist.items.location'), icon: '📍' },
+                  { key: 'price', label: t('propertyDetailsModal.reviewChecklist.items.price'), icon: '💰' },
+                  { key: 'amenities', label: t('propertyDetailsModal.reviewChecklist.items.amenities'), icon: '✨' },
+                  { key: 'policies', label: t('propertyDetailsModal.reviewChecklist.items.policies'), icon: '📋' }
                 ].map((item) => (
                   <div
                     key={item.key}
@@ -171,7 +175,10 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${allChecked ? 'bg-success-500' : 'bg-gray-300'}`}></div>
                     <span className="text-sm font-medium">
-                      {Object.values(reviewChecklist).filter(Boolean).length} of 7 items completed
+                      {t('propertyDetailsModal.reviewChecklist.progress', { 
+                        completed: Object.values(reviewChecklist).filter(Boolean).length, 
+                        total: 7 
+                      })}
                     </span>
                   </div>
                   <div className="w-32 bg-gray-200 rounded-full h-2">
@@ -190,20 +197,21 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
       </ModalBody>
       <ModalFooter>
         <div className="flex gap-3 w-full">
-          <Button variant="flat" onPress={onClose}>Close</Button>
+          <Button variant="flat" onPress={onClose}>{t('propertyDetailsModal.buttons.close')}</Button>
           {selectedProperty?.status === 'pending' && (
             <>
-              <Button color="danger" variant="flat" startContent={<XCircle className="w-4 h-4" />} onPress={() => { onClose(); onRejectOpen(); }}>Reject</Button>
-              <Button color="success" startContent={<CheckCircle className="w-4 h-4" />} onPress={() => { if (selectedProperty) { handleApproveConfirm(selectedProperty); onClose(); } }} isDisabled={!allChecked}>Approve Property</Button>
+              <Button color="danger" variant="flat" startContent={<XCircle className="w-4 h-4" />} onPress={() => { onClose(); onRejectOpen(); }}>{t('propertyDetailsModal.buttons.reject')}</Button>
+              <Button color="success" startContent={<CheckCircle className="w-4 h-4" />} onPress={() => { if (selectedProperty) { handleApproveConfirm(selectedProperty); onClose(); } }} isDisabled={!allChecked}>{t('propertyDetailsModal.buttons.approveProperty')}</Button>
             </>
           )}
           {selectedProperty?.status === 'approved' && (
-            <Button color="warning" variant="flat" startContent={<Ban className="w-4 h-4" />} onPress={() => {}}>Suspend Property</Button>
+            <Button color="warning" variant="flat" startContent={<Ban className="w-4 h-4" />} onPress={() => {}}>{t('propertyDetailsModal.buttons.suspendProperty')}</Button>
           )}
         </div>
       </ModalFooter>
     </ModalContent>
-  </Modal>
-)
+      </Modal>
+  )
+}
 
 export default PropertyDetailsModal 

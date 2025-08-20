@@ -119,7 +119,7 @@
   - [x] 5.24.8 Verify RefundModal.tsx translation implementation
   - [x] 5.24.9 Verify ContactPartiesModal.tsx translation implementation
   - [x] 5.24.10 Verify BookingDetailsModal.tsx translation implementation
-  - [ ] 5.24.11 Verify PropertyDetailsModal.tsx translation implementation
+  - [x] 5.24.11 Verify PropertyDetailsModal.tsx translation implementation
   - [ ] 5.24.12 Verify ApproveRejectPayoutModal.tsx translation implementation
   - [ ] 5.24.13 Verify PropertySuspensionModal.tsx translation implementation
   - [ ] 5.24.14 Verify PropertyRejectionModal.tsx translation implementation

@@ -57,6 +57,46 @@
     "editProperty": "Edit Property",
     "deleteProperty": "Delete Property",
     "propertyDetails": "Property Details",
+    "propertyDetailsModal": {
+      "title": "Property Review: {{title}}",
+      "propertyImages": "Property Images",
+      "zoom": "Zoom",
+      "labels": {
+        "propertyType": "Property Type",
+        "location": "Location",
+        "host": "Host",
+        "hostId": "Host ID:",
+        "created": "Created:",
+        "pricePerNight": "Price per night",
+        "capacity": "Capacity",
+        "bed": "bed",
+        "bath": "bath",
+        "guests": "guests",
+        "submitted": "Submitted",
+        "description": "Description",
+        "amenities": "Amenities"
+      },
+      "reviewChecklist": {
+        "title": "Review Checklist",
+        "subtitle": "Complete all items before approval",
+        "items": {
+          "title": "Title is descriptive and appropriate",
+          "description": "Description is detailed and accurate",
+          "images": "Images are high quality and representative",
+          "location": "Location is verified and accurate",
+          "price": "Price is reasonable for the market",
+          "amenities": "Amenities list is accurate and complete",
+          "policies": "House rules and policies are appropriate"
+        },
+        "progress": "{{completed}} of {{total}} items completed"
+      },
+      "buttons": {
+        "close": "Close",
+        "reject": "Reject",
+        "approveProperty": "Approve Property",
+        "suspendProperty": "Suspend Property"
+      }
+    }
     "hostInformation": "Host Information",
     "approvalStatus": "Approval Status",
     "rejectionReason": "Rejection Reason",

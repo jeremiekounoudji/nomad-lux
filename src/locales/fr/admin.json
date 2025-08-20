@@ -57,6 +57,46 @@
     "editProperty": "Modifier la propriété",
     "deleteProperty": "Supprimer la propriété",
     "propertyDetails": "Détails de la propriété",
+    "propertyDetailsModal": {
+      "title": "Révision de propriété : {{title}}",
+      "propertyImages": "Images de la propriété",
+      "zoom": "Zoom",
+      "labels": {
+        "propertyType": "Type de propriété",
+        "location": "Emplacement",
+        "host": "Hôte",
+        "hostId": "ID de l'hôte :",
+        "created": "Créé :",
+        "pricePerNight": "Prix par nuit",
+        "capacity": "Capacité",
+        "bed": "lit",
+        "bath": "salle de bain",
+        "guests": "invités",
+        "submitted": "Soumis",
+        "description": "Description",
+        "amenities": "Équipements"
+      },
+      "reviewChecklist": {
+        "title": "Liste de vérification",
+        "subtitle": "Complétez tous les éléments avant approbation",
+        "items": {
+          "title": "Le titre est descriptif et approprié",
+          "description": "La description est détaillée et précise",
+          "images": "Les images sont de haute qualité et représentatives",
+          "location": "L'emplacement est vérifié et précis",
+          "price": "Le prix est raisonnable pour le marché",
+          "amenities": "La liste des équipements est précise et complète",
+          "policies": "Les règles de maison et politiques sont appropriées"
+        },
+        "progress": "{{completed}} sur {{total}} éléments complétés"
+      },
+      "buttons": {
+        "close": "Fermer",
+        "reject": "Rejeter",
+        "approveProperty": "Approuver la propriété",
+        "suspendProperty": "Suspendre la propriété"
+      }
+    }
     "hostInformation": "Informations de l'hôte",
     "approvalStatus": "Statut d'approbation",
     "rejectionReason": "Raison du rejet",
