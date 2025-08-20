@@ -164,6 +164,60 @@
     "disputeFiledOn": "Litige déposé le {{date}}",
     "manageDispute": "Gérer le litige",
     "contactParties": "Contacter les parties",
+    "contactPartiesModal": {
+      "title": "Informations de contact - {{id}}",
+      "propertyInfo": {
+        "nights": "nuits",
+        "guests": "invités"
+      },
+      "guest": {
+        "title": "Invité",
+        "subtitle": "Partie de réservation",
+        "labels": {
+          "name": "Nom",
+          "phone": "Téléphone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Appeler",
+          "email": "Email"
+        }
+      },
+      "host": {
+        "title": "Hôte",
+        "subtitle": "Propriétaire de la propriété",
+        "labels": {
+          "name": "Nom",
+          "phone": "Téléphone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Appeler",
+          "email": "Email"
+        }
+      },
+      "guidelines": {
+        "title": "Directives de communication administrateur",
+        "points": {
+          "professional": "Maintenir toujours des standards de communication professionnels",
+          "document": "Documenter toutes les interactions dans le journal d'activité de réservation",
+          "urgent": "Pour les urgences, contacter les deux parties et escalader si nécessaire"
+        }
+      },
+      "quickActions": {
+        "title": "Actions rapides",
+        "buttons": {
+          "sendEmailTemplate": "Envoyer un modèle d'email",
+          "scheduleCall": "Programmer un appel",
+          "emergencyContact": "Contact d'urgence",
+          "documentCall": "Documenter l'appel"
+        }
+      },
+      "buttons": {
+        "close": "Fermer",
+        "openMessageCenter": "Ouvrir le centre de messages"
+      }
+    }
     "openDisputes": "Litiges ouverts",
     "underInvestigation": "En cours d'enquête",
     "urgentPriority": "Priorité urgente",

@@ -164,6 +164,60 @@
     "disputeFiledOn": "Dispute filed on {{date}}",
     "manageDispute": "Manage Dispute",
     "contactParties": "Contact Parties",
+    "contactPartiesModal": {
+      "title": "Contact Information - {{id}}",
+      "propertyInfo": {
+        "nights": "nights",
+        "guests": "guests"
+      },
+      "guest": {
+        "title": "Guest",
+        "subtitle": "Booking party",
+        "labels": {
+          "name": "Name",
+          "phone": "Phone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Call",
+          "email": "Email"
+        }
+      },
+      "host": {
+        "title": "Host",
+        "subtitle": "Property owner",
+        "labels": {
+          "name": "Name",
+          "phone": "Phone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Call",
+          "email": "Email"
+        }
+      },
+      "guidelines": {
+        "title": "Admin Communication Guidelines",
+        "points": {
+          "professional": "Always maintain professional communication standards",
+          "document": "Document all interactions in the booking activity log",
+          "urgent": "For urgent matters, contact both parties and escalate if needed"
+        }
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "buttons": {
+          "sendEmailTemplate": "Send Email Template",
+          "scheduleCall": "Schedule Call",
+          "emergencyContact": "Emergency Contact",
+          "documentCall": "Document Call"
+        }
+      },
+      "buttons": {
+        "close": "Close",
+        "openMessageCenter": "Open Message Center"
+      }
+    }
     "openDisputes": "Open Disputes",
     "underInvestigation": "Under Investigation",
     "urgentPriority": "Urgent Priority",
