@@ -12,6 +12,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { DatabaseProperty } from '../../interfaces/DatabaseProperty';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 export interface MarkerStyleConfig {
   size: 'small' | 'medium' | 'large';
@@ -46,7 +47,7 @@ const statusConfig = {
     bgColor: '#ECFDF5',
     borderColor: '#10B981',
     icon: CheckCircle,
-    label: 'Approved',
+    label: 'status.approved',
     pulseColor: '#10B981'
   },
   pending: {
@@ -54,7 +55,7 @@ const statusConfig = {
     bgColor: '#FFFBEB',
     borderColor: '#F59E0B',
     icon: Clock,
-    label: 'Pending',
+    label: 'status.pending',
     pulseColor: '#F59E0B'
   },
   rejected: {
@@ -62,7 +63,7 @@ const statusConfig = {
     bgColor: '#FEF2F2',
     borderColor: '#EF4444',
     icon: XCircle,
-    label: 'Rejected',
+    label: 'status.rejected',
     pulseColor: '#EF4444'
   },
   suspended: {
@@ -70,7 +71,7 @@ const statusConfig = {
     bgColor: '#F9FAFB',
     borderColor: '#6B7280',
     icon: Pause,
-    label: 'Suspended',
+    label: 'status.suspended',
     pulseColor: '#6B7280'
   }
 };
@@ -126,6 +127,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
   priority = 'low',
   className = ''
 }) => {
+  const { t } = useTranslation('admin');
   const finalConfig = { ...defaultConfig, ...config };
   const status = property.approval_status as keyof typeof statusConfig;
   const statusInfo = statusConfig[status] || statusConfig.pending;
@@ -207,7 +209,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
             fontSize: sizeInfo.fontSize
           }}
         >
-          {statusInfo.label}
+          {t(statusInfo.label)}
           {/* Arrow pointing up */}
           <div
             className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-b-2 border-transparent"
@@ -286,6 +288,7 @@ export const AdminClusterMarker: React.FC<{
   size?: 'small' | 'medium' | 'large';
   selected?: boolean;
 }> = ({ count, statusBreakdown, size = 'medium', selected = false }) => {
+  const { t } = useTranslation('admin');
   const sizeInfo = sizeConfig[size];
   
   // Calculate dominant status
@@ -327,7 +330,7 @@ export const AdminClusterMarker: React.FC<{
               key={status}
               className="w-2 h-2 rounded-full border border-white"
               style={{ backgroundColor: info.color }}
-              title={`${info.label}: ${statusCount}`}
+              title={`${t(info.label)}: ${statusCount}`}
             />
           );
         })}
