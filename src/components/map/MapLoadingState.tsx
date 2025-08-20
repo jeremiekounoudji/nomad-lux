@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export interface MapLoadingStateProps {
   className?: string
@@ -9,8 +10,10 @@ export interface MapLoadingStateProps {
 const MapLoadingState: React.FC<MapLoadingStateProps> = ({
   className = '',
   height = '300px',
-  message = 'Loading map...'
+  message
 }) => {
+  const { t } = useTranslation('common');
+  const defaultMessage = t('map.loading');
   return (
     <div 
       className={`bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center map-loading relative overflow-hidden ${className}`}
@@ -40,7 +43,7 @@ const MapLoadingState: React.FC<MapLoadingStateProps> = ({
         </div>
         
         {/* Loading message */}
-        <p className="text-sm text-gray-600 font-medium">{message}</p>
+        <p className="text-sm text-gray-600 font-medium">{message || defaultMessage}</p>
         
         {/* Loading dots animation */}
         <div className="flex justify-center items-center mt-2 space-x-1">
