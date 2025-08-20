@@ -202,7 +202,52 @@
       "tileLoading": "Tile loading failed: {{message}}",
       "retry": "Failed to load map after {{count}} attempts. Please refresh the page.",
       "timeout": "Map taking longer than expected to load",
-      "generic": "Map loading failed"
+      "generic": "Map loading failed",
+      "network": {
+        "title": "Network Connection Error",
+        "description": "Unable to load map tiles due to network issues.",
+        "suggestions": {
+          "0": "Check your internet connection",
+          "1": "Try refreshing the page",
+          "2": "Switch to a different network if available"
+        }
+      },
+      "tiles": {
+        "title": "Map Tiles Unavailable",
+        "description": "The map service is currently unavailable.",
+        "suggestions": {
+          "0": "Map tiles may be temporarily unavailable",
+          "1": "Try again in a few moments",
+          "2": "Contact support if the issue persists"
+        }
+      },
+      "initialization": {
+        "title": "Map Initialization Failed",
+        "description": "Failed to initialize the map component.",
+        "suggestions": {
+          "0": "Refresh the page to reload the map",
+          "1": "Clear browser cache and try again",
+          "2": "Contact support if the problem continues"
+        }
+      },
+      "location": {
+        "title": "Location Error",
+        "description": "Unable to determine or display the location.",
+        "suggestions": {
+          "0": "Check location permissions in your browser",
+          "1": "Verify the coordinates are valid",
+          "2": "Try entering a different location"
+        }
+      },
+      "unknown": {
+        "title": "Map Error",
+        "description": "An unexpected error occurred while loading the map.",
+        "suggestions": {
+          "0": "Try refreshing the page",
+          "1": "Clear browser cache if the issue persists",
+          "2": "Contact support for assistance"
+        }
+      }
     },
     "retry": {
       "attempt": "Retrying map load ({{current}}/{{max}})",
@@ -212,6 +257,16 @@
       "loading": "Loading map tiles...",
       "loaded": "Map tiles loaded successfully",
       "error": "Tile loading error"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "reloadPage": "Reload Page",
+      "openInOpenStreetMap": "Open in OpenStreetMap"
+    },
+    "labels": {
+      "technicalDetails": "Technical Details",
+      "tryFollowing": "Try the following:",
+      "needToViewLocation": "Need to view the location?"
     }
   }
 }

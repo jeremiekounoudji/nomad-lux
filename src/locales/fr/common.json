@@ -202,7 +202,52 @@
       "tileLoading": "Échec du chargement des tuiles : {{message}}",
       "retry": "Échec du chargement de la carte après {{count}} tentatives. Veuillez actualiser la page.",
       "timeout": "La carte prend plus de temps que prévu à charger",
-      "generic": "Échec du chargement de la carte"
+      "generic": "Échec du chargement de la carte",
+      "network": {
+        "title": "Erreur de connexion réseau",
+        "description": "Impossible de charger les tuiles de carte en raison de problèmes réseau.",
+        "suggestions": {
+          "0": "Vérifiez votre connexion Internet",
+          "1": "Essayez d'actualiser la page",
+          "2": "Passez à un autre réseau si disponible"
+        }
+      },
+      "tiles": {
+        "title": "Tuiles de carte indisponibles",
+        "description": "Le service de carte est actuellement indisponible.",
+        "suggestions": {
+          "0": "Les tuiles de carte peuvent être temporairement indisponibles",
+          "1": "Réessayez dans quelques instants",
+          "2": "Contactez le support si le problème persiste"
+        }
+      },
+      "initialization": {
+        "title": "Échec de l'initialisation de la carte",
+        "description": "Échec de l'initialisation du composant de carte.",
+        "suggestions": {
+          "0": "Actualisez la page pour recharger la carte",
+          "1": "Effacez le cache du navigateur et réessayez",
+          "2": "Contactez le support si le problème persiste"
+        }
+      },
+      "location": {
+        "title": "Erreur de localisation",
+        "description": "Impossible de déterminer ou d'afficher l'emplacement.",
+        "suggestions": {
+          "0": "Vérifiez les permissions de localisation dans votre navigateur",
+          "1": "Vérifiez que les coordonnées sont valides",
+          "2": "Essayez d'entrer un autre emplacement"
+        }
+      },
+      "unknown": {
+        "title": "Erreur de carte",
+        "description": "Une erreur inattendue s'est produite lors du chargement de la carte.",
+        "suggestions": {
+          "0": "Essayez d'actualiser la page",
+          "1": "Effacez le cache du navigateur si le problème persiste",
+          "2": "Contactez le support pour obtenir de l'aide"
+        }
+      }
     },
     "retry": {
       "attempt": "Nouvelle tentative de chargement de la carte ({{current}}/{{max}})",
@@ -212,6 +257,16 @@
       "loading": "Chargement des tuiles de carte...",
       "loaded": "Tuiles de carte chargées avec succès",
       "error": "Erreur de chargement des tuiles"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "reloadPage": "Actualiser la page",
+      "openInOpenStreetMap": "Ouvrir dans OpenStreetMap"
+    },
+    "labels": {
+      "technicalDetails": "Détails techniques",
+      "tryFollowing": "Essayez ce qui suit :",
+      "needToViewLocation": "Besoin de voir l'emplacement ?"
     }
   }
 }

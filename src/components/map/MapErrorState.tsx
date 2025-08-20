@@ -1,6 +1,7 @@
 import React from 'react'
 import { AlertTriangle, RefreshCw, Wifi, Globe, MapPin } from 'lucide-react'
 import { Button } from '@heroui/react'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export interface MapErrorStateProps {
   className?: string
@@ -27,6 +28,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
   showRetryButton = true,
   errorType = 'unknown'
 }) => {
+  const { t } = useTranslation('common');
   // Determine error type based on error message if not provided
   const detectErrorType = (errorMessage: string): 'network' | 'tiles' | 'initialization' | 'location' | 'unknown' => {
     const lowerMessage = errorMessage.toLowerCase()
@@ -53,56 +55,56 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
   const errorConfigs: Record<string, ErrorTypeConfig> = {
     network: {
       icon: <Wifi className="w-8 h-8" />,
-      title: 'Network Connection Error',
-      description: 'Unable to load map tiles due to network issues.',
+      title: t('map.error.network.title'),
+      description: t('map.error.network.description'),
       suggestions: [
-        'Check your internet connection',
-        'Try refreshing the page',
-        'Switch to a different network if available'
+        t('map.error.network.suggestions.0'),
+        t('map.error.network.suggestions.1'),
+        t('map.error.network.suggestions.2')
       ],
       color: 'text-orange-600'
     },
     tiles: {
       icon: <Globe className="w-8 h-8" />,
-      title: 'Map Tiles Unavailable',
-      description: 'The map service is currently unavailable.',
+      title: t('map.error.tiles.title'),
+      description: t('map.error.tiles.description'),
       suggestions: [
-        'Map tiles may be temporarily unavailable',
-        'Try again in a few moments',
-        'Contact support if the issue persists'
+        t('map.error.tiles.suggestions.0'),
+        t('map.error.tiles.suggestions.1'),
+        t('map.error.tiles.suggestions.2')
       ],
       color: 'text-blue-600'
     },
     initialization: {
       icon: <AlertTriangle className="w-8 h-8" />,
-      title: 'Map Initialization Failed',
-      description: 'Failed to initialize the map component.',
+      title: t('map.error.initialization.title'),
+      description: t('map.error.initialization.description'),
       suggestions: [
-        'Refresh the page to reload the map',
-        'Clear browser cache and try again',
-        'Contact support if the problem continues'
+        t('map.error.initialization.suggestions.0'),
+        t('map.error.initialization.suggestions.1'),
+        t('map.error.initialization.suggestions.2')
       ],
       color: 'text-red-600'
     },
     location: {
       icon: <MapPin className="w-8 h-8" />,
-      title: 'Location Error',
-      description: 'Unable to determine or display the location.',
+      title: t('map.error.location.title'),
+      description: t('map.error.location.description'),
       suggestions: [
-        'Check location permissions in your browser',
-        'Verify the coordinates are valid',
-        'Try entering a different location'
+        t('map.error.location.suggestions.0'),
+        t('map.error.location.suggestions.1'),
+        t('map.error.location.suggestions.2')
       ],
       color: 'text-purple-600'
     },
     unknown: {
       icon: <AlertTriangle className="w-8 h-8" />,
-      title: 'Map Error',
-      description: 'An unexpected error occurred while loading the map.',
+      title: t('map.error.unknown.title'),
+      description: t('map.error.unknown.description'),
       suggestions: [
-        'Try refreshing the page',
-        'Clear browser cache if the issue persists',
-        'Contact support for assistance'
+        t('map.error.unknown.suggestions.0'),
+        t('map.error.unknown.suggestions.1'),
+        t('map.error.unknown.suggestions.2')
       ],
       color: 'text-gray-600'
     }
@@ -145,7 +147,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mb-4 text-left">
             <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700 mb-2">
-              Technical Details
+              {t('map.labels.technicalDetails')}
             </summary>
             <div className="bg-gray-100 border border-gray-300 rounded p-2 text-xs font-mono text-gray-700 break-all">
               {errorMessage}
@@ -155,7 +157,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
 
         {/* Suggestions */}
         <div className="mb-6 text-left">
-          <p className="text-sm font-medium text-gray-700 mb-2">Try the following:</p>
+          <p className="text-sm font-medium text-gray-700 mb-2">{t('map.labels.tryFollowing')}</p>
           <ul className="text-xs text-gray-600 space-y-1">
             {config.suggestions.map((suggestion, index) => (
               <li key={index} className="flex items-start gap-2">
@@ -176,7 +178,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
               startContent={<RefreshCw className="w-4 h-4" />}
               className="w-full"
             >
-              Try Again
+              {t('map.actions.tryAgain')}
             </Button>
           )}
           
@@ -186,14 +188,14 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
             onClick={() => window.location.reload()}
             className="w-full text-gray-600 hover:text-gray-800"
           >
-            Reload Page
+            {t('map.actions.reloadPage')}
           </Button>
         </div>
 
         {/* Fallback Map Link */}
         <div className="mt-4 pt-4 border-t border-red-200">
           <p className="text-xs text-gray-500 mb-2">
-            Need to view the location?
+            {t('map.labels.needToViewLocation')}
           </p>
           <Button
             variant="light"
@@ -204,7 +206,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
             rel="noopener noreferrer"
             className="text-blue-600 hover:text-blue-800 text-xs"
           >
-            Open in OpenStreetMap
+            {t('map.actions.openInOpenStreetMap')}
           </Button>
         </div>
       </div>
