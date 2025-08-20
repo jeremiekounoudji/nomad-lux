@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@heroui/react';
 import { Star, MapPin } from 'lucide-react';
 import { getPropertyCoordinates } from '../../utils/propertyUtils';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 // Reuse the custom marker icon from PropertyMap
 const createPropertyIcon = (property: Property, isSelected: boolean = false) => {
@@ -57,6 +58,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
   enableClustering = false // Default to false since clustering is not available
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation('property');
   // Calculate map center and bounds
   const validProperties = useMemo(() => properties.filter(p => getPropertyCoordinates(p)), [properties]);
   const markers = useMemo(() => validProperties.map((property) => {
@@ -123,7 +125,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
                     color="primary"
                     onClick={() => navigate(`/properties/${property.id}`)}
                   >
-                    View Details
+                    {t('actions.viewDetails')}
                   </Button>
                 </div>
               </div>
