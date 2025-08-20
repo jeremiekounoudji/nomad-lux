@@ -122,7 +122,7 @@
   - [x] 5.24.11 Verify PropertyDetailsModal.tsx translation implementation
   - [x] 5.24.12 Verify ApproveRejectPayoutModal.tsx translation implementation
   - [x] 5.24.13 Verify PropertySuspensionModal.tsx translation implementation
-  - [ ] 5.24.14 Verify PropertyRejectionModal.tsx translation implementation
+  - [x] 5.24.14 Verify PropertyRejectionModal.tsx translation implementation
   - [ ] 5.24.15 Verify PropertyApprovalModal.tsx translation implementation
   - [ ] 5.24.16 Verify BulkSuspendModal.tsx translation implementation
   - [ ] 5.24.17 Verify BulkActionModal.tsx translation implementation

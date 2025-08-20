@@ -9,6 +9,7 @@ import {
   Textarea
 } from '@heroui/react'
 import { XCircle } from 'lucide-react'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import { DatabaseProperty } from '../../../../interfaces/DatabaseProperty'
 
 interface PropertyRejectionModalProps {
@@ -28,20 +29,22 @@ export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
   onReasonChange,
   onReject
 }) => {
+  const { t } = useTranslation('admin')
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
           <XCircle className="w-5 h-5 text-danger-500" />
-          Reject Property
+          {t('propertyRejectionModal.title')}
         </ModalHeader>
         <ModalBody>
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
-              Please provide a reason for rejecting this property. This will be sent to the host.
+              {t('propertyRejectionModal.description')}
             </p>
             <Textarea
-              placeholder="Reason for rejection..."
+              placeholder={t('propertyRejectionModal.placeholders.reason')}
               value={rejectionReason}
               onChange={(e) => onReasonChange(e.target.value)}
               minRows={3}
@@ -50,7 +53,7 @@ export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="flat" onPress={onClose}>
-            Cancel
+            {t('propertyRejectionModal.buttons.cancel')}
           </Button>
           <Button
             color="danger"
@@ -58,7 +61,7 @@ export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
             isDisabled={!rejectionReason.trim()}
             startContent={<XCircle className="w-4 h-4" />}
           >
-            Reject Property
+            {t('propertyRejectionModal.buttons.rejectProperty')}
           </Button>
         </ModalFooter>
       </ModalContent>

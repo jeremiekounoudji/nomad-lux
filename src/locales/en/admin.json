@@ -723,6 +723,17 @@
   "messages": {
     "propertyApproved": "Property approved successfully",
     "propertyRejected": "Property rejected successfully",
+    "propertyRejectionModal": {
+      "title": "Reject Property",
+      "description": "Please provide a reason for rejecting this property. This will be sent to the host.",
+      "placeholders": {
+        "reason": "Reason for rejection..."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "rejectProperty": "Reject Property"
+      }
+    }
     "propertySuspended": "Property suspended successfully",
     "propertySuspensionModal": {
       "title": "Suspend Property",

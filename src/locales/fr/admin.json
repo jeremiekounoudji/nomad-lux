@@ -723,6 +723,17 @@
   "messages": {
     "propertyApproved": "Propriété approuvée avec succès",
     "propertyRejected": "Propriété rejetée avec succès",
+    "propertyRejectionModal": {
+      "title": "Rejeter la propriété",
+      "description": "Veuillez fournir une raison pour rejeter cette propriété. Cela sera envoyé à l'hôte.",
+      "placeholders": {
+        "reason": "Raison du rejet..."
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "rejectProperty": "Rejeter la propriété"
+      }
+    }
     "propertySuspended": "Propriété suspendue avec succès",
     "propertySuspensionModal": {
       "title": "Suspendre la propriété",
