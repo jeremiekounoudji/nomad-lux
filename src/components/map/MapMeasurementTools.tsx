@@ -21,6 +21,7 @@ import {
   Navigation
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 export interface MeasurementPoint {
   lat: number;
@@ -117,6 +118,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
   onMeasurementsChange,
   className = ''
 }) => {
+  const { t } = useTranslation('common');
   const [currentLine, setCurrentLine] = useState<MeasurementPoint[]>([]);
   const [currentArea, setCurrentArea] = useState<MeasurementPoint[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -159,7 +161,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       });
       
       setCurrentLine([]);
-      toast.success(`Distance measurement completed: ${formatDistance(newLine.distance)}`);
+      toast.success(t('map.measurement.messages.distanceCompleted', { distance: formatDistance(newLine.distance) }));
     } else if (activeTool === 'area' && currentArea.length >= 3) {
       const area = calculatePolygonArea(currentArea);
       const perimeter = calculateLineDistance([...currentArea, currentArea[0]]);
@@ -179,7 +181,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       });
       
       setCurrentArea([]);
-      toast.success(`Area measurement completed: ${formatArea(area)}`);
+      toast.success(t('map.measurement.messages.areaCompleted', { area: formatArea(area) }));
     }
     
     setIsDrawing(false);
@@ -197,7 +199,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
   const clearAllMeasurements = () => {
     onMeasurementsChange({ lines: [], areas: [] });
     setSelectedMeasurement(null);
-    toast.success('All measurements cleared');
+    toast.success(t('map.measurement.messages.allCleared'));
   };
 
   // Delete specific measurement
@@ -218,7 +220,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       setSelectedMeasurement(null);
     }
     
-    toast.success('Measurement deleted');
+    toast.success(t('map.measurement.messages.deleted'));
   };
 
   // Copy measurement data
@@ -236,7 +238,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
     };
     
     navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-    toast.success('Measurement data copied to clipboard');
+    toast.success(t('map.measurement.messages.dataCopied'));
   };
 
   // Export measurements
@@ -264,7 +266,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
     
-    toast.success('Measurements exported');
+    toast.success(t('map.measurement.messages.exported'));
   };
 
   return (
@@ -273,9 +275,9 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       <Card className="shadow-sm">
         <CardBody className="p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Measurement Tools</h3>
+            <h3 className="text-lg font-semibold">{t('map.measurement.title')}</h3>
             <div className="flex items-center gap-2">
-              <Tooltip content="Copy measurement data">
+              <Tooltip content={t('map.measurement.actions.copyData')}>
                 <Button
                   size="sm"
                   variant="light"
@@ -286,7 +288,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   <Copy className="w-4 h-4" />
                 </Button>
               </Tooltip>
-              <Tooltip content="Export measurements">
+              <Tooltip content={t('map.measurement.actions.exportMeasurements')}>
                 <Button
                   size="sm"
                   variant="light"
@@ -297,7 +299,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   <Download className="w-4 h-4" />
                 </Button>
               </Tooltip>
-              <Tooltip content="Clear all measurements">
+              <Tooltip content={t('map.measurement.actions.clearAll')}>
                 <Button
                   size="sm"
                   variant="light"
@@ -321,7 +323,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                 startContent={<Ruler className="w-4 h-4" />}
                 className="flex-1"
               >
-                Distance
+                {t('map.measurement.distance')}
               </Button>
               <Button
                 onClick={() => handleToolActivation('area')}
@@ -330,7 +332,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                 startContent={<Square className="w-4 h-4" />}
                 className="flex-1"
               >
-                Area
+                {t('map.measurement.area')}
               </Button>
             </ButtonGroup>
 
@@ -338,31 +340,31 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
             {activeTool && (
               <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
                 <div className="flex items-center justify-between">
-                  <div className="text-sm text-primary-700">
-                    {activeTool === 'distance' ? (
-                      <>Click on the map to add points for distance measurement. Double-click to finish.</>
-                    ) : (
-                      <>Click on the map to create an area. Minimum 3 points required. Double-click to finish.</>
-                    )}
-                  </div>
-                  <Button
-                    size="sm"
-                    variant="light"
-                    onClick={cancelMeasurement}
-                    startContent={<RotateCcw className="w-4 h-4" />}
-                  >
-                    Cancel
-                  </Button>
+                                  <div className="text-sm text-primary-700">
+                  {activeTool === 'distance' ? (
+                    <>{t('map.measurement.instructions.distance')}</>
+                  ) : (
+                    <>{t('map.measurement.instructions.area')}</>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  variant="light"
+                  onClick={cancelMeasurement}
+                  startContent={<RotateCcw className="w-4 h-4" />}
+                >
+                  {t('map.measurement.cancel')}
+                </Button>
                 </div>
                 
                 {/* Current measurement info */}
                 {isDrawing && (
                   <div className="mt-2 text-xs text-primary-600">
                     {activeTool === 'distance' && currentLine.length > 0 && (
-                      <div>Points: {currentLine.length} | Current distance: {formatDistance(calculateLineDistance(currentLine))}</div>
+                      <div>{t('map.measurement.current.points')}: {currentLine.length} | {t('map.measurement.current.currentDistance')}: {formatDistance(calculateLineDistance(currentLine))}</div>
                     )}
                     {activeTool === 'area' && currentArea.length > 0 && (
-                      <div>Points: {currentArea.length} | {currentArea.length >= 3 ? `Area: ${formatArea(calculatePolygonArea(currentArea))}` : 'Need 3+ points'}</div>
+                      <div>{t('map.measurement.current.points')}: {currentArea.length} | {currentArea.length >= 3 ? `${t('map.measurement.area')}: ${formatArea(calculatePolygonArea(currentArea))}` : t('map.measurement.current.needMorePoints')}</div>
                     )}
                   </div>
                 )}
@@ -376,7 +378,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       {(measurements.lines.length > 0 || measurements.areas.length > 0) && (
         <Card className="shadow-sm">
           <CardBody className="p-4">
-            <h4 className="font-semibold mb-3">Measurements</h4>
+            <h4 className="font-semibold mb-3">{t('map.measurement.measurements')}</h4>
             
             <div className="space-y-3 max-h-64 overflow-y-auto">
               {/* Distance Measurements */}
@@ -395,13 +397,13 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                         style={{ backgroundColor: line.color }}
                       />
                       <div>
-                        <div className="font-medium text-sm">Distance #{index + 1}</div>
+                        <div className="font-medium text-sm">{t('map.measurement.items.distance', { index: index + 1 })}</div>
                         <div className="text-xs text-gray-600">{formatDistance(line.distance)}</div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Chip size="sm" variant="flat">
-                        {line.points.length} points
+                        {t('map.measurement.items.points', { count: line.points.length })}
                       </Chip>
                       <Button
                         size="sm"
@@ -435,15 +437,15 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                         style={{ backgroundColor: `${area.color}33`, borderColor: area.color }}
                       />
                       <div>
-                        <div className="font-medium text-sm">Area #{index + 1}</div>
+                        <div className="font-medium text-sm">{t('map.measurement.items.area', { index: index + 1 })}</div>
                         <div className="text-xs text-gray-600">
-                          {formatArea(area.area)} | Perimeter: {formatDistance(area.perimeter)}
+                          {formatArea(area.area)} | {t('map.measurement.items.perimeter')}: {formatDistance(area.perimeter)}
                         </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <Chip size="sm" variant="flat">
-                        {area.points.length} points
+                        {t('map.measurement.items.points', { count: area.points.length })}
                       </Chip>
                       <Button
                         size="sm"
@@ -466,11 +468,11 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
             <Divider className="my-3" />
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <div className="text-gray-600">Total Distance Lines</div>
+                <div className="text-gray-600">{t('map.measurement.summary.totalDistanceLines')}</div>
                 <div className="font-semibold">{measurements.lines.length}</div>
               </div>
               <div>
-                <div className="text-gray-600">Total Areas</div>
+                <div className="text-gray-600">{t('map.measurement.summary.totalAreas')}</div>
                 <div className="font-semibold">{measurements.areas.length}</div>
               </div>
             </div>

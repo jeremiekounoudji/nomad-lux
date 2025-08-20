@@ -272,6 +272,46 @@
       "technicalDetails": "Détails techniques",
       "tryFollowing": "Essayez ce qui suit :",
       "needToViewLocation": "Besoin de voir l'emplacement ?"
+    },
+    "measurement": {
+      "title": "Outils de mesure",
+      "distance": "Distance",
+      "area": "Surface",
+      "cancel": "Annuler",
+      "measurements": "Mesures",
+      "instructions": {
+        "distance": "Cliquez sur la carte pour ajouter des points pour la mesure de distance. Double-cliquez pour terminer.",
+        "area": "Cliquez sur la carte pour créer une surface. Minimum 3 points requis. Double-cliquez pour terminer."
+      },
+      "current": {
+        "points": "Points",
+        "currentDistance": "Distance actuelle",
+        "needMorePoints": "Besoin de 3+ points"
+      },
+      "items": {
+        "distance": "Distance #{{index}}",
+        "area": "Surface #{{index}}",
+        "points": "{{count}} points",
+        "perimeter": "Périmètre"
+      },
+      "summary": {
+        "totalDistanceLines": "Total des lignes de distance",
+        "totalAreas": "Total des surfaces"
+      },
+      "actions": {
+        "copyData": "Copier les données de mesure",
+        "exportMeasurements": "Exporter les mesures",
+        "clearAll": "Effacer toutes les mesures",
+        "deleteMeasurement": "Supprimer la mesure"
+      },
+      "messages": {
+        "distanceCompleted": "Mesure de distance terminée : {{distance}}",
+        "areaCompleted": "Mesure de surface terminée : {{area}}",
+        "allCleared": "Toutes les mesures effacées",
+        "deleted": "Mesure supprimée",
+        "dataCopied": "Données de mesure copiées dans le presse-papiers",
+        "exported": "Mesures exportées"
+      }
     }
   }
 }

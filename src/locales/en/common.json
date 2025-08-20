@@ -272,6 +272,46 @@
       "technicalDetails": "Technical Details",
       "tryFollowing": "Try the following:",
       "needToViewLocation": "Need to view the location?"
+    },
+    "measurement": {
+      "title": "Measurement Tools",
+      "distance": "Distance",
+      "area": "Area",
+      "cancel": "Cancel",
+      "measurements": "Measurements",
+      "instructions": {
+        "distance": "Click on the map to add points for distance measurement. Double-click to finish.",
+        "area": "Click on the map to create an area. Minimum 3 points required. Double-click to finish."
+      },
+      "current": {
+        "points": "Points",
+        "currentDistance": "Current distance",
+        "needMorePoints": "Need 3+ points"
+      },
+      "items": {
+        "distance": "Distance #{{index}}",
+        "area": "Area #{{index}}",
+        "points": "{{count}} points",
+        "perimeter": "Perimeter"
+      },
+      "summary": {
+        "totalDistanceLines": "Total Distance Lines",
+        "totalAreas": "Total Areas"
+      },
+      "actions": {
+        "copyData": "Copy measurement data",
+        "exportMeasurements": "Export measurements",
+        "clearAll": "Clear all measurements",
+        "deleteMeasurement": "Delete measurement"
+      },
+      "messages": {
+        "distanceCompleted": "Distance measurement completed: {{distance}}",
+        "areaCompleted": "Area measurement completed: {{area}}",
+        "allCleared": "All measurements cleared",
+        "deleted": "Measurement deleted",
+        "dataCopied": "Measurement data copied to clipboard",
+        "exported": "Measurements exported"
+      }
     }
   }
 }
