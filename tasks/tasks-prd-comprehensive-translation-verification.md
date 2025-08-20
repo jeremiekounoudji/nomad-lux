@@ -141,7 +141,7 @@
   - [x] 6.10 Verify LazyMapWrapper.tsx translation implementation
   - [x] 6.11 Verify MapMeasurementTools.tsx translation implementation
   - [x] 6.12 Verify DirectionsButton.tsx translation implementation
-  - [ ] 6.13 Verify VirtualizedMarkerRenderer.tsx translation implementation
+  - [x] 6.13 Verify VirtualizedMarkerRenderer.tsx translation implementation
   - [ ] 6.14 Verify AdminMarkerStyles.tsx translation implementation
   - [ ] 6.15 Verify AdminPropertyMarker.tsx translation implementation
 

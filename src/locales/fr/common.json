@@ -312,6 +312,21 @@
         "dataCopied": "Données de mesure copiées dans le presse-papiers",
         "exported": "Mesures exportées"
       }
+    },
+    "virtualization": {
+      "performance": {
+        "total": "Total",
+        "visible": "Visible",
+        "clusters": "Clusters",
+        "reduction": "Réduction",
+        "zoom": "Zoom",
+        "mode": "Mode"
+      },
+      "messages": {
+        "updatingMarkers": "Mise à jour des marqueurs visibles pour la vue",
+        "renderedMarkers": "{{markers}} marqueurs et {{clusters}} clusters rendus",
+        "errorUpdating": "Erreur lors de la mise à jour du contenu visible"
+      }
     }
   }
 }

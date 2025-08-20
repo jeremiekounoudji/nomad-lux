@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { DatabaseProperty } from '../../interfaces/DatabaseProperty';
 import { MapCoordinates } from '../../interfaces/Map';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface ViewportBounds {
   north: number;
@@ -75,6 +76,7 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
   enableVirtualization = true,
   performanceMode = 'medium'
 }) => {
+  const { t } = useTranslation('common');
   const [viewportBounds, setViewportBounds] = useState<ViewportBounds | null>(null);
   const [currentZoom, setCurrentZoom] = useState<number>(10);
   const [visibleMarkers, setVisibleMarkers] = useState<DatabaseProperty[]>([]);
@@ -255,7 +257,7 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
         return;
       }
 
-      console.log('🔄 Updating visible markers for viewport:', viewportBounds);
+      console.log('🔄', t('map.virtualization.messages.updatingMarkers'), ':', viewportBounds);
 
       // Get properties in viewport
       const propertiesInView = getPropertiesInViewport(viewportBounds);
@@ -283,9 +285,12 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
         zoom: currentZoom
       };
 
-      console.log(`📍 Rendered ${finalVisibleMarkers.length} markers and ${newClusters.length} clusters`);
+      console.log('📍', t('map.virtualization.messages.renderedMarkers', { 
+        markers: finalVisibleMarkers.length, 
+        clusters: newClusters.length 
+      }));
     } catch (error) {
-      console.error('❌ Error updating visible content:', error);
+      console.error('❌', t('map.virtualization.messages.errorUpdating'), ':', error);
     } finally {
       setIsProcessing(false);
     }
@@ -433,12 +438,12 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
           zIndex: 2000,
           fontFamily: 'monospace'
         }}>
-          <div>Total: {performanceInfo.totalProperties}</div>
-          <div>Visible: {performanceInfo.visibleMarkers}</div>
-          <div>Clusters: {performanceInfo.clusters}</div>
-          <div>Reduction: {performanceInfo.reductionRatio}</div>
-          <div>Zoom: {performanceInfo.currentZoom}</div>
-          <div>Mode: {performanceInfo.strategy}</div>
+          <div>{t('map.virtualization.performance.total')}: {performanceInfo.totalProperties}</div>
+          <div>{t('map.virtualization.performance.visible')}: {performanceInfo.visibleMarkers}</div>
+          <div>{t('map.virtualization.performance.clusters')}: {performanceInfo.clusters}</div>
+          <div>{t('map.virtualization.performance.reduction')}: {performanceInfo.reductionRatio}</div>
+          <div>{t('map.virtualization.performance.zoom')}: {performanceInfo.currentZoom}</div>
+          <div>{t('map.virtualization.performance.mode')}: {performanceInfo.strategy}</div>
         </div>
       )}
     </>

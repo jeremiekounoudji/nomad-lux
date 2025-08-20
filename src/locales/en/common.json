@@ -312,6 +312,21 @@
         "dataCopied": "Measurement data copied to clipboard",
         "exported": "Measurements exported"
       }
+    },
+    "virtualization": {
+      "performance": {
+        "total": "Total",
+        "visible": "Visible",
+        "clusters": "Clusters",
+        "reduction": "Reduction",
+        "zoom": "Zoom",
+        "mode": "Mode"
+      },
+      "messages": {
+        "updatingMarkers": "Updating visible markers for viewport",
+        "renderedMarkers": "Rendered {{markers}} markers and {{clusters}} clusters",
+        "errorUpdating": "Error updating visible content"
+      }
     }
   }
 }
