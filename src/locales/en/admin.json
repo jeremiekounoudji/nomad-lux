@@ -722,6 +722,20 @@
   },
   "messages": {
     "propertyApproved": "Property approved successfully",
+    "propertyApprovalModal": {
+      "title": "Approve Property",
+      "labels": {
+        "hostId": "Host ID:"
+      },
+      "confirmations": {
+        "readyToApprove": "Ready to approve?",
+        "description": "This property will be published and available for guests to book. The host will be notified of the approval."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "approveProperty": "Approve Property"
+      }
+    }
     "propertyRejected": "Property rejected successfully",
     "propertyRejectionModal": {
       "title": "Reject Property",

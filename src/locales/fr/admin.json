@@ -722,6 +722,20 @@
   },
   "messages": {
     "propertyApproved": "Propriété approuvée avec succès",
+    "propertyApprovalModal": {
+      "title": "Approuver la propriété",
+      "labels": {
+        "hostId": "ID de l'hôte :"
+      },
+      "confirmations": {
+        "readyToApprove": "Prêt à approuver ?",
+        "description": "Cette propriété sera publiée et disponible pour les invités à réserver. L'hôte sera notifié de l'approbation."
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "approveProperty": "Approuver la propriété"
+      }
+    }
     "propertyRejected": "Propriété rejetée avec succès",
     "propertyRejectionModal": {
       "title": "Rejeter la propriété",
