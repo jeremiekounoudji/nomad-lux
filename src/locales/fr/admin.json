@@ -735,6 +735,14 @@
         "cancel": "Annuler",
         "approveProperty": "Approuver la propriété"
       }
+    },
+    "bulkSuspendModal": {
+      "title": "Confirmer la suspension en lot",
+      "confirmation": "Êtes-vous sûr de vouloir suspendre {{count}} propriétés ?",
+      "buttons": {
+        "cancel": "Annuler",
+        "confirm": "Confirmer"
+      }
     }
     "propertyRejected": "Propriété rejetée avec succès",
     "propertyRejectionModal": {

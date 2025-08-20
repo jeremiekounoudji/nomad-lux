@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import { BulkSuspendModalProps } from '../../../interfaces/Component'
 
 export const BulkSuspendModal: React.FC<BulkSuspendModalProps> = ({
@@ -8,27 +9,31 @@ export const BulkSuspendModal: React.FC<BulkSuspendModalProps> = ({
   selectedProperties,
   bulkSuspendLoading,
   handleBulkSuspendConfirm
-}) => (
+}) => {
+  const { t } = useTranslation('admin')
+
+  return (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalContent>
-      <ModalHeader>Confirm Bulk Suspension</ModalHeader>
+      <ModalHeader>{t('bulkSuspendModal.title')}</ModalHeader>
       <ModalBody>
-        <p>Are you sure you want to suspend {selectedProperties.length} properties?</p>
+        <p>{t('bulkSuspendModal.confirmation', { count: selectedProperties.length })}</p>
       </ModalBody>
       <ModalFooter>
         <Button variant="flat" onPress={onClose} disabled={bulkSuspendLoading}>
-          Cancel
+          {t('bulkSuspendModal.buttons.cancel')}
         </Button>
         <Button
           color="warning"
           onPress={handleBulkSuspendConfirm}
           isLoading={bulkSuspendLoading}
         >
-          Confirm
+          {t('bulkSuspendModal.buttons.confirm')}
         </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
-)
+  )
+}
 
 export default BulkSuspendModal 
