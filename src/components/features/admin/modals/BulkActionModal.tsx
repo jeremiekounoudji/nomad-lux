@@ -1,5 +1,6 @@
 import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Textarea } from '@heroui/react'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 import { BulkActionModalProps } from '../../../interfaces/Component'
 
 export const BulkActionModal: React.FC<BulkActionModalProps> = ({
@@ -11,20 +12,23 @@ export const BulkActionModal: React.FC<BulkActionModalProps> = ({
   setRejectionReason,
   handleBulkConfirm,
   bulkLoading
-}) => (
+}) => {
+  const { t } = useTranslation('admin')
+
+  return (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalContent>
       <ModalHeader>
-        Confirm Bulk {bulkActionType === 'approve' ? 'Approval' : 'Rejection'}
+        {t(`bulkActionModal.title.${bulkActionType}`)}
       </ModalHeader>
       <ModalBody>
         <p>
-          Are you sure you want to <b>{bulkActionType}</b> {selectedProperties.length} properties?
+          {t('bulkActionModal.confirmation', { action: bulkActionType, count: selectedProperties.length })}
         </p>
         {bulkActionType === 'reject' && (
           <div className="mt-4">
             <Textarea
-              label="Rejection Reason (applies to all)"
+              label={t('bulkActionModal.labels.rejectionReason')}
               value={rejectionReason}
               onChange={e => setRejectionReason(e.target.value)}
               minRows={2}
@@ -35,7 +39,7 @@ export const BulkActionModal: React.FC<BulkActionModalProps> = ({
       </ModalBody>
       <ModalFooter>
         <Button variant="flat" onPress={onClose} disabled={bulkLoading}>
-          Cancel
+          {t('bulkActionModal.buttons.cancel')}
         </Button>
         <Button
           color={bulkActionType === 'approve' ? 'success' : 'danger'}
@@ -43,11 +47,12 @@ export const BulkActionModal: React.FC<BulkActionModalProps> = ({
           isLoading={bulkLoading}
           disabled={bulkActionType === 'reject' && !rejectionReason.trim()}
         >
-          Confirm
+          {t('bulkActionModal.buttons.confirm')}
         </Button>
       </ModalFooter>
     </ModalContent>
   </Modal>
-)
+  )
+}
 
 export default BulkActionModal 

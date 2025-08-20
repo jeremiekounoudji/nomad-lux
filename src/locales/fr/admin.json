@@ -743,6 +743,20 @@
         "cancel": "Annuler",
         "confirm": "Confirmer"
       }
+    },
+    "bulkActionModal": {
+      "title": {
+        "approve": "Confirmer l'approbation en lot",
+        "reject": "Confirmer le rejet en lot"
+      },
+      "confirmation": "Êtes-vous sûr de vouloir {{action}} {{count}} propriétés ?",
+      "labels": {
+        "rejectionReason": "Raison du rejet (s'applique à toutes)"
+      },
+      "buttons": {
+        "cancel": "Annuler",
+        "confirm": "Confirmer"
+      }
     }
     "propertyRejected": "Propriété rejetée avec succès",
     "propertyRejectionModal": {
