@@ -197,6 +197,11 @@
   "map": {
     "loading": "Loading map...",
     "initializing": "Initializing map...",
+    "loadingLibraries": "Loading map libraries...",
+    "progress": {
+      "loading": "Loading {{current}}... ({{loaded}}/{{total}})",
+      "complete": "Complete"
+    },
     "error": {
       "initialization": "Failed to initialize map",
       "tileLoading": "Tile loading failed: {{message}}",

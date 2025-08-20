@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect, useCallback } from 'react';
 import MapLoadingState from './MapLoadingState';
 import { MapErrorState } from './MapLoadingStates';
+import { useTranslation } from '../../lib/stores/translationStore';
 import type { MapContainerProps, PropertyMapProps, PropertiesMapProps } from '../../interfaces/Map';
 
 // Dynamic import types for Leaflet
@@ -221,8 +222,10 @@ const EnhancedLoadingComponent: React.FC<{
 }> = ({ 
   originalComponent: OriginalComponent, 
   progress,
-  loadingMessage = "Loading map..."
+  loadingMessage
 }) => {
+  const { t } = useTranslation('common');
+  const defaultLoadingMessage = t('map.loading');
   return (
     <div className="relative w-full h-full">
       <OriginalComponent />
@@ -232,9 +235,13 @@ const EnhancedLoadingComponent: React.FC<{
         <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-50">
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-3"></div>
-            <p className="text-sm text-gray-600 mb-2">{loadingMessage}</p>
+            <p className="text-sm text-gray-600 mb-2">{loadingMessage || defaultLoadingMessage}</p>
             <p className="text-xs text-gray-500">
-              Loading {progress.current}... ({progress.loaded.length}/{progress.total})
+              {t('map.progress.loading', { 
+                current: progress.current, 
+                loaded: progress.loaded.length, 
+                total: progress.total 
+              })}
             </p>
             <div className="w-48 bg-gray-200 rounded-full h-2 mt-2">
               <div 
@@ -260,6 +267,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
   onError,
   ...mapProps
 }) => {
+  const { t } = useTranslation('common');
   const [isPreloaded, setIsPreloaded] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState<{ loaded: string[]; total: number; current: string } | null>(null);
@@ -293,7 +301,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
           const finalProgress = {
             loaded: ['leaflet', 'react-leaflet', 'plugins', 'component'],
             total: 4,
-            current: 'Complete'
+            current: t('map.progress.complete')
           };
           setLoadingProgress(finalProgress);
           onLoadingProgress?.(finalProgress);
@@ -346,7 +354,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
               <EnhancedLoadingComponent 
                 originalComponent={LoadingComponent}
                 progress={loadingProgress}
-                loadingMessage="Loading map libraries..."
+                loadingMessage={t('map.loadingLibraries')}
               />
             ) : (
               <div className="w-full h-full bg-gray-100 animate-pulse rounded-lg" />

@@ -138,7 +138,7 @@
   - [x] 6.7 Verify MapToggle.tsx translation implementation
   - [x] 6.8 Verify MapLoadingState.tsx translation implementation
   - [x] 6.9 Verify MapErrorState.tsx translation implementation
-  - [ ] 6.10 Verify LazyMapWrapper.tsx translation implementation
+  - [x] 6.10 Verify LazyMapWrapper.tsx translation implementation
   - [ ] 6.11 Verify MapMeasurementTools.tsx translation implementation
   - [ ] 6.12 Verify DirectionsButton.tsx translation implementation
   - [ ] 6.13 Verify VirtualizedMarkerRenderer.tsx translation implementation

@@ -197,6 +197,11 @@
   "map": {
     "loading": "Chargement de la carte...",
     "initializing": "Initialisation de la carte...",
+    "loadingLibraries": "Chargement des bibliothèques de carte...",
+    "progress": {
+      "loading": "Chargement de {{current}}... ({{loaded}}/{{total}})",
+      "complete": "Terminé"
+    },
     "error": {
       "initialization": "Échec de l'initialisation de la carte",
       "tileLoading": "Échec du chargement des tuiles : {{message}}",
