@@ -1,5 +1,6 @@
 import React from 'react'
 import { Property } from '../../interfaces/Property'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export interface PropertyMarkerProps {
   property: Property
@@ -16,6 +17,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({
   showPrice = true,
   showImage = false
 }) => {
+  const { t } = useTranslation('property');
   // Placeholder implementation - will be implemented in task 3.2
   return (
     <div 
