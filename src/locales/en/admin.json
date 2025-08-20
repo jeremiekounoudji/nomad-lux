@@ -394,6 +394,16 @@
       "failureReason": "Failure Reason",
       "refundAmount": "Refund Amount",
       "refundReason": "Refund Reason",
+    "refundModal": {
+      "title": "Process Refund - {{id}}",
+      "originalPayment": "Original Payment",
+      "refundAmountPlaceholder": "Enter refund amount",
+      "refundReasonPlaceholder": "Reason for refund...",
+      "buttons": {
+        "cancel": "Cancel",
+        "processRefund": "Process Refund"
+      }
+    }
       "initiatedAt": "Initiated At",
       "completedAt": "Completed At",
       "refundedAt": "Refunded At",

@@ -394,6 +394,16 @@
       "failureReason": "Raison de l'Échec",
       "refundAmount": "Montant de Remboursement",
       "refundReason": "Raison du Remboursement",
+    "refundModal": {
+      "title": "Traiter le remboursement - {{id}}",
+      "originalPayment": "Paiement original",
+      "refundAmountPlaceholder": "Entrez le montant du remboursement",
+      "refundReasonPlaceholder": "Raison du remboursement...",
+      "buttons": {
+        "cancel": "Annuler",
+        "processRefund": "Traiter le remboursement"
+      }
+    }
       "initiatedAt": "Initié le",
       "completedAt": "Terminé le",
       "refundedAt": "Remboursé le",

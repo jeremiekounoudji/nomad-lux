@@ -116,7 +116,7 @@
   - [x] 5.24.5 Verify BulkUserActionsModal.tsx translation implementation
   - [x] 5.24.6 Verify SendMessageModal.tsx translation implementation
   - [x] 5.24.7 Verify DisputeManagementModal.tsx translation implementation
-  - [ ] 5.24.8 Verify RefundModal.tsx translation implementation
+  - [x] 5.24.8 Verify RefundModal.tsx translation implementation
   - [ ] 5.24.9 Verify ContactPartiesModal.tsx translation implementation
   - [ ] 5.24.10 Verify BookingDetailsModal.tsx translation implementation
   - [ ] 5.24.11 Verify PropertyDetailsModal.tsx translation implementation
