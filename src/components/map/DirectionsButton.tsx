@@ -2,6 +2,7 @@ import React from 'react'
 import { Button } from '@heroui/react'
 import { Navigation } from 'lucide-react'
 import { Property } from '../../interfaces/Property'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 export interface DirectionsButtonProps {
   property: Property
@@ -18,6 +19,7 @@ const DirectionsButton: React.FC<DirectionsButtonProps> = ({
   variant = 'bordered',
   onDirectionsClick
 }) => {
+  const { t } = useTranslation('property');
   const handleDirections = () => {
     // Placeholder implementation - will be implemented in task 3.3
     console.log('Directions to:', property.title)
@@ -33,7 +35,7 @@ const DirectionsButton: React.FC<DirectionsButtonProps> = ({
       onClick={handleDirections}
       className={className}
     >
-      Directions
+      {t('actions.directions')}
     </Button>
   )
 }
