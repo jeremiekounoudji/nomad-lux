@@ -54,7 +54,7 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 2.7 Create profileValidation utility functions
   - [x] 2.8 Implement save/cancel functionality for profile updates
 
-- [ ] 3.0 Build Profile Image Upload and Management System
+- [x] 3.0 Build Profile Image Upload and Management System
   - [x] 3.1 Create ProfileImageUpload component with drag-and-drop functionality
   - [x] 3.2 Implement image file validation (format, size, dimensions)
   - [x] 3.3 Add image preview functionality before upload
@@ -66,13 +66,13 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 3.9 Add error handling for image upload failures
 
 - [ ] 4.0 Create Password Change Functionality
-  - [ ] 4.1 Create PasswordChangeForm component with current password field
-  - [ ] 4.2 Implement password strength validation and feedback
-  - [ ] 4.3 Add password confirmation field with matching validation
-  - [ ] 4.4 Create secure password change API integration
-  - [ ] 4.5 Add success/error message handling for password changes
-  - [ ] 4.6 Implement form reset functionality after successful password change
-  - [ ] 4.7 Add loading states during password change process
+  - [x] 4.1 Create PasswordChangeForm component with current password field
+  - [x] 4.2 Implement password strength validation and feedback
+  - [x] 4.3 Add password confirmation field with matching validation
+  - [x] 4.4 Create secure password change API integration
+  - [x] 4.5 Add success/error message handling for password changes
+  - [x] 4.6 Implement form reset functionality after successful password change
+  - [x] 4.7 Add loading states during password change process
 
 - [ ] 5.0 Implement Privacy and Notification Settings
   - [ ] 5.1 Create PrivacySettingsCard component for settings management
