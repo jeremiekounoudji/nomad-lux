@@ -63,6 +63,20 @@
     "cannotDeleteReview": "You can only delete your own reviews",
     "notAuthorizedToDelete": "You are not authorized to delete this review"
   },
+  "verification": {
+    "checking": "Checking review status...",
+    "alreadyExists": "You have already reviewed this booking",
+    "duplicatePrevented": "Duplicate review prevented",
+    "verificationFailed": "Review verification failed"
+  },
+  "status": {
+    "completed": "Completed",
+    "pending": "Pending",
+    "unavailable": "Unavailable",
+    "completedTooltip": "Review has been submitted",
+    "pendingTooltip": "Review can be submitted",
+    "unavailableTooltip": "Review cannot be submitted"
+  },
   "timing": {
     "immediate": "Review now",
     "reminder": "Remind me later",

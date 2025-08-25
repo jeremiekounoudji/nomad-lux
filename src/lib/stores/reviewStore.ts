@@ -342,5 +342,71 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
   canDeleteReview: (review: Review, userId?: string): boolean => {
     if (!userId) return false
     return review.reviewer_id === userId
+  },
+
+  // Check if a review already exists for a booking and review type
+  checkExistingReview: async (bookingId: string, reviewType: string, reviewerId?: string): Promise<{
+    exists: boolean
+    review?: Review
+    canReview?: boolean
+    reason?: string
+    error?: string
+  }> => {
+    console.log('📝 ReviewStore: Checking existing review:', { bookingId, reviewType, reviewerId })
+    set({ loading: true, error: null })
+
+    try {
+      const { supabase } = await import('../supabase')
+      
+      const { data, error } = await supabase
+        .rpc('check_existing_review', {
+          p_booking_id: bookingId,
+          p_review_type: reviewType,
+          p_reviewer_id: reviewerId || null
+        })
+
+      if (error) {
+        console.error('📝 ReviewStore: Error checking existing review:', error)
+        set({ loading: false, error: error.message })
+        return { exists: false, error: error.message }
+      }
+
+      console.log('📝 ReviewStore: Existing review check result:', data)
+      set({ loading: false, error: null })
+
+      if (data.exists) {
+        // Review exists, fetch the full review details
+        const { data: reviewData, error: reviewError } = await supabase
+          .from('reviews')
+          .select(`
+            *,
+            reviewer:reviewer_id(display_name, avatar_url),
+            reviewed_user:reviewed_user_id(display_name, avatar_url)
+          `)
+          .eq('id', data.review_id)
+          .single()
+
+        if (reviewError) {
+          console.error('📝 ReviewStore: Error fetching existing review:', reviewError)
+          return { exists: true, error: reviewError.message }
+        }
+
+        return { 
+          exists: true, 
+          review: reviewData,
+          canReview: data.can_edit
+        }
+      } else {
+        return { 
+          exists: false, 
+          canReview: data.can_review,
+          reason: data.reason
+        }
+      }
+    } catch (error) {
+      console.error('📝 ReviewStore: Exception checking existing review:', error)
+      set({ loading: false, error: 'Failed to check existing review' })
+      return { exists: false, error: 'Failed to check existing review' }
+    }
   }
 }))

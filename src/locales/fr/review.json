@@ -63,6 +63,20 @@
     "cannotDeleteReview": "Vous ne pouvez supprimer que vos propres avis",
     "notAuthorizedToDelete": "Vous n'êtes pas autorisé à supprimer cet avis"
   },
+  "verification": {
+    "checking": "Vérification du statut de l'avis...",
+    "alreadyExists": "Vous avez déjà évalué cette réservation",
+    "duplicatePrevented": "Avis en double empêché",
+    "verificationFailed": "Échec de la vérification de l'avis"
+  },
+  "status": {
+    "completed": "Terminé",
+    "pending": "En attente",
+    "unavailable": "Indisponible",
+    "completedTooltip": "L'avis a été soumis",
+    "pendingTooltip": "L'avis peut être soumis",
+    "unavailableTooltip": "L'avis ne peut pas être soumis"
+  },
   "timing": {
     "immediate": "Évaluer maintenant",
     "reminder": "Me rappeler plus tard",

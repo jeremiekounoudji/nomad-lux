@@ -1,5 +1,5 @@
 import React from 'react'
-import { Star } from '@heroui/react'
+import { Star } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 
 interface StarRatingProps {

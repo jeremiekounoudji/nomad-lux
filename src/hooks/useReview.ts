@@ -26,7 +26,8 @@ export const useReview = (propertyId?: string) => {
     resetForm,
     clearError,
     canEditReview,
-    canDeleteReview
+    canDeleteReview,
+    checkExistingReview
   } = useReviewStore()
 
   const [filters, setFilters] = useState<ReviewFilters>({
@@ -245,6 +246,7 @@ export const useReview = (propertyId?: string) => {
     getReviewTypeForBooking,
     validateReview,
     canEditReview,
-    canDeleteReview
+    canDeleteReview,
+    checkExistingReview
   }
 }

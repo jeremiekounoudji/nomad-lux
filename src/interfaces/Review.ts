@@ -127,4 +127,11 @@ export interface ReviewStoreState {
   clearError: () => void
   canEditReview: (review: Review) => boolean
   canDeleteReview: (review: Review, userId?: string) => boolean
+  checkExistingReview: (bookingId: string, reviewType: string, reviewerId?: string) => Promise<{
+    exists: boolean
+    review?: Review
+    canReview?: boolean
+    reason?: string
+    error?: string
+  }>
 }
