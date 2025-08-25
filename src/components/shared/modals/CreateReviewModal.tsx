@@ -9,7 +9,6 @@ import { Review } from '../../../interfaces/Review'
 interface CreateReviewModalProps {
   isOpen: boolean
   onClose: () => void
-  bookingId: string
   reviewType: string
   propertyId?: string
 }
@@ -17,7 +16,6 @@ interface CreateReviewModalProps {
 const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
   isOpen,
   onClose,
-  bookingId,
   reviewType,
   propertyId
 }) => {
@@ -35,42 +33,18 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     checkExistingReview
   } = useReview(propertyId)
 
-  // Check for existing review when modal opens (optional for booking-based reviews)
+  // For public reviews, no verification needed
   useEffect(() => {
-    if (isOpen && bookingId && reviewType && user) {
-      // Only check for existing reviews if it's a booking-based review
-      // For public reviews, we don't need to check
-      setIsVerifying(true)
-      setVerificationError(null)
-      setExistingReview(null)
-      
-      checkExistingReview(bookingId, reviewType, user.id)
-        .then((result) => {
-          if (result.error) {
-            setVerificationError(result.error)
-          } else if (!result.canReview) {
-            setVerificationError(result.reason || 'You cannot create this review')
-          }
-          // Don't block creation if review exists - allow multiple reviews
-        })
-        .catch((error) => {
-          console.error('Error checking existing review:', error)
-          setVerificationError('Failed to verify review status')
-        })
-        .finally(() => {
-          setIsVerifying(false)
-        })
-    } else if (isOpen && !bookingId && reviewType && user) {
-      // For public reviews, no verification needed
+    if (isOpen && reviewType && user) {
       setIsVerifying(false)
       setVerificationError(null)
       setExistingReview(null)
     }
-  }, [isOpen, bookingId, reviewType, user, checkExistingReview])
+  }, [isOpen, reviewType, user])
 
   const handleSubmit = async () => {
-    // Allow multiple reviews - don't block if existing review is found
-    await handleCreateReview(bookingId, reviewType)
+    // For public reviews, always allow creation
+    await handleCreateReview(reviewType)
   }
 
   const handleClose = () => {

@@ -1,9 +1,8 @@
 export interface Review {
   id: string
-  booking_id: string
   reviewer_id: string
   reviewed_user_id?: string
-  property_id?: string
+  property_id: string
   rating: number
   review_text: string
   review_type: ReviewType
@@ -41,10 +40,9 @@ export interface ReviewFilters {
 }
 
 export interface CreateReviewData {
-  booking_id: string
   reviewer_id: string
   reviewed_user_id?: string
-  property_id?: string
+  property_id: string
   rating: number
   review_text: string
   review_type: ReviewType
@@ -87,7 +85,6 @@ export interface ReviewFormState {
 export interface ReviewModalState {
   isOpen: boolean
   reviewId?: string
-  bookingId?: string
   reviewType?: ReviewType
   mode: 'create' | 'edit' | 'delete'
 }
@@ -118,7 +115,7 @@ export interface ReviewStoreState {
   createReview: (data: CreateReviewData) => Promise<ReviewResponse>
   updateReview: (reviewId: string, data: UpdateReviewData) => Promise<ReviewResponse>
   deleteReview: (reviewId: string, userId?: string) => Promise<ReviewResponse>
-  openCreateModal: (bookingId: string, reviewType: ReviewType) => void
+  openCreateModal: (reviewType: ReviewType) => void
   openEditModal: (reviewId: string) => void
   openDeleteModal: (reviewId: string) => void
   closeModal: () => void
@@ -127,7 +124,7 @@ export interface ReviewStoreState {
   clearError: () => void
   canEditReview: (review: Review) => boolean
   canDeleteReview: (review: Review, userId?: string) => boolean
-  checkExistingReview: (bookingId: string, reviewType: string, reviewerId?: string) => Promise<{
+  checkExistingReview: (reviewType: string, reviewerId?: string) => Promise<{
     exists: boolean
     review?: Review
     canReview?: boolean

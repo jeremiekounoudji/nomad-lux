@@ -72,9 +72,14 @@ export const useReview = (propertyId?: string) => {
   }, [])
 
   // Handle review creation
-  const handleCreateReview = useCallback(async (bookingId: string, reviewType: string) => {
+  const handleCreateReview = useCallback(async (reviewType: string) => {
     if (!user) {
       toast.error('You must be logged in to create a review')
+      return
+    }
+
+    if (!propertyId) {
+      toast.error('Property ID is required to create a review')
       return
     }
 
@@ -87,16 +92,11 @@ export const useReview = (propertyId?: string) => {
     setFormState({ isSubmitting: true, errors: {} })
 
     const reviewData: CreateReviewData = {
-      booking_id: bookingId,
       reviewer_id: user.id,
       rating: formState.rating,
       review_text: formState.review_text.trim(),
-      review_type: reviewType as any
-    }
-
-    // Add property_id if we have it
-    if (propertyId) {
-      reviewData.property_id = propertyId
+      review_type: reviewType as any,
+      property_id: propertyId
     }
 
     const response = await createReview(reviewData)
@@ -106,9 +106,7 @@ export const useReview = (propertyId?: string) => {
       closeModal()
       resetForm()
       // Refresh reviews
-      if (propertyId) {
-        fetchPropertyReviews(propertyId, filters)
-      }
+      fetchPropertyReviews(propertyId, filters)
     } else {
       toast.error(response.error || 'Failed to submit review')
       setFormState({ isSubmitting: false })
@@ -188,34 +186,11 @@ export const useReview = (propertyId?: string) => {
     }
   }, [propertyId, loading])
 
-  // Check if user can review a booking (now allows multiple reviews)
-  const canReviewBooking = useCallback((booking: any) => {
-    if (!user) return false
-    // Remove booking completion requirement - allow reviews for any booking status
-    if (booking.guest_id !== user.id && booking.host_id !== user.id) return false
-    
-    // Allow multiple reviews per booking
-    return true
-  }, [user])
-
   // Check if user can review a property (public review)
   const canReviewProperty = useCallback((propertyId: string) => {
     if (!user) return false
     // Anyone can review any property
     return true
-  }, [user])
-
-  // Get review type for a booking
-  const getReviewTypeForBooking = useCallback((booking: any) => {
-    if (!user) return null
-    
-    if (booking.guest_id === user.id) {
-      return 'guest_to_host'
-    } else if (booking.host_id === user.id) {
-      return 'host_to_guest'
-    }
-    
-    return null
   }, [user])
 
   return {
@@ -244,9 +219,7 @@ export const useReview = (propertyId?: string) => {
     clearError,
 
     // Utilities
-    canReviewBooking,
     canReviewProperty,
-    getReviewTypeForBooking,
     validateReview,
     canEditReview,
     canDeleteReview,

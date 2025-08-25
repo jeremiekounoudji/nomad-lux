@@ -582,8 +582,8 @@ const PropertyDetailPage: React.FC = () => {
                           variant="bordered"
                           size="sm"
                           onPress={() => {
-                            // Allow public reviews without requiring a booking
-                            openCreateModal('', 'property')
+                            // Open public review modal
+                            openCreateModal('property')
                           }}
                         >
                           {t('review.createReview')}

@@ -57,8 +57,6 @@
     "textRequired": "Veuillez écrire un avis",
     "textMinLength": "L'avis doit contenir au moins 10 caractères",
     "textMaxLength": "L'avis ne peut pas dépasser 1000 caractères",
-    "alreadyReviewed": "Vous avez déjà évalué cette réservation",
-    "bookingNotCompleted": "Vous ne pouvez évaluer que les réservations terminées",
     "cannotReviewSelf": "Vous ne pouvez pas vous évaluer vous-même",
     "cannotDeleteReview": "Vous ne pouvez supprimer que vos propres avis",
     "notAuthorizedToDelete": "Vous n'êtes pas autorisé à supprimer cet avis"

@@ -48,29 +48,78 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     try {
       const { supabase } = await import('../supabase')
 
-      const { data, error } = await supabase.rpc('get_public_property_reviews', {
-        p_property_id: propertyId,
-        p_limit: filters?.limit || 10,
-        p_offset: filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0
-      })
+      // Use direct query instead of RPC function due to database issues
+      const { data: reviews, error: reviewsError } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          reviewer:reviewer_id(display_name, avatar_url)
+        `)
+        .eq('property_id', propertyId)
+        .order('created_at', { ascending: false })
+        .range(
+          filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0,
+          (filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0) + (filters?.limit || 10) - 1
+        )
 
-      if (error) {
-        console.error('📝 ReviewStore: Error fetching property reviews:', error)
-        set({ loading: false, error: error.message })
+      if (reviewsError) {
+        console.error('📝 ReviewStore: Error fetching property reviews:', reviewsError)
+        set({ loading: false, error: reviewsError.message })
         return
       }
 
-      const response = data as ReviewResponse
-      if (response.success) {
-        set({
-          reviews: response.reviews || [],
-          reviewStats: response.stats || null,
-          loading: false,
-          error: null
-        })
-      } else {
-        set({ loading: false, error: response.error || 'Failed to fetch reviews' })
+      // Get stats
+      const { data: statsData, error: statsError } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('property_id', propertyId)
+
+      if (statsError) {
+        console.error('📝 ReviewStore: Error fetching review stats:', statsError)
+        set({ loading: false, error: statsError.message })
+        return
       }
+
+      // Calculate stats
+      const totalReviews = statsData.length
+      const averageRating = totalReviews > 0 
+        ? statsData.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
+        : 0
+
+      const ratingDistribution = {
+        1: statsData.filter(r => r.rating === 1).length,
+        2: statsData.filter(r => r.rating === 2).length,
+        3: statsData.filter(r => r.rating === 3).length,
+        4: statsData.filter(r => r.rating === 4).length,
+        5: statsData.filter(r => r.rating === 5).length
+      }
+
+      const reviewStats = {
+        total_reviews: totalReviews,
+        average_rating: averageRating,
+        rating_distribution: ratingDistribution
+      }
+
+      // Transform reviews to match expected format
+      const transformedReviews = reviews.map(review => ({
+        id: review.id,
+        rating: review.rating,
+        review_text: review.review_text,
+        review_type: review.review_type,
+        created_at: review.created_at,
+        updated_at: review.updated_at,
+        reviewer_id: review.reviewer_id,
+        reviewer_name: review.reviewer?.display_name || 'Anonymous',
+        reviewer_avatar: review.reviewer?.avatar_url,
+        property_id: review.property_id
+      }))
+
+      set({
+        reviews: transformedReviews,
+        reviewStats: reviewStats,
+        loading: false,
+        error: null
+      })
     } catch (error) {
       console.error('📝 ReviewStore: Exception fetching property reviews:', error)
       set({ loading: false, error: 'Failed to fetch reviews' })
@@ -84,29 +133,80 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     try {
       const { supabase } = await import('../supabase')
       
-      const { data, error } = await supabase.rpc('get_user_reviews', {
-        p_user_id: userId,
-        p_limit: filters?.limit || 10,
-        p_offset: filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0
-      })
+      // Use direct query instead of RPC function
+      const { data: reviews, error: reviewsError } = await supabase
+        .from('reviews')
+        .select(`
+          *,
+          reviewer:reviewer_id(display_name, avatar_url),
+          property:property_id(title)
+        `)
+        .eq('reviewed_user_id', userId)
+        .order('created_at', { ascending: false })
+        .range(
+          filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0,
+          (filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0) + (filters?.limit || 10) - 1
+        )
 
-      if (error) {
-        console.error('📝 ReviewStore: Error fetching user reviews:', error)
-        set({ loading: false, error: error.message })
+      if (reviewsError) {
+        console.error('📝 ReviewStore: Error fetching user reviews:', reviewsError)
+        set({ loading: false, error: reviewsError.message })
         return
       }
 
-      const response = data as ReviewResponse
-      if (response.success) {
-        set({
-          reviews: response.reviews || [],
-          reviewStats: response.stats || null,
-          loading: false,
-          error: null
-        })
-      } else {
-        set({ loading: false, error: response.error || 'Failed to fetch reviews' })
+      // Get stats
+      const { data: statsData, error: statsError } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('reviewed_user_id', userId)
+
+      if (statsError) {
+        console.error('📝 ReviewStore: Error fetching user review stats:', statsError)
+        set({ loading: false, error: statsError.message })
+        return
       }
+
+      // Calculate stats
+      const totalReviews = statsData.length
+      const averageRating = totalReviews > 0 
+        ? statsData.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
+        : 0
+
+      const ratingDistribution = {
+        1: statsData.filter(r => r.rating === 1).length,
+        2: statsData.filter(r => r.rating === 2).length,
+        3: statsData.filter(r => r.rating === 3).length,
+        4: statsData.filter(r => r.rating === 4).length,
+        5: statsData.filter(r => r.rating === 5).length
+      }
+
+      const reviewStats = {
+        total_reviews: totalReviews,
+        average_rating: averageRating,
+        rating_distribution: ratingDistribution
+      }
+
+      // Transform reviews to match expected format
+      const transformedReviews = reviews.map(review => ({
+        id: review.id,
+        rating: review.rating,
+        review_text: review.review_text,
+        review_type: review.review_type,
+        created_at: review.created_at,
+        updated_at: review.updated_at,
+        reviewer_id: review.reviewer_id,
+        reviewer_name: review.reviewer?.display_name || 'Anonymous',
+        reviewer_avatar: review.reviewer?.avatar_url,
+        property_id: review.property_id,
+        property_title: review.property?.title
+      }))
+
+      set({
+        reviews: transformedReviews,
+        reviewStats: reviewStats,
+        loading: false,
+        error: null
+      })
     } catch (error) {
       console.error('📝 ReviewStore: Exception fetching user reviews:', error)
       set({ loading: false, error: 'Failed to fetch reviews' })
@@ -120,34 +220,19 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     try {
       const { supabase } = await import('../supabase')
       
-      let result, error
-      
-      // Use public review function if no booking_id is provided
-      if (!data.booking_id) {
-        const { data: publicResult, error: publicError } = await supabase.rpc('create_public_review', {
-          p_reviewer_id: data.reviewer_id,
-          p_reviewed_user_id: data.reviewed_user_id,
-          p_property_id: data.property_id,
-          p_rating: data.rating,
-          p_review_text: data.review_text,
-          p_review_type: data.review_type
+      // Use direct insert instead of RPC function
+      const { data: result, error } = await supabase
+        .from('reviews')
+        .insert({
+          reviewer_id: data.reviewer_id,
+          reviewed_user_id: data.reviewed_user_id,
+          property_id: data.property_id,
+          rating: data.rating,
+          review_text: data.review_text,
+          review_type: data.review_type
         })
-        result = publicResult
-        error = publicError
-      } else {
-        // Use regular review function for booking-based reviews
-        const { data: bookingResult, error: bookingError } = await supabase.rpc('create_review', {
-          p_booking_id: data.booking_id,
-          p_reviewer_id: data.reviewer_id,
-          p_reviewed_user_id: data.reviewed_user_id,
-          p_property_id: data.property_id,
-          p_rating: data.rating,
-          p_review_text: data.review_text,
-          p_review_type: data.review_type
-        })
-        result = bookingResult
-        error = bookingError
-      }
+        .select()
+        .single()
 
       if (error) {
         console.error('📝 ReviewStore: Error creating review:', error)
@@ -155,18 +240,13 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
         return { success: false, error: error.message }
       }
 
-      const response = result as ReviewResponse
-      if (response.success) {
-        set({ loading: false, error: null })
-        // Refresh reviews if we have a property_id
-        if (data.property_id) {
-          get().fetchPropertyReviews(data.property_id)
-        }
-      } else {
-        set({ loading: false, error: response.error || 'Failed to create review' })
+      set({ loading: false, error: null })
+      // Refresh reviews if we have a property_id
+      if (data.property_id) {
+        get().fetchPropertyReviews(data.property_id)
       }
 
-      return response
+      return { success: true, review: result }
     } catch (error) {
       console.error('📝 ReviewStore: Exception creating review:', error)
       set({ loading: false, error: 'Failed to create review' })
@@ -276,12 +356,11 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     }
   },
 
-  openCreateModal: (bookingId: string, reviewType: string) => {
-    console.log('📝 ReviewStore: Opening create modal for booking:', bookingId, 'type:', reviewType)
+  openCreateModal: (reviewType: string) => {
+    console.log('📝 ReviewStore: Opening create modal for type:', reviewType)
     set({
       modalState: {
         isOpen: true,
-        bookingId,
         reviewType: reviewType as any,
         mode: 'create'
       },
@@ -356,64 +435,26 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     return review.reviewer_id === userId
   },
 
-  // Check if a review already exists for a booking and review type
-  checkExistingReview: async (bookingId: string, reviewType: string, reviewerId?: string): Promise<{
+  // Check if a review already exists for a review type (simplified for public reviews)
+  checkExistingReview: async (reviewType: string, reviewerId?: string): Promise<{
     exists: boolean
     review?: Review
     canReview?: boolean
     reason?: string
     error?: string
   }> => {
-    console.log('📝 ReviewStore: Checking existing review:', { bookingId, reviewType, reviewerId })
+    console.log('📝 ReviewStore: Checking existing review:', { reviewType, reviewerId })
     set({ loading: true, error: null })
 
     try {
-      const { supabase } = await import('../supabase')
-      
-      const { data, error } = await supabase
-        .rpc('check_existing_review', {
-          p_booking_id: bookingId,
-          p_review_type: reviewType,
-          p_reviewer_id: reviewerId || null
-        })
-
-      if (error) {
-        console.error('📝 ReviewStore: Error checking existing review:', error)
-        set({ loading: false, error: error.message })
-        return { exists: false, error: error.message }
-      }
-
-      console.log('📝 ReviewStore: Existing review check result:', data)
+      // For public reviews, we don't need to check for existing reviews
+      // Anyone can review anything
       set({ loading: false, error: null })
-
-      if (data.exists) {
-        // Review exists, fetch the full review details
-        const { data: reviewData, error: reviewError } = await supabase
-          .from('reviews')
-          .select(`
-            *,
-            reviewer:reviewer_id(display_name, avatar_url),
-            reviewed_user:reviewed_user_id(display_name, avatar_url)
-          `)
-          .eq('id', data.review_id)
-          .single()
-
-        if (reviewError) {
-          console.error('📝 ReviewStore: Error fetching existing review:', reviewError)
-          return { exists: true, error: reviewError.message }
-        }
-
-        return { 
-          exists: true, 
-          review: reviewData,
-          canReview: data.can_edit
-        }
-      } else {
-        return { 
-          exists: false, 
-          canReview: data.can_review,
-          reason: data.reason
-        }
+      
+      return { 
+        exists: false, 
+        canReview: true,
+        reason: 'Public reviews are always allowed'
       }
     } catch (error) {
       console.error('📝 ReviewStore: Exception checking existing review:', error)
