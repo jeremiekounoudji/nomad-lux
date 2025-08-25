@@ -35,22 +35,23 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     checkExistingReview
   } = useReview(propertyId)
 
-  // Check for existing review when modal opens
+  // Check for existing review when modal opens (optional for booking-based reviews)
   useEffect(() => {
     if (isOpen && bookingId && reviewType && user) {
+      // Only check for existing reviews if it's a booking-based review
+      // For public reviews, we don't need to check
       setIsVerifying(true)
       setVerificationError(null)
       setExistingReview(null)
       
       checkExistingReview(bookingId, reviewType, user.id)
         .then((result) => {
-          if (result.exists && result.review) {
-            setExistingReview(result.review)
-          } else if (result.error) {
+          if (result.error) {
             setVerificationError(result.error)
           } else if (!result.canReview) {
             setVerificationError(result.reason || 'You cannot create this review')
           }
+          // Don't block creation if review exists - allow multiple reviews
         })
         .catch((error) => {
           console.error('Error checking existing review:', error)
@@ -59,14 +60,16 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
         .finally(() => {
           setIsVerifying(false)
         })
+    } else if (isOpen && !bookingId && reviewType && user) {
+      // For public reviews, no verification needed
+      setIsVerifying(false)
+      setVerificationError(null)
+      setExistingReview(null)
     }
   }, [isOpen, bookingId, reviewType, user, checkExistingReview])
 
   const handleSubmit = async () => {
-    if (existingReview) {
-      console.log('Review already exists, cannot create duplicate')
-      return
-    }
+    // Allow multiple reviews - don't block if existing review is found
     await handleCreateReview(bookingId, reviewType)
   }
 
@@ -127,26 +130,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
             </Alert>
           )}
 
-          {existingReview && (
-            <Alert color="warning" className="mb-4">
-              <div className="space-y-2">
-                <div className="font-medium">{t('review.verification.alreadyExists')}</div>
-                <div className="text-sm">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium">{t('review.rating.label')}:</span>
-                    <span>{existingReview.rating}/5</span>
-                  </div>
-                  <div className="font-medium mb-1">{t('review.text.label')}:</div>
-                  <p className="text-gray-600">{existingReview.review_text}</p>
-                  <div className="text-xs text-gray-500 mt-2">
-                    {t('review.created')}: {new Date(existingReview.created_at).toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-            </Alert>
-          )}
-
-          {!isVerifying && !verificationError && !existingReview && (
+          {!isVerifying && !verificationError && (
             <ReviewForm
               formState={formState}
               onFormChange={setFormState}

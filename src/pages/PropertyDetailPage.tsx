@@ -575,16 +575,15 @@ const PropertyDetailPage: React.FC = () => {
                         </div>
                       </div>
                       
-                      {/* Write Review Button - Show for users who can review this property */}
-                      {user && property?.host?.id !== user.id && (
+                      {/* Write Review Button - Show for all logged-in users */}
+                      {user && (
                         <Button
                           color="primary"
                           variant="bordered"
                           size="sm"
                           onPress={() => {
-                            // For now, we'll use a placeholder booking ID
-                            // In a real implementation, this would check if user has completed bookings for this property
-                            openCreateModal('placeholder-booking-id', 'property')
+                            // Allow public reviews without requiring a booking
+                            openCreateModal('', 'property')
                           }}
                         >
                           {t('review.createReview')}

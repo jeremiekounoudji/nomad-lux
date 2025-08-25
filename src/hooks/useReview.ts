@@ -188,20 +188,22 @@ export const useReview = (propertyId?: string) => {
     }
   }, [propertyId, loading])
 
-  // Check if user can review a booking
+  // Check if user can review a booking (now allows multiple reviews)
   const canReviewBooking = useCallback((booking: any) => {
     if (!user) return false
-    if (booking.status !== 'completed') return false
+    // Remove booking completion requirement - allow reviews for any booking status
     if (booking.guest_id !== user.id && booking.host_id !== user.id) return false
     
-    // Check if user already reviewed this booking
-    const existingReview = reviews.find(review => 
-      review.booking_id === booking.id && 
-      review.reviewer_id === user.id
-    )
-    
-    return !existingReview
-  }, [user, reviews])
+    // Allow multiple reviews per booking
+    return true
+  }, [user])
+
+  // Check if user can review a property (public review)
+  const canReviewProperty = useCallback((propertyId: string) => {
+    if (!user) return false
+    // Anyone can review any property
+    return true
+  }, [user])
 
   // Get review type for a booking
   const getReviewTypeForBooking = useCallback((booking: any) => {
@@ -243,6 +245,7 @@ export const useReview = (propertyId?: string) => {
 
     // Utilities
     canReviewBooking,
+    canReviewProperty,
     getReviewTypeForBooking,
     validateReview,
     canEditReview,

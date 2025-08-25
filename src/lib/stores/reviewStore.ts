@@ -47,15 +47,8 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
 
     try {
       const { supabase } = await import('../supabase')
-      
-      const params = new URLSearchParams()
-      if (filters?.rating) params.append('rating', filters.rating.toString())
-      if (filters?.review_type) params.append('review_type', filters.review_type)
-      if (filters?.sort_by) params.append('sort_by', filters.sort_by)
-      if (filters?.page) params.append('offset', ((filters.page - 1) * (filters.limit || 10)).toString())
-      if (filters?.limit) params.append('limit', filters.limit.toString())
 
-      const { data, error } = await supabase.rpc('get_property_reviews', {
+      const { data, error } = await supabase.rpc('get_public_property_reviews', {
         p_property_id: propertyId,
         p_limit: filters?.limit || 10,
         p_offset: filters?.page ? (filters.page - 1) * (filters.limit || 10) : 0
@@ -127,15 +120,34 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     try {
       const { supabase } = await import('../supabase')
       
-      const { data: result, error } = await supabase.rpc('create_review', {
-        p_booking_id: data.booking_id,
-        p_reviewer_id: data.reviewer_id,
-        p_reviewed_user_id: data.reviewed_user_id,
-        p_property_id: data.property_id,
-        p_rating: data.rating,
-        p_review_text: data.review_text,
-        p_review_type: data.review_type
-      })
+      let result, error
+      
+      // Use public review function if no booking_id is provided
+      if (!data.booking_id) {
+        const { data: publicResult, error: publicError } = await supabase.rpc('create_public_review', {
+          p_reviewer_id: data.reviewer_id,
+          p_reviewed_user_id: data.reviewed_user_id,
+          p_property_id: data.property_id,
+          p_rating: data.rating,
+          p_review_text: data.review_text,
+          p_review_type: data.review_type
+        })
+        result = publicResult
+        error = publicError
+      } else {
+        // Use regular review function for booking-based reviews
+        const { data: bookingResult, error: bookingError } = await supabase.rpc('create_review', {
+          p_booking_id: data.booking_id,
+          p_reviewer_id: data.reviewer_id,
+          p_reviewed_user_id: data.reviewed_user_id,
+          p_property_id: data.property_id,
+          p_rating: data.rating,
+          p_review_text: data.review_text,
+          p_review_type: data.review_type
+        })
+        result = bookingResult
+        error = bookingError
+      }
 
       if (error) {
         console.error('📝 ReviewStore: Error creating review:', error)
