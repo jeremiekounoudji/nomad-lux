@@ -117,7 +117,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
           )}
         </span>
         <span>
-          {formState.review_text.length}/1000 {t('review.reviewText.charCount', { count: formState.review_text.length })}
+          {t('review.reviewText.charCount', { count: formState.review_text.length })}
         </span>
       </div>
 
