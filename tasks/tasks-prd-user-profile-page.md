@@ -44,7 +44,7 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 1.5 Add navigation breadcrumb or back button to profile page
   - [x] 1.6 Implement basic loading and error states for profile page
 
-- [ ] 2.0 Implement Profile Information Display and Editing
+- [x] 2.0 Implement Profile Information Display and Editing
   - [x] 2.1 Create ProfileInfoCard component for displaying user information
   - [x] 2.2 Implement inline editing functionality for profile fields
   - [x] 2.3 Add form validation for profile information fields
@@ -55,15 +55,15 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 2.8 Implement save/cancel functionality for profile updates
 
 - [ ] 3.0 Build Profile Image Upload and Management System
-  - [ ] 3.1 Create ProfileImageUpload component with drag-and-drop functionality
-  - [ ] 3.2 Implement image file validation (format, size, dimensions)
-  - [ ] 3.3 Add image preview functionality before upload
-  - [ ] 3.4 Implement basic image cropping using canvas API
-  - [ ] 3.5 Create useProfileImage hook for image processing
-  - [ ] 3.6 Add image upload progress indicator
-  - [ ] 3.7 Implement image removal functionality
-  - [ ] 3.8 Create imageProcessing utility functions
-  - [ ] 3.9 Add error handling for image upload failures
+  - [x] 3.1 Create ProfileImageUpload component with drag-and-drop functionality
+  - [x] 3.2 Implement image file validation (format, size, dimensions)
+  - [x] 3.3 Add image preview functionality before upload
+  - [x] 3.4 Implement basic image cropping using canvas API
+  - [x] 3.5 Create useProfileImage hook for image processing
+  - [x] 3.6 Add image upload progress indicator
+  - [x] 3.7 Implement image removal functionality
+  - [x] 3.8 Create imageProcessing utility functions
+  - [x] 3.9 Add error handling for image upload failures
 
 - [ ] 4.0 Create Password Change Functionality
   - [ ] 4.1 Create PasswordChangeForm component with current password field
