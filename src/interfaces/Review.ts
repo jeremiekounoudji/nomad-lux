@@ -117,7 +117,7 @@ export interface ReviewStoreState {
   fetchUserReviews: (userId: string, filters?: ReviewFilters) => Promise<void>
   createReview: (data: CreateReviewData) => Promise<ReviewResponse>
   updateReview: (reviewId: string, data: UpdateReviewData) => Promise<ReviewResponse>
-  deleteReview: (reviewId: string) => Promise<ReviewResponse>
+  deleteReview: (reviewId: string, userId?: string) => Promise<ReviewResponse>
   openCreateModal: (bookingId: string, reviewType: ReviewType) => void
   openEditModal: (reviewId: string) => void
   openDeleteModal: (reviewId: string) => void
@@ -126,4 +126,5 @@ export interface ReviewStoreState {
   resetForm: () => void
   clearError: () => void
   canEditReview: (review: Review) => boolean
+  canDeleteReview: (review: Review, userId?: string) => boolean
 }

@@ -216,13 +216,34 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     }
   },
 
-  deleteReview: async (reviewId: string): Promise<ReviewResponse> => {
-    console.log('📝 ReviewStore: Deleting review:', reviewId)
+  deleteReview: async (reviewId: string, userId?: string): Promise<ReviewResponse> => {
+    console.log('📝 ReviewStore: Deleting review:', reviewId, 'by user:', userId)
     set({ loading: true, error: null })
 
     try {
       const { supabase } = await import('../supabase')
       
+      // First, get the review to validate ownership
+      const { data: review, error: fetchError } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('id', reviewId)
+        .single()
+
+      if (fetchError) {
+        console.error('📝 ReviewStore: Error fetching review for deletion validation:', fetchError)
+        set({ loading: false, error: fetchError.message })
+        return { success: false, error: fetchError.message }
+      }
+
+      // Validate that the user owns the review
+      if (userId && review.reviewer_id !== userId) {
+        const errorMessage = 'You can only delete your own reviews'
+        console.error('📝 ReviewStore: Unauthorized review deletion attempt:', errorMessage)
+        set({ loading: false, error: errorMessage })
+        return { success: false, error: errorMessage }
+      }
+
       const { error } = await supabase
         .from('reviews')
         .delete()
@@ -315,5 +336,11 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
   // Utility function to check if a review can be edited (exposed for components)
   canEditReview: (review: Review): boolean => {
     return canEditReview(review)
+  },
+
+  // Utility function to check if a user can delete a review
+  canDeleteReview: (review: Review, userId?: string): boolean => {
+    if (!userId) return false
+    return review.reviewer_id === userId
   }
 }))

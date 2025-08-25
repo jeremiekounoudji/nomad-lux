@@ -25,7 +25,8 @@ export const useReview = (propertyId?: string) => {
     setFormState,
     resetForm,
     clearError,
-    canEditReview
+    canEditReview,
+    canDeleteReview
   } = useReviewStore()
 
   const [filters, setFilters] = useState<ReviewFilters>({
@@ -146,7 +147,12 @@ export const useReview = (propertyId?: string) => {
 
   // Handle review deletion
   const handleDeleteReview = useCallback(async (reviewId: string) => {
-    const response = await deleteReview(reviewId)
+    if (!user) {
+      toast.error('You must be logged in to delete a review')
+      return
+    }
+
+    const response = await deleteReview(reviewId, user.id)
 
     if (response.success) {
       toast.success('Review deleted successfully')
@@ -158,7 +164,7 @@ export const useReview = (propertyId?: string) => {
     } else {
       toast.error(response.error || 'Failed to delete review')
     }
-  }, [propertyId, deleteReview, closeModal, fetchPropertyReviews, filters])
+  }, [user, propertyId, deleteReview, closeModal, fetchPropertyReviews, filters])
 
   // Handle filter changes
   const handleFilterChange = useCallback((newFilters: Partial<ReviewFilters>) => {
@@ -238,6 +244,7 @@ export const useReview = (propertyId?: string) => {
     canReviewBooking,
     getReviewTypeForBooking,
     validateReview,
-    canEditReview
+    canEditReview,
+    canDeleteReview
   }
 }

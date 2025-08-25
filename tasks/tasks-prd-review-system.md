@@ -72,7 +72,7 @@
   - [x] 4.8 Test review display across different property states
 
 - [ ] 5.0 Review Management and User Experience
-  - [ ] 5.1 Implement review editing functionality with 30-day limit
+  - [x] 5.1 Implement review editing functionality with 30-day limit
   - [ ] 5.2 Add review deletion functionality with confirmation
   - [ ] 5.3 Implement review verification (prevent duplicate reviews)
   - [ ] 5.4 Add review timing controls (immediate vs reminder)

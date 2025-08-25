@@ -59,7 +59,9 @@
     "textMaxLength": "Review cannot exceed 1000 characters",
     "alreadyReviewed": "You have already reviewed this booking",
     "bookingNotCompleted": "You can only review completed bookings",
-    "cannotReviewSelf": "You cannot review your own property"
+    "cannotReviewSelf": "You cannot review your own property",
+    "cannotDeleteReview": "You can only delete your own reviews",
+    "notAuthorizedToDelete": "You are not authorized to delete this review"
   },
   "timing": {
     "immediate": "Review now",

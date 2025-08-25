@@ -1,10 +1,11 @@
 import React from 'react'
 import { Button, Avatar, Badge } from '@heroui/react'
-import { MoreVertical, CheckCircle, Flag } from 'lucide-react'
+import { MoreVertical, CheckCircle, Flag, Trash2 } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import StarRating from './StarRating'
 import { ReviewWithUser } from '../../interfaces/Review'
 import { useReviewStore } from '../../lib/stores/reviewStore'
+import { useAuthStore } from '../../lib/stores/authStore'
 
 interface ReviewCardProps {
   review: ReviewWithUser
@@ -24,7 +25,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation(['review', 'common'])
-  const { canEditReview } = useReviewStore()
+  const { user } = useAuthStore()
+  const { canEditReview, canDeleteReview } = useReviewStore()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -165,12 +167,13 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
               </span>
             )}
             
-            {onDelete && (
+            {onDelete && canDeleteReview(review, user?.id) && (
               <Button
                 size="sm"
                 variant="light"
                 color="danger"
                 onPress={onDelete}
+                startContent={<Trash2 className="w-3 h-3" />}
               >
                 {t('common.buttons.delete')}
               </Button>
