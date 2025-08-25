@@ -64,7 +64,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       {reviewType && (
         <div className="bg-gray-50 rounded-lg p-3">
           <span className="text-sm font-medium text-gray-700">
-            {t('review.reviewType.title')}: {getReviewTypeLabel()}
+            {getReviewTypeLabel()}
           </span>
         </div>
       )}
@@ -104,7 +104,6 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
           className="w-full"
           isInvalid={!!formState.errors.review_text}
           errorMessage={formState.errors.review_text}
-          description={`${formState.review_text.length}/1000 ${t('review.reviewText.charCount', { count: formState.review_text.length })}`}
         />
       </div>
 
@@ -118,7 +117,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
           )}
         </span>
         <span>
-          {formState.review_text.length}/1000
+          {formState.review_text.length}/1000 {t('review.reviewText.charCount', { count: formState.review_text.length })}
         </span>
       </div>
 
