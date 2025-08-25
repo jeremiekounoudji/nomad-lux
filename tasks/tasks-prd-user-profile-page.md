@@ -65,7 +65,7 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 3.8 Create imageProcessing utility functions
   - [x] 3.9 Add error handling for image upload failures
 
-- [ ] 4.0 Create Password Change Functionality
+- [x] 4.0 Create Password Change Functionality
   - [x] 4.1 Create PasswordChangeForm component with current password field
   - [x] 4.2 Implement password strength validation and feedback
   - [x] 4.3 Add password confirmation field with matching validation
@@ -75,13 +75,13 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 4.7 Add loading states during password change process
 
 - [ ] 5.0 Implement Privacy and Notification Settings
-  - [ ] 5.1 Create PrivacySettingsCard component for settings management
-  - [ ] 5.2 Implement privacy preference toggles (profile visibility, data sharing)
-  - [ ] 5.3 Add notification preference controls (email, push, SMS)
-  - [ ] 5.4 Create language preference selector
-  - [ ] 5.5 Implement automatic settings save functionality
-  - [ ] 5.6 Add settings reset to default option
-  - [ ] 5.7 Create settings confirmation dialogs for important changes
+  - [x] 5.1 Create PrivacySettingsCard component for settings management
+  - [x] 5.2 Implement privacy preference toggles (profile visibility, data sharing)
+  - [x] 5.3 Add notification preference controls (email, push, SMS)
+  - [x] 5.4 Create language preference selector
+  - [x] 5.5 Implement automatic settings save functionality
+  - [x] 5.6 Add settings reset to default option
+  - [x] 5.7 Create settings confirmation dialogs for important changes
 
 - [ ] 6.0 Add Responsive Design and Accessibility Features
   - [ ] 6.1 Implement mobile-first responsive layout for all profile components
