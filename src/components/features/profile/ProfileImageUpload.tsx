@@ -221,31 +221,32 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
   return (
     <>
-      <Card className="w-full">
-        <CardBody className="p-6">
-          <div className="text-center">
+      <Card className="w-full transition-all duration-200 hover:shadow-md">
+        <CardBody className="p-4 sm:p-6">
+          <div className="text-center" role="region" aria-label={t('profile.image.uploadSection')}>
             {/* Current Image Display */}
             {currentImageUrl && !selectedFile && (
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <div className="relative inline-block">
                   <img
                     src={currentImageUrl}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
+                    alt={t('profile.image.currentProfileImage')}
+                    className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
                   />
                   <Button
                     isIconOnly
                     size="sm"
                     color="danger"
                     variant="solid"
-                    className="absolute -top-2 -right-2"
+                    className="absolute -top-2 -right-2 min-h-[44px] min-w-[44px]"
                     onPress={handleRemove}
                     disabled={isUploading}
+                    aria-label={t('profile.image.actions.removeImage')}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-xs sm:text-sm text-gray-600 mt-2">
                   {t('profile.image.currentImage')}
                 </p>
               </div>
@@ -254,7 +255,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
             {/* Upload Area */}
             {!currentImageUrl || selectedFile ? (
               <div
-                className={`border-2 border-dashed rounded-lg p-8 transition-colors ${
+                className={`border-2 border-dashed rounded-lg p-4 sm:p-8 transition-colors ${
                   isDragOver
                     ? 'border-blue-500 bg-blue-50'
                     : 'border-gray-300 hover:border-gray-400'
@@ -262,22 +263,33 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
+                role="button"
+                tabIndex={0}
+                aria-label={t('profile.image.dragDropArea')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    fileInputRef.current?.click()
+                  }
+                }}
               >
                 {/* Preview Image */}
                 {previewUrl ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <img
                       src={previewUrl}
-                      alt="Preview"
-                      className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
+                      alt={t('profile.image.previewImage')}
+                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
                     />
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex flex-wrap justify-center gap-2">
                       <Button
                         size="sm"
                         color="primary"
                         variant="flat"
-                        startContent={<Crop className="w-4 h-4" />}
+                        startContent={<Crop className="w-4 h-4" aria-hidden="true" />}
                         onPress={() => setShowCropModal(true)}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.cropImage')}
                       >
                         {t('profile.image.actions.crop')}
                       </Button>
@@ -285,8 +297,10 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                         size="sm"
                         color="secondary"
                         variant="flat"
-                        startContent={<RotateCw className="w-4 h-4" />}
+                        startContent={<RotateCw className="w-4 h-4" aria-hidden="true" />}
                         onPress={handleRotate}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.rotateImage')}
                       >
                         {t('profile.image.actions.rotate')}
                       </Button>
@@ -294,19 +308,23 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                         size="sm"
                         color="default"
                         variant="flat"
-                        startContent={<Download className="w-4 h-4" />}
+                        startContent={<Download className="w-4 h-4" aria-hidden="true" />}
                         onPress={handleDownload}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.downloadImage')}
                       >
                         {t('profile.image.actions.download')}
                       </Button>
                     </div>
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex flex-col sm:flex-row justify-center gap-2">
                       <Button
                         color="success"
                         variant="flat"
                         onPress={handleUpload}
                         isLoading={isUploading}
                         disabled={isUploading}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.uploadImage')}
                       >
                         {t('profile.image.actions.upload')}
                       </Button>
@@ -320,38 +338,42 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                           setError(null)
                         }}
                         disabled={isUploading}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.cancelUpload')}
                       >
                         {t('common.cancel')}
                       </Button>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Camera className="w-8 h-8 text-gray-400" />
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                      <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" aria-hidden="true" />
                     </div>
                     <div>
-                      <p className="text-lg font-medium text-gray-900">
+                      <p className="text-base sm:text-lg font-medium text-gray-900">
                         {t('profile.image.uploadTitle')}
                       </p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-xs sm:text-sm text-gray-600">
                         {t('profile.image.uploadDescription')}
                       </p>
                     </div>
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex flex-col sm:flex-row justify-center items-center gap-2">
                       <Button
                         color="primary"
                         variant="flat"
-                        startContent={<Upload className="w-4 h-4" />}
+                        startContent={<Upload className="w-4 h-4" aria-hidden="true" />}
                         onPress={() => fileInputRef.current?.click()}
+                        className="min-h-[44px] touch-manipulation"
+                        aria-label={t('profile.image.actions.selectFile')}
                       >
                         {t('profile.image.actions.selectFile')}
                       </Button>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-xs sm:text-sm text-gray-500">
                         {t('profile.image.orDragDrop')}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500" role="note" aria-label={t('profile.image.fileRequirements')}>
                       <p>{t('profile.image.supportedFormats', { formats: acceptedFormats.join(', ') })}</p>
                       <p>{t('profile.image.maxFileSize', { size: maxFileSize })}</p>
                     </div>
@@ -359,24 +381,26 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                 )}
               </div>
             ) : (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8">
-                <div className="space-y-4">
-                  <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Camera className="w-8 h-8 text-gray-400" />
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-8">
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" aria-hidden="true" />
                   </div>
                   <div>
-                    <p className="text-lg font-medium text-gray-900">
+                    <p className="text-base sm:text-lg font-medium text-gray-900">
                       {t('profile.image.changeImage')}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       {t('profile.image.changeDescription')}
                     </p>
                   </div>
                   <Button
                     color="primary"
                     variant="flat"
-                    startContent={<Upload className="w-4 h-4" />}
+                    startContent={<Upload className="w-4 h-4" aria-hidden="true" />}
                     onPress={() => fileInputRef.current?.click()}
+                    className="min-h-[44px] touch-manipulation"
+                    aria-label={t('profile.image.actions.selectNewImage')}
                   >
                     {t('profile.image.actions.selectNewImage')}
                   </Button>
@@ -386,14 +410,15 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
             {/* Upload Progress */}
             {uploadProgress > 0 && (
-              <div className="mt-4">
+              <div className="mt-4" role="status" aria-live="polite" aria-label={t('profile.image.uploadProgress')}>
                 <Progress
                   value={uploadProgress}
                   className="w-full"
                   color="primary"
                   showValueLabel
+                  aria-label={`${t('profile.image.uploading')} ${uploadProgress}%`}
                 />
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-xs sm:text-sm text-gray-600 mt-2">
                   {t('profile.image.uploading')}... {uploadProgress}%
                 </p>
               </div>
@@ -401,8 +426,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
             {/* Error Display */}
             {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600">{error}</p>
+              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="assertive">
+                <p className="text-xs sm:text-sm text-red-600">{error}</p>
               </div>
             )}
 
@@ -413,6 +438,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
               accept={acceptedFormats.join(',')}
               onChange={handleFileInputChange}
               className="hidden"
+              aria-label={t('profile.image.fileInput')}
             />
           </div>
         </CardBody>
@@ -430,8 +456,9 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                 ref={canvasRef}
                 className="max-w-full h-auto border border-gray-300 rounded-lg"
                 style={{ maxHeight: '400px' }}
+                aria-label={t('profile.image.cropCanvas')}
               />
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-xs sm:text-sm text-gray-600 mt-2">
                 {t('profile.image.cropDescription')}
               </p>
             </div>
@@ -441,6 +468,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
               color="default"
               variant="flat"
               onPress={() => setShowCropModal(false)}
+              className="min-h-[44px] touch-manipulation"
+              aria-label={t('profile.image.actions.cancelCrop')}
             >
               {t('common.cancel')}
             </Button>
@@ -448,6 +477,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
               color="primary"
               variant="flat"
               onPress={handleCrop}
+              className="min-h-[44px] touch-manipulation"
+              aria-label={t('profile.image.actions.applyCrop')}
             >
               {t('profile.image.actions.crop')}
             </Button>

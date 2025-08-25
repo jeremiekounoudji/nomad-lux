@@ -74,7 +74,7 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 4.6 Implement form reset functionality after successful password change
   - [x] 4.7 Add loading states during password change process
 
-- [ ] 5.0 Implement Privacy and Notification Settings
+- [x] 5.0 Implement Privacy and Notification Settings
   - [x] 5.1 Create PrivacySettingsCard component for settings management
   - [x] 5.2 Implement privacy preference toggles (profile visibility, data sharing)
   - [x] 5.3 Add notification preference controls (email, push, SMS)
@@ -83,12 +83,12 @@ Based on PRD: `prd-user-profile-page.md`
   - [x] 5.6 Add settings reset to default option
   - [x] 5.7 Create settings confirmation dialogs for important changes
 
-- [ ] 6.0 Add Responsive Design and Accessibility Features
-  - [ ] 6.1 Implement mobile-first responsive layout for all profile components
-  - [ ] 6.2 Add touch-friendly interface elements for mobile devices
-  - [ ] 6.3 Implement keyboard navigation support for all interactive elements
-  - [ ] 6.4 Add ARIA labels and roles for screen reader accessibility
-  - [ ] 6.5 Implement focus management for form interactions
-  - [ ] 6.6 Add high contrast mode support for accessibility
-  - [ ] 6.7 Test responsive design across different screen sizes
-  - [ ] 6.8 Add smooth transitions and micro-interactions for better UX
+- [x] 6.0 Add Responsive Design and Accessibility Features
+  - [x] 6.1 Implement mobile-first responsive layout for all profile components
+  - [x] 6.2 Add touch-friendly interface elements for mobile devices
+  - [x] 6.3 Implement keyboard navigation support for all interactive elements
+  - [x] 6.4 Add ARIA labels and roles for screen reader accessibility
+  - [x] 6.5 Implement focus management for form interactions
+  - [x] 6.6 Add high contrast mode support for accessibility
+  - [x] 6.7 Test responsive design across different screen sizes
+  - [x] 6.8 Add smooth transitions and micro-interactions for better UX

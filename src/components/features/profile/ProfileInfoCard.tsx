@@ -103,7 +103,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
     return (
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+        <label className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
           {icon}
           {label}
         </label>
@@ -114,9 +114,11 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 value={value}
                 onChange={(e) => handleInputChange(field, e.target.value)}
                 placeholder={placeholder}
-                className={`w-full ${error ? 'border-red-500' : ''}`}
+                className={`w-full min-h-[44px] ${error ? 'border-red-500' : ''}`}
                 maxLength={500}
                 minRows={3}
+                aria-describedby={error ? `${field}-error` : undefined}
+                aria-invalid={!!error}
               />
             ) : (
               <Input
@@ -124,15 +126,19 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 value={value}
                 onChange={(e) => handleInputChange(field, e.target.value)}
                 placeholder={placeholder}
-                className={`w-full ${error ? 'border-red-500' : ''}`}
+                className={`w-full min-h-[44px] ${error ? 'border-red-500' : ''}`}
+                aria-describedby={error ? `${field}-error` : undefined}
+                aria-invalid={!!error}
               />
             )}
             {error && (
-              <p className="text-sm text-red-500">{error}</p>
+              <p id={`${field}-error`} className="text-xs sm:text-sm text-red-500" role="alert">
+                {error}
+              </p>
             )}
           </div>
         ) : (
-          <p className="text-gray-900">
+          <p className="text-sm sm:text-base text-gray-900 break-words">
             {value || t('common.notProvided')}
           </p>
         )}
@@ -141,12 +147,12 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   }
 
   return (
-    <Card className="w-full">
-      <CardBody className="p-6">
-        <div className="flex items-center justify-between mb-6">
+    <Card className="w-full transition-all duration-200 hover:shadow-md">
+      <CardBody className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
           <div className="flex items-center space-x-2">
-            <User className="w-5 h-5 text-gray-600" />
-            <h3 className="text-lg font-semibold text-gray-900">
+            <User className="w-5 h-5 text-gray-600" aria-hidden="true" />
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               {t('profile.sections.personalInfo')}
             </h3>
           </div>
@@ -157,11 +163,13 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               variant="flat"
               startContent={<Edit className="w-4 h-4" />}
               onPress={handleEdit}
+              className="w-full sm:w-auto min-h-[44px] touch-manipulation"
+              aria-label={t('profile.actions.editPersonalInfo')}
             >
               {t('common.edit')}
             </Button>
           ) : (
-            <div className="flex space-x-2">
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
               <Button 
                 size="sm" 
                 color="success" 
@@ -170,6 +178,8 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 onPress={handleSave}
                 isLoading={isUpdating}
                 disabled={isUpdating}
+                className="w-full sm:w-auto min-h-[44px] touch-manipulation"
+                aria-label={t('profile.actions.saveChanges')}
               >
                 {t('common.save')}
               </Button>
@@ -180,6 +190,8 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 startContent={<X className="w-4 h-4" />}
                 onPress={handleCancel}
                 disabled={isUpdating}
+                className="w-full sm:w-auto min-h-[44px] touch-manipulation"
+                aria-label={t('profile.actions.cancelChanges')}
               >
                 {t('common.cancel')}
               </Button>
@@ -187,33 +199,33 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Name Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {renderField(
               'firstName',
               t('profile.fields.firstName'),
-              <User className="w-4 h-4" />,
+              <User className="w-4 h-4" aria-hidden="true" />,
               'text',
               t('profile.placeholders.firstName')
             )}
             {renderField(
               'lastName',
               t('profile.fields.lastName'),
-              <User className="w-4 h-4" />,
+              <User className="w-4 h-4" aria-hidden="true" />,
               'text',
               t('profile.placeholders.lastName')
             )}
           </div>
 
           {/* Contact Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                <Mail className="w-4 h-4" />
+                <Mail className="w-4 h-4" aria-hidden="true" />
                 {t('profile.fields.email')}
               </label>
-              <p className="text-gray-900">{profile.email}</p>
+              <p className="text-gray-900 break-all">{profile.email}</p>
               <Chip size="sm" color="primary" variant="flat">
                 {t('profile.fields.emailReadOnly')}
               </Chip>
@@ -221,25 +233,25 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             {renderField(
               'phone',
               t('profile.fields.phone'),
-              <Phone className="w-4 h-4" />,
+              <Phone className="w-4 h-4" aria-hidden="true" />,
               'text',
               t('profile.placeholders.phone')
             )}
           </div>
 
           {/* Location and Date of Birth */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             {renderField(
               'location',
               t('profile.fields.location'),
-              <MapPin className="w-4 h-4" />,
+              <MapPin className="w-4 h-4" aria-hidden="true" />,
               'text',
               t('profile.placeholders.location')
             )}
             {renderField(
               'dateOfBirth',
               t('profile.fields.dateOfBirth'),
-              <Calendar className="w-4 h-4" />,
+              <Calendar className="w-4 h-4" aria-hidden="true" />,
               'text',
               t('profile.placeholders.dateOfBirth')
             )}
@@ -249,7 +261,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           {renderField(
             'bio',
             t('profile.fields.bio'),
-            <FileText className="w-4 h-4" />,
+            <FileText className="w-4 h-4" aria-hidden="true" />,
             'textarea',
             t('profile.placeholders.bio')
           )}

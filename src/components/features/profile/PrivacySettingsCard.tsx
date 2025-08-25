@@ -89,9 +89,21 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
       await Promise.all(promises)
       setPendingChanges({})
       toast.success(t('profile.settings.savedSuccessfully'))
+      
+      // Focus on the save button after successful save for feedback
+      const saveButton = document.querySelector('[data-focus-after-save]') as HTMLElement
+      if (saveButton) {
+        setTimeout(() => saveButton.focus(), 100)
+      }
     } catch (error) {
       console.error('Error saving settings:', error)
       toast.error(t('profile.settings.saveError'))
+      
+      // Focus on the save button after error for retry
+      const saveButton = document.querySelector('[data-focus-after-save]') as HTMLElement
+      if (saveButton) {
+        setTimeout(() => saveButton.focus(), 100)
+      }
     }
   }
 
@@ -158,6 +170,9 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
 
   return (
     <>
+      {/* Screen Reader Announcements */}
+      <div id="sr-announcements" className="sr-only" aria-live="polite" aria-atomic="true"></div>
+      
       <Card className="w-full">
         <CardBody className="p-6">
           <div className="flex items-center justify-between mb-6">
@@ -168,19 +183,22 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
               </h3>
             </div>
             <div className="flex space-x-2">
-              {hasUnsavedChanges && (
-                <Button
-                  size="sm"
-                  color="primary"
-                  variant="flat"
-                  onPress={saveChanges}
-                  isLoading={isSaving}
-                  disabled={isSaving}
-                  startContent={<CheckCircle className="w-4 h-4" />}
-                >
-                  {t('common.save')}
-                </Button>
-              )}
+                             {hasUnsavedChanges && (
+                 <Button
+                   size="sm"
+                   color="primary"
+                   variant="flat"
+                   onPress={saveChanges}
+                   isLoading={isSaving}
+                   disabled={isSaving}
+                   startContent={<CheckCircle className="w-4 h-4" aria-hidden="true" />}
+                   className="min-h-[44px] touch-manipulation"
+                   data-focus-after-save
+                   aria-label={t('profile.settings.actions.saveChanges')}
+                 >
+                   {t('common.save')}
+                 </Button>
+               )}
               <Button
                 size="sm"
                 color="default"
@@ -218,13 +236,22 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                       </p>
                     </div>
                   </div>
-                  <Select
-                    size="sm"
-                    value={localPrivacySettings.profileVisibility}
-                    onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value)}
-                    disabled={isSaving}
-                    className="w-32"
-                  >
+                                     <Select
+                     size="sm"
+                     value={localPrivacySettings.profileVisibility}
+                     onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value)}
+                     disabled={isSaving}
+                     className="w-32"
+                     aria-label={t('profile.settings.privacy.profileVisibility')}
+                     onFocus={() => {
+                       // Announce the current selection to screen readers
+                       const announcement = `${t('profile.settings.privacy.profileVisibility')}: ${t(`profile.settings.privacy.visibility.${localPrivacySettings.profileVisibility}`)}`
+                       const liveRegion = document.getElementById('sr-announcements')
+                       if (liveRegion) {
+                         liveRegion.textContent = announcement
+                       }
+                     }}
+                   >
                     <SelectItem key="public" value="public">
                       {t('profile.settings.privacy.visibility.public')}
                     </SelectItem>

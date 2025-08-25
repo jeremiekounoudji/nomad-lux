@@ -136,36 +136,59 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
     const value = formData[field]
     const error = errors[field as keyof typeof errors]
     const isVisible = showPasswords[showKey]
+    const fieldId = `${field}-input`
+    const errorId = `${field}-error`
+    const toggleId = `${field}-toggle`
 
     return (
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-          <Lock className="w-4 h-4" />
+        <label htmlFor={fieldId} className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
+          <Lock className="w-4 h-4" aria-hidden="true" />
           {label}
         </label>
         <div className="relative">
           <Input
+            id={fieldId}
             type={isVisible ? 'text' : 'password'}
             value={value}
             onChange={(e) => handleInputChange(field, e.target.value)}
             placeholder={placeholder}
-            className={`w-full pr-10 ${error ? 'border-red-500' : ''}`}
+            className={`w-full pr-10 min-h-[44px] ${error ? 'border-red-500' : ''}`}
             disabled={isChanging}
+            aria-describedby={error ? errorId : undefined}
+            aria-invalid={!!error}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && e.target !== e.currentTarget) {
+                e.preventDefault()
+                const nextInput = e.currentTarget.parentElement?.nextElementSibling?.querySelector('input')
+                if (nextInput) {
+                  nextInput.focus()
+                }
+              }
+            }}
           />
           <Button
+            id={toggleId}
             isIconOnly
             size="sm"
             variant="light"
-            className="absolute right-1 top-1/2 transform -translate-y-1/2"
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 min-h-[44px] min-w-[44px]"
             onPress={() => togglePasswordVisibility(showKey)}
             disabled={isChanging}
+            aria-label={isVisible ? t('profile.password.actions.hidePassword') : t('profile.password.actions.showPassword')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                togglePasswordVisibility(showKey)
+              }
+            }}
           >
-            {isVisible ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {isVisible ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
           </Button>
         </div>
         {error && (
-          <p className="text-sm text-red-500 flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" />
+          <p id={errorId} className="text-xs sm:text-sm text-red-500 flex items-center gap-1" role="alert">
+            <AlertCircle className="w-4 h-4" aria-hidden="true" />
             {error}
           </p>
         )}
@@ -174,16 +197,16 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
   }
 
   return (
-    <Card className="w-full">
-      <CardBody className="p-6">
-        <div className="flex items-center space-x-2 mb-6">
-          <Shield className="w-5 h-5 text-gray-600" />
-          <h3 className="text-lg font-semibold text-gray-900">
+    <Card className="w-full transition-all duration-200 hover:shadow-md">
+      <CardBody className="p-4 sm:p-6">
+        <div className="flex items-center space-x-2 mb-4 sm:mb-6">
+          <Shield className="w-5 h-5 text-gray-600" aria-hidden="true" />
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
             {t('profile.sections.passwordChange')}
           </h3>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" role="form" aria-label={t('profile.password.formLabel')}>
           {/* Current Password */}
           {renderPasswordField(
             'currentPassword',
@@ -194,39 +217,58 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 
           {/* New Password */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-              <Lock className="w-4 h-4" />
+            <label htmlFor="newPassword-input" className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
+              <Lock className="w-4 h-4" aria-hidden="true" />
               {t('profile.password.fields.newPassword')}
             </label>
             <div className="relative">
               <Input
+                id="newPassword-input"
                 type={showPasswords.new ? 'text' : 'password'}
                 value={formData.newPassword}
                 onChange={(e) => handleInputChange('newPassword', e.target.value)}
                 placeholder={t('profile.password.placeholders.newPassword')}
-                className={`w-full pr-10 ${errors.newPassword ? 'border-red-500' : ''}`}
+                className={`w-full pr-10 min-h-[44px] ${errors.newPassword ? 'border-red-500' : ''}`}
                 disabled={isChanging}
+                aria-describedby={errors.newPassword ? 'newPassword-error' : 'password-strength'}
+                aria-invalid={!!errors.newPassword}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    const confirmInput = document.getElementById('confirmPassword-input') as HTMLInputElement
+                    if (confirmInput) {
+                      confirmInput.focus()
+                    }
+                  }
+                }}
               />
               <Button
                 isIconOnly
                 size="sm"
                 variant="light"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2"
+                className="absolute right-1 top-1/2 transform -translate-y-1/2 min-h-[44px] min-w-[44px]"
                 onPress={() => togglePasswordVisibility('new')}
                 disabled={isChanging}
+                aria-label={showPasswords.new ? t('profile.password.actions.hidePassword') : t('profile.password.actions.showPassword')}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    togglePasswordVisibility('new')
+                  }
+                }}
               >
-                {showPasswords.new ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPasswords.new ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
               </Button>
             </div>
 
             {/* Password Strength Indicator */}
             {formData.newPassword && (
-              <div className="space-y-2">
+              <div id="password-strength" className="space-y-2" role="status" aria-live="polite">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
+                  <span className="text-xs sm:text-sm text-gray-600">
                     {t('profile.password.strength')}:
                   </span>
-                  <span className={`text-sm font-medium ${strengthLevel.color}`}>
+                  <span className={`text-xs sm:text-sm font-medium ${strengthLevel.color}`}>
                     {strengthLevel.label}
                   </span>
                 </div>
@@ -235,19 +277,20 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                   className="w-full"
                   color={passwordStrength.isValid ? 'success' : 'warning'}
                   size="sm"
+                  aria-label={`${t('profile.password.strength')}: ${strengthLevel.label}`}
                 />
                 
                 {/* Password Requirements */}
-                <div className="space-y-1">
+                <div className="space-y-1" role="list" aria-label={t('profile.password.requirements')}>
                   {passwordStrength.feedback.map((feedback, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs">
-                      <AlertCircle className="w-3 h-3 text-red-500" />
+                    <div key={index} className="flex items-center gap-2 text-xs" role="listitem">
+                      <AlertCircle className="w-3 h-3 text-red-500" aria-hidden="true" />
                       <span className="text-red-600">{feedback}</span>
                     </div>
                   ))}
                   {passwordStrength.isValid && (
-                    <div className="flex items-center gap-2 text-xs">
-                      <CheckCircle className="w-3 h-3 text-green-500" />
+                    <div className="flex items-center gap-2 text-xs" role="listitem">
+                      <CheckCircle className="w-3 h-3 text-green-500" aria-hidden="true" />
                       <span className="text-green-600">
                         {t('profile.password.strengthValid')}
                       </span>
@@ -258,8 +301,8 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             )}
 
             {errors.newPassword && (
-              <p className="text-sm text-red-500 flex items-center gap-1">
-                <AlertCircle className="w-4 h-4" />
+              <p id="newPassword-error" className="text-xs sm:text-sm text-red-500 flex items-center gap-1" role="alert">
+                <AlertCircle className="w-4 h-4" aria-hidden="true" />
                 {errors.newPassword}
               </p>
             )}
@@ -281,17 +324,19 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
               variant="flat"
               isLoading={isChanging}
               disabled={isChanging || !passwordStrength.isValid || !formData.confirmPassword}
-              startContent={<Shield className="w-4 h-4" />}
+              startContent={<Shield className="w-4 h-4" aria-hidden="true" />}
+              className="min-h-[44px] touch-manipulation"
+              aria-label={t('profile.password.actions.changePassword')}
             >
               {t('profile.password.actions.changePassword')}
             </Button>
           </div>
 
           {/* Security Notice */}
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.securityNotice.title')}>
             <div className="flex items-start gap-2">
-              <Shield className="w-4 h-4 text-blue-600 mt-0.5" />
-              <div className="text-sm text-blue-800">
+              <Shield className="w-4 h-4 text-blue-600 mt-0.5" aria-hidden="true" />
+              <div className="text-xs sm:text-sm text-blue-800">
                 <p className="font-medium mb-1">
                   {t('profile.password.securityNotice.title')}
                 </p>

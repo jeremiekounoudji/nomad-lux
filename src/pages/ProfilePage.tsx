@@ -172,58 +172,60 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" role="main" aria-label={t('profile.title')}>
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <Button
                 isIconOnly
                 variant="light"
                 onPress={handleBackToHome}
-                className="text-gray-600 hover:text-gray-900"
+                className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                aria-label={t('common.back')}
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                   {t('profile.title')}
                 </h1>
-                <p className="text-sm text-gray-600">
+                <p className="text-xs sm:text-sm text-gray-600 truncate">
                   {t('profile.subtitle')}
                 </p>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Left Column - Profile Info */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-4 sm:space-y-6">
             {/* Profile Header Card */}
-            <Card className="w-full">
-              <CardBody className="p-6">
+            <Card className="w-full transition-all duration-200 hover:shadow-md">
+              <CardBody className="p-4 sm:p-6">
                 <div className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
                     {profile.avatarUrl ? (
                       <img 
                         src={profile.avatarUrl} 
-                        alt="Profile" 
-                        className="w-24 h-24 rounded-full object-cover"
+                        alt={`${profile.firstName} ${profile.lastName} profile picture`}
+                        className="w-full h-full rounded-full object-cover"
+                        loading="lazy"
                       />
                     ) : (
-                      <User className="w-12 h-12 text-gray-400" />
+                      <User className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400" aria-hidden="true" />
                     )}
                   </div>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1">
                     {profile.firstName} {profile.lastName}
                   </h2>
-                  <p className="text-gray-600">{profile.email}</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-gray-600 mb-1">{profile.email}</p>
+                  <p className="text-xs sm:text-sm text-gray-500">
                     {t('profile.memberSince')} {new Date(profile.joinDate).toLocaleDateString()}
                   </p>
                 </div>
@@ -231,53 +233,55 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             </Card>
 
             {/* Profile Information Card */}
-            <Card className="w-full">
-              <CardBody className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+            <Card className="w-full transition-all duration-200 hover:shadow-md">
+              <CardBody className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                     {t('profile.sections.personalInfo')}
                   </h3>
                   <Button 
                     size="sm" 
                     color="primary" 
                     variant="flat"
+                    className="self-start sm:self-auto"
+                    aria-label={t('profile.actions.editPersonalInfo')}
                   >
                     {t('common.edit')}
                   </Button>
                 </div>
                 <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="space-y-1">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">
                         {t('profile.fields.firstName')}
                       </label>
-                      <p className="text-gray-900">{profile.firstName || t('common.notProvided')}</p>
+                      <p className="text-sm sm:text-base text-gray-900">{profile.firstName || t('common.notProvided')}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">
+                    <div className="space-y-1">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">
                         {t('profile.fields.lastName')}
                       </label>
-                      <p className="text-gray-900">{profile.lastName || t('common.notProvided')}</p>
+                      <p className="text-sm sm:text-base text-gray-900">{profile.lastName || t('common.notProvided')}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">
+                    <div className="space-y-1">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">
                         {t('profile.fields.email')}
                       </label>
-                      <p className="text-gray-900">{profile.email}</p>
+                      <p className="text-sm sm:text-base text-gray-900 break-all">{profile.email}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">
+                    <div className="space-y-1">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">
                         {t('profile.fields.phone')}
                       </label>
-                      <p className="text-gray-900">{profile.phone || t('common.notProvided')}</p>
+                      <p className="text-sm sm:text-base text-gray-900">{profile.phone || t('common.notProvided')}</p>
                     </div>
                   </div>
                   {profile.bio && (
-                    <div>
-                      <label className="text-sm font-medium text-gray-700">
+                    <div className="space-y-1">
+                      <label className="text-xs sm:text-sm font-medium text-gray-700">
                         {t('profile.fields.bio')}
                       </label>
-                      <p className="text-gray-900">{profile.bio}</p>
+                      <p className="text-sm sm:text-base text-gray-900">{profile.bio}</p>
                     </div>
                   )}
                 </div>
@@ -285,12 +289,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             </Card>
 
             {/* Password Change Card */}
-            <Card className="w-full">
-              <CardBody className="p-6">
-                <div className="flex items-center justify-between mb-4">
+            <Card className="w-full transition-all duration-200 hover:shadow-md">
+              <CardBody className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-2">
-                    <Shield className="w-5 h-5 text-gray-600" />
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <Shield className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                       {t('profile.sections.security')}
                     </h3>
                   </div>
@@ -299,11 +303,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     color="primary" 
                     variant="flat"
                     onPress={handlePasswordChange}
+                    className="self-start sm:self-auto"
+                    aria-label={t('profile.actions.changePassword')}
                   >
                     {t('profile.actions.changePassword')}
                   </Button>
                 </div>
-                <p className="text-gray-600 text-sm">
+                <p className="text-xs sm:text-sm text-gray-600">
                   {t('profile.security.description')}
                 </p>
               </CardBody>
@@ -311,14 +317,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
           </div>
 
           {/* Right Column - Settings */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Privacy Settings Card */}
-            <Card className="w-full">
-              <CardBody className="p-6">
-                <div className="flex items-center justify-between mb-4">
+            <Card className="w-full transition-all duration-200 hover:shadow-md">
+              <CardBody className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-2">
-                    <Settings className="w-5 h-5 text-gray-600" />
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <Settings className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                       {t('profile.sections.privacy')}
                     </h3>
                   </div>
@@ -326,24 +332,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     size="sm" 
                     color="primary" 
                     variant="flat"
+                    className="self-start sm:self-auto"
+                    aria-label={t('profile.actions.editPrivacySettings')}
                   >
                     {t('common.edit')}
                   </Button>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-xs sm:text-sm text-gray-700">
                       {t('profile.privacy.profileVisibility')}
                     </span>
-                    <span className="text-sm text-gray-500 capitalize">
+                    <span className="text-xs sm:text-sm text-gray-500 capitalize">
                       {profile.privacySettings.profileVisibility}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-xs sm:text-sm text-gray-700">
                       {t('profile.privacy.showEmail')}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {profile.privacySettings.showEmail ? t('common.yes') : t('common.no')}
                     </span>
                   </div>
@@ -352,12 +360,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             </Card>
 
             {/* Notification Settings Card */}
-            <Card className="w-full">
-              <CardBody className="p-6">
-                <div className="flex items-center justify-between mb-4">
+            <Card className="w-full transition-all duration-200 hover:shadow-md">
+              <CardBody className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
                   <div className="flex items-center space-x-2">
-                    <Bell className="w-5 h-5 text-gray-600" />
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <Bell className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                       {t('profile.sections.notifications')}
                     </h3>
                   </div>
@@ -365,24 +373,26 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     size="sm" 
                     color="primary" 
                     variant="flat"
+                    className="self-start sm:self-auto"
+                    aria-label={t('profile.actions.editNotificationSettings')}
                   >
                     {t('common.edit')}
                   </Button>
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-xs sm:text-sm text-gray-700">
                       {t('profile.notifications.email')}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {profile.notificationSettings.emailNotifications.bookingUpdates ? t('common.on') : t('common.off')}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
+                    <span className="text-xs sm:text-sm text-gray-700">
                       {t('profile.notifications.push')}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {profile.notificationSettings.pushNotifications.bookingUpdates ? t('common.on') : t('common.off')}
                     </span>
                   </div>
@@ -391,7 +401,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             </Card>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
