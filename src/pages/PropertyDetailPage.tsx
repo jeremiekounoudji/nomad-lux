@@ -49,6 +49,11 @@ import toast from 'react-hot-toast'
 import { usePropertyLike } from '../hooks/usePropertyLike'
 import { usePropertyStore } from '../lib/stores/propertyStore';
 import { PropertyCardSkeleton } from '../components/shared';
+import { useReview } from '../hooks/useReview';
+import ReviewList from '../components/shared/ReviewList';
+import CreateReviewModal from '../components/shared/modals/CreateReviewModal';
+import EditReviewModal from '../components/shared/modals/EditReviewModal';
+import DeleteReviewModal from '../components/shared/modals/DeleteReviewModal';
 
 
 
@@ -227,6 +232,40 @@ const PropertyDetailPage: React.FC = () => {
   // Like hook
   const { likedPropertyIds, isLoading: isLikeLoading, toggleLike, isLiked: isPropertyLiked } = usePropertyLike()
 
+  // Review hook
+  const {
+    reviews,
+    reviewStats,
+    loading: reviewsLoading,
+    error: reviewsError,
+    modalState,
+    filters,
+    handleFilterChange,
+    handlePageChange,
+    loadMoreReviews,
+    openCreateModal,
+    openEditModal,
+    openDeleteModal,
+    closeModal,
+    handleCreateReview,
+    handleUpdateReview,
+    handleDeleteReview
+  } = useReview(property?.id)
+
+  // TODO: Review notifications and reminders
+  // This would check if the user has completed bookings that they can review
+  // and show appropriate notifications or reminders
+  useEffect(() => {
+    if (user && property) {
+      // Placeholder for review notification logic
+      // In a real implementation, this would:
+      // 1. Check if user has completed bookings for this property
+      // 2. Check if user has already reviewed those bookings
+      // 3. Show appropriate notifications or reminders
+      console.log('📝 Review notification placeholder - User:', user.id, 'Property:', property.id)
+    }
+  }, [user, property])
+
   // Load property settings and update meta tags on component mount
   useEffect(() => {
     if (property?.id) {
@@ -384,6 +423,12 @@ const PropertyDetailPage: React.FC = () => {
       
       if (result) {
         console.log('✅ Booking created successfully:', result)
+        
+        // TODO: Review trigger - This would be called when a booking is completed
+        // For now, we'll add a placeholder for the review trigger system
+        // Reviews should be created after the stay is completed, not immediately after booking
+        console.log('📝 Review trigger placeholder - Booking result:', result)
+        
         onSuccessOpen()
       } else {
         throw new Error(t('messages.bookingCreationFailed'))
@@ -505,6 +550,85 @@ const PropertyDetailPage: React.FC = () => {
                   property={property}
                   onContactOpen={onContactOpen}
                 />
+
+                {/* Reviews Section */}
+                <div className="mt-8">
+                  {/* Review Summary */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-gray-900">
+                            {reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0'}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {t('review.reviews.averageRating', { rating: reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0' })}
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-gray-900">
+                            {reviewStats?.total_reviews || 0}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {t('review.reviews.totalReviews', { count: reviewStats?.total_reviews || 0 })}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Write Review Button - Show for users who can review this property */}
+                      {user && property?.host?.id !== user.id && (
+                        <Button
+                          color="primary"
+                          variant="bordered"
+                          size="sm"
+                          onPress={() => {
+                            // For now, we'll use a placeholder booking ID
+                            // In a real implementation, this would check if user has completed bookings for this property
+                            openCreateModal('placeholder-booking-id', 'property')
+                          }}
+                        >
+                          {t('review.createReview')}
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-semibold text-gray-900">
+                      {t('review.reviews.title')}
+                    </h2>
+                  </div>
+                  
+                  <ReviewList
+                    reviews={reviews}
+                    loading={reviewsLoading}
+                    error={reviewsError}
+                    hasMore={reviews.length < (reviewStats?.total_reviews || 0)}
+                    currentPage={filters.page || 1}
+                    totalCount={reviewStats?.total_reviews || 0}
+                    averageRating={reviewStats?.average_rating || 0}
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    onPageChange={handlePageChange}
+                    onLoadMore={loadMoreReviews}
+                    onEditReview={openEditModal}
+                    onDeleteReview={openDeleteModal}
+                    showActions={Boolean(user && property?.host?.id === user.id)}
+                  />
+                  
+                  {/* Debug information for testing different property states */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs text-gray-600">
+                      <h4 className="font-semibold mb-2">Debug Info (Development Only):</h4>
+                      <div>Property Status: {property?.status || 'unknown'}</div>
+                      <div>Property Host ID: {property?.host?.id || 'unknown'}</div>
+                      <div>Current User ID: {user?.id || 'not logged in'}</div>
+                      <div>Can Show Actions: {Boolean(user && property?.host?.id === user.id).toString()}</div>
+                      <div>Reviews Count: {reviews.length}</div>
+                      <div>Review Stats: {JSON.stringify(reviewStats)}</div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Location */}
                 <div className="mt-8">
@@ -633,6 +757,29 @@ const PropertyDetailPage: React.FC = () => {
         onClose={onContactClose}
         property={property}
         onSendMessage={handleContactMessage}
+      />
+
+      {/* Review Modals */}
+      <CreateReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'create'}
+        onClose={closeModal}
+        bookingId={modalState.bookingId || ''}
+        reviewType={modalState.reviewType || 'property'}
+        propertyId={property?.id}
+      />
+
+      <EditReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'edit'}
+        onClose={closeModal}
+        reviewId={modalState.reviewId || ''}
+        propertyId={property?.id}
+      />
+
+      <DeleteReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'delete'}
+        onClose={closeModal}
+        reviewId={modalState.reviewId || ''}
+        propertyId={property?.id}
       />
     </div>
   )
