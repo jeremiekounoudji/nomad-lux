@@ -51,7 +51,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
 
   return (
     <div 
-      className={`relative overflow-hidden rounded-none sm:rounded-xl ${heightClasses[height]} ${className}`}
+      className={`relative overflow-hidden rounded-xl border border-gray-200 ${heightClasses[height]} ${className}`}
       role="banner"
       aria-label={t('common.pageBanner.bannerLabel', { title })}
     >
@@ -83,7 +83,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
       <div className={`absolute inset-0 ${overlayClasses[overlayOpacity]}`} />
 
       {/* Content Layer */}
-      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center p-4 sm:p-6 lg:p-8 text-white">
+      <div className="relative z-10 h-full flex items-center justify-center text-center p-4 sm:p-6 lg:p-8 text-white">
         <div className="max-w-4xl w-full">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight">

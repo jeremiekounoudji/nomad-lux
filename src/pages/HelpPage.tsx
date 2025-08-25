@@ -20,26 +20,26 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
   const faqData = [
     {
       id: 'getting-started',
-      titleKey: 'help.categories.gettingStarted.title',
+      titleKey: 'help:categories.gettingStarted.title',
       icon: BookOpen,
       color: 'primary',
       faqs: [
-        { questionKey: 'help.categories.gettingStarted.faqs.q1.question', answerKey: 'help.categories.gettingStarted.faqs.q1.answer' },
-        { questionKey: 'help.categories.gettingStarted.faqs.q2.question', answerKey: 'help.categories.gettingStarted.faqs.q2.answer' },
-        { questionKey: 'help.categories.gettingStarted.faqs.q3.question', answerKey: 'help.categories.gettingStarted.faqs.q3.answer' },
-        { questionKey: 'help.categories.gettingStarted.faqs.q4.question', answerKey: 'help.categories.gettingStarted.faqs.q4.answer' }
+        { questionKey: 'help:categories.gettingStarted.faqs.q1.question', answerKey: 'help:categories.gettingStarted.faqs.q1.answer' },
+        { questionKey: 'help:categories.gettingStarted.faqs.q2.question', answerKey: 'help:categories.gettingStarted.faqs.q2.answer' },
+        { questionKey: 'help:categories.gettingStarted.faqs.q3.question', answerKey: 'help:categories.gettingStarted.faqs.q3.answer' },
+        { questionKey: 'help:categories.gettingStarted.faqs.q4.question', answerKey: 'help:categories.gettingStarted.faqs.q4.answer' }
       ]
     },
     {
       id: 'booking-stays',
-      titleKey: 'help.categories.bookingStays.title',
+      titleKey: 'help:categories.bookingStays.title',
       icon: Home,
       color: 'success',
       faqs: [
-        { questionKey: 'help.categories.bookingStays.faqs.q1.question', answerKey: 'help.categories.bookingStays.faqs.q1.answer' },
-        { questionKey: 'help.categories.bookingStays.faqs.q2.question', answerKey: 'help.categories.bookingStays.faqs.q2.answer' },
-        { questionKey: 'help.categories.bookingStays.faqs.q3.question', answerKey: 'help.categories.bookingStays.faqs.q3.answer' },
-        { questionKey: 'help.categories.bookingStays.faqs.q4.question', answerKey: 'help.categories.bookingStays.faqs.q4.answer' }
+        { questionKey: 'help:categories.bookingStays.faqs.q1.question', answerKey: 'help:categories.bookingStays.faqs.q1.answer' },
+        { questionKey: 'help:categories.bookingStays.faqs.q2.question', answerKey: 'help:categories.bookingStays.faqs.q2.answer' },
+        { questionKey: 'help:categories.bookingStays.faqs.q3.question', answerKey: 'help:categories.bookingStays.faqs.q3.answer' },
+        { questionKey: 'help:categories.bookingStays.faqs.q4.question', answerKey: 'help:categories.bookingStays.faqs.q4.answer' }
       ]
     }
   ]
@@ -59,28 +59,28 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
 
   const contactOptions = useMemo(() => ([
     {
-      title: t('help.contact.liveChat.title'),
-      description: t('help.contact.liveChat.description'),
+      title: t('help:contact.liveChat.title'),
+      description: t('help:contact.liveChat.description'),
       icon: MessageCircle,
       color: 'primary',
-      action: () => console.log(t('help.contact.liveChat.action')),
-      available: t('help.contact.liveChat.available')
+      action: () => console.log(t('help:contact.liveChat.action')),
+      available: t('help:contact.liveChat.available')
     },
     {
-      title: t('help.contact.email.title'),
-      description: t('help.contact.email.description'),
+      title: t('help:contact.email.title'),
+      description: t('help:contact.email.description'),
       icon: Mail,
       color: 'secondary',
-      action: () => (window.location.href = `mailto:${t('help.contact.email.address')}`),
-      available: t('help.contact.email.available')
+      action: () => (window.location.href = `mailto:${t('help:contact.email.address')}`),
+      available: t('help:contact.email.available')
     },
     {
-      title: t('help.contact.phone.title'),
-      description: t('help.contact.phone.description'),
+      title: t('help:contact.phone.title'),
+      description: t('help:contact.phone.description'),
       icon: Phone,
       color: 'success',
-      action: () => (window.location.href = `tel:${t('help.contact.phone.number')}`),
-      available: t('help.contact.phone.available')
+      action: () => (window.location.href = `tel:${t('help:contact.phone.number')}`),
+      available: t('help:contact.phone.available')
     }
   ]), [t])
 
@@ -107,7 +107,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t('help.header.title')}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t('help:header.title')}</h1>
           </div>
         </div>
       </div>
@@ -117,8 +117,8 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('help').image}
-          title={t('help.banner.title')}
-          subtitle={t('help.banner.subtitle')}
+          title={t('help:banner.title')}
+          subtitle={t('help:banner.subtitle')}
           imageAlt={t('common.pageBanner.help')}
           overlayOpacity={getBannerConfig('help').overlayOpacity}
           height={getBannerConfig('help').height}
@@ -129,12 +129,12 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         <div className="max-w-4xl mx-auto mb-8">
           <div className="text-center mb-6">
             <HelpCircle className="w-16 h-16 text-primary-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('help.search.title')}</h2>
-            <p className="text-gray-600">{t('help.search.description')}</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('help:search.title')}</h2>
+            <p className="text-gray-600">{t('help:search.description')}</p>
           </div>
           
           <Input
-            placeholder={t('help.search.placeholder')}
+            placeholder={t('help:search.placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             startContent={<Search className="w-5 h-5 text-gray-400" />}
@@ -151,33 +151,33 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <div className="text-center">
             <div className="text-3xl font-bold text-primary-600">24/7</div>
-            <div className="text-sm text-gray-600">{t('help.stats.supportAvailable')}</div>
+            <div className="text-sm text-gray-600">{t('help:stats.supportAvailable')}</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-success-600">98%</div>
-            <div className="text-sm text-gray-600">{t('help.stats.issueResolution')}</div>
+            <div className="text-sm text-gray-600">{t('help:stats.issueResolution')}</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-warning-600">&lt;2h</div>
-            <div className="text-sm text-gray-600">{t('help.stats.avgResponse')}</div>
+            <div className="text-sm text-gray-600">{t('help:stats.avgResponse')}</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-secondary-600">50+</div>
-            <div className="text-sm text-gray-600">{t('help.stats.helpArticles')}</div>
+            <div className="text-sm text-gray-600">{t('help:stats.helpArticles')}</div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
           {/* FAQ Section */}
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('help.faq.title')}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('help:faq.title')}</h2>
             
             {filteredFAQs.length === 0 ? (
               <Card>
                 <CardBody className="text-center py-12">
                   <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('help.emptyState.title')}</h3>
-                  <p className="text-gray-600">{t('help.emptyState.description')}</p>
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('help:emptyState.title')}</h3>
+                  <p className="text-gray-600">{t('help:emptyState.description')}</p>
                 </CardBody>
               </Card>
             ) : (
@@ -194,7 +194,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
                             </div>
                             <div>
                               <h3 className="text-lg font-semibold text-gray-900">{category.title}</h3>
-                              <p className="text-sm text-gray-600">{t('help.articlesCount', { count: category.faqs.length })}</p>
+                              <p className="text-sm text-gray-600">{t('help:articlesCount', { count: category.faqs.length })}</p>
                             </div>
                           </div>
                         </div>
@@ -226,8 +226,8 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           <div className="space-y-6">
             <Card>
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help.contact.title')}</h3>
-                <p className="text-gray-600 mb-6">{t('help.contact.description')}</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help:contact.title')}</h3>
+                <p className="text-gray-600 mb-6">{t('help:contact.description')}</p>
                 
                 <div className="space-y-4">
                   {contactOptions.map((option, index) => {
@@ -256,13 +256,13 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
             {/* Popular Articles */}
             <Card>
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help.popularArticles.title')}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help:popularArticles.title')}</h3>
                 <div className="space-y-3">
-                  <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help.popularArticles.cancelOrModifyBooking')}</a>
-                  <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help.popularArticles.understandingServiceFees')}</a>
-                  <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help.popularArticles.guestVerificationProcess')}</a>
-                  <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help.popularArticles.hostPayoutSchedule')}</a>
-                  <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help.popularArticles.propertySafetyRequirements')}</a>
+                                      <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.cancelOrModifyBooking')}</a>
+                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.understandingServiceFees')}</a>
+                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.guestVerificationProcess')}</a>
+                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.hostPayoutSchedule')}</a>
+                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.propertySafetyRequirements')}</a>
                 </div>
               </CardBody>
             </Card>

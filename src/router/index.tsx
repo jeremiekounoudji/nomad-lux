@@ -20,6 +20,7 @@ import SearchPage from '../pages/SearchPage';
 import HelpPage from '../pages/HelpPage';
 import TermsPage from '../pages/TermsPage';
 import WalletPage from '../pages/WalletPage';
+import ProfilePage from '../pages/ProfilePage';
 import PropertyDetailPage from '../pages/PropertyDetailPage';
 
 // Layout imports
@@ -62,6 +63,7 @@ const routes: AppRoute[] = [
       { path: ROUTES.BOOKING_REQUESTS, element: <BookingRequestsPage /> },
       { path: ROUTES.SEARCH, element: <SearchPage /> },
       { path: ROUTES.WALLET, element: <WalletPage /> },
+      { path: ROUTES.PROFILE, element: <ProfilePage /> },
       { path: '*', element: <Navigate to={ROUTES.HOME} replace /> }
     ]
   },

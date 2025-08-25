@@ -168,17 +168,17 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         </PageBanner>
 
         {/* Tabs */}
-        <div className="w-full overflow-hidden">
-          <div className="overflow-x-auto scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="w-full">
+          <div className="overflow-x-auto scrollbar-none -mx-5 px-5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={statusFilter}
               onSelectionChange={handleTabSelectionChange}
               variant="underlined"
               classNames={{
-                tabList: "gap-3 sm:gap-6 w-max sm:w-full relative rounded-none p-0 border-b border-divider min-w-full",
+                tabList: "gap-2 sm:gap-4 md:gap-6 w-max relative rounded-none p-0 border-b border-divider",
                 cursor: "w-full bg-primary-500",
-                tab: "max-w-fit px-2 sm:px-0 h-12 flex-shrink-0",
-                tabContent: "group-data-[selected=true]:text-primary-600 text-sm sm:text-base whitespace-nowrap"
+                tab: "max-w-fit px-2 sm:px-3 md:px-4 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-xs sm:text-sm md:text-base whitespace-nowrap"
               }}
             >
               <Tab key="all" title={`${t('property.listings.tabs.all')} (${statusCounts.all})`} />

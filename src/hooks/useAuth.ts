@@ -170,7 +170,7 @@ export const useAuth = () => {
 
       // Step 2: The user will be fetched and set by useAuthInit automatically
       console.log("✅ User sign in completed successfully!");
-      redirectAfterLogin(); // Add redirect after successful login
+      // Don't redirect here - let the component handle redirect via useEffect
       return { user: null, error: null }; // User will be set by auth listener
     } catch (error: any) {
       console.error("❌ User sign in failed:", error);

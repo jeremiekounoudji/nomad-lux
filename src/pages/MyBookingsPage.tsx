@@ -246,7 +246,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   }
 
   return (
-    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Banner Header - Full Width */}
         <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
@@ -263,22 +263,24 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
         {/* Tabs - Full Width */}
         <div className="col-span-1 md:col-span-2 lg:col-span-4">
-        <Tabs
-          selectedKey={selectedTab}
-          onSelectionChange={handleTabChange}
-          variant="underlined"
-          classNames={{
-            tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-            cursor: "w-full bg-primary-500",
-            tab: "max-w-fit px-0 h-12",
-            tabContent: "group-data-[selected=true]:text-primary-600"
-          }}
-        >
-          {ALL_STATUSES.map(status => (
-            <Tab key={status} title={`${t(`booking.status.${status}`)} (${stats[status]})`} />
-          ))}
-        </Tabs>
-      </div>
+          <div className="overflow-x-auto scrollbar-none -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <Tabs
+              selectedKey={selectedTab}
+              onSelectionChange={handleTabChange}
+              variant="underlined"
+              classNames={{
+                tabList: "gap-2 sm:gap-4 md:gap-6 w-max relative rounded-none p-0 border-b border-divider",
+                cursor: "w-full bg-primary-500",
+                tab: "max-w-fit px-2 sm:px-3 md:px-4 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-xs sm:text-sm md:text-base whitespace-nowrap"
+              }}
+            >
+              {ALL_STATUSES.map(status => (
+                <Tab key={status} title={`${t(`booking.status.${status}`)} (${stats[status]})`} />
+              ))}
+            </Tabs>
+          </div>
+        </div>
 
         {/* Loading State - Full Width */}
       {isLoadingGuestBookings ? (

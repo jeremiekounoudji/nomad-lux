@@ -15,7 +15,7 @@ const MainLayout: React.FC = () => {
   const location = useLocation()
   const { signOut } = useAuth()
   const { isAuthenticated, user } = useAuthStore()
-  const { t } = useTranslation('navigation')
+  const { t } = useTranslation(['navigation', 'common'])
   const { 
     isDrawerOpen,
     closeDrawer,
@@ -25,32 +25,35 @@ const MainLayout: React.FC = () => {
   } = useNavigation()
   
   const drawerItems = [
-    { path: ROUTES.SEARCH, label: t('menu.search'), icon: Search },
-    { path: ROUTES.MY_LISTINGS, label: t('menu.properties'), icon: Home, requireAuth: true },
-    { path: ROUTES.BOOKING_REQUESTS, label: t('menu.bookings'), icon: ClipboardList, requireAuth: true },
-    { path: ROUTES.NOTIFICATIONS, label: t('menu.notifications'), icon: Bell, requireAuth: true },
-    { path: ROUTES.WALLET, label: t('menu.wallet'), icon: Wallet, requireAuth: true },
-    { path: ROUTES.HELP, label: t('menu.help'), icon: HelpCircle },
-    { path: ROUTES.TERMS, label: t('footer.terms'), icon: Shield },
+    { path: ROUTES.BOOKING_REQUESTS, label: t('navigation:menu.bookingRequests'), icon: ClipboardList, requireAuth: true },
+    { path: ROUTES.WALLET, label: t('navigation:menu.wallet'), icon: Wallet, requireAuth: true },
+    { path: ROUTES.HELP, label: t('navigation:menu.help'), icon: HelpCircle },
+    { path: ROUTES.TERMS, label: t('navigation:footer.terms'), icon: Shield },
     ...(isAuthenticated ? [] : [
-      { path: ROUTES.LOGIN, label: t('menu.login'), icon: LogIn },
-      { path: ROUTES.REGISTER, label: t('menu.signup'), icon: UserPlus },
+      { path: ROUTES.LOGIN, label: t('navigation:menu.login'), icon: LogIn },
+      { path: ROUTES.REGISTER, label: t('navigation:menu.signup'), icon: UserPlus },
     ]),
-    { path: ROUTES.ADMIN_LOGIN, label: t('menu.admin'), icon: Crown }
+    { path: ROUTES.ADMIN_LOGIN, label: t('navigation:menu.admin'), icon: Crown }
   ]
 
   const handleLogout = async () => {
     try {
       console.log('🚪 User logout initiated')
       await signOut()
-      toast.success(t('messages.logoutSuccess'))
+      toast.success(t('navigation:messages.logoutSuccess'))
       closeDrawer()
       navigateWithAuth(ROUTES.LOGIN, { replace: true })
     } catch (error) {
       console.error('❌ Logout error:', error)
-      toast.error(t('messages.logoutError'))
+      toast.error(t('navigation:messages.logoutError'))
     }
   }
+
+  // Check if we should show bottom navigation (hide on auth pages)
+  const shouldShowBottomNav = !location.pathname.includes('/login') && 
+                             !location.pathname.includes('/register') && 
+                             !location.pathname.includes('/admin/login') && 
+                             !location.pathname.includes('/admin/register')
 
   return (
     <div className="h-screen bg-gray-50 flex overflow-hidden">
@@ -76,7 +79,7 @@ const MainLayout: React.FC = () => {
                 <span className="text-white font-bold text-sm">NL</span>
               </div>
               <span className="font-script font-bold text-xl text-primary-600">
-                {t('brand.name')}
+                {t('navigation:brand.name')}
               </span>
             </NavLink>
             
@@ -194,7 +197,7 @@ const MainLayout: React.FC = () => {
             {/* Language Selector */}
             <div className="mt-6 pt-4 border-t border-gray-100 px-3">
               <div className="px-4 py-2">
-                <p className="text-sm font-medium text-gray-700 mb-2">{t('settings.language')}</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('navigation:settings.language')}</p>
                 <CompactLanguageSelector />
               </div>
             </div>
@@ -207,7 +210,7 @@ const MainLayout: React.FC = () => {
                   className="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 text-gray-700 hover:bg-red-50 hover:text-red-600 min-w-0"
                 >
                   <LogOut className="w-5 h-5 flex-shrink-0" />
-                  <span className="text-base truncate">{t('menu.logout')}</span>
+                  <span className="text-base truncate">{t('navigation:menu.logout')}</span>
                 </button>
               </div>
             )}
@@ -221,7 +224,7 @@ const MainLayout: React.FC = () => {
               <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
               <input
                 type="text"
-                placeholder={t('search.placeholder')}
+                placeholder={t('navigation:search.placeholder')}
                 className="w-full h-12 pl-12 pr-4 bg-gray-50 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -259,7 +262,7 @@ const MainLayout: React.FC = () => {
               <button 
                 onClick={handleLogout}
                 className="p-2 hover:bg-red-50 rounded-lg transition-colors"
-                title={t('actions.signOut')}
+                title={t('navigation:actions.signOut')}
               >
                 <LogOut className="w-5 h-5 text-red-500" />
               </button>
@@ -268,9 +271,71 @@ const MainLayout: React.FC = () => {
         </div>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className={`flex-1 overflow-y-auto ${shouldShowBottomNav ? 'pb-20' : ''} lg:pb-0 px-4 sm:px-6 lg:px-8 py-6`}>
           <Outlet />
         </main>
+
+                {/* Mobile Bottom Navigation */}
+        {shouldShowBottomNav && (
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+            <div className="flex justify-around items-center py-2 px-1">
+              <NavLink
+                to={ROUTES.HOME}
+                className={({ isActive }) => `
+                  flex flex-col items-center h-auto py-2 px-3 transition-colors
+                  ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
+                `}
+              >
+                <Home className="w-6 h-6" />
+                <span className="text-xs mt-1">{t('navigation:menu.home')}</span>
+              </NavLink>
+
+              <NavLink
+                to={ROUTES.MY_LISTINGS}
+                className={({ isActive }) => `
+                  flex flex-col items-center h-auto py-2 px-3 transition-colors
+                  ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
+                `}
+              >
+                <ClipboardList className="w-6 h-6" />
+                <span className="text-xs mt-1">{t('navigation:menu.myListings')}</span>
+              </NavLink>
+
+              <NavLink
+                to={isAuthenticated ? ROUTES.CREATE_PROPERTY : ROUTES.LOGIN}
+                className={({ isActive }) => `
+                  flex flex-col items-center h-auto py-2 px-3 transition-colors
+                  ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
+                `}
+              >
+                <Plus className="w-6 h-6" />
+                <span className="text-xs mt-1">{isAuthenticated ? t('navigation:menu.createProperty') : t('navigation:menu.signup')}</span>
+              </NavLink>
+
+              <NavLink
+                to={isAuthenticated ? ROUTES.MY_BOOKINGS : ROUTES.LOGIN}
+                className={({ isActive }) => `
+                  flex flex-col items-center h-auto py-2 px-3 transition-colors
+                  ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
+                `}
+              >
+                <Calendar className="w-6 h-6" />
+                <span className="text-xs mt-1">{isAuthenticated ? t('navigation:menu.bookings') : t('navigation:menu.login')}</span>
+              </NavLink>
+
+              <NavLink
+                to={isAuthenticated ? ROUTES.MY_LISTINGS : ROUTES.LOGIN}
+                className={({ isActive }) => `
+                  flex flex-col items-center h-auto py-2 px-3 transition-colors
+                  ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
+                `}
+              >
+                <User className="w-6 h-6" />
+                <span className="text-xs mt-1">{isAuthenticated ? t('navigation:menu.profile') : t('navigation:menu.login')}</span>
+              </NavLink>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

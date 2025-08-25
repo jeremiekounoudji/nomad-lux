@@ -5,6 +5,8 @@ import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useTranslation } from '../lib/stores/translationStore'
 import { LoginPageProps } from '../interfaces'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../router/types'
 import toast from 'react-hot-toast'
 
 const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
@@ -16,14 +18,16 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
   const { signIn, isLoading } = useAuth()
   const { isAuthenticated } = useAuthStore()
   const { t } = useTranslation(['auth', 'common'])
+  const navigate = useNavigate()
 
   // Auto-redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       console.log('✅ Already authenticated - redirecting to home')
+      toast.success(t('auth.messages.loginSuccess'))
       onLogin?.()
     }
-  }, [isAuthenticated, onLogin])
+  }, [isAuthenticated, onLogin, t])
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
@@ -48,7 +52,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       }
 
       console.log('✅ User sign in initiated - waiting for auth state update')
-      toast.success(t('auth.messages.loginSuccess'))
+      // Don't show success toast here - let the useEffect handle it after redirect
       // The redirect will happen automatically via useEffect when auth state updates
       
     } catch (err: any) {
@@ -59,7 +63,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
   }
 
   const handleBackToHome = () => {
-    onPageChange?.('home')
+    if (onPageChange) {
+      onPageChange('home')
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
 
   // Show error toast when there's an error
@@ -184,7 +192,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
                 {t('auth.login.noAccount')}{' '}
                 <Link 
                   className="text-white font-semibold hover:text-white/80 cursor-pointer"
-                  onPress={() => onPageChange?.('register')}
+                  onPress={() => {
+                    if (onPageChange) {
+                      onPageChange('register')
+                    } else {
+                      navigate(ROUTES.REGISTER)
+                    }
+                  }}
                 >
                   {t('auth.login.signUp')}
                 </Link>

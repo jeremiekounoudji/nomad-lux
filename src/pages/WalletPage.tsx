@@ -129,7 +129,7 @@ const WalletPage: FC = () => {
 
         {/* Summary Cards */}
         {isMetricsLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
             {[...Array(6)].map((_, i) => (
               <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))}
@@ -253,7 +253,7 @@ const WalletPage: FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className=" mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Recent Activities */}
           <div className="col-span-1 lg:col-span-2 space-y-6">
@@ -312,9 +312,9 @@ const WalletPage: FC = () => {
                     ) : (
                       <div className="space-y-4">
                         {payments.map((payment: PaymentRecord) => (
-                          <div key={payment.id} className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                            <div className="flex items-center space-x-3">
-                              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                          <div key={payment.id} className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0">
+                            <div className="flex items-start space-x-3 flex-1 min-w-0">
+                              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
                                 {payment.payment_status === 'completed' ? (
                                   <CheckCircle className="w-5 h-5 text-green-600" />
                                 ) : payment.payment_status === 'pending' ? (
@@ -323,16 +323,27 @@ const WalletPage: FC = () => {
                                   <XCircle className="w-5 h-5 text-red-600" />
                                 )}
                               </div>
-                              <div>
-                                <p className="font-medium text-gray-900">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-900 truncate">
                                   {(payment as any)?.bookings?.properties?.title || t('wallet.transactions.payment')}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                   {new Date(payment.created_at).toLocaleDateString()} • {new Date(payment.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>
+                                {/* Mobile: Show amount and status on new row */}
+                                <div className="flex items-center justify-between mt-2 sm:hidden">
+                                  <p className="font-semibold text-gray-900 text-sm">+{payment.currency} {payment.amount.toFixed(2)}</p>
+                                  <p className={`text-xs capitalize ${
+                                    payment.payment_status === 'completed' ? 'text-green-600' : 
+                                    payment.payment_status === 'pending' ? 'text-yellow-600' : 'text-red-600'
+                                  }`}>
+                                    {t(`wallet.transactions.status.${payment.payment_status}`)}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right">
+                            {/* Desktop: Show amount and status on the right */}
+                            <div className="text-right hidden sm:block">
                               <p className="font-semibold text-gray-900">+{payment.currency} {payment.amount.toFixed(2)}</p>
                               <p className={`text-xs capitalize ${
                                 payment.payment_status === 'completed' ? 'text-green-600' : 
@@ -347,40 +358,82 @@ const WalletPage: FC = () => {
                     )}
                     
                     {/* Pagination Controls */}
-                    <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
-                      <button
-                        onClick={() => void loadWalletPayments(pagination.pageSize)}
-                        disabled={pagination.currentPage === 1 || isLoading}
-                        className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
-                          ${pagination.currentPage === 1 || isLoading
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                            : 'bg-primary-600 text-white hover:bg-primary-700'}`}
-                      >
-                        {t('wallet.pagination.previous')}
-                      </button>
-                      <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-700">
-                          {t('wallet.pagination.pageOf', { current: pagination.currentPage, total: pagination.totalPages })}
-                        </span>
+                    <div className="mt-1 pt-4 border-t border-gray-100">
+                      {/* Mobile: Stacked layout */}
+                      <div className="flex flex-col space-y-3 sm:hidden">
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={() => void loadWalletPayments(pagination.pageSize)}
+                            disabled={pagination.currentPage === 1 || isLoading}
+                            className={`relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                              ${pagination.currentPage === 1 || isLoading
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+                          >
+                            {t('wallet.pagination.previous')}
+                          </button>
+                          <button
+                            onClick={() => void loadMoreWalletPayments()}
+                            disabled={isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)}
+                            className={`relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                              ${isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+                          >
+                            {t('wallet.pagination.next')}
+                          </button>
+                        </div>
+                        <div className="flex items-center justify-center space-x-4">
+                          <span className="text-sm text-gray-700">
+                            {t('wallet.pagination.pageOf', { current: pagination.currentPage, total: pagination.totalPages })}
+                          </span>
+                          <button
+                            onClick={() => void refreshWalletPayments()}
+                            disabled={isRefreshing}
+                            className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                              bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          >
+                            {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Desktop: Horizontal layout */}
+                      <div className="hidden sm:flex items-center justify-between">
                         <button
-                          onClick={() => void refreshWalletPayments()}
-                          disabled={isRefreshing}
-                          className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
-                            bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          onClick={() => void loadWalletPayments(pagination.pageSize)}
+                          disabled={pagination.currentPage === 1 || isLoading}
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                            ${pagination.currentPage === 1 || isLoading
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                              : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                         >
-                          {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
+                          {t('wallet.pagination.previous')}
+                        </button>
+                        <div className="flex items-center space-x-4">
+                          <span className="text-sm text-gray-700">
+                            {t('wallet.pagination.pageOf', { current: pagination.currentPage, total: pagination.totalPages })}
+                          </span>
+                          <button
+                            onClick={() => void refreshWalletPayments()}
+                            disabled={isRefreshing}
+                            className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                              bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                          >
+                            {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
+                          </button>
+                        </div>
+                        <button
+                          onClick={() => void loadMoreWalletPayments()}
+                          disabled={isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)}
+                          className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                            ${isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                              : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+                        >
+                          {t('wallet.pagination.next')}
                         </button>
                       </div>
-                      <button
-                        onClick={() => void loadMoreWalletPayments()}
-                        disabled={isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)}
-                        className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
-                          ${isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                            : 'bg-primary-600 text-white hover:bg-primary-700'}`}
-                      >
-                        {t('wallet.pagination.next')}
-                      </button>
                     </div>
                   </>
                 )}

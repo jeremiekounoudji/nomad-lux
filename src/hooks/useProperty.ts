@@ -23,11 +23,12 @@ export const useProperty = () => {
     id: data.id,
     title: data.title,
     description: data.description,
-    price: data.price,
+    price: data.price_per_night,
+    price_per_night: data.price_per_night,
     currency: data.currency,
     location: data.location,
     images: data.images,
-    videos: data.videos,
+    videos: data.video ? [data.video] : [],
     host: {
       id: data.host.id,
       name: data.host.name,
@@ -61,7 +62,13 @@ export const useProperty = () => {
     service_fee: data.service_fee,
     instant_book: data.instant_book || false,
     additional_fees: data.additional_fees || [],
-    distance: data.distance || '0 km away'
+    distance: data.distance || '0 km away',
+    like_count: data.like_count || 0,
+    unavailable_dates: data.unavailable_dates || [],
+    timezone: data.timezone || 'UTC',
+    suspended_at: data.suspended_at,
+    suspended_by: data.suspended_by,
+    suspension_reason: data.suspension_reason
   })
 
   // Submit a new property
@@ -218,7 +225,7 @@ export const useProperty = () => {
         property_settings_id: propertySettingsId, // Link to property settings
         title: propertyData.title,
         description: propertyData.description,
-        price: propertyData.price,
+        price_per_night: propertyData.price,
         currency: propertyData.currency || 'USD',
         location: {
           city: propertyData.location.city,
@@ -230,7 +237,7 @@ export const useProperty = () => {
           }
         },
         images: imageUrls, // Use uploaded URLs instead of File objects
-        videos: videoUrl, // Use uploaded URL instead of File object
+        video: videoUrl, // Use uploaded URL instead of File object
         property_type: propertyData.property_type,
         max_guests: propertyData.max_guests,
         bedrooms: propertyData.bedrooms,
@@ -244,7 +251,7 @@ export const useProperty = () => {
       console.log('💾 Step 4: Inserting property data into database:', {
         title: dbPropertyData.title,
         imageCount: dbPropertyData.images.length,
-        hasVideo: !!dbPropertyData.videos,
+        hasVideo: !!dbPropertyData.video,
         propertyType: dbPropertyData.property_type,
         settingsId: propertySettingsId
       })
@@ -320,11 +327,11 @@ export const useProperty = () => {
       
       if (updates.title) dbUpdates.title = updates.title
       if (updates.description) dbUpdates.description = updates.description
-      if (updates.price) dbUpdates.price = updates.price
+      if (updates.price) dbUpdates.price_per_night = updates.price
       if (updates.currency) dbUpdates.currency = updates.currency
       if (updates.location) dbUpdates.location = updates.location
       if (updates.images) dbUpdates.images = updates.images
-      if (updates.videos) dbUpdates.videos = updates.videos
+      if (updates.videos) dbUpdates.video = updates.videos
       if (updates.property_type) dbUpdates.property_type = updates.property_type
       if (updates.max_guests) dbUpdates.max_guests = updates.max_guests
       if (updates.bedrooms) dbUpdates.bedrooms = updates.bedrooms

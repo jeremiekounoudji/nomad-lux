@@ -19,6 +19,7 @@ export const ROUTES = {
   HELP: '/help',
   TERMS: '/terms',
   WALLET: '/wallet',
+  PROFILE: '/profile',
   PROPERTY_DETAIL: '/properties/:id'
 } as const
 

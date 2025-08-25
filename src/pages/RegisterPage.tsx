@@ -6,9 +6,12 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { RegisterPageProps } from '../interfaces'
 import toast from 'react-hot-toast'
 import { useTranslation } from '../lib/stores/translationStore'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../router/types'
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister }) => {
   const { t } = useTranslation(['auth', 'common'])
+  const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -92,7 +95,11 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       
       // Redirect to login page after successful registration
       setTimeout(() => {
-        onPageChange?.('login')
+        if (onPageChange) {
+          onPageChange('login')
+        } else {
+          navigate(ROUTES.LOGIN)
+        }
       }, 1500) // Small delay to show the success message
 
     } catch (err: any) {
@@ -103,7 +110,11 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
   }
 
   const handleBackToHome = () => {
-    onPageChange?.('home')
+    if (onPageChange) {
+      onPageChange('home')
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
 
   // Show error toast when there's an error
@@ -292,7 +303,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
                 {t('auth.signup.hasAccount')}{' '}
                 <Link 
                   className="text-white font-semibold hover:text-white/80 cursor-pointer"
-                  onPress={() => onPageChange?.('login')}
+                  onPress={() => {
+                    if (onPageChange) {
+                      onPageChange('login')
+                    } else {
+                      navigate(ROUTES.LOGIN)
+                    }
+                  }}
                 >
                   {t('auth.signup.signIn')}
                 </Link>
