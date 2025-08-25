@@ -1,0 +1,20 @@
+{
+  "book": "Book Now",
+  "reserve": "Reserve",
+  "save": "Save", 
+  "cancel": "Cancel",
+  "edit": "Edit",
+  "delete": "Delete",
+  "view": "View",
+  "share": "Share",
+  "like": "Like",
+  "unlike": "Unlike",
+  "search": "Search",
+  "filter": "Filter",
+  "sort": "Sort",
+  "signOut": "Sign Out",
+  "signIn": "Sign In",
+  "register": "Register",
+  "directions": "Get Directions",
+  "contact": "Contact"
+}

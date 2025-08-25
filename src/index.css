@@ -1,12 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Leaflet CSS imports */
 @import 'leaflet/dist/leaflet.css';
 @import 'leaflet.markercluster/dist/MarkerCluster.css';
 @import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 @import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* CSS Reset for full viewport layout */
 * {
@@ -17,7 +17,7 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 #root {
@@ -97,6 +97,43 @@ html, body {
 /* Smooth transitions */
 .transition-all {
   transition: all 0.2s ease-in-out;
+}
+
+/* Calendar unavailable dates styling */
+.booking-calendar-unavailable-dates [data-unavailable="true"] {
+  color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  border: 2px solid #dc2626 !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  text-decoration: line-through !important;
+  opacity: 0.8 !important;
+  position: relative !important;
+}
+
+.booking-calendar-unavailable-dates [data-unavailable="true"]:hover {
+  background-color: #fee2e2 !important;
+  border-color: #b91c1c !important;
+  opacity: 1 !important;
+}
+
+.booking-calendar-unavailable-dates [data-unavailable="true"]:focus {
+  background-color: #fee2e2 !important;
+  border-color: #b91c1c !important;
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
+  opacity: 1 !important;
+}
+
+/* Additional visual indicator for unavailable dates */
+.booking-calendar-unavailable-dates [data-unavailable="true"]::before {
+  content: "✕";
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 10px;
+  color: #dc2626;
+  font-weight: bold;
+  z-index: 1;
 }
 
 /* Custom shadows */

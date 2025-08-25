@@ -7,6 +7,7 @@ import { BookingManagement } from '../components/features/admin/BookingManagemen
 import { AnalyticsDashboard } from '../components/features/admin/AnalyticsDashboard'
 import { SystemSettings } from '../components/features/admin/SystemSettings'
 import { ActivityLog } from '../components/features/admin/ActivityLog'
+import RefundManagementPage from './admin/RefundManagementPage'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 import { PageBanner } from '../components/shared'
@@ -75,6 +76,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onPageChange }) => {
         return <PropertyApproval />
       case t('admin.sections.bookings'):
         return <BookingManagement />
+      case t('admin.sections.refunds'):
+        return <RefundManagementPage />
       case t('admin.sections.analytics'):
         return <AnalyticsDashboard />
       case t('admin.sections.settings'):

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock } from 'lucide-react'
+import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock, DollarSign } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AdminSidebarProps {
@@ -23,6 +23,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { key: 'users', label: t('admin.navigation.users'), icon: Users },
     { key: 'properties', label: t('admin.navigation.properties'), icon: Building2 },
     { key: 'bookings', label: t('admin.navigation.bookings'), icon: Calendar },
+    { key: 'refunds', label: t('admin.navigation.refunds'), icon: DollarSign },
     { key: 'activities', label: t('admin.activity.title'), icon: Clock },
     { key: 'analytics', label: t('admin.analytics.title'), icon: BarChart3 },
     { key: 'settings', label: t('admin.navigation.settings'), icon: Settings },

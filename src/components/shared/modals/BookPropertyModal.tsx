@@ -19,6 +19,7 @@ import {
 import { Calendar, Users, CreditCard, MapPin, Star, DollarSign } from 'lucide-react'
 import { BookPropertyModalProps } from '../../../interfaces/Component'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
 export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
   isOpen,
@@ -111,7 +112,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                             <span className="text-sm font-medium">{property.rating}</span>
                           </div>
                           <span className="text-lg font-bold text-primary-600">
-                            ${property.price}/{t('property.labels.night', 'night')}
+                            ${property.currency} ${property.price}/{t('property.labels.night', 'night')}
                           </span>
                         </div>
                       </div>
@@ -183,21 +184,21 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>${property.price} × {days} {days > 1 ? t('property.labels.nights', 'nights') : t('property.labels.night', 'night')}</span>
-                          <span>${subtotal.toFixed(2)}</span>
+                          <span>{property.currency} {property.price} × {days} {days > 1 ? t('property.labels.nights', 'nights') : t('property.labels.night', 'night')}</span>
+                          <span>{formatPrice(subtotal, property.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>{t('booking.labels.serviceFee', 'Service fee')}</span>
-                          <span>${serviceFee.toFixed(2)}</span>
+                          <span>{formatPrice(serviceFee, property.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>{t('booking.labels.taxes', 'Taxes')}</span>
-                          <span>${taxes.toFixed(2)}</span>
+                          <span>{formatPrice(taxes, property.currency || 'USD')}</span>
                         </div>
                         <Divider />
                         <div className="flex justify-between font-semibold text-lg">
                           <span>{t('booking.labels.total', 'Total')}</span>
-                          <span>${totalPrice.toFixed(2)}</span>
+                          <span>{property.currency} {totalPrice.toFixed(2)}</span>
                         </div>
                       </div>
                     </div>
@@ -216,7 +217,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                 isDisabled={!checkIn || !checkOut || !guests}
                 startContent={!isLoading && <CreditCard className="w-4 h-4" />}
               >
-                {isLoading ? t('common.messages.processing', 'Processing...') : t('booking.actions.bookForAmount', { amount: totalPrice.toFixed(2), defaultValue: 'Book for ${{amount}}' })}
+                {isLoading ? t('common.messages.processing', 'Processing...') : t('booking.actions.bookForAmount', { amount: formatPrice(totalPrice, property.currency || 'USD'), defaultValue: 'Book for {{amount}}' })}
               </Button>
             </ModalFooter>
           </>

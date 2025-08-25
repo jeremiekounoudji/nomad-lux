@@ -1,6 +1,20 @@
 {
+  "guests": "guests",
+  "guest": "guest", 
+  "beds": "beds",
+  "bed": "bed",
+  "baths": "baths",
+  "bath": "bath",
+  "bedrooms": "bedrooms",
+  "bedroom": "bedroom",
+  "bathrooms": "bathrooms",
+  "bathroom": "bathroom",
+  "perNight": "per night",
+  "night": "night",
+  "nights": "nights",
   "propertiesCount": "{{count}} properties",
-  "propertyCount": "{{count}} property",
-  "properties": "properties",
-  "property": "property"
+  "propertyCount": "1 property",
+  "reviews": "reviews",
+  "photos": "Photos",
+  "videos": "Videos"
 }

@@ -1,9 +1,11 @@
 import { ArrowLeft, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@heroui/react";
+import toast from 'react-hot-toast';
 import { City, Property } from "../../../interfaces/Property";
 import { PropertyCardSkeleton, CityPropertySkeleton } from "../../shared/LoadingSkeleton";
 import CityPropertyCard from "../../shared/CityPropertyCard";
 import { useTranslation } from "../../../lib/stores/translationStore";
+import { formatPrice } from '../../../utils/currencyUtils'
 
 interface CityPropertiesViewProps {
   selectedCity: City;
@@ -29,6 +31,13 @@ export const CityPropertiesView = ({
   onPropertyClick,
 }: CityPropertiesViewProps) => {
   const { t } = useTranslation(['search', 'common']);
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (cityPropertiesError) {
+      toast.error(cityPropertiesError)
+    }
+  }, [cityPropertiesError]);
   
   return (
     <>
@@ -61,7 +70,7 @@ export const CityPropertiesView = ({
                   <span>{selectedCity.property_count} {t('search.propertiesAvailable', { defaultValue: 'properties available' })}</span>
                 </div>
                 <div>
-                  <span>{t('search.averagePrice', { defaultValue: 'Average' })} ${selectedCity.average_price}/{t('search.perNight', { defaultValue: 'night' })}</span>
+                  <span>{t('search.averagePrice', { defaultValue: 'Average' })} {formatPrice(selectedCity.average_price, 'USD')}/{t('search.perNight', { defaultValue: 'night' })}</span>
                 </div>
               </div>
             </div>
@@ -77,7 +86,7 @@ export const CityPropertiesView = ({
             <h3 className="text-lg font-semibold text-red-900 mb-2">
               {t('search.noPropertiesFound', { defaultValue: 'No Properties Found' })}
             </h3>
-            <p className="text-red-700 mb-4">{cityPropertiesError}</p>
+
             <Button
               variant="flat"
               color="primary"

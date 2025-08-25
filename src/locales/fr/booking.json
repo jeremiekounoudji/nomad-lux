@@ -22,18 +22,19 @@
     "adults": "Adultes",
     "children": "Enfants",
     "infants": "Bébés",
-    "specialRequests": "Demandes spéciales"
-  },
-  "modals": {
-    "confirmReservation": {
-      "title": "Confirmer votre réservation",
-      "subtitle": "Veuillez examiner les détails de votre réservation"
-    }
-  },
+    "specialRequests": "Demandes spéciales",
+    "night": "nuit",
+    "maxGuests": "Maximum {{guests}} invités autorisés",
+    "guest": "invité",
+    "guestsPlural": "invités",
+    "reviews": "avis",
+    "checkInTime": "HEURE D'ARRIVÉE",
+    "checkOutTime": "HEURE DE DÉPART",
+    "specialRequestsOptional": "DEMANDES SPÉCIALES (OPTIONNEL)",
+    "nights": "nuits",
     "totalPrice": "Prix total",
     "priceBreakdown": "Détail des prix",
     "nightlyRate": "Tarif par nuit",
-    "nights": "nuits",
     "cleaningFee": "Frais de ménage",
     "serviceFee": "Frais de service",
     "taxes": "Taxes",
@@ -55,10 +56,17 @@
     "rejectionReason": "Raison du rejet",
     "superhost": "Super hôte"
   },
+  "modals": {
+    "confirmReservation": {
+      "title": "Confirmer votre réservation",
+      "subtitle": "Veuillez examiner les détails de votre réservation"
+    }
+  },
+
   "actions": {
     "selectDates": "Sélectionner les dates",
     "addGuests": "Ajouter des invités",
-    "bookNow": "Réserver maintenant",
+    "bookNow": "Réserver ",
     "confirmBooking": "Confirmer la réservation",
     "payNow": "Payer maintenant",
     "keepBooking": "Garder la réservation",
@@ -78,17 +86,37 @@
     "checkingAvailability": "Vérification de la disponibilité...",
     "creatingBooking": "Création de la réservation...",
     "reserveNow": "Réserver maintenant",
-    "viewMyBookings": "Voir mes réservations"
+    "viewMyBookings": "Voir mes réservations",
+    "bookNow": "Réserver maintenant",
+    "reserve": "Réserver",
+    "cancelBooking": "Annuler la réservation",
+    "confirmCancellation": "Confirmer l'annulation",
+    "cancelling": "Annulation en cours...",
+    "contactHost": "Contacter l'hôte",
+    "rebook": "Nouvelle réservation",
+    "leaveReview": "Laisser un avis",
+    "payNow": "Payer maintenant",
+    "viewDetails": "Voir les détails",
+    "editBooking": "Modifier la réservation",
+    "requestCancellation": "Demander l'annulation",
+    "acceptBooking": "Accepter la réservation",
+    "declineBooking": "Refuser la réservation",
+    "markAsCompleted": "Marquer comme terminé",
+    "processRefund": "Traiter le remboursement",
+    "sendMessage": "Envoyer un message",
+    "callHost": "Appeler l'hôte",
+    "emailHost": "Envoyer un email",
+    "whatsapp": "WhatsApp"
   },
   "cancel": {
     "title": "Annuler la réservation",
     "subtitle": "Nous sommes désolés de voir que vous annulez votre réservation",
     "policy": {
       "title": "Politique d'annulation",
-      "description": "Le montant de votre remboursement dépend du moment de l'annulation :",
-      "rule7": "7+ jours avant l'arrivée : remboursement de 90%",
-      "rule3to6": "3-6 jours avant l'arrivée : remboursement de 50%",
-      "ruleLess3": "Moins de 3 jours : aucun remboursement"
+      "description": "Le montant de votre remboursement dépend du moment où vous annulez après avoir effectué la réservation :",
+      "rule24h": "Dans les 24 heures suivant la réservation : remboursement de 100%",
+      "rule7d": "Dans les 7 jours suivant la réservation : remboursement de 50%",
+      "rule14d": "Après 14 jours de réservation : aucun remboursement"
     },
     "refund": {
       "title": "Détail du remboursement",
@@ -117,10 +145,9 @@
     "confirmed": "Confirmé",
     "cancelled": "Annulé",
     "completed": "Terminé",
-    "noShow": "Absence",
-    "acceptedWaitingPayment": "Accepté - En attente de paiement",
-    "paymentFailed": "Paiement échoué",
-    "rejected": "Rejeté"
+    "rejected": "Rejeté",
+    "accepted-and-waiting-for-payment": "Accepté et en attente de paiement",
+    "payment-failed": "Paiement échoué"
   },
   "reviews": {
     "count": "{{count}} avis"
@@ -203,7 +230,12 @@
     "checkOutClearedDueToCheckIn": "Date de départ effacée en raison de la nouvelle date d'arrivée",
     "selectCheckInFirst": "Veuillez d'abord sélectionner une date d'arrivée",
     "checkoutAfterCheckin": "La date de départ doit être après la date d'arrivée",
-    "checkOutUpdated": "Date de départ mise à jour"
+    "checkOutUpdated": "Date de départ mise à jour",
+    "propertyDataMissing": "Impossible de traiter la réservation : les données de la propriété sont manquantes.",
+    "timeUpdated": "Heure mise à jour",
+    "noChargeYet": "Vous ne serez pas encore facturé",
+    "reservationSubmitted": "Votre réservation a été soumise avec succès. Vous recevrez un email de confirmation sous peu.",
+    "processingReservation": "Traitement de votre réservation..."
   },
   "validation": {
     "selectDates": "Veuillez sélectionner les dates d'arrivée et de départ",
@@ -212,17 +244,7 @@
     "checkInTimeRange": "L'heure d'arrivée doit être entre 6h00 et 22h00",
     "checkOutTimeRange": "L'heure de départ doit être entre 6h00 et 12h00"
   },
-  "messages": {
-    "propertyDataMissing": "Impossible de traiter la réservation : les données de la propriété sont manquantes.",
-    "checkInSelected": "Date d'arrivée sélectionnée",
-    "checkOutSelected": "Date de départ sélectionnée",
-    "timeUpdated": "Heure mise à jour",
-    "checkInTimeUpdated": "Heure d'arrivée mise à jour",
-    "checkOutTimeUpdated": "Heure de départ mise à jour",
-    "noChargeYet": "Vous ne serez pas encore facturé",
-    "reservationSubmitted": "Votre réservation a été soumise avec succès. Vous recevrez un email de confirmation sous peu.",
-    "processingReservation": "Traitement de votre réservation..."
-  },
+
   "calendar": {
     "localTimeLabel": "Heure locale :",
     "timezoneNotice": "Toutes les heures affichées sont dans le fuseau horaire local de la propriété pour éviter toute confusion",

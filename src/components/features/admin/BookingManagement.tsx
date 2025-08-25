@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import toast from 'react-hot-toast'
 import { 
   Card, 
   CardBody, 
@@ -25,6 +26,7 @@ import { AdminBooking } from '../../../interfaces/Booking'
 import { PaymentRecord } from '../../../interfaces/PaymentRecord';
 import { Search, Calendar, Eye, MessageSquare, AlertTriangle, CreditCard, RefreshCw, Flag } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
 interface BookingManagementProps {
   onPageChange?: (page: string) => void
@@ -172,6 +174,13 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
     return () => clearTimeout(delayedSearch)
   }, [searchQuery, filterStatus, loadAdminBookings])
 
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
   // Handle pagination
   const handlePageChange = async (page: number) => {
     await loadAdminBookings(page, {
@@ -268,7 +277,6 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
         <Card className="border-l-4 border-l-red-500 bg-red-50 w-full max-w-md">
           <CardBody className="p-6 flex flex-col items-center">
             <h4 className="font-semibold text-red-900 mb-2">{t('admin.bookings.errorLoading', { defaultValue: 'Error Loading Bookings' })}</h4>
-            <p className="text-sm text-red-700 mb-4 text-center">{error}</p>
             <Button 
               size="md" 
               color="danger" 
@@ -320,7 +328,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
         
         <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">${bookingStats.revenue.toLocaleString()}</h3>
+            <h3 className="text-4xl font-bold text-white">{formatPrice(bookingStats.revenue, 'USD')}</h3>
             <p className="text-white/90 font-medium">{t('admin.bookings.revenueCompleted', { defaultValue: 'Revenue (Completed)' })}</p>
           </CardBody>
         </Card>
@@ -446,7 +454,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                         </div>
                         
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-gray-900">${booking.totalAmount.toLocaleString()}</div>
+                          <div className="text-2xl font-bold text-gray-900">{formatPrice(booking.totalAmount, booking.currency || 'USD')}</div>
                           <div className="text-sm text-gray-600">{booking.nights} {t('booking.labels.nights')} • {booking.guests} {t('booking.labels.guests')}</div>
                           <div className="text-xs text-gray-500 mt-1">Last activity: {booking.lastActivity}</div>
                         </div>

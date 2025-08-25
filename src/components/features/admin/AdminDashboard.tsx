@@ -116,7 +116,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
     requests,
     isLoading,
     error,
+    currentPage,
+    totalPages,
+    totalCount,
+    itemsPerPage,
     fetchPayoutRequests,
+    setCurrentPage,
     approve,
     reject
   } = useAdminPayoutRequests()
@@ -556,8 +561,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
           requests={requests}
           isLoading={isLoading}
           error={error}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalCount={totalCount}
+          itemsPerPage={itemsPerPage}
           onApprove={handleApprove}
           onReject={handleReject}
+          onPageChange={(page) => {
+            setCurrentPage(page)
+            fetchPayoutRequests(undefined, page)
+          }}
         />
         <ApproveRejectPayoutModal
           isOpen={modalOpen}

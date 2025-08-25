@@ -95,7 +95,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
             {/* Price */}
             <div className="flex items-center justify-between pt-1">
               <span className="text-base font-bold text-primary-600">
-                ${booking.total_amount}
+                {booking.currency} {booking.total_amount}
               </span>
               <span className="text-xs text-gray-500">
                 {t('booking.labels.guestsCount', { count: booking.guest_count })}

@@ -107,7 +107,8 @@
     "subtitleAllCaughtUp": "All caught up!",
     "emptyDescription": "You'll see your notifications here when you receive them.",
     "allCaughtUp": "You're all caught up!",
-    "noMore": "No more notifications to load"
+    "noMore": "No more notifications to load",
+    "unreadCount": "{{count}} unread"
   },
   "errors": {
     "loadingError": "Error Loading Notifications"

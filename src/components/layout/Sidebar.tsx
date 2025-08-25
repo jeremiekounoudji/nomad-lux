@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
     { path: ROUTES.BOOKING_REQUESTS, label: t('navigation.menu.bookingRequests'), icon: ClipboardList, requireAuth: true },
     { path: ROUTES.NOTIFICATIONS, label: t('navigation.menu.notifications'), icon: Bell, requireAuth: true },
     { path: ROUTES.WALLET, label: t('navigation.menu.wallet'), icon: Wallet, requireAuth: true },
-    { path: ROUTES.HOME, label: t('navigation.menu.profile'), icon: User, requireAuth: true },
+    { path: '/profile', label: t('navigation.menu.profile'), icon: User, requireAuth: true },
   ]
 
   const secondaryItems = [
@@ -62,87 +62,92 @@ const Sidebar: React.FC = () => {
         </NavLink>
       </div>
 
-      {/* Profile Section */}
-      <div className="p-6 border-b border-gray-100 flex-shrink-0">
+      {/* Profile Section - Now a nice card with shadow */}
+      <div className="p-4 flex-shrink-0">
         {isAuthenticated && user ? (
-          <div className="flex flex-col items-center text-center">
-            {/* Avatar at top */}
-            <div className="relative mb-4">
-              <img
-                src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
-                alt={user.display_name}
-                className="w-20 h-20 rounded-full ring-4 ring-primary-100 shadow-lg cursor-pointer hover:ring-primary-200 transition-all"
-                onClick={() => navigateWithAuth(ROUTES.HOME)}
-              />
-              {user.is_email_verified && (
-                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">
-                  <span className="text-white text-xs font-bold">✓</span>
-                </div>
-              )}
-            </div>
-            
-            {/* User info column */}
-            <div className="w-full">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">{user.display_name}</h3>
-              <p className="text-sm text-gray-500 mb-3">@{user.username || user.email.split('@')[0]}</p>
-              
-              {/* Role badge */}
-              <div className="mb-4">
-                <span className="bg-gradient-to-r from-primary-500 to-secondary-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                  {user.user_role === 'both' ? t('navigation.profile.hostAndGuest') : t(`navigation.profile.${user.user_role}`)}
-                </span>
-              </div>
-              
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-gray-900">{user.total_properties}</div>
-                  <div className="text-xs text-gray-500">{t('navigation.profile.properties')}</div>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="text-lg font-bold text-gray-900">{user.total_bookings}</div>
-                  <div className="text-xs text-gray-500">{t('navigation.profile.bookings')}</div>
-                </div>
-              </div>
-              
-              {/* Ratings */}
-              <div className="flex justify-center gap-4 text-xs">
-                <div className="flex items-center gap-1">
-                  <span>⭐</span>
-                  <span className="font-medium">{user.guest_rating.toFixed(1)}</span>
-                  <span className="text-gray-500">{t('navigation.profile.guest')}</span>
-                </div>
-                {user.is_host && user.host_rating > 0 && (
-                  <div className="flex items-center gap-1">
-                    <span>🏠</span>
-                    <span className="font-medium">{user.host_rating.toFixed(1)}</span>
-                    <span className="text-gray-500">{t('navigation.profile.host')}</span>
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow duration-200">
+            <div className="flex flex-col items-center text-center">
+              {/* Avatar with verification badge */}
+              <div className="relative mb-4">
+                <img
+                  src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=3B82F6&color=fff`}
+                  alt={user.display_name}
+                  className="w-16 h-16 rounded-full ring-4 ring-primary-100 shadow-md cursor-pointer hover:ring-primary-200 transition-all"
+                />
+                {user.is_email_verified && (
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                    <span className="text-white text-xs font-bold">✓</span>
                   </div>
                 )}
+              </div>
+              
+              {/* User info */}
+              <div className="w-full">
+                <h3 className="font-bold text-base text-gray-900 mb-1 truncate">{user.display_name}</h3>
+                <p className="text-xs text-gray-500 mb-3 truncate">@{user.username || user.email.split('@')[0]}</p>
+                
+                {/* Role badge */}
+                <div className="mb-3">
+                  <span className="bg-primary-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                    {user.user_role === 'both' ? t('navigation.profile.hostAndGuest') : t(`navigation.profile.${user.user_role}`)}
+                  </span>
+                </div>
+                
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-sm font-bold text-gray-900">{user.total_properties || 0}</div>
+                    <div className="text-xs text-gray-500">{t('navigation.profile.properties')}</div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-2">
+                    <div className="text-sm font-bold text-gray-900">{user.total_bookings || 0}</div>
+                    <div className="text-xs text-gray-500">{t('navigation.profile.bookings')}</div>
+                  </div>
+                </div>
+                
+                {/* Ratings */}
+                <div className="flex justify-center gap-3 text-xs">
+                  {user.guest_rating && user.guest_rating > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span>⭐</span>
+                      <span className="font-medium">{user.guest_rating.toFixed(1)}</span>
+                      <span className="text-gray-500">{t('navigation.profile.guest')}</span>
+                    </div>
+                  )}
+                  {user.is_host && user.host_rating && user.host_rating > 0 && (
+                    <div className="flex items-center gap-1">
+                      <span>🏠</span>
+                      <span className="font-medium">{user.host_rating.toFixed(1)}</span>
+                      <span className="text-gray-500">{t('navigation.profile.host')}</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center text-center">
-            <div className="w-20 h-20 bg-gray-200 rounded-full ring-4 ring-gray-100 flex items-center justify-center mb-4">
-              <User className="w-10 h-10 text-gray-500" />
-            </div>
-            <div className="w-full">
-              <h3 className="font-bold text-lg text-gray-900 mb-1">{t('navigation.profile.guestUser')}</h3>
-              <p className="text-sm text-gray-500 mb-4">{t('navigation.profile.signInToAccess')}</p>
-              <div className="flex flex-col gap-2">
-                <NavLink
-                  to={ROUTES.LOGIN}
-                  className="w-full bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium text-center"
-                >
-                  {t('auth.login.signIn')}
-                </NavLink>
-                <NavLink
-                  to={ROUTES.REGISTER}
-                  className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium text-center"
-                >
-                  {t('navigation.menu.signup')}
-                </NavLink>
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow duration-200">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-gray-200 rounded-full ring-4 ring-gray-100 flex items-center justify-center mb-4">
+                <User className="w-8 h-8 text-gray-500" />
+              </div>
+              <div className="w-full">
+                <h3 className="font-bold text-base text-gray-900 mb-1">{t('navigation.profile.guestUser')}</h3>
+                <p className="text-xs text-gray-500 mb-4">{t('navigation.profile.signInToAccess')}</p>
+                <div className="flex flex-col gap-2">
+                  <NavLink
+                    to={ROUTES.LOGIN}
+                    className="w-full bg-primary-600 text-white px-3 py-2 rounded-lg hover:bg-primary-700 transition-colors font-medium text-center text-sm"
+                  >
+                    {t('auth.login.signIn')}
+                  </NavLink>
+                  <NavLink
+                    to={ROUTES.REGISTER}
+                    className="w-full bg-gray-200 text-gray-700 px-3 py-2 rounded-lg hover:bg-gray-300 transition-colors font-medium text-center text-sm"
+                  >
+                    {t('navigation.menu.signup')}
+                  </NavLink>
+                </div>
               </div>
             </div>
           </div>

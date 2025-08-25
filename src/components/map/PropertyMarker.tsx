@@ -35,7 +35,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({
         <div className="text-center">
           {showPrice && (
             <p className="font-bold text-sm text-primary-600">
-              ${property.price}
+              ${property.currency} ${property.price}
             </p>
           )}
           <p className="text-xs text-gray-600 truncate max-w-20">

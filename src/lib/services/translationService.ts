@@ -211,7 +211,7 @@ class TranslationService {
 
       // Clear cache for this translation
       const cacheKey = `content_${entityType}_${entityId}_${fieldName}_${language}`
-      this.clearCache(cacheKey)
+      this.clearCacheItem(cacheKey)
 
       return true
     } catch (error) {
@@ -320,7 +320,7 @@ class TranslationService {
     this.cacheExpiry.set(key, Date.now() + this.CACHE_DURATION)
   }
 
-  private clearCache(key: string): void {
+  private clearCacheItem(key: string): void {
     this.cache.delete(key)
     this.cacheExpiry.delete(key)
   }

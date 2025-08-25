@@ -388,6 +388,72 @@ export const useBookingManagement = () => {
   }, [setIsUpdatingBooking, updateBookingStatus, setError, clearError])
 
   /**
+   * Get refund status for a booking
+   */
+  const getRefundStatus = useCallback(async (bookingId: string) => {
+    clearError()
+
+    try {
+      console.log('🔄 Getting refund status for booking:', bookingId)
+
+      const { data, error } = await supabase
+        .rpc('get_refund_status', {
+          p_booking_id: bookingId
+        })
+
+      if (error) {
+        throw new Error(`Failed to get refund status: ${error.message}`)
+      }
+
+      console.log('✅ Refund status:', data)
+      return data?.[0] || null
+
+    } catch (error) {
+      console.error('❌ Error getting refund status:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to get refund status'
+      setError(errorMessage)
+      return null
+    }
+  }, [setError, clearError])
+
+  /**
+   * Process refund request (admin only)
+   */
+  const processRefund = useCallback(async (
+    refundRequestId: string,
+    approvedAmount: number,
+    adminNotes?: string,
+    status: 'approved' | 'processed' | 'rejected' = 'processed'
+  ) => {
+    clearError()
+
+    try {
+      console.log('🔄 Processing refund:', refundRequestId)
+
+      const { data, error } = await supabase
+        .rpc('admin_process_refund', {
+          p_refund_request_id: refundRequestId,
+          p_approved_amount: approvedAmount,
+          p_admin_notes: adminNotes,
+          p_status: status
+        })
+
+      if (error) {
+        throw new Error(`Failed to process refund: ${error.message}`)
+      }
+
+      console.log('✅ Refund processed:', data)
+      return data
+
+    } catch (error) {
+      console.error('❌ Error processing refund:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to process refund'
+      setError(errorMessage)
+      throw error
+    }
+  }, [setError, clearError])
+
+  /**
    * Load payment records for bookings
    */
   const loadPaymentRecords = useCallback(async (bookingIds: string[]) => {
@@ -612,6 +678,8 @@ export const useBookingManagement = () => {
 
     // Shared actions
     cancelBooking,
+    getRefundStatus,
+    processRefund,
 
     // Utility
     clearError

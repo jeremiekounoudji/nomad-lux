@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import toast from 'react-hot-toast'
 import { useFedaPayPayment } from '../../../hooks/useFedaPayPayment'
 import { config } from '../../../lib/config'
 import { FedaCheckoutContainer } from 'fedapay-reactjs'
@@ -108,6 +109,13 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
     }, 1000)
   }
 
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
   // Show loading state
   if (isLoading || isRetrying) {
     return (
@@ -136,7 +144,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
           </svg>
         </div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('booking.payment.error', { defaultValue: 'Payment Error' })}</h3>
-        <p className="text-sm text-red-600 text-center mb-4">{error}</p>
+
         <button
           onClick={retryPayment}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"

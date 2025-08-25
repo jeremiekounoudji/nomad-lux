@@ -10,6 +10,7 @@ import { AdminLoginPage } from '../pages/AdminLoginPage';
 import { AdminRegisterPage } from '../pages/AdminRegisterPage';
 import { AdminPage } from '../pages/AdminPage';
 import CreatePropertyPage from '../pages/CreatePropertyPage';
+import EditPropertyPage from '../pages/EditPropertyPage';
 import LikedPropertiesPage from '../pages/LikedPropertiesPage';
 import MyBookingsPage from '../pages/MyBookingsPage';
 import MyListingsPage from '../pages/MyListingsPage';
@@ -63,6 +64,12 @@ const routes: AppRoute[] = [
       { path: ROUTES.WALLET, element: <WalletPage /> },
       { path: '*', element: <Navigate to={ROUTES.HOME} replace /> }
     ]
+  },
+  {
+    path: ROUTES.EDIT_PROPERTY,
+    element: guardRoute(<EditPropertyPage />, true),
+    requireAuth: true,
+    layout: null, // EditPropertyPage includes its own layout
   },
   {
     path: ROUTES.PROPERTY_DETAIL,

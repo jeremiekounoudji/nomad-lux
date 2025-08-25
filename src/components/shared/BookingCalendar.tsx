@@ -57,12 +57,28 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
         const endDate = new Date()
         endDate.setMonth(endDate.getMonth() + 6)
         
+    // Add logging for unavailable dates processing
+    console.log('🗓️ BookingCalendar - Processing unavailable dates:', {
+      received_unavailable_dates: unavailableDates,
+      received_count: unavailableDates?.length || 0,
+      timezone: timezone,
+      processing_range: {
+        from: today.toISOString().split('T')[0],
+        to: endDate.toISOString().split('T')[0]
+      }
+    });
+        
     // Create availability map from unavailable dates
     const unavailableMap = new Map<string, boolean>()
     unavailableDates.forEach((datetime: string) => {
       const dateOnly = datetime.split('T')[0] // Extract date part (YYYY-MM-DD)
       unavailableMap.set(dateOnly, true)
     })
+
+    console.log('🗓️ BookingCalendar - Created unavailable map:', {
+      map_size: unavailableMap.size,
+      unavailable_dates_in_map: Array.from(unavailableMap.keys())
+    });
 
     // Generate availability data for the calendar range
     const availability: AvailabilityData[] = []
@@ -80,6 +96,15 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
       
       currentDate.setDate(currentDate.getDate() + 1)
     }
+    
+    // Log final availability data
+    const unavailableCount = availability.filter(item => !item.isAvailable).length;
+    console.log('🗓️ BookingCalendar - Final availability data:', {
+      total_dates_processed: availability.length,
+      unavailable_dates_found: unavailableCount,
+      available_dates: availability.length - unavailableCount,
+      sample_unavailable_dates: availability.filter(item => !item.isAvailable).slice(0, 5).map(item => item.date)
+    });
     
     return availability
   }, [unavailableDates])
@@ -310,7 +335,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
       {/* Calendar Component */}
       {showCalendar && (
-        <div className="border border-gray-200 rounded-lg p-4 bg-white">
+        <div className="border border-gray-200 rounded-lg p-4 bg-white w-full booking-calendar-unavailable-dates">
           <Calendar
             value={selectedDate}
             onChange={handleCalendarDateSelect}
@@ -318,9 +343,29 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
             isDateUnavailable={(date) => {
               const dateString = date.toString()
               const availability = availabilityMap.get(dateString)
-              return availability ? !availability.isAvailable : false
+              const isUnavailable = availability ? !availability.isAvailable : false
+              
+              // Add logging for date availability checks (limit to first few checks to avoid spam)
+              if (Math.random() < 0.01) { // Log only 1% of checks to avoid console spam
+                console.log('🗓️ BookingCalendar - Date availability check:', {
+                  date: dateString,
+                  availability_found: !!availability,
+                  is_available: availability?.isAvailable,
+                  is_unavailable: isUnavailable,
+                  conflict_reason: availability?.conflictReason
+                });
+              }
+              
+              return isUnavailable
             }}
             className="w-full"
+            classNames={{
+              base: "w-full",
+              grid: "w-full",
+              gridWrapper: "w-full",
+              cell: "w-full",
+              cellButton: "w-full h-full"
+            }}
           />
         </div>
       )}

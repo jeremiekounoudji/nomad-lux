@@ -42,6 +42,7 @@ import { useAuthStore } from '../../../lib/stores/authStore'
 import { BookingRequest, BookingStatus } from '../../../interfaces'
 import toast from 'react-hot-toast'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
 interface HostBookingManagementProps {
   propertyId?: string // Optional: filter by specific property
@@ -356,7 +357,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                     </div>
                     <div>
                       <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t('booking.host.labels.total', { defaultValue: 'Total' })}</p>
-                      <p className="font-semibold text-green-600">${booking.total_amount}</p>
+                      <p className="font-semibold text-green-600">{formatPrice(booking.total_amount, booking.currency || 'USD')}</p>
                     </div>
                   </div>
 
@@ -490,7 +491,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.totalAmount', { defaultValue: 'Total Amount' })}</p>
-                          <p className="font-semibold text-green-600">${selectedBooking.total_amount}</p>
+                          <p className="font-semibold text-green-600">{formatPrice(selectedBooking.total_amount, selectedBooking.currency || 'USD')}</p>
                         </div>
                       </div>
                     </div>

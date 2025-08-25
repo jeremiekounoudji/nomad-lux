@@ -94,9 +94,9 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
   })).filter(category => category.faqs.length > 0)
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       {/* Back Button */}
-      <div className="col-span-full sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm mb-6">
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center">
             <Button
@@ -112,8 +112,8 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         </div>
       </div>
 
-      {/* Header Section */}
-      <div className="col-span-full mb-6">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('help').image}
@@ -126,7 +126,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         />
 
         {/* Search Section */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div className="max-w-4xl mx-auto mb-8">
           <div className="text-center mb-6">
             <HelpCircle className="w-16 h-16 text-primary-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('help.search.title')}</h2>
@@ -146,10 +146,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
             }}
           />
         </div>
-      </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <div className="text-center">
@@ -170,7 +167,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
           {/* FAQ Section */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('help.faq.title')}</h2>
@@ -272,7 +269,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 

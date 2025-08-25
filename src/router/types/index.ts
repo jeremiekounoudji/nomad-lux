@@ -9,6 +9,7 @@ export const ROUTES = {
   ADMIN_REGISTER: '/admin/register',
   ADMIN: '/admin',
   CREATE_PROPERTY: '/properties/create',
+  EDIT_PROPERTY: '/properties/:id/edit',
   LIKED_PROPERTIES: '/properties/liked',
   MY_BOOKINGS: '/bookings',
   MY_LISTINGS: '/listings',

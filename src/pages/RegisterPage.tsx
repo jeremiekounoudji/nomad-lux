@@ -106,6 +106,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
     onPageChange?.('home')
   }
 
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
 
 
   return (
@@ -143,12 +150,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             <p className="text-white/80 text-sm">{t('auth.signup.subtitle')}</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-400/30 rounded-lg">
-              <p className="text-red-100 text-sm">{error}</p>
-            </div>
-          )}
+
 
           {/* Form */}
           <div className="space-y-4">

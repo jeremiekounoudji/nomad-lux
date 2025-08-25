@@ -27,6 +27,7 @@ import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
 import { getStatusColor, getStatusDisplayName } from '../../../utils/propertyUtils'
 import toast from 'react-hot-toast'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
 // props are managed via internal navigation hooks; no external props currently used
 
@@ -88,6 +89,13 @@ export const PropertyApproval: React.FC = () => {
       getPropertyStatistics()
     }
   }, [getPropertyStatistics, isAdmin])
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
   
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { 
@@ -455,7 +463,6 @@ export const PropertyApproval: React.FC = () => {
         <div className="text-center py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.messages.failedToLoad', { defaultValue: 'Error Loading Properties' })}</h3>
-            <p className="text-red-600 mb-4">{error}</p>
             <Button color="primary" onPress={() => fetchAdminProperties({ force: true })}>
               {t('common.actions.retry', { defaultValue: 'Try Again' })}
             </Button>
@@ -546,7 +553,7 @@ export const PropertyApproval: React.FC = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-gray-900">${property.price_per_night}</div>
+                      <div className="text-2xl font-bold text-gray-900">{formatPrice(property.price_per_night, property.currency || 'USD')}</div>
                       <div className="text-sm text-gray-600">{t('property.labels.perNight')}</div>
                     </div>
                   </div>
@@ -605,29 +612,32 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="flex justify-center py-6">
-          <div className="flex items-center gap-4">
-            {/* Results info */}
-            <div className="text-sm text-gray-700">
-              {t('admin.reports.reportPeriod', { defaultValue: 'Showing {{from}} to {{to}} of {{total}} results', from: ((pagination.currentPage - 1) * pagination.pageSize) + 1, to: Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems), total: pagination.totalItems })}
-            </div>
-            
-            {/* HeroUI Pagination */}
-            <Pagination
-              page={pagination.currentPage}
-              total={pagination.totalPages}
-              onChange={goToPage}
-              size="sm"
-              variant="bordered"
-              isDisabled={isLoading}
-              showControls={true}
-              classNames={{
-                wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
-                item: "w-8 h-8 text-small rounded-none bg-transparent",
-                cursor: "bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white font-medium"
-              }}
-            />
+        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => goToPage(pagination.currentPage - 1)}
+            disabled={pagination.currentPage === 1 || isLoading}
+            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+              ${pagination.currentPage === 1 || isLoading
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+          >
+            {t('admin.pagination.previous', { defaultValue: 'Previous' })}
+          </button>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-700">
+              {t('admin.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: pagination.currentPage, total: pagination.totalPages })}
+            </span>
           </div>
+          <button
+            onClick={() => goToPage(pagination.currentPage + 1)}
+            disabled={isLoading || pagination.currentPage >= pagination.totalPages}
+            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+              ${isLoading || pagination.currentPage >= pagination.totalPages
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+          >
+            {t('admin.pagination.next', { defaultValue: 'Next' })}
+          </button>
         </div>
       )}
 

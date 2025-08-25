@@ -62,25 +62,63 @@ const PropertyDetailPage: React.FC = () => {
   // Otherwise, we need to redirect since we can't fetch individual properties yet
   const property = selectedProperty && selectedProperty.id === id ? selectedProperty : null;
   
-  // If no property data is available after a short delay, redirect to home
+  // Add comprehensive logging for property data and unavailable dates
   useEffect(() => {
-    if (!property) {
-      const timer = setTimeout(() => {
-        console.log('❌ No property data available, redirecting to home');
-        toast.error(t('property.messages.propertyNotFound'));
-        navigate('/');
-      }, 1000); // Give 1 second for any store updates
+    if (property) {
+      console.log('🏠 PropertyDetailPage - Property loaded (after fixing transformation):', {
+        id: property.id,
+        title: property.title,
+        status: property.status,
+        timezone: property.timezone,
+        unavailable_dates: property.unavailable_dates,
+        unavailable_dates_count: property.unavailable_dates?.length || 0,
+        unavailable_dates_sample: property.unavailable_dates?.slice(0, 3) || [],
+        has_unavailable_dates: Boolean(property.unavailable_dates && property.unavailable_dates.length > 0)
+      });
 
-      return () => clearTimeout(timer);
+      // Log each unavailable date for debugging
+      if (property.unavailable_dates && property.unavailable_dates.length > 0) {
+        console.log('📅 PropertyDetailPage - Unavailable dates breakdown:');
+        property.unavailable_dates.forEach((date, index) => {
+          const dateOnly = date.split('T')[0];
+          console.log(`  ${index + 1}. Full datetime: ${date} | Date only: ${dateOnly}`);
+        });
+      } else {
+        console.log('📅 PropertyDetailPage - No unavailable dates found (this might be correct if the property has no bookings)');
+      }
+
+      // Log property structure for debugging
+      console.log('🔍 PropertyDetailPage - Property structure check:', {
+        has_unavailable_dates_property: 'unavailable_dates' in property,
+        unavailable_dates_type: typeof property.unavailable_dates,
+        is_array: Array.isArray(property.unavailable_dates),
+        raw_value: property.unavailable_dates
+      });
     } else {
-      // Update meta tags when property is available
+      console.log('❌ PropertyDetailPage - No property data available');
+    }
+  }, [property]);
+  
+  // Handle back navigation - immediate response
+  const handleBack = () => {
+    console.log('🔙 Back button clicked, navigating back immediately');
+    // Clear any pending timeouts or state updates that might interfere
+    setValidationError('');
+    setErrorMessage('');
+    // Navigate back immediately
+    navigate(-1);
+  };
+
+  // Update meta tags when property is available
+  useEffect(() => {
+    if (property) {
       updatePropertyMetaTags(property);
     }
     
     return () => {
       resetDefaultMetaTags();
     };
-  }, [property, navigate, id]);
+  }, [property]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false); // Remove this since we're not fetching
@@ -348,7 +386,7 @@ const PropertyDetailPage: React.FC = () => {
         console.log('✅ Booking created successfully:', result)
         onSuccessOpen()
       } else {
-        throw new Error('Booking creation failed')
+        throw new Error(t('messages.bookingCreationFailed'))
       }
     } catch (error) {
       console.error('❌ Booking creation failed:', error)
@@ -370,6 +408,13 @@ const PropertyDetailPage: React.FC = () => {
         <div className="text-center">
           <PropertyCardSkeleton />
           <p className="mt-4 text-gray-600">{t('property.messages.loadingDetails')}</p>
+          <button 
+            onClick={handleBack}
+            className="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors flex items-center gap-2 mx-auto"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t('common.actions.goBack')}
+          </button>
         </div>
       </div>
     );
@@ -392,9 +437,9 @@ const PropertyDetailPage: React.FC = () => {
     <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-50">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+        <div className="flex items-center justify-between  mx-auto">
           <button 
-            onClick={() => navigate(-1)}
+            onClick={handleBack}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700" />
@@ -420,126 +465,136 @@ const PropertyDetailPage: React.FC = () => {
 
       {/* Main Content Container with Scroll */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
-                    {/* Main Content */}
-          <div className="lg:col-span-2">
-            <PropertyMediaGallery
-              property={property}
-              currentImageIndex={currentImageIndex}
-              setCurrentImageIndex={setCurrentImageIndex}
-              mediaType={mediaType}
-              setMediaType={setMediaType}
-              currentVideoIndex={currentVideoIndex}
-              setCurrentVideoIndex={setCurrentVideoIndex}
-              nextMedia={nextMedia}
-              prevMedia={prevMedia}
-            />
-
-            <PropertyHeader
-              property={property}
-              translatedTitle={translatedTitle}
-              translatedDescription={translatedDescription}
-            />
-
-            <PropertyAmenities
-              amenities={property.amenities}
-              amenityTranslations={amenityTranslations}
-            />
-
-            <PropertyHostInfo
-              property={property}
-              onContactOpen={onContactOpen}
-            />
-
-            {/* Location */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-semibold mb-4">{t('property.location.title')}</h2>
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <LazyMapWrapper
-                  key={property.id}
-                  type="property"
-                  property={property}
-                  height="400px"
-                  showNearbyAmenities={false}
-                  showDirections={true}
-                  showRadius={false}
-                  onContactHost={() => onContactOpen()}
-                  onDirectionsRequest={(coordinates: MapCoordinates) => {
-                    console.log('🗺️ Directions requested for:', coordinates);
-                    const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
-                    window.open(url, '_blank');
-                  }}
-                />
-                
-                {/* Location Info card temporarily disabled */}
-                {/*
-                <div className="p-6 border-t border-gray-200">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                        {`${property.location.city}, ${property.location.country}`}
-                      </h3>
-                      <p className="text-gray-600 mb-3">
-                        Explore the neighborhood and discover what makes this location special.
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span>• Safe, well-connected area</span>
-                        <span>• Close to local amenities</span>
-                        <span>• Easy transportation access</span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="light"
-                      size="sm"
-                      startContent={<Navigation className="w-4 h-4" />}
-                      onClick={() => {
-                        const url = getDirectionsUrl(property);
-                        window.open(url, '_blank');
-                      }}
-                    >
-                      Get Directions
-                    </Button>
-                  </div>
-                </div>
-                */}
+        <div className=" mx-auto px-4 py-6">
+          {!property ? (
+            // Loading or error state
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                <p className="text-gray-600">{t('property.messages.loading', 'Loading property details...')}</p>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+              {/* Main Content */}
+              <div className="lg:col-span-2">
+                <PropertyMediaGallery
+                  property={property}
+                  currentImageIndex={currentImageIndex}
+                  setCurrentImageIndex={setCurrentImageIndex}
+                  mediaType={mediaType}
+                  setMediaType={setMediaType}
+                  currentVideoIndex={currentVideoIndex}
+                  setCurrentVideoIndex={setCurrentVideoIndex}
+                  nextMedia={nextMedia}
+                  prevMedia={prevMedia}
+                />
 
-                    {/* Booking Card */}
-          <div className="lg:col-span-1">
-            <PropertyBookingCard
-              property={property}
-              checkIn={checkIn}
-              setCheckIn={setCheckIn}
-              checkOut={checkOut}
-              setCheckOut={setCheckOut}
-              checkInTime={checkInTime}
-              setCheckInTime={setCheckInTime}
-              checkOutTime={checkOutTime}
-              setCheckOutTime={setCheckOutTime}
-              guests={guests}
-              setGuests={setGuests}
-              specialRequests={specialRequests}
-              setSpecialRequests={setSpecialRequests}
-              validationError={validationError}
-              setValidationError={setValidationError}
-              billingNights={billingNights}
-              basePrice={basePrice}
-              cleaningFee={cleaningFee}
-              serviceFee={serviceFee}
-              totalAmount={totalAmount}
-              isCheckingAvailability={isCheckingAvailability}
-              isCreatingBooking={isCreatingBooking}
-              onReserveClick={handleReserveClick}
-            />
-          </div>
-        </div>
+                <PropertyHeader
+                  property={property}
+                  translatedTitle={translatedTitle}
+                  translatedDescription={translatedDescription}
+                />
+
+                <PropertyAmenities
+                  amenities={property.amenities}
+                  amenityTranslations={amenityTranslations}
+                />
+
+                <PropertyHostInfo
+                  property={property}
+                  onContactOpen={onContactOpen}
+                />
+
+                {/* Location */}
+                <div className="mt-8">
+                  <h2 className="text-2xl font-semibold mb-4">{t('property.location.title')}</h2>
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <LazyMapWrapper
+                      key={property.id}
+                      type="property"
+                      property={property}
+                      height="400px"
+                      showNearbyAmenities={false}
+                      showDirections={true}
+                      showRadius={false}
+                      onContactHost={() => onContactOpen()}
+                      onDirectionsRequest={(coordinates: MapCoordinates) => {
+                        console.log('🗺️ Directions requested for:', coordinates);
+                        const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
+                        window.open(url, '_blank');
+                      }}
+                    />
+                    
+                    {/* Location Info card temporarily disabled */}
+                    {/*
+                    <div className="p-6 border-t border-gray-200">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                            {`${property.location.city}, ${property.location.country}`}
+                          </h3>
+                          <p className="text-gray-600 mb-3">
+                            Explore the neighborhood and discover what makes this location special.
+                          </p>
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span>• Safe, well-connected area</span>
+                            <span>• Close to local amenities</span>
+                            <span>• Easy transportation access</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="light"
+                          size="sm"
+                          startContent={<Navigation className="w-4 h-4" />}
+                          onClick={() => {
+                            const url = getDirectionsUrl(property);
+                            window.open(url, '_blank');
+                          }}
+                        >
+                          Get Directions
+                        </Button>
+                      </div>
+                    </div>
+                    */}
+                  </div>
+                </div>
+              </div>
+
+              {/* Booking Card */}
+              <div className="lg:col-span-1">
+                <PropertyBookingCard
+                  property={property}
+                  checkIn={checkIn}
+                  setCheckIn={setCheckIn}
+                  checkOut={checkOut}
+                  setCheckOut={setCheckOut}
+                  checkInTime={checkInTime}
+                  setCheckInTime={setCheckInTime}
+                  checkOutTime={checkOutTime}
+                  setCheckOutTime={setCheckOutTime}
+                  guests={guests}
+                  setGuests={setGuests}
+                  specialRequests={specialRequests}
+                  setSpecialRequests={setSpecialRequests}
+                  validationError={validationError}
+                  setValidationError={setValidationError}
+                  billingNights={billingNights}
+                  basePrice={basePrice}
+                  cleaningFee={cleaningFee}
+                  serviceFee={serviceFee}
+                  totalAmount={totalAmount}
+                  isCheckingAvailability={isCheckingAvailability}
+                  isCreatingBooking={isCreatingBooking}
+                  onReserveClick={handleReserveClick}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Modals */}
+      {/* Modals - Moved outside main content to ensure proper z-index */}
       <BookingConfirmationModal
         isOpen={isConfirmOpen}
         onClose={onConfirmClose}
@@ -572,6 +627,7 @@ const PropertyDetailPage: React.FC = () => {
 
       <BookingLoadingOverlay isVisible={isCreatingBooking} />
 
+      {/* ContactHostModal moved outside main content container */}
       <ContactHostModal
         isOpen={isContactOpen}
         onClose={onContactClose}

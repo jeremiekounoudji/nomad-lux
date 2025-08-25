@@ -23,10 +23,30 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
     fetchLikedProperties();
   }, [fetchLikedProperties]);
 
-  const likedList = (likedProperties.length > 0 ? likedProperties : properties.filter(p => likedPropertyIds.includes(p.id)))
+  const likedList = ((likedProperties?.length || 0) > 0 ? (likedProperties || []) : (properties || []).filter(p => (likedPropertyIds || []).includes(p.id)))
     .map(p => ({
       ...p,
       id: p.id || (p as any).property_id, // Type-safe fallback for property_id
+      // Ensure arrays are always defined
+      images: p.images || [],
+      videos: p.videos || [],
+      amenities: p.amenities || [],
+      // Ensure host object exists
+      host: p.host || {
+        id: '',
+        name: 'Unknown Host',
+        username: '',
+        avatar_url: '',
+        display_name: 'Unknown Host',
+        is_identity_verified: false,
+        is_email_verified: false,
+        email: '',
+        phone: '',
+        rating: 0,
+        response_rate: 0,
+        response_time: '',
+        bio: ''
+      }
     }));
 
   const handleLike = (propertyId: string) => {
@@ -60,9 +80,10 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
   };
 
   return (
-    <>
-      {/* Header Banner */}
-      <div className="col-span-full mb-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Header Banner */}
+        <div className="col-span-full mb-6">
         <PageBanner
           backgroundImage={getBannerConfig('likedProperties').image}
           title={t('property.likedProperties')}
@@ -119,7 +140,8 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
           </div>
         )}
       </div>
-    </>
+      </div>
+    </div>
   );
 };
 

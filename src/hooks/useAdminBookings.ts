@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { AdminBooking, DatabaseBooking } from '../interfaces/Booking'
 import { useAdminBookingStore } from '../lib/stores/adminBookingStore';
-import { PaymentRecord } from '../interfaces/PaymentRecord';
+import { PaymentRecord, AdminRefundRequest } from '../interfaces/PaymentRecord';
 
 interface PaginationData {
   currentPage: number
@@ -288,36 +288,34 @@ export const useAdminBookings = () => {
     }
   }, [])
 
-  // Process refund (placeholder implementation)
+  // Process refund using the refund processing system
   const processRefund = useCallback(async (
-    bookingId: string,
-    amount: number,
-    reason?: string
+    refundRequestId: string,
+    approvedAmount: number,
+    adminNotes?: string,
+    status: 'approved' | 'processed' | 'rejected' = 'processed'
   ) => {
     try {
-      console.log('🔄 Processing refund...', { bookingId, amount, reason })
+      console.log('🔄 Processing refund...', { refundRequestId, approvedAmount, adminNotes, status })
 
-      // In a real implementation, you would:
-      // 1. Update the payment_records table
-      // 2. Call the payment provider API
-      // 3. Update booking status if fully refunded
-      
-      // For now, just update the booking status
+      // Use the admin_process_refund RPC function
       const { data, error } = await supabase
-        .from('bookings')
-        .update({
-          status: 'cancelled',
-          cancellation_reason: reason || 'Refund processed by admin',
-          cancelled_at: new Date().toISOString()
+        .rpc('admin_process_refund', {
+          p_refund_request_id: refundRequestId,
+          p_approved_amount: approvedAmount,
+          p_admin_notes: adminNotes,
+          p_status: status
         })
-        .eq('id', bookingId)
-        .select()
 
       if (error) {
         throw new Error(`Failed to process refund: ${error.message}`)
       }
 
       console.log('✅ Refund processed:', data)
+      
+      // Refresh bookings to show updated status
+      await loadAdminBookings(bookingsPage)
+      
       return data
 
     } catch (error) {
@@ -326,7 +324,56 @@ export const useAdminBookings = () => {
       useAdminBookingStore.getState().setBookingsError(errorMessage);
       throw error
     }
-  }, [])
+  }, [loadAdminBookings, bookingsPage])
+
+  // Load refund requests for admin management
+  const loadRefundRequests = useCallback(async (page: number = 1, status?: string): Promise<{ data: AdminRefundRequest[], count: number }> => {
+    try {
+      console.log('🔄 Loading refund requests...', { page, status })
+
+      const start = (page - 1) * pageSize
+      const end = start + pageSize - 1
+
+      let query = supabase
+        .from('refund_requests')
+        .select(`
+          *,
+          bookings!inner(
+            id,
+            guest_id,
+            total_amount,
+            status,
+            cancellation_reason,
+            cancelled_at,
+            properties!inner(title, images),
+            guest_user:users!bookings_guest_id_fkey(display_name, email, phone)
+          )
+        `, { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(start, end)
+
+      if (status) {
+        query = query.eq('status', status)
+      }
+
+      const { data, error, count } = await query
+
+      if (error) {
+        throw new Error(`Failed to load refund requests: ${error.message}`)
+      }
+
+      console.log('✅ Refund requests loaded:', { count, dataLength: data?.length })
+      return { data: (data as AdminRefundRequest[]) || [], count: count || 0 }
+
+    } catch (error) {
+      console.error('❌ Error loading refund requests:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load refund requests'
+      useAdminBookingStore.getState().setBookingsError(errorMessage);
+      throw error
+    }
+  }, [pageSize])
+
+
 
   // Update booking status
   const updateBookingStatus = useCallback(async (
@@ -370,6 +417,7 @@ export const useAdminBookings = () => {
     loadAdminBookings,
     getBookingStats,
     processRefund,
+    loadRefundRequests,
     updateBookingStatus,
     clearError
   }

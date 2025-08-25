@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Home, Plus, Eye, Edit, Trash2, Star, Loader2, Pause, Play } from 'lucide-react'
-import { Card, CardBody, Chip, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Pagination } from '@heroui/react'
+import { useNavigate } from 'react-router-dom'
+import { Card, CardBody, Chip, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from '@heroui/react'
 import { toast } from 'react-hot-toast'
 import { PropertyStatsModal, PropertyEditConfirmationModal, PropertyListingSkeleton, PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
@@ -8,16 +9,16 @@ import { useUserListings } from '../hooks/useUserListings'
 import { DatabaseProperty, PropertyEditConfirmation } from '../interfaces'
 import { MyListingsPageProps } from '../interfaces'
 import { convertDatabasePropertyToProperty, getStatusColor, getStatusDisplayName } from '../utils/propertyUtils'
-import { useNavigation } from '../hooks/useNavigation'
-import PropertySubmissionForm from '../components/features/property/PropertySubmissionForm'
+import { ROUTES } from '../router/types'
 import { useTranslation } from '../lib/stores/translationStore'
+import { formatPrice } from '../utils/currencyUtils'
+import { usePropertyEditStore } from '../lib/stores/propertyEditStore'
 
 // Component implementation
 
 const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['property', 'common'])
-  // Navigation hook (available if needed)
-  // const { navigateWithAuth } = useNavigation()
+  const navigate = useNavigate()
   
   // User listings hook
   const {
@@ -30,7 +31,6 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
     pagination,
     fetchUserListings,
     deleteListing,
-    updateListing,
     toggleListingStatus,
     setStatusFilter,
     checkEditConfirmation,
@@ -39,15 +39,15 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
   // Component state
   const [propertyToDelete, setPropertyToDelete] = useState<DatabaseProperty | null>(null)
-  const [propertyToEdit, setPropertyToEdit] = useState<DatabaseProperty | null>(null)
   const [propertyForStats, setPropertyForStats] = useState<DatabaseProperty | null>(null)
   const [editConfirmation, setEditConfirmation] = useState<PropertyEditConfirmation | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [isEditSubmitting, setIsEditSubmitting] = useState(false)
+
+  // Property edit store
+  const { setProperty } = usePropertyEditStore()
 
   // Modals
   const { isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose } = useDisclosure()
-  const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure()
   const { isOpen: isStatsOpen, onOpen: onStatsOpen, onClose: onStatsClose } = useDisclosure()
   const { isOpen: isEditConfirmOpen, onOpen: onEditConfirmOpen, onClose: onEditConfirmClose } = useDisclosure()
 
@@ -56,85 +56,44 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
     fetchUserListings()
   }, [fetchUserListings])
 
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
   const handleEdit = (property: DatabaseProperty) => {
+    console.log('🔧 Edit button clicked for property:', property.id)
+    
+    // Save property to edit store
+    setProperty(property)
+    
     // Check if editing requires confirmation
     const confirmation = checkEditConfirmation(property)
+    console.log('🔧 Edit confirmation:', confirmation)
     
     if (confirmation.willResetToPending) {
       setEditConfirmation(confirmation)
       onEditConfirmOpen()
     } else {
-      setPropertyToEdit(property)
-      onEditOpen()
+      // Navigate to edit page
+      const editRoute = ROUTES.EDIT_PROPERTY.replace(':id', property.id)
+      console.log('🔧 Navigating to:', editRoute)
+      navigate(editRoute)
     }
   }
 
   const handleConfirmEdit = () => {
     if (editConfirmation) {
-      setPropertyToEdit(editConfirmation.property)
+      // Save property to edit store and navigate to edit page after confirmation
+      setProperty(editConfirmation.property)
+      navigate(ROUTES.EDIT_PROPERTY.replace(':id', editConfirmation.property.id))
       onEditConfirmClose()
-      onEditOpen()
     }
   }
 
-  const handleEditSubmitSuccess = async (propertyData: any) => {
-    if (propertyToEdit) {
-      console.log('📝 Processing edit form data:', propertyData)
-      
-      setIsEditSubmitting(true)
-      
-      try {
-        // Process images: keep existing URLs, upload new files
-        let finalImages = propertyData.images || []
-        let finalVideo = propertyData.videos?.[0] || ''
-        
-        // If there are File objects in images or videos, they need to be uploaded
-        // This is handled by the updateListing function automatically
-        
-        // Convert the form data back to database format and update
-        const updates = {
-          title: propertyData.title,
-          description: propertyData.description,
-          price: propertyData.price, // Use 'price' instead of 'price_per_night' for updateListing
-          currency: propertyData.currency,
-          location: propertyData.location,
-          amenities: propertyData.amenities,
-          images: finalImages,
-          videos: propertyData.videos || [], // Keep as array for updateListing
-          propertyType: propertyData.propertyType,
-          maxGuests: propertyData.maxGuests,
-          bedrooms: propertyData.bedrooms,
-          bathrooms: propertyData.bathrooms,
-          cleaningFee: propertyData.cleaningFee,
-          serviceFee: propertyData.serviceFee
-        }
-        
-        console.log('📤 Sending updates:', updates)
-        
-        const result = await updateListing(propertyToEdit.id, updates)
-        
-        if (result.success) {
-          toast.success(t('property.listings.messages.updateSuccess'))
-          onEditClose()
-          setPropertyToEdit(null)
-          // Data will be refreshed automatically by the updateListing function
-        } else {
-          toast.error(result.error || t('property.listings.messages.updateFailed'))
-        }
-      } catch (error) {
-        console.error('❌ Error updating property:', error)
-        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-        toast.error(t('property.listings.messages.updateFailedWithError', { error: errorMessage }))
-      } finally {
-        setIsEditSubmitting(false)
-      }
-    }
-  }
 
-  const handleEditCancel = () => {
-    onEditClose()
-    setPropertyToEdit(null)
-  }
 
   const handleDelete = (property: DatabaseProperty) => {
     setPropertyToDelete(property)
@@ -187,7 +146,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
   return (
     <>
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
+      <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-6 p-5">
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('myListings').image}
@@ -234,18 +193,17 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
       {/* Loading State */}
       {isLoading && (
-        <PropertyListingSkeleton  className="col-span-1 md:col-span-2 lg:col-span-3" />
+        <PropertyListingSkeleton  className="col-span-1 md:col-span-2 lg:col-span-4" />
       )}
 
       {/* Error State */}
       {error && (
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6">
             <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.listings.errors.loadingListings')}</h3>
-            <p className="text-red-600 mb-4">{error}</p>
-                          <Button color="primary" onPress={() => fetchUserListings({ force: true })}>
-                {t('property.listings.errors.tryAgain')}
-              </Button>
+            <Button color="primary" onPress={() => fetchUserListings({ force: true })}>
+              {t('property.listings.errors.tryAgain')}
+            </Button>
           </div>
         </div>
       )}
@@ -254,12 +212,20 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
       {!isLoading && !error && filteredListings.length > 0 && (
         <>
           {/* Listings Container */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 p-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredListings.map((listing) => {
                   const stats = listingStats[listing.id]
                   const isActionLoading = actionLoading === `toggle-${listing.id}`
                   const canEdit = listing.status !== 'paused'
+                  
+                  // Debug: Log the listing data
+                  console.log('🔍 Listing data:', {
+                    id: listing.id,
+                    title: listing.title,
+                    currency: listing.currency,
+                    price_per_night: listing.price_per_night
+                  })
                   
                   return (
                     <div key={listing.id} className="w-full">
@@ -327,7 +293,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 <Star className="w-4 h-4 text-yellow-500 fill-current" />
                                 <span className="text-sm font-medium">{stats?.rating || 0}</span>
                                 <span className="text-sm text-gray-500">
-                                  (${listing.price_per_night}/night)
+                                  ({formatPrice(listing.price_per_night, listing.currency || 'USD')}/night)
                                 </span>
                               </div>
                             </div>
@@ -344,7 +310,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                   <p className="text-xs text-gray-500">{t('property.listings.stats.bookings')}</p>
                                 </div>
                                 <div>
-                                  <p className="text-sm font-bold text-primary-600">${stats.revenue}</p>
+                                  <p className="text-sm font-bold text-primary-600">{formatPrice(stats.revenue, listing.currency || 'USD')}</p>
                                   <p className="text-xs text-gray-500">{t('property.listings.stats.revenue')}</p>
                                 </div>
                               </div>
@@ -395,62 +361,32 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center mt-6">
-              {/* Mobile Layout - Stacked */}
-              <div className="flex flex-col items-center gap-3 sm:hidden">
-                {/* Results info - Mobile */}
-                <div className="text-xs text-gray-600 text-center">
-                  {t('property.listings.pagination.showing')} <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> {t('property.listings.pagination.to')}{' '}
-                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> {t('property.listings.pagination.of')}{' '}
-                  <span className="font-medium">{pagination.totalItems}</span> {t('property.listings.pagination.results')}
-                </div>
-                
-                {/* Pagination - Mobile */}
-                <div className="overflow-x-auto w-full flex justify-center">
-                  <Pagination
-                    page={pagination.currentPage}
-                    total={pagination.totalPages}
-                    onChange={handlePageChange}
-                    size="sm"
-                    variant="bordered"
-                    isDisabled={isLoading}
-                    showControls={true}
-                    siblings={1}
-                    boundaries={1}
-                    classNames={{
-                      wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
-                      item: "w-8 h-8 text-small rounded-none bg-transparent min-w-8",
-                      cursor: "bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white font-medium"
-                    }}
-                  />
-                </div>
+            <div className="col-span-1 md:col-span-2 lg:col-span-4 flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1 || isLoading}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${pagination.currentPage === 1 || isLoading
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('property.listings.pagination.previous')}
+              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  {t('property.listings.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: pagination.currentPage, total: pagination.totalPages })}
+                </span>
               </div>
-
-              {/* Desktop Layout - Horizontal */}
-              <div className="hidden sm:flex items-center justify-center gap-4">
-                {/* Results info - Desktop */}
-                <div className="text-sm text-gray-700">
-                  {t('property.listings.pagination.showing')} <span className="font-medium">{((pagination.currentPage - 1) * pagination.pageSize) + 1}</span> {t('property.listings.pagination.to')}{' '}
-                  <span className="font-medium">{Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems)}</span> {t('property.listings.pagination.of')}{' '}
-                  <span className="font-medium">{pagination.totalItems}</span> {t('property.listings.pagination.results')}
-                </div>
-                
-                {/* Pagination - Desktop */}
-                <Pagination
-                  page={pagination.currentPage}
-                  total={pagination.totalPages}
-                  onChange={handlePageChange}
-                  size="sm"
-                  variant="bordered"
-                  isDisabled={isLoading}
-                  showControls={true}
-                  classNames={{
-                    wrapper: "gap-0 overflow-visible h-8 rounded border border-divider",
-                    item: "w-8 h-8 text-small rounded-none bg-transparent",
-                    cursor: "bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white font-medium"
-                  }}
-                />
-              </div>
+              <button
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                disabled={isLoading || pagination.currentPage >= pagination.totalPages}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${isLoading || pagination.currentPage >= pagination.totalPages
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('property.listings.pagination.next')}
+              </button>
             </div>
           )}
         </>
@@ -458,7 +394,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
       
       {/* Empty State */}
       {!isLoading && !error && filteredListings.length === 0 && (
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
           <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             {statusFilter === 'all' ? t('property.listings.empty.noListingsDescription') : t('property.listings.empty.noListings', { status: statusFilter })}
@@ -533,40 +469,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         </ModalContent>
       </Modal>
 
-      {/* Edit Listing Modal */}
-      <Modal 
-        isOpen={isEditOpen} 
-        onClose={onEditClose}
-        size="5xl"
-        scrollBehavior="inside"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">{t('property.listings.modals.editTitle')}</h2>
-                {propertyToEdit && (
-                  <p className="text-sm text-gray-600">{t('property.listings.modals.updateDetails')}</p>
-                )}
-              </ModalHeader>
-              <ModalBody>
-                {propertyToEdit && (
-                  <div className="space-y-6">
-                    <PropertySubmissionForm 
-                      initialData={convertDatabasePropertyToProperty(propertyToEdit)}
-                      isEditMode={true}
-                      onSubmitSuccess={handleEditSubmitSuccess}
-                      onCancel={handleEditCancel}
-                      externalLoading={isEditSubmitting}
-                    />
-                  </div>
-                )}
-              </ModalBody>
-              {/* Form handles its own submission, so we remove the footer buttons */}
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+
 
       {/* Property Stats Modal */}
       {propertyForStats && (

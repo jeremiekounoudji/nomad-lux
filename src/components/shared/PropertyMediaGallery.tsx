@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, Play, Image as ImageIcon } from 'lucide-react';
 import { Property } from '../../interfaces/Property';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface PropertyMediaGalleryProps {
   property: Property;
@@ -25,6 +26,8 @@ const PropertyMediaGallery: React.FC<PropertyMediaGalleryProps> = ({
   nextMedia,
   prevMedia
 }) => {
+  const { t } = useTranslation('property');
+  
   // Combine all media for the counter
   const allMedia = [...(property?.images || []), ...(property?.videos || [])];
   const currentOverallIndex = mediaType === 'image' 
@@ -90,7 +93,7 @@ const PropertyMediaGallery: React.FC<PropertyMediaGalleryProps> = ({
             disabled={property.images.length === 0}
           >
             <ImageIcon className="w-4 h-4" />
-            Photos ({property.images.length})
+            {t('labels.photos')} ({property.images.length})
           </button>
           <button 
             onClick={() => {
@@ -107,7 +110,7 @@ const PropertyMediaGallery: React.FC<PropertyMediaGalleryProps> = ({
             disabled={property.videos.length === 0}
           >
             <Play className="w-4 h-4" />
-            Videos ({property.videos.length})
+            {t('labels.videos')} ({property.videos.length})
           </button>
         </div>
       </div>

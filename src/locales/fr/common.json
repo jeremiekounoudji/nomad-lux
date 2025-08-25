@@ -98,6 +98,17 @@
     "seenAllProperties": "Vous avez vu toutes les propriétés disponibles",
     "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
   },
+  "pagination": {
+    "showing": "Affichage",
+    "to": "à",
+    "of": "sur",
+    "results": "résultats",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "goToPage": "Aller à la page",
+    "itemsPerPage": "Éléments par page"
+  },
   "actions": {
     "close": "Fermer",
     "retry": "Réessayer",
@@ -179,6 +190,7 @@
     "home": "Arrière-plan de découverte de propriétés de luxe",
     "search": "Arrière-plan de recherche et découverte de propriétés",
     "createProperty": "Arrière-plan d'architecture de maison moderne",
+    "editProperty": "Arrière-plan de modification et mise à jour de propriété",
     "myListings": "Arrière-plan de gestion de propriétés",
     "myBookings": "Arrière-plan de voyage et réservation",
     "likedProperties": "Arrière-plan de propriétés favorites",

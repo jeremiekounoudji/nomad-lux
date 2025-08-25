@@ -48,7 +48,16 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
   const { t } = useTranslation(['booking', 'property']);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="lg">
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      size="lg"
+      classNames={{
+        wrapper: "z-[9999]",
+        backdrop: "z-[9998]",
+        base: "z-[9999]"
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -116,8 +125,8 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
                 {/* Price Breakdown */}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span>${property.price} × {billingNights} nights</span>
-                    <span>${basePrice}</span>
+                                <span>{property.currency} {property.price} × {billingNights} nights</span>
+            <span>{property.currency} {basePrice}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Cleaning fee</span>

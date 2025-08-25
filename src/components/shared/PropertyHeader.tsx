@@ -27,7 +27,7 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">{property.rating}</span>
-              <span>({property.review_count} reviews)</span>
+              <span>({property.review_count} {t('labels.reviews')})</span>
             </div>
             <div className="flex items-center gap-1">
               <MapPin className="w-4 h-4" />
@@ -37,8 +37,8 @@ const PropertyHeader: React.FC<PropertyHeaderProps> = ({
         </div>
         <div className="text-right">
           <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-            ${property.price}
-            <span className="text-base font-normal text-gray-600 ml-1">/ {t('night')}</span>
+            {property.currency} {property.price}
+            <span className="text-base font-normal text-gray-600 ml-1">/ {t('labels.night')}</span>
           </div>
         </div>
       </div>

@@ -8,6 +8,7 @@
     "properties": "Properties",
     "bookings": "Bookings",
     "users": "Users",
+    "refunds": "Refunds",
     "payments": "Payments",
     "settings": "Settings",
     "reports": "Reports",
@@ -21,9 +22,16 @@
     "users": "users",
     "properties": "properties",
     "bookings": "bookings",
+    "refunds": "refunds",
     "analytics": "analytics",
     "settings": "settings",
     "activities": "activities"
+  },
+  "activity": {
+    "title": "Activity Log"
+  },
+  "analytics": {
+    "title": "Analytics"
   },
   "dashboard": {
     "overview": "Overview",
@@ -96,7 +104,7 @@
         "approveProperty": "Approve Property",
         "suspendProperty": "Suspend Property"
       }
-    }
+    },
     "hostInformation": "Host Information",
     "approvalStatus": "Approval Status",
     "rejectionReason": "Rejection Reason",
@@ -204,7 +212,7 @@
         "contactGuest": "Contact Guest",
         "contactHost": "Contact Host"
       }
-    }
+    },
     "guestInformation": "Guest Information",
     "hostInformation": "Host Information",
     "paymentStatus": "Payment Status",
@@ -288,7 +296,7 @@
         "close": "Close",
         "openMessageCenter": "Open Message Center"
       }
-    }
+    },
     "openDisputes": "Open Disputes",
     "underInvestigation": "Under Investigation",
     "urgentPriority": "Urgent Priority",
@@ -518,7 +526,8 @@
       "payoutReference": "Payout Reference",
       "failureReason": "Failure Reason",
       "refundAmount": "Refund Amount",
-      "refundReason": "Refund Reason",
+      "refundReason": "Refund Reason"
+    },
     "refundModal": {
       "title": "Process Refund - {{id}}",
       "originalPayment": "Original Payment",
@@ -528,14 +537,13 @@
         "cancel": "Cancel",
         "processRefund": "Process Refund"
       }
-    }
-      "initiatedAt": "Initiated At",
-      "completedAt": "Completed At",
-      "refundedAt": "Refunded At",
-      "createdAt": "Created At",
-      "updatedAt": "Updated At",
-      "metadata": "Metadata"
     },
+    "initiatedAt": "Initiated At",
+    "completedAt": "Completed At",
+    "refundedAt": "Refunded At",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "metadata": "Metadata",
     "status": {
       "paid": "Paid",
       "pending": "Pending",
@@ -765,7 +773,7 @@
         "next": "Next image"
       },
       "counter": "{{current}} / {{total}}"
-    }
+    },
     "propertyRejected": "Property rejected successfully",
     "propertyRejectionModal": {
       "title": "Reject Property",
@@ -777,7 +785,7 @@
         "cancel": "Cancel",
         "rejectProperty": "Reject Property"
       }
-    }
+    },
     "propertySuspended": "Property suspended successfully",
     "propertySuspensionModal": {
       "title": "Suspend Property",
@@ -800,7 +808,7 @@
         "cancel": "Cancel",
         "suspendProperty": "Suspend Property"
       }
-    }
+    },
     "userSuspended": "User suspended successfully",
     "userActivated": "User activated successfully",
     "userBanned": "User banned successfully",
@@ -831,7 +839,7 @@
       "errors": {
         "actionFailed": "Action failed"
       }
-    }
+    },
     "settingsUpdated": "Settings updated successfully",
     "reportGenerated": "Report generated successfully",
     "bulkActionCompleted": "Bulk action completed successfully",
@@ -893,8 +901,7 @@
       "title": "No activities found",
       "subtitle": "Try adjusting your search filters to see more results."
     }
-  }
-  ,
+  },
   "analytics": {
     "title": "Analytics Dashboard",
     "subtitle": "Detailed insights and platform performance metrics",
@@ -962,8 +969,7 @@
       "propertyApprovalRate": "Property Approval Rate",
       "platformUptime": "Platform Uptime"
     }
-  }
-  ,
+  },
   "locationVerification": {
     "title": "Location Verification",
     "coordsUnavailable": {

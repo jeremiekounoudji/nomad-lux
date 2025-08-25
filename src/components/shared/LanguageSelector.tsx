@@ -25,9 +25,16 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   const { currentLanguage, changeLanguage, isLoading } = useTranslationStore()
   const { t } = useTranslation('common')
 
+  // Debug log to verify persistence
+  React.useEffect(() => {
+    console.log('🌐 LanguageSelector: Current language from store:', currentLanguage)
+  }, [currentLanguage])
+
   const handleLanguageChange = async (language: Language) => {
     if (language !== currentLanguage && !isLoading) {
+      console.log('🌐 LanguageSelector: Changing language from', currentLanguage, 'to', language)
       await changeLanguage(language)
+      console.log('🌐 LanguageSelector: Language changed successfully to', language)
     }
   }
 
@@ -117,6 +124,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 // Compact version for mobile/header use
 export const CompactLanguageSelector: React.FC<{ className?: string }> = ({ className }) => {
   const { currentLanguage, changeLanguage, isLoading } = useTranslationStore()
+  const { t } = useTranslation('common')
   const currentLang = languages.find(lang => lang.code === currentLanguage)
 
   const handleLanguageChange = async (language: Language) => {

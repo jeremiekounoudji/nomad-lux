@@ -18,6 +18,8 @@ import enSearch from '../locales/en/search.json'
 import enProfile from '../locales/en/profile.json'
 import enHome from '../locales/en/home.json'
 import enLabels from '../locales/en/labels.json'
+import enActions from '../locales/en/actions.json'
+import enMap from '../locales/en/map.json'
 
 import frCommon from '../locales/fr/common.json'
 import frNavigation from '../locales/fr/navigation.json'
@@ -34,6 +36,8 @@ import frSearch from '../locales/fr/search.json'
 import frProfile from '../locales/fr/profile.json'
 import frHome from '../locales/fr/home.json'
 import frLabels from '../locales/fr/labels.json'
+import frActions from '../locales/fr/actions.json'
+import frMap from '../locales/fr/map.json'
 
 const resources = {
   en: {
@@ -51,7 +55,9 @@ const resources = {
     search: enSearch,
     profile: enProfile,
     home: enHome,
-    labels: enLabels
+    labels: enLabels,
+    actions: enActions,
+    map: enMap
   },
   fr: {
     common: frCommon,
@@ -68,7 +74,9 @@ const resources = {
     search: frSearch,
     profile: frProfile,
     home: frHome,
-    labels: frLabels
+    labels: frLabels,
+    actions: frActions,
+    map: frMap
   }
 }
 
@@ -95,11 +103,7 @@ i18n
     debug: process.env.NODE_ENV === 'development',
     
     // Namespace separation
-    ns: ['common', 'navigation', 'auth', 'property', 'booking', 'admin', 'validation', 'notifications', 'wallet', 'help', 'terms', 'search', 'profile', 'home', 'labels'],
-    
-    // Return key if translation is missing (for development)
-    returnKeyIfEmpty: true,
-    returnEmptyString: false,
+    ns: ['common', 'navigation', 'auth', 'property', 'booking', 'admin', 'validation', 'notifications', 'wallet', 'help', 'terms', 'search', 'profile', 'home', 'labels', 'actions', 'map'],
     
     // Pluralization
     pluralSeparator: '_',

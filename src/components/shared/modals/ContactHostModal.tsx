@@ -9,10 +9,12 @@ import {
   Avatar,
   Card,
   CardBody,
+  Chip,
 } from '@heroui/react'
-import { MessageCircle, Star, MapPin, Phone, Mail, MessageSquare } from 'lucide-react'
+import { MessageCircle, Star, MapPin, Phone, Mail, MessageSquare, AlertCircle } from 'lucide-react'
 import { ContactHostModalProps } from '../../../interfaces/Component'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import toast from 'react-hot-toast'
 
 export const ContactHostModal: React.FC<ContactHostModalProps> = ({
   isOpen,
@@ -20,19 +22,78 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
   property
 }) => {
   const { t } = useTranslation(['property', 'common'])
+
+  // Ensure property and host data exists
+  if (!property || !property.host) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="w-6 h-6 text-red-500" />
+                  <h2 className="text-xl font-bold">{t('property.modal.contactHost.error')}</h2>
+                </div>
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-600">{t('property.modal.contactHost.noHostData')}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClose}>
+                  {t('common.buttons.close')}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    )
+  }
+
   const handleCall = () => {
-    window.location.href = `tel:${property.host.phone}`
+    if (!property.host.phone) {
+      toast.error(t('property.modal.contactHost.noPhone'))
+      return
+    }
+    try {
+      window.location.href = `tel:${property.host.phone}`
+    } catch (error) {
+      toast.error(t('property.modal.contactHost.callError'))
+    }
   }
 
   const handleEmail = () => {
-    window.location.href = `mailto:${property.host.email}`
+    if (!property.host.email) {
+      toast.error(t('property.modal.contactHost.noEmail'))
+      return
+    }
+    try {
+      window.location.href = `mailto:${property.host.email}`
+    } catch (error) {
+      toast.error(t('property.modal.contactHost.emailError'))
+    }
   }
 
   const handleWhatsApp = () => {
-    // Remove any non-numeric characters from phone number
-    const phone = property.host.phone.replace(/\D/g, '')
-    window.open(`https://wa.me/${phone}`, '_blank')
+    if (!property.host.phone) {
+      toast.error(t('property.modal.contactHost.noPhone'))
+      return
+    }
+    try {
+      // Remove any non-numeric characters from phone number
+      const phone = property.host.phone.replace(/\D/g, '')
+      const message = encodeURIComponent(`Hi ${property.host.display_name}, I'm interested in your property "${property.title}". Can you provide more information?`)
+      window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
+    } catch (error) {
+      toast.error(t('property.modal.contactHost.whatsappError'))
+    }
   }
+
+  // Check available contact methods
+  const hasPhone = !!property.host.phone
+  const hasEmail = !!property.host.email
+  const availableMethods = [hasPhone, hasEmail, hasPhone].filter(Boolean).length
 
   return (
     <Modal 
@@ -40,6 +101,11 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
       onClose={onClose}
       size="lg"
       scrollBehavior="inside"
+      classNames={{
+        wrapper: "z-[9999]",
+        backdrop: "z-[9998]",
+        base: "z-[9999]"
+      }}
     >
       <ModalContent>
         {(onClose) => (
@@ -53,86 +119,58 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
-                {/* Property Info */}
-                <Card>
-                  <CardBody className="p-4">
-                    <div className="flex gap-4">
-                      <img
-                        src={property.images[0]}
-                        alt={property.title}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{`${property.location.city}, ${property.location.country}`}</span>
-                        </div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm font-medium">{property.rating}</span>
-                          <span className="text-lg font-bold text-primary-600 ml-2">
-                            ${property.price}{t('property.labels.perNight')}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
-
-                {/* Host Info */}
-                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <Avatar src={property.host?.avatar_url} size="lg" />
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-lg">{property.host?.display_name}</h4>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium">{property.host.rating.toFixed(1)} {t('property.labels.hostRating')}</span>
-                      <span className="text-sm text-gray-500">• {t('property.labels.avgResponse', { time: property.host.response_time })}</span>
-                    </div>
-                  </div>
-                </div>
+                
 
                 {/* Contact Options */}
-                <div className="grid gap-4">
-                  {property.host.phone && (
-                    <Button
-                      size="lg"
-                      className="w-full bg-green-500 hover:bg-green-600 text-white"
-                      onClick={handleCall}
-                      startContent={<Phone className="w-5 h-5" />}
-                    >
-                      {t('property.actions.callHost')}
-                    </Button>
-                  )}
+                <div className="space-y-4">
+                  <h5 className="font-medium text-gray-900">{t('property.modal.contactHost.chooseMethod')}</h5>
                   
-                  {property.host.email && (
-                    <Button
-                      size="lg"
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                      onClick={handleEmail}
-                      startContent={<Mail className="w-5 h-5" />}
-                    >
-                      {t('property.actions.emailHost')}
-                    </Button>
-                  )}
+                  <div className="grid gap-3">
+                    {hasPhone && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-green-500 hover:bg-green-600 text-white"
+                        onClick={handleCall}
+                        startContent={<Phone className="w-5 h-5" />}
+                      >
+                        {t('property.actions.callHost')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
+                      </Button>
+                    )}
+                    
+                    {hasEmail && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        onClick={handleEmail}
+                        startContent={<Mail className="w-5 h-5" />}
+                      >
+                        {t('property.actions.emailHost')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.email}</span>
+                      </Button>
+                    )}
 
-                  {property.host.phone && (
-                    <Button
-                      size="lg"
-                      className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white"
-                      onClick={handleWhatsApp}
-                      startContent={<MessageSquare className="w-5 h-5" />}
-                    >
-                      {t('property.actions.whatsapp')}
-                    </Button>
+                    {hasPhone && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+                        onClick={handleWhatsApp}
+                        startContent={<MessageSquare className="w-5 h-5" />}
+                      >
+                        {t('property.actions.whatsapp')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
+                      </Button>
+                    )}
+                  </div>
+
+                  {availableMethods === 0 && (
+                    <div className="text-center py-4">
+                      <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-600">{t('property.modal.contactHost.noContactMethods')}</p>
+                    </div>
                   )}
                 </div>
 
-                {/* Note */}
-                <p className="text-sm text-gray-600 text-center">
-                  {t('property.labels.responseTime', { time: property.host.response_time })}
-                </p>
               </div>
             </ModalBody>
             <ModalFooter>

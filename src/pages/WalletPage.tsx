@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
 // removed unused MainLayout import
 import { useWalletHistory } from '../hooks/useWalletHistory'
 // removed unused LoadingSkeleton import
@@ -12,6 +13,7 @@ import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { DollarSign, TrendingUp, Clock, CheckCircle, XCircle, CreditCard } from 'lucide-react'
 import { useTranslation } from '../lib/stores/translationStore'
+import { formatPrice } from '../utils/currencyUtils'
 
 const WalletPage: FC = () => {
   const { t } = useTranslation(['wallet', 'common'])
@@ -60,6 +62,25 @@ const WalletPage: FC = () => {
     void fetchPayoutRequests()
   }, [loadWalletPayments, fetchWalletMetrics, fetchPayoutRequests])
 
+  // Show error toasts when there are errors
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
+  useEffect(() => {
+    if (metricsError) {
+      toast.error(metricsError)
+    }
+  }, [metricsError])
+
+  useEffect(() => {
+    if (payoutError) {
+      toast.error(payoutError)
+    }
+  }, [payoutError])
+
   // removed unused getStatusColor
 
   const getPayoutStatusColor = (status: string): string => {
@@ -76,8 +97,7 @@ const WalletPage: FC = () => {
   }
 
   return (
-    <>
-      <div className="h-full pb-20 lg:pb-6">
+    <div className="col-span-full h-full w-full pb-20 lg:pb-6">
       {/* Request Payout Modal */}
       {metrics && (
         <RequestPayoutModal
@@ -94,7 +114,7 @@ const WalletPage: FC = () => {
       )}
 
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
         {/* Wallet Banner */}
         <div className="mb-8">
           <PageBanner
@@ -114,8 +134,6 @@ const WalletPage: FC = () => {
               <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))}
           </div>
-        ) : metricsError ? (
-          <div className="w-full text-center text-red-600">{metricsError}</div>
         ) : metrics ? (
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
             {/* Total Balance Card */}
@@ -132,7 +150,7 @@ const WalletPage: FC = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.totalBalance')}</p>
-                <h3 className="text-xl font-bold text-primary-600">${metrics.totalBalance.toFixed(2)}</h3>
+                <h3 className="text-xl font-bold text-primary-600">{formatPrice(metrics.totalBalance, 'USD')}</h3>
               </div>
             </div>
 
@@ -150,7 +168,7 @@ const WalletPage: FC = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.pending')}</p>
-                <h3 className="text-xl font-bold text-yellow-600">${metrics.pendingAmount.toFixed(2)}</h3>
+                <h3 className="text-xl font-bold text-yellow-600">{formatPrice(metrics.pendingAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.pendingCount })}</p>
               </div>
             </div>
@@ -169,7 +187,7 @@ const WalletPage: FC = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.failed')}</p>
-                <h3 className="text-xl font-bold text-red-600">${metrics.failedAmount.toFixed(2)}</h3>
+                <h3 className="text-xl font-bold text-red-600">{formatPrice(metrics.failedAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.failedCount })}</p>
               </div>
             </div>
@@ -188,7 +206,7 @@ const WalletPage: FC = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.successful')}</p>
-                <h3 className="text-xl font-bold text-green-600">${metrics.successfulAmount.toFixed(2)}</h3>
+                <h3 className="text-xl font-bold text-green-600">{formatPrice(metrics.successfulAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.successfulCount })}</p>
               </div>
             </div>
@@ -207,7 +225,7 @@ const WalletPage: FC = () => {
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.payoutBalance')}</p>
-                <h3 className="text-xl font-bold text-blue-600">${metrics.payoutBalance.toFixed(2)}</h3>
+                <h3 className="text-xl font-bold text-blue-600">{formatPrice(metrics.payoutBalance, 'USD')}</h3>
               </div>
             </div>
 
@@ -247,7 +265,7 @@ const WalletPage: FC = () => {
                     <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('wallet.payout.available')}</h2>
                     <div className="text-3xl font-bold text-primary-600 mb-1">
                       {/* Assuming formatCurrency is defined elsewhere or will be added */}
-                      ${metrics.payoutBalance.toFixed(2)}
+                      {formatPrice(metrics.payoutBalance, 'USD')}
                     </div>
                     {metrics.nextPayoutAllowedAt && new Date(metrics.nextPayoutAllowedAt) > new Date() ? (
                       <p className="text-sm text-gray-500 mt-1">
@@ -284,10 +302,6 @@ const WalletPage: FC = () => {
                         <Skeleton className="h-4 w-20" />
                       </div>
                     ))}
-                  </div>
-                ) : error ? (
-                  <div className="text-center py-8">
-                    <p className="text-red-600">{error}</p>
                   </div>
                 ) : (
                   <>
@@ -392,10 +406,6 @@ const WalletPage: FC = () => {
                       <Skeleton key={i} className="h-8 w-full rounded bg-gray-800" />
                     ))}
                   </div>
-                ) : payoutError ? (
-                  <div className="text-center py-8">
-                    <p className="text-red-400">{payoutError}</p>
-                  </div>
                 ) : payoutRequests.length === 0 ? (
                   <div className="text-center py-8">
                     <p className="text-gray-400">{t('wallet.requests.empty')}</p>
@@ -422,7 +432,7 @@ const WalletPage: FC = () => {
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">{t('wallet.requests.totalRequested')}</span>
                       <span className="text-white font-semibold">
-                        ${payoutRequests.reduce((sum, req) => sum + req.amount, 0).toFixed(2)}
+                        {formatPrice(payoutRequests.reduce((sum, req) => sum + req.amount, 0), 'USD')}
                       </span>
                     </div>
                   </div>
@@ -432,8 +442,7 @@ const WalletPage: FC = () => {
           </div>
         </div>
       </div>
-      </div>
-    </>
+    </div>
   )
 }
 

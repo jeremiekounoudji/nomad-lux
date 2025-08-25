@@ -107,7 +107,7 @@ export interface HostDetailsStepProps {
 }
 
 export interface PropertySubmissionFormProps {
-  initialData?: import('./Property').Property
+  initialData?: import('./PropertySubmissionData').PropertySubmissionData
   isEditMode?: boolean
   onSubmitSuccess?: (propertyData: any) => void
   onCancel?: () => void
@@ -253,10 +253,45 @@ export interface BookPropertyModalProps {
   }) => void
 }
 
+// Simplified interfaces for modals
+export interface SimpleBooking {
+  id: string
+  propertyName: string
+  propertyImage: string
+  location: string
+  checkIn: string
+  checkOut: string
+  guests: number
+  totalPrice: number
+  currency: string
+  status: import('./Booking').BookingStatus
+}
+
+export interface SimpleProperty {
+  id: string
+  title: string
+  images: string[]
+  location: {
+    city: string
+    country: string
+    coordinates: {
+      lat: number
+      lng: number
+    }
+  }
+  host: {
+    id: string
+    display_name: string
+    avatar_url: string
+    email: string
+    phone: string
+  }
+}
+
 export interface CancelBookingModalProps {
   isOpen: boolean
   onClose: () => void
-  booking: import('./Booking').Booking
+  booking: SimpleBooking
   onConfirmCancel: (reason: string) => void
 }
 
@@ -270,8 +305,8 @@ export interface PropertyStatsModalProps {
 export interface ContactHostModalProps {
   isOpen: boolean
   onClose: () => void
-  property: import('./Property').Property
-  onSendMessage: (message: string) => void
+  property: SimpleProperty
+  onSendMessage?: (message: string) => void
 }
 
 export interface SharePropertyModalProps {

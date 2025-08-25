@@ -32,13 +32,49 @@ export const usePropertyLike = () => {
       console.log('Query params used:', { p_user_id: user.auth_id, p_page: 1, p_page_size: 100 })
       if (error) throw error
       
-      // RPC now returns full property objects, not just IDs
-      const fullProperties = data || []
-      const likedIds = fullProperties.map((property: any) => property.id)
+      // Transform the RPC response to match Property interface
+      const transformedProperties = (data || []).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        price: item.price_per_night,
+        price_per_night: item.price_per_night,
+        currency: item.currency,
+        location: item.location,
+        images: item.images || [],
+        videos: item.video ? [item.video] : [],
+        host: item.host, // This is now a JSON object from the RPC
+        rating: item.rating || 0,
+        review_count: item.rating_count || 0,
+        view_count: item.view_count || 0,
+        booking_count: item.booking_count || 0,
+        total_revenue: item.total_revenue || 0,
+        property_type: item.property_type,
+        amenities: item.amenities || [],
+        max_guests: item.max_guests,
+        bedrooms: item.bedrooms,
+        bathrooms: item.bathrooms,
+        cleaning_fee: item.cleaning_fee || 0,
+        service_fee: item.service_fee || 0,
+        is_liked: true, // These are liked properties
+        instant_book: false, // Default value
+        additional_fees: [],
+        distance: '',
+        created_at: item.created_at,
+        status: item.status,
+        unavailable_dates: item.unavailable_dates || [],
+        timezone: item.timezone,
+        like_count: item.like_count || 0,
+        suspended_at: item.suspended_at,
+        suspended_by: item.suspended_by,
+        suspension_reason: item.suspension_reason
+      }))
       
-      console.log('Processed liked properties:', { fullProperties, likedIds })
+      const likedIds = transformedProperties.map((property: any) => property.id)
+      
+      console.log('Processed liked properties:', { transformedProperties, likedIds })
       setLikedPropertyIds(likedIds)
-      setLikedProperties(fullProperties)
+      setLikedProperties(transformedProperties)
     } catch (err: any) {
       console.error('Failed to fetch liked properties:', err)
       toast.error('Failed to load favorites')

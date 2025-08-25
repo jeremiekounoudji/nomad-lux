@@ -8,6 +8,7 @@
     "properties": "Propriétés",
     "bookings": "Réservations",
     "users": "Utilisateurs",
+    "refunds": "Remboursements",
     "payments": "Paiements",
     "settings": "Paramètres",
     "reports": "Rapports",
@@ -21,9 +22,16 @@
     "users": "users",
     "properties": "properties",
     "bookings": "bookings",
+    "refunds": "refunds",
     "analytics": "analytics",
     "settings": "settings",
     "activities": "activities"
+  },
+  "activity": {
+    "title": "Journal d'activité"
+  },
+  "analytics": {
+    "title": "Analyses"
   },
   "dashboard": {
     "overview": "Aperçu",
@@ -96,7 +104,7 @@
         "approveProperty": "Approuver la propriété",
         "suspendProperty": "Suspendre la propriété"
       }
-    }
+    },
     "hostInformation": "Informations de l'hôte",
     "approvalStatus": "Statut d'approbation",
     "rejectionReason": "Raison du rejet",
@@ -166,7 +174,7 @@
       "rejected": "Rejetées",
       "suspended": "Suspendues"
     }
-  }
+  },
   "bookings": {
     "allBookings": "Toutes les réservations",
     "pendingBookings": "Réservations en attente",
@@ -204,7 +212,7 @@
         "contactGuest": "Contacter l'invité",
         "contactHost": "Contacter l'hôte"
       }
-    }
+    },
     "guestInformation": "Informations de l'invité",
     "hostInformation": "Informations de l'hôte",
     "paymentStatus": "Statut du paiement",
@@ -288,7 +296,7 @@
         "close": "Fermer",
         "openMessageCenter": "Ouvrir le centre de messages"
       }
-    }
+    },
     "openDisputes": "Litiges ouverts",
     "underInvestigation": "En cours d'enquête",
     "urgentPriority": "Priorité urgente",
@@ -518,7 +526,8 @@
       "payoutReference": "Référence de Paiement",
       "failureReason": "Raison de l'Échec",
       "refundAmount": "Montant de Remboursement",
-      "refundReason": "Raison du Remboursement",
+      "refundReason": "Raison du Remboursement"
+    },
     "refundModal": {
       "title": "Traiter le remboursement - {{id}}",
       "originalPayment": "Paiement original",
@@ -528,14 +537,13 @@
         "cancel": "Annuler",
         "processRefund": "Traiter le remboursement"
       }
-    }
-      "initiatedAt": "Initié le",
-      "completedAt": "Terminé le",
-      "refundedAt": "Remboursé le",
-      "createdAt": "Créé le",
-      "updatedAt": "Mis à jour le",
-      "metadata": "Métadonnées"
     },
+    "initiatedAt": "Initié le",
+    "completedAt": "Terminé le",
+    "refundedAt": "Remboursé le",
+    "createdAt": "Créé le",
+    "updatedAt": "Mis à jour le",
+    "metadata": "Métadonnées",
     "status": {
       "paid": "Payé",
       "pending": "En attente",
@@ -765,7 +773,7 @@
         "next": "Image suivante"
       },
       "counter": "{{current}} / {{total}}"
-    }
+    },
     "propertyRejected": "Propriété rejetée avec succès",
     "propertyRejectionModal": {
       "title": "Rejeter la propriété",
@@ -777,7 +785,7 @@
         "cancel": "Annuler",
         "rejectProperty": "Rejeter la propriété"
       }
-    }
+    },
     "propertySuspended": "Propriété suspendue avec succès",
     "propertySuspensionModal": {
       "title": "Suspendre la propriété",
@@ -800,7 +808,7 @@
         "cancel": "Annuler",
         "suspendProperty": "Suspendre la propriété"
       }
-    }
+    },
     "userSuspended": "Utilisateur suspendu avec succès",
     "userActivated": "Utilisateur activé avec succès",
     "userBanned": "Utilisateur banni avec succès",
@@ -831,7 +839,7 @@
       "errors": {
         "actionFailed": "L'action a échoué"
       }
-    }
+    },
     "settingsUpdated": "Paramètres mis à jour avec succès",
     "reportGenerated": "Rapport généré avec succès",
     "bulkActionCompleted": "Action groupée terminée avec succès",
@@ -893,8 +901,7 @@
       "title": "Aucune activité trouvée",
       "subtitle": "Essayez d'ajuster vos filtres de recherche pour voir plus de résultats."
     }
-  }
-  ,
+  },
   "analytics": {
     "title": "Tableau de bord analytique",
     "subtitle": "Informations détaillées et métriques de performance de la plateforme",
@@ -962,8 +969,7 @@
       "propertyApprovalRate": "Taux d'approbation des propriétés",
       "platformUptime": "Temps de fonctionnement de la plateforme"
     }
-  }
-  ,
+  },
   "locationVerification": {
     "title": "Vérification de l'emplacement",
     "coordsUnavailable": {

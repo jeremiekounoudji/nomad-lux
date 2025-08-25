@@ -83,8 +83,8 @@ const PageBanner: React.FC<PageBannerProps> = ({
       <div className={`absolute inset-0 ${overlayClasses[overlayOpacity]}`} />
 
       {/* Content Layer */}
-      <div className="relative z-10 h-full flex flex-col justify-center p-4 sm:p-6 lg:p-8 text-white">
-        <div className="max-w-4xl">
+      <div className="relative z-10 h-full flex flex-col justify-center items-center text-center p-4 sm:p-6 lg:p-8 text-white">
+        <div className="max-w-4xl w-full">
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight">
             {title}
@@ -92,14 +92,14 @@ const PageBanner: React.FC<PageBannerProps> = ({
 
           {/* Subtitle */}
           {subtitle && (
-            <p className="text-white/90 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 max-w-2xl">
+            <div className="text-white/90 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 max-w-2xl mx-auto">
               {subtitle}
-            </p>
+            </div>
           )}
 
           {/* Additional Content */}
           {children && (
-            <div className="mt-4 sm:mt-6">
+            <div className="mt-4 sm:mt-6 flex justify-center">
               {children}
             </div>
           )}

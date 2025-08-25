@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip, Checkbox, Avatar } from '@heroui/react'
 import { CheckCircle, XCircle, Ban } from 'lucide-react'
 import { useTranslation } from '../../../../lib/stores/translationStore'
+import { formatPrice } from '../../../../utils/currencyUtils'
 import { PropertyDetailsModalProps } from '../../../../interfaces/Component'
 import { LocationVerificationMap } from '../LocationVerificationMap'
 
@@ -91,7 +92,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
               <div className="space-y-4">
                 <div>
                   <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.pricePerNight')}</label>
-                  <p className="text-sm text-gray-900">${selectedProperty.price_per_night}</p>
+                  <p className="text-sm text-gray-900">{formatPrice(selectedProperty.price_per_night, selectedProperty.currency || 'USD')}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-600">{t('propertyDetailsModal.labels.capacity')}</label>

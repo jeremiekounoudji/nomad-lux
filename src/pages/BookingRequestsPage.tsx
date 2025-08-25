@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Button, useDisclosure, Tabs, Tab, Pagination } from '@heroui/react'
+import { Button, useDisclosure, Tabs, Tab } from '@heroui/react'
 import { ClipboardList } from 'lucide-react'
 
 import { PageBanner, BookingRequestCard, BookingRequestDetailsModal, DeclineBookingModal, ConfirmApprovalModal } from '../components/shared'
@@ -344,18 +344,32 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
           
           {/* Pagination - Full Width */}
           {currentPagination && currentPagination.totalPages > 1 && (
-            <div className="col-span-full flex flex-col sm:flex-row items-center justify-center gap-4 mt-6">
-              <div className="text-sm text-gray-600 order-2 sm:order-1">
-                {t('booking.bookingRequests.showingRange', { from: ((currentPagination.currentPage - 1) * ITEMS_PER_PAGE) + 1, to: Math.min(currentPagination.currentPage * ITEMS_PER_PAGE, currentPagination.totalItems), total: currentPagination.totalItems })}
+            <div className="col-span-full flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => handlePageChange(currentPagination.currentPage - 1)}
+                disabled={currentPagination.currentPage === 1 || isLoadingHostRequests}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${currentPagination.currentPage === 1 || isLoadingHostRequests
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.previous', { defaultValue: 'Previous' })}
+              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  {t('booking.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: currentPagination.currentPage, total: currentPagination.totalPages })}
+                </span>
               </div>
-              <Pagination
-                total={currentPagination.totalPages}
-                page={currentPagination.currentPage}
-                onChange={handlePageChange}
-                size="sm"
-                showControls
-                className="order-1 sm:order-2"
-              />
+              <button
+                onClick={() => handlePageChange(currentPagination.currentPage + 1)}
+                disabled={isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.next', { defaultValue: 'Next' })}
+              </button>
             </div>
           )}
         </>

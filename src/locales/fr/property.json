@@ -105,6 +105,9 @@
     "beds": "lits",
     "bathrooms": "Salles de bain",
     "baths": "sdb",
+    "reviews": "avis",
+    "photos": "Photos",
+    "videos": "Vidéos",
     "cleaningFee": "Frais de ménage",
     "serviceFee": "Frais de service",
     "propertyType": "Type de propriété",
@@ -144,7 +147,7 @@
     "responseTime": "temps de réponse {{time}}"
   },
   "actions": {
-    "book": "Réserver maintenant",
+    "book": "Réserver",
     "viewDetails": "Voir les détails",
     "contactHost": "Contacter l'hôte",
     "callHost": "Appeler l'hôte",
@@ -195,7 +198,8 @@
     "loadingMap": "Chargement de la carte...",
     "findingNearbyAmenities": "Recherche d'équipements à proximité...",
     "nearbyAmenities": "Équipements à proximité",
-    "amenitiesFound": "{{count}} trouvé(s)"
+    "amenitiesFound": "{{count}} trouvé(s)",
+    "bookingCreationFailed": "Échec de la création de la réservation"
   },
   "share": {
     "title": "Partager la propriété",
@@ -233,6 +237,25 @@
     "confirmPrompt": "Êtes-vous sûr de vouloir continuer la modification de cette propriété ?",
     "editAndReset": "Modifier et réinitialiser le statut",
     "editProperty": "Modifier la propriété"
+  },
+  "editProperty": {
+    "banner": {
+      "title": "Modifier la propriété",
+      "subtitle": "Mettez à jour les détails et informations de votre propriété"
+    },
+    "title": "Modifier les détails de la propriété",
+    "description": "Apportez des modifications aux informations de votre propriété. Notez que certaines modifications peuvent nécessiter une révision par l'administrateur avant d'être publiées."
+  },
+  "actions": {
+    "backToListings": "Retour à mes annonces"
+  },
+  "messages": {
+    "invalidPropertyId": "ID de propriété invalide",
+    "propertyNotFound": "Propriété non trouvée",
+    "propertyNotFoundDescription": "La propriété que vous cherchez n'existe pas ou vous n'avez pas la permission de la modifier.",
+    "loadError": "Échec du chargement des détails de la propriété",
+    "updateSuccess": "Propriété mise à jour avec succès !",
+    "updateError": "Échec de la mise à jour de la propriété"
   },
   "stats": {
     "title": "Statistiques de la propriété",
@@ -336,6 +359,40 @@
     "description": "Choisissez des paramètres existants ou créez-en de nouveaux. Ces paramètres contrôleront les règles de réservation, les préférences de paiement et la disponibilité de votre propriété.",
     "loading": "Chargement de vos paramètres de propriété...",
     "success": "Paramètres de propriété créés avec succès !",
+    "createNew": "Créer Nouveau",
+    "createNewSettings": "Créer de Nouveaux Paramètres de Propriété",
+    "cancel": "Annuler",
+    "settingsName": "Nom des Paramètres",
+    "settingsNamePlaceholder": "ex., Règles de Réservation Standard, Paramètres de Séjour Rapide",
+    "settingsNameDescription": "Donnez à ce profil de paramètres un nom mémorable",
+    "setAsDefault": "Définir comme paramètres par défaut",
+    "default": "Par Défaut",
+    "selectSettings": "Sélectionner les Paramètres de Propriété",
+    "chooseSettingsProfile": "Choisir le Profil de Paramètres",
+    "selectExistingSettings": "Sélectionner des paramètres existants",
+    "noSettingsFound": "Aucun paramètre de propriété trouvé",
+    "createFirstSettings": "Créer Vos Premiers Paramètres",
+    "settingsPreview": "Aperçu des Paramètres",
+    "bookingRules": "Règles de Réservation",
+    "minimumStay": "Séjour Minimum (nuits)",
+    "maximumStay": "Séjour Maximum (nuits)",
+    "minimumAdvanceBooking": "Réservation Anticipée Minimum (jours)",
+    "maximumAdvanceBooking": "Réservation Anticipée Maximum (jours)",
+    "advanceBookingRequired": "À quelle distance à l'avance les réservations sont requises",
+    "advanceBookingAllowed": "À quelle distance à l'avance les réservations sont autorisées",
+    "checkinCheckout": "Arrivée & Départ",
+    "checkinTime": "Heure d'Arrivée",
+    "checkoutTime": "Heure de Départ",
+    "cleaningTime": "Temps de Nettoyage (heures)",
+    "cleaningTimeDescription": "Temps nécessaire entre les réservations",
+    "paymentApproval": "Paiement & Approbation",
+    "paymentTiming": "Moment du Paiement",
+    "beforeCheckin": "Avant l'Arrivée",
+    "afterCheckin": "Après l'Arrivée",
+    "autoApproveBookings": "Approuver automatiquement les réservations",
+    "autoApproveDescription": "Les réservations seront automatiquement approuvées sans examen manuel",
+    "createUseSettings": "Créer & Utiliser les Paramètres",
+    "creating": "Création...",
     "paymentMethods": {
       "card": "Carte de Crédit/Débit",
       "paypal": "PayPal",
@@ -431,6 +488,9 @@
       "createFirst": "Créer votre première annonce"
     },
     "pagination": {
+      "previous": "Précédent",
+      "next": "Suivant",
+      "pageOf": "Page {{current}} sur {{total}}",
       "showing": "Affichage",
       "to": "à",
       "of": "sur",
@@ -441,12 +501,21 @@
     "title": "Rencontrez votre hôte",
     "defaultBio": "Je suis un hôte passionné qui aime partager de beaux espaces avec des voyageurs du monde entier.",
     "emailVerified": "Email vérifié",
-    "phoneVerified": "Téléphone vérifié"
+    "phoneVerified": "Téléphone vérifié",
+    "verified": "Vérifié",
+    "rating": "Note",
+    "hostSince": "Hôte depuis",
+    "responseRate": "Taux de réponse",
+    "avgResponseTime": "temps de réponse moy."
   },
   "location": {
     "title": "Où vous serez"
   },
   "amenities": {
     "title": "Ce que cet endroit propose"
-  }
+  },
+  "night": "nuit",
+  "guests": "invités",
+  "bedrooms": "Chambres",
+  "bathrooms": "Salles de bain"
 }

@@ -20,6 +20,12 @@ export const BANNER_CONFIGS: Record<string, BannerConfig> = {
     overlayOpacity: 'medium',
     height: 'medium'
   },
+  editProperty: {
+    image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Property editing and updates background',
+    overlayOpacity: 'medium',
+    height: 'medium'
+  },
   myListings: {
     image: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?auto=format&fit=crop&w=1200&q=80',
     alt: 'Property management background',

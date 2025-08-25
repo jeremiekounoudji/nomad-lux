@@ -167,6 +167,7 @@ export const useSearchFeed = () => {
         title: item.title,
         description: item.description,
         price: item.price,
+        price_per_night: item.price || 0,
         currency: item.currency,
         location: item.location,
         images: item.images || [],
@@ -202,8 +203,11 @@ export const useSearchFeed = () => {
         instant_book: item.instant_book || false,
         additional_fees: [],
         distance: item.distance || '',
-        created_at: item.created_at || '',
-        total_before_taxes: item.total_before_taxes || item.price || 0
+        created_at: item.created_at || new Date().toISOString(),
+        status: item.status || 'pending',
+        like_count: item.like_count || 0,
+        unavailable_dates: item.unavailable_dates || [],
+        timezone: item.timezone || 'UTC'
       }))
 
       // Update store

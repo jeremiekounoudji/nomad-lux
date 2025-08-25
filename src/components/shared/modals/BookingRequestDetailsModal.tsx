@@ -3,6 +3,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Avata
 import { Calendar, Star, Clock, CreditCard, Phone, Mail, User, MapPin, Home, DollarSign, X, Check } from 'lucide-react';
 import { BookingRequest, BookingStatus } from '../../../interfaces';
 import { useTranslation } from '../../../lib/stores/translationStore';
+import { formatPrice } from '../../../utils/currencyUtils';
 
 interface BookingRequestDetailsModalProps {
   isOpen: boolean;
@@ -158,7 +159,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                           <DollarSign className="w-5 h-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.bookingRequests.details.totalAmount')}</p>
-                            <p className="text-gray-600">${selectedRequest.total_amount}</p>
+                            <p className="text-gray-600">{formatPrice(selectedRequest.total_amount, selectedRequest.currency || 'USD')}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">

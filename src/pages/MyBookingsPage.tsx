@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider, Pagination } from '@heroui/react'
+import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider } from '@heroui/react'
 import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X, CheckCircle, AlertCircle } from 'lucide-react'
+import toast from 'react-hot-toast'
 import MainLayout from '../components/layout/MainLayout'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { MyBookingsPageProps, Booking, DatabaseBooking } from '../interfaces'
-import { CancelBookingModal } from '../components/shared'
+import { CancelBookingModal, ContactHostModal } from '../components/shared'
 import { useBookingManagement } from '../hooks/useBookingManagement'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { BookingStatus } from '../interfaces/Booking'
+import { formatPrice } from '../utils/currencyUtils'
 import MyBookingCard from '../components/shared/MyBookingCard'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useTranslation } from '../lib/stores/translationStore'
@@ -57,15 +59,17 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
+  const [bookingToContact, setBookingToContact] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure()
+  const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
   const [paginationByStatus, setPaginationByStatus] = useState<Record<BookingStatus, { page: number }>>(() => {
     const initial: Record<BookingStatus, { page: number }> = {} as any
     ALL_STATUSES.forEach(status => { initial[status] = { page: 1 } })
     return initial
   })
-  const { loadGuestBookings } = useBookingManagement()
+  const { loadGuestBookings, cancelBooking } = useBookingManagement()
   const { guestBookings, isLoadingGuestBookings, error } = useBookingStore()
   
   // Type cast since the query includes joined properties data
@@ -74,6 +78,13 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   useEffect(() => {
     loadGuestBookings().catch(console.error)
   }, [loadGuestBookings])
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
 
   const filteredBookings = guestBookingsWithProperties.filter(booking => booking.status === selectedTab)
   const page = paginationByStatus[selectedTab]?.page || 1
@@ -115,7 +126,12 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
             >
               {t('booking.actions.cancelBooking')}
             </Button>
-            <Button size="sm" color="secondary" variant="flat">
+            <Button 
+              size="sm" 
+              color="secondary" 
+              variant="flat"
+              onPress={() => handleContactHost(booking)}
+            >
               {t('booking.actions.contactHost')}
             </Button>
           </div>
@@ -152,6 +168,11 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
     onCancelOpen()
   }
 
+  const handleContactHost = (booking: GuestBookingWithProperties) => {
+    setBookingToContact(booking)
+    onContactOpen()
+  }
+
   const handlePayNow = (booking: GuestBookingWithProperties) => {
     console.log('✅ FedaPay checkout completed for booking:', booking.id)
     // Refresh bookings to update status
@@ -170,10 +191,34 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
     // Keep modal open so user can retry
   }
 
-  const handleConfirmCancel = (reason: string) => {
-    console.log('Cancelling booking:', bookingToCancel?.id, 'Reason:', reason)
+  const handleConfirmCancel = async (reason: string) => {
+    if (!bookingToCancel) return
+    
+    try {
+      console.log('🔄 Cancelling booking:', bookingToCancel.id, 'Reason:', reason)
+      
+      // Call the cancel booking method (this will handle refund processing)
+      await cancelBooking(bookingToCancel.id, reason, false)
+      
+      // Refresh bookings to show updated status
+      await loadGuestBookings()
+      
+      // Close modal and clear state
     setBookingToCancel(null)
     onCancelClose()
+
+      toast.success(t('booking.messages.bookingCancelled'))
+      
+      console.log('✅ Booking cancelled and refund request created successfully')
+    } catch (error) {
+      console.error('❌ Failed to cancel booking:', error)
+      // Keep modal open so user can retry
+    }
+  }
+
+  const handleContactHostClose = () => {
+    setBookingToContact(null)
+    onContactClose()
   }
 
   const stats: Record<BookingStatus, number> = ALL_STATUSES.reduce((acc, status) => {
@@ -201,10 +246,10 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
   }
 
   return (
-    <>
-      {/* Header Section - Full Width */}
-      <div className="col-span-full mb-6">
-        {/* Banner Header */}
+    <div className="mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Banner Header - Full Width */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
         <PageBanner
           backgroundImage={getBannerConfig('myBookings').image}
                       title={t('booking.myBookings.banner.title')}
@@ -214,8 +259,10 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           height={getBannerConfig('myBookings').height}
           className="mb-8"
         />
+        </div>
 
-        {/* Tabs */}
+        {/* Tabs - Full Width */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-4">
         <Tabs
           selectedKey={selectedTab}
           onSelectionChange={handleTabChange}
@@ -228,26 +275,22 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           }}
         >
           {ALL_STATUSES.map(status => (
-            <Tab key={status} title={`${status.charAt(0).toUpperCase() + status.slice(1).replace(/-/g, ' ')} (${stats[status]})`} />
+            <Tab key={status} title={`${t(`booking.status.${status}`)} (${stats[status]})`} />
           ))}
         </Tabs>
       </div>
 
-      {/* Loading State */}
+        {/* Loading State - Full Width */}
       {isLoadingGuestBookings ? (
-        <div className="col-span-full text-center py-12">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
           <span className="text-lg text-gray-500">{t('booking.messages.loading')}</span>
-        </div>
-      ) : error ? (
-        <div className="col-span-full text-center py-12 text-red-600">
-          {error}
         </div>
       ) : paginatedBookings.length > 0 ? (
         <>
-          {/* Booking Cards */}
+            {/* Booking Cards - Each card takes one grid column */}
           {paginatedBookings.map((booking) => (
+             
             <MyBookingCard
-              key={booking.id}
               booking={booking}
               onClick={handleBookingClick}
               getStatusColor={getStatusColor}
@@ -255,33 +298,64 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               onPayNow={handlePayNow}
               onCancelBooking={handleCancelBooking}
             />
+           
           ))}
           
           {/* Pagination - Full Width */}
           {totalPages > 1 && (
-            <div className="col-span-full flex justify-center mt-6">
-              <Pagination
-                total={totalPages}
-                page={page}
-                onChange={handlePageChange}
-              />
+              <div className="col-span-1 md:col-span-2 lg:col-span-4 flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1 || isLoadingGuestBookings}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${page === 1 || isLoadingGuestBookings
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.previous', { defaultValue: 'Previous' })}
+              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  {t('booking.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: page, total: totalPages })}
+                </span>
+              </div>
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={isLoadingGuestBookings || page >= totalPages}
+                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                  ${isLoadingGuestBookings || page >= totalPages
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.next', { defaultValue: 'Next' })}
+              </button>
             </div>
           )}
         </>
       ) : (
-        <div className="col-span-full text-center py-12">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
           <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
-            {t('booking.messages.noBookings', { status: selectedTab })}
+            {(() => {
+              const message = t('booking.messages.noBookings', { status: t(`booking.status.${selectedTab}`) })
+              console.log('🌐 MyBookingsPage: noBookings message:', message, 'for status:', selectedTab)
+              return message
+            })()}
           </h3>
           <p className="text-gray-500">
-            {selectedTab === 'pending' && t('booking.messages.noPendingBookings')}
-            {selectedTab === 'confirmed' && t('booking.messages.noConfirmedBookings')}
-            {selectedTab === 'cancelled' && t('booking.messages.noCancelledBookings')}
-            {selectedTab === 'completed' && t('booking.messages.noCompletedBookings')}
-            {selectedTab === 'rejected' && t('booking.messages.noRejectedBookings')}
-            {selectedTab === 'accepted-and-waiting-for-payment' && t('booking.messages.noAwaitingPaymentBookings')}
-            {selectedTab === 'payment-failed' && t('booking.messages.noFailedPaymentBookings')}
+            {(() => {
+              let message = ''
+              if (selectedTab === 'pending') message = t('booking.messages.noPendingBookings')
+              else if (selectedTab === 'confirmed') message = t('booking.messages.noConfirmedBookings')
+              else if (selectedTab === 'cancelled') message = t('booking.messages.noCancelledBookings')
+              else if (selectedTab === 'completed') message = t('booking.messages.noCompletedBookings')
+              else if (selectedTab === 'rejected') message = t('booking.messages.noRejectedBookings')
+              else if (selectedTab === 'accepted-and-waiting-for-payment') message = t('booking.messages.noAwaitingPaymentBookings')
+              else if (selectedTab === 'payment-failed') message = t('booking.messages.noFailedPaymentBookings')
+              
+              console.log('🌐 MyBookingsPage: specific message:', message, 'for status:', selectedTab)
+              return message
+            })()}
           </p>
         </div>
       )}
@@ -333,7 +407,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           size="sm"
                           className="text-white font-medium mt-2"
                         >
-                          {selectedBooking.status.charAt(0).toUpperCase() + selectedBooking.status.slice(1)}
+                          {t(`booking.status.${selectedBooking.status}`)}
                         </Chip>
                       </div>
                     </div>
@@ -385,6 +459,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           color="secondary"
                           variant="flat"
                           startContent={<MessageCircle className="w-4 h-4" />}
+                            onPress={() => handleContactHost(selectedBooking)}
                         >
                           {t('booking.actions.contactHost')}
                         </Button>
@@ -430,24 +505,24 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span>{t('booking.details.accommodation')}</span>
-                          <span>${(selectedBooking.total_amount - (selectedBooking.cleaning_fee || 0) - (selectedBooking.service_fee || 0) - (selectedBooking.taxes || 0)).toFixed(2)}</span>
+                          <span>{formatPrice((selectedBooking.total_amount - (selectedBooking.cleaning_fee || 0) - (selectedBooking.service_fee || 0) - (selectedBooking.taxes || 0)), selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>{t('booking.details.cleaningFee')}</span>
-                          <span>${selectedBooking.cleaning_fee || 0}</span>
+                          <span>{formatPrice(selectedBooking.cleaning_fee || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>{t('booking.details.serviceFee')}</span>
-                          <span>${selectedBooking.service_fee || 0}</span>
+                          <span>{formatPrice(selectedBooking.service_fee || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
                           <span>{t('booking.details.taxes')}</span>
-                          <span>${selectedBooking.taxes || 0}</span>
+                          <span>{formatPrice(selectedBooking.taxes || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <Divider />
                         <div className="flex justify-between font-semibold">
                           <span>{t('booking.details.total')}</span>
-                          <span>${selectedBooking.total_amount}</span>
+                          <span>{formatPrice(selectedBooking.total_amount, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="mt-2 text-gray-600">
                           <p>{t('booking.details.paymentMethod')}</p>
@@ -485,16 +560,51 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
         </ModalContent>
       </Modal>
 
-      {/* Cancel Booking Modal - Comment out for now since it expects old Booking interface */}
-      {/* {bookingToCancel && (
+        {/* Cancel Booking Modal */}
+        {bookingToCancel && (
         <CancelBookingModal
           isOpen={isCancelOpen}
           onClose={onCancelClose}
-          booking={bookingToCancel}
+            booking={{
+              id: bookingToCancel.id,
+              propertyName: bookingToCancel.properties?.title || '',
+              propertyImage: bookingToCancel.properties?.images?.[0] || '',
+              location: bookingToCancel.properties?.location?.city && bookingToCancel.properties?.location?.country 
+                ? `${bookingToCancel.properties.location.city}, ${bookingToCancel.properties.location.country}`
+                : '',
+              checkIn: bookingToCancel.check_in_date,
+              checkOut: bookingToCancel.check_out_date,
+              guests: bookingToCancel.guest_count,
+              totalPrice: bookingToCancel.total_amount,
+              currency: bookingToCancel.currency || 'USD',
+              status: bookingToCancel.status
+            }}
           onConfirmCancel={handleConfirmCancel}
         />
-      )} */}
-    </>
+        )}
+
+        {/* Contact Host Modal */}
+        {bookingToContact && (
+          <ContactHostModal
+            isOpen={isContactOpen}
+            onClose={handleContactHostClose}
+            property={{
+              id: bookingToContact.property_id,
+              title: bookingToContact.properties?.title || '',
+              images: bookingToContact.properties?.images || [],
+              location: bookingToContact.properties?.location || { city: '', country: '', coordinates: { lat: 0, lng: 0 } },
+              host: {
+                id: bookingToContact.hosts?.id || '',
+                display_name: bookingToContact.hosts?.display_name || '',
+                avatar_url: bookingToContact.hosts?.avatar_url || '',
+                email: bookingToContact.hosts?.email || '',
+                phone: bookingToContact.hosts?.phone || ''
+              }
+            }}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 

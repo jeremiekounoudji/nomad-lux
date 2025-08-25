@@ -107,7 +107,8 @@
     "subtitleAllCaughtUp": "Tout est à jour !",
     "emptyDescription": "Vos notifications apparaîtront ici lorsque vous en recevrez.",
     "allCaughtUp": "Vous êtes à jour !",
-    "noMore": "Plus de notifications à charger"
+    "noMore": "Plus de notifications à charger",
+    "unreadCount": "{{count}} non lues"
   },
   "errors": {
     "loadingError": "Erreur lors du chargement des notifications"

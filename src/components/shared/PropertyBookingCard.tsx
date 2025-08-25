@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Star, Users, Calendar, AlertCircle } from 'lucide-react';
 import { Card, CardBody, CardHeader, Button, Divider } from '@heroui/react';
 import { useTranslation } from '../../lib/stores/translationStore';
-import { BookingCalendar } from './BookingCalendar';
+import BookingCalendar from './BookingCalendar';
 import { Property } from '../../interfaces/Property';
 import toast from 'react-hot-toast';
 
@@ -59,19 +59,41 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
 }) => {
   const { t } = useTranslation(['booking', 'property']);
 
+  // Add logging for property data received by PropertyBookingCard
+  useEffect(() => {
+    console.log('🎯 PropertyBookingCard - Received property data:', {
+      id: property?.id,
+      title: property?.title,
+      unavailable_dates: property?.unavailable_dates,
+      unavailable_dates_count: property?.unavailable_dates?.length || 0,
+      timezone: property?.timezone,
+      has_unavailable_dates: Boolean(property?.unavailable_dates && property.unavailable_dates.length > 0)
+    });
+
+    if (property?.unavailable_dates && property.unavailable_dates.length > 0) {
+      console.log('📅 PropertyBookingCard - Unavailable dates being passed to BookingCalendar:');
+      property.unavailable_dates.forEach((date, index) => {
+        const dateOnly = date.split('T')[0];
+        console.log(`  ${index + 1}. ${date} → ${dateOnly}`);
+      });
+    } else {
+      console.log('📅 PropertyBookingCard - No unavailable dates to pass to BookingCalendar');
+    }
+  }, [property]);
+
   return (
     <div className="lg:sticky lg:top-6 lg:h-fit">
       <Card className="shadow-lg border border-gray-200">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between w-full">
             <div>
-              <span className="text-2xl font-bold text-gray-900">${property.price}</span>
-              <span className="ml-1 text-gray-600">{t('night')}</span>
+              <span className="text-2xl font-bold text-gray-900">{property.currency} {property.price}</span>
+              <span className="ml-1 text-gray-600">{t('booking.labels.night')}</span>
             </div>
             <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
               <span className="font-medium text-gray-900">{property.rating}</span>
-              <span className="text-gray-600 text-sm">({property.review_count} reviews)</span>
+              <span className="text-gray-600 text-sm">({property.review_count} {t('booking.labels.reviews')})</span>
             </div>
           </div>
         </CardHeader>
@@ -114,7 +136,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
           {/* Time Selection (Manual Override) */}
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-IN TIME</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkInTime')}</label>
               <input
                 type="time"
                 value={checkInTime}
@@ -141,7 +163,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
               <p className="text-xs text-gray-500 mt-1">{t('booking.policies.checkInAvailable')}</p>
             </div>
             <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-OUT TIME</label>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkOutTime')}</label>
               <input
                 type="time"
                 value={checkOutTime}
@@ -171,11 +193,11 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
 
           {/* Guests */}
           <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-            <label className="block text-xs font-semibold text-gray-700 mb-1">{t('guests').toUpperCase()}</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.guests').toUpperCase()}</label>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-gray-500" />
-                <span className="text-gray-900">{guests} {guests > 1 ? t('guests') : t('guest')}</span>
+                <span className="text-gray-900">{guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -185,7 +207,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                   onPress={() => {
                     if (guests > 1) {
                       console.log('Decreasing guests from', guests, 'to', guests - 1)
-                      setGuests(prev => Math.max(1, prev - 1))
+                      setGuests(Math.max(1, guests - 1))
                     }
                   }}
                   isDisabled={guests <= 1}
@@ -199,7 +221,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                   onPress={() => {
                     if (guests < property.max_guests) {
                       console.log('Increasing guests from', guests, 'to', guests + 1)
-                      setGuests(prev => Math.min(property.max_guests, prev + 1))
+                      setGuests(Math.min(property.max_guests, guests + 1))
                     }
                   }}
                   isDisabled={guests >= property.max_guests}
@@ -208,12 +230,12 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">{t('maxGuests', { count: property.max_guests })}</p>
+            <p className="text-xs text-gray-500 mt-1">{t('booking.labels.maxGuests', { guests: property.max_guests })}</p>
           </div>
 
           {/* Special Requests */}
           <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-            <label className="block text-xs font-semibold text-gray-700 mb-1">SPECIAL REQUESTS (OPTIONAL)</label>
+            <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.specialRequestsOptional')}</label>
             <textarea
               value={specialRequests}
               onChange={(e) => setSpecialRequests(e.target.value)}
@@ -262,7 +284,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary-600" />
                 <p className="text-sm text-primary-700">
-                  {billingNights} night{billingNights > 1 ? 's' : ''} · {guests} guest{guests > 1 ? 's' : ''}
+                  {billingNights} {billingNights > 1 ? t('booking.labels.nights') : t('booking.labels.night')} · {guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}
                 </p>
               </div>
             </div>
@@ -277,21 +299,21 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
           {/* Price Breakdown */}
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-700">${property.price} x {billingNights} nights</span>
-              <span className="font-medium text-gray-900">${basePrice}</span>
+              <span className="text-gray-700">{property.currency} {property.price} x {billingNights} {t('booking.labels.nights')}</span>
+              <span className="font-medium text-gray-900">{property.currency} {basePrice}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-700">{t('booking.labels.cleaningFee')}</span>
-              <span className="font-medium text-gray-900">${cleaningFee}</span>
+              <span className="font-medium text-gray-900">{property.currency} {cleaningFee}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-700">{t('booking.labels.serviceFee')}</span>
-              <span className="font-medium text-gray-900">${serviceFee}</span>
+              <span className="font-medium text-gray-900">{property.currency} {serviceFee}</span>
             </div>
             <Divider className="my-3" />
             <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
               <span className="font-bold text-gray-900">{t('booking.labels.totalBeforeTaxes')}</span>
-              <span className="font-bold text-gray-900 text-lg">${totalAmount}</span>
+              <span className="font-bold text-gray-900 text-lg">{property.currency} {totalAmount}</span>
             </div>
           </div>
         </CardBody>

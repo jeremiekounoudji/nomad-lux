@@ -96,9 +96,10 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
   };
 
   return (
-    <>
-      {/* Page Header with Banner */}
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Page Header with Banner */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
         <PageBanner
           backgroundImage={getBannerConfig('search').image}
           title={t('search.findProperties')}
@@ -246,16 +247,17 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
         </div>
       )}
 
-      {/* Load More Trigger - Only show in list view */}
-      {view === 'list' && hasSearched && hasNextPage && !searchLoading && !searchError && (
-        <div
-          ref={loadMoreRef}
-          className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center p-6"
-        >
-          <PropertyCardSkeleton />
-        </div>
-      )}
-    </>
+        {/* Load More Trigger - Only show in list view */}
+        {view === 'list' && hasSearched && hasNextPage && !searchLoading && !searchError && (
+          <div
+            ref={loadMoreRef}
+            className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-center p-6"
+          >
+            <PropertyCardSkeleton />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -31,6 +31,7 @@ import {
   LineChart
 } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
 interface AnalyticsDashboardProps {
   onPageChange: (page: string) => void
@@ -81,7 +82,7 @@ export const AnalyticsDashboard: React.FC = () => {
   const metrics: MetricCard[] = [
     {
       title: t('admin.dashboard.totalRevenue', { defaultValue: 'Total Revenue' }),
-      value: '$248,750',
+      value: formatPrice(248750, 'USD'),
       change: 12.5,
       period: t('admin.analytics.vsLastMonth', { defaultValue: 'vs last month' }),
       icon: <DollarSign className="w-6 h-6" />,
@@ -589,15 +590,15 @@ export const AnalyticsDashboard: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                     <span className="text-sm font-medium text-green-800">{t('admin.analytics.revenue.commission', { defaultValue: 'Commission' })}</span>
-                    <span className="text-lg font-bold text-green-600">$198,250</span>
+                    <span className="text-lg font-bold text-green-600">{formatPrice(198250, 'USD')}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
                     <span className="text-sm font-medium text-blue-800">{t('admin.analytics.revenue.serviceFees', { defaultValue: 'Service Fees' })}</span>
-                    <span className="text-lg font-bold text-blue-600">$42,150</span>
+                    <span className="text-lg font-bold text-blue-600">{formatPrice(42150, 'USD')}</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
                     <span className="text-sm font-medium text-purple-800">{t('admin.analytics.revenue.premiumFeatures', { defaultValue: 'Premium Features' })}</span>
-                    <span className="text-lg font-bold text-purple-600">$8,350</span>
+                    <span className="text-lg font-bold text-purple-600">{formatPrice(8350, 'USD')}</span>
                   </div>
                 </div>
               </CardBody>
@@ -804,7 +805,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-gray-600">{t('admin.analytics.bookings.avgValue', { defaultValue: 'Average Booking Value' })}</span>
-                      <span className="text-lg font-bold text-gray-900">$485</span>
+                      <span className="text-lg font-bold text-gray-900">{formatPrice(485, 'USD')}</span>
                     </div>
                     <Progress value={75} color="primary" size="sm" />
                   </div>

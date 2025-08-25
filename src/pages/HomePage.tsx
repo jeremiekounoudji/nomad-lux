@@ -97,6 +97,19 @@ const HomePage: React.FC = () => {
     fetchPropertiesByFilter,
   } = useHomeFeed()
 
+  // Show error toasts when there are errors
+  useEffect(() => {
+    if (feedError) {
+      toast.error(feedError)
+    }
+  }, [feedError])
+
+  useEffect(() => {
+    if (cityPropertiesError) {
+      toast.error(cityPropertiesError)
+    }
+  }, [cityPropertiesError])
+
   console.log('🏠 HomePage rendered', { 
     currentPage, 
     isAuthenticated, 
@@ -401,9 +414,10 @@ const HomePage: React.FC = () => {
 
   // Default home page view (protected)
   return (
-    <>
+    <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Home Banner */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
           <PageBanner
             backgroundImage={getBannerConfig('home').image}
             title={t('home.discoverLuxury')}
@@ -415,7 +429,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Popular Places Section - Full width across all columns */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-xl border border-gray-200 p-4">
+        <div className="col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl border border-gray-200 p-4">
           <PopularPlaces 
             onPlaceClick={handleCityClick}
             onExploreClick={() => {
@@ -427,13 +441,12 @@ const HomePage: React.FC = () => {
 
         {/* Properties Feed Error State */}
         {feedError && !feedLoading && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
             <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
               <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
               <h3 className="text-lg font-semibold text-red-900 mb-2">
                 {t('messages.failedToLoad')}
               </h3>
-              <p className="text-red-700 mb-4">{feedError}</p>
               <Button
                 variant="flat"
                 color="danger"
@@ -506,7 +519,7 @@ const HomePage: React.FC = () => {
         {hasNextPage && (
           <div 
             ref={loadMoreRef}
-            className="col-span-1 md:col-span-2 lg:col-span-3 py-8"
+            className="col-span-1 md:col-span-2 lg:col-span-4 py-8"
           >
             {isLoadingMore ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -531,7 +544,7 @@ const HomePage: React.FC = () => {
 
         {/* End of feed indicator */}
         {!hasNextPage && properties.length > 0 && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-8">
+          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-8">
             <p className="text-gray-500">
               🎉 {t('messages.seenAllProperties')}
             </p>
@@ -547,12 +560,13 @@ const HomePage: React.FC = () => {
         </div>
       )}
 
-      {/* Profile Modal */}
-      <ProfileModal 
-        isOpen={isProfileModalOpen}
-        onClose={handleProfileModalClose}
-      />
-    </>
+        {/* Profile Modal */}
+        <ProfileModal 
+          isOpen={isProfileModalOpen}
+          onClose={handleProfileModalClose}
+        />
+      </div>
+    </div>
   )
 }
 

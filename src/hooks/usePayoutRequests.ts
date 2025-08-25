@@ -38,9 +38,11 @@ export const usePayoutRequests = () => {
     setIsLoading(true)
     setError(null)
 
+    console.log('🚀 Calling requestPayout with amount:', amount)
     const { data, error } = await supabase.functions.invoke('requestPayout', {
       body: { amount }
     })
+    console.log('📥 Response:', { data, error })
 
     if (error) {
       console.error('❌ requestPayout error:', error)

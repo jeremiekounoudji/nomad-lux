@@ -152,7 +152,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
                     {property.location.city}, {property.location.country}
                   </p>
                   <p className="text-sm font-semibold text-primary-600">
-                    ${property.price}/night
+                    ${property.currency} ${property.price}/night
                   </p>
                 </div>
                 <Chip 
@@ -319,7 +319,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
 
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
-                ${property.price}
+                {property.currency} {property.price}
                 <span className="text-sm font-normal text-gray-600">{t('marker.night')}</span>
               </div>
               <div className="text-sm text-gray-600">

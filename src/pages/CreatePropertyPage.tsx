@@ -10,8 +10,9 @@ import { CreatePropertyPageProps } from '../interfaces'
 const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange }) => {
   const { t } = useTranslation(['property', 'common'])
   return (
-    <>
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 min-h-screen">
         {/* Mobile-first responsive container */}
         <div className="w-full max-w-none lg:max-w-6xl mx-auto">
           {/* Header Banner */}
@@ -30,8 +31,9 @@ const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange })
             <PropertySubmissionForm />
           </div>
         </div>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -106,3 +106,45 @@ export interface FedaPayWebhookEvent {
   }
   created: number
 } 
+
+export interface RefundStatus {
+  refund_request_id: string
+  requested_amount: number
+  approved_amount: number | null
+  refund_reason: string
+  status: 'pending' | 'approved' | 'processed' | 'failed' | 'rejected'
+  admin_notes: string | null
+  processed_at: string | null
+  created_at: string
+}
+
+export interface AdminRefundRequest {
+  id: string
+  booking_id: string
+  payment_record_id: string
+  requested_amount: number
+  approved_amount: number | null
+  refund_reason: string
+  status: 'pending' | 'approved' | 'processed' | 'failed' | 'rejected'
+  admin_notes: string | null
+  processed_at: string | null
+  created_at: string
+  updated_at: string
+  booking: {
+    id: string
+    guest_id: string
+    total_amount: number
+    status: string
+    cancellation_reason: string
+    cancelled_at: string
+    properties: {
+      title: string
+      images: string[]
+    }
+    guest_user: {
+      display_name: string
+      email: string
+      phone: string
+    }
+  }
+} 

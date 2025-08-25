@@ -34,6 +34,10 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
     onShare?.(property)
   }
 
+  // Ensure images array exists and has content
+  const images = property.images || []
+  const firstImage = images[0] || ''
+
   return (
     <div 
       className={`bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden ${className}`}
@@ -43,7 +47,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
         {/* Left side - Image */}
         <div className="relative w-40 flex-shrink-0 m-2">
           <img
-            src={property.images[0]}
+            src={firstImage}
             alt={property.title}
             className="w-full h-full object-cover rounded-lg border-2 border-primary/20"
           />
@@ -113,7 +117,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
             <div className="text-left">
               <div className="flex items-baseline gap-1">
                 <span className="text-lg font-bold text-gray-900">
-                  ${property.price}
+                  {property.currency} {property.price}
                 </span>
                 <span className="text-xs text-gray-600">{t('perNight')}</span>
               </div>

@@ -264,7 +264,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
               </p>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-sm font-semibold text-primary-600">
-                  ${property.price}/night
+                  ${property.currency} ${property.price}/night
                 </span>
                 <div className="flex items-center gap-1">
                   <Star className="w-3 h-3 text-yellow-500 fill-current" />

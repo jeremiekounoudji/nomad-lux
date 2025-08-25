@@ -7,6 +7,7 @@ import {
   Button
 } from '@heroui/react';
 import { CheckCircle } from 'lucide-react';
+import { formatPrice } from '../../../utils/currencyUtils';
 import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface BookingSuccessModalProps {
@@ -23,7 +24,17 @@ const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
   const { t } = useTranslation('booking');
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md" hideCloseButton>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      size="md" 
+      hideCloseButton
+      classNames={{
+        wrapper: "z-[9999]",
+        backdrop: "z-[9998]",
+        base: "z-[9999]"
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>
@@ -37,7 +48,7 @@ const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
               </p>
               <div className="space-y-2 text-sm text-gray-600">
                 <p><strong>Booking Reference:</strong> NL{Date.now().toString().slice(-6)}</p>
-                <p><strong>Total Amount:</strong> ${totalAmount}</p>
+                <p><strong>Total Amount:</strong> {formatPrice(totalAmount, 'USD')}</p>
               </div>
             </ModalBody>
             <ModalFooter className="justify-center">

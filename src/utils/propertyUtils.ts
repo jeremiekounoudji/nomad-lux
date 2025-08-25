@@ -1,4 +1,4 @@
-import { DatabaseProperty, Property, PropertyHost } from '../interfaces'
+import { DatabaseProperty, Property, PropertyHost, PropertySubmissionData } from '../interfaces'
 import type { MapCoordinates } from '../interfaces/Map'
 
 // Convert DatabaseProperty to Property for UI components
@@ -8,6 +8,7 @@ export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty):
     title: dbProperty.title,
     description: dbProperty.description,
     price: dbProperty.price_per_night,
+    price_per_night: dbProperty.price_per_night,
     currency: dbProperty.currency || 'USD',
     location: typeof dbProperty.location === 'object' ? {
       city: dbProperty.location.city || '',
@@ -22,7 +23,21 @@ export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty):
     },
     images: dbProperty.images || [],
     videos: dbProperty.video ? [dbProperty.video] : [],
-    host: undefined,
+    host: {
+      id: '',
+      name: '',
+      username: '',
+      avatar_url: '',
+      display_name: '',
+      is_identity_verified: false,
+      is_email_verified: false,
+      email: '',
+      phone: '',
+      rating: 0,
+      response_rate: 0,
+      response_time: '',
+      bio: ''
+    },
     rating: dbProperty.rating || 0,
     review_count: dbProperty.review_count || 0,
     view_count: dbProperty.view_count || 0,
@@ -41,7 +56,60 @@ export const convertDatabasePropertyToProperty = (dbProperty: DatabaseProperty):
     total_before_taxes: dbProperty.price_per_night + (dbProperty.cleaning_fee || 0) + (dbProperty.service_fee || 0),
     additional_fees: [],
     distance: '0 km away',
-    status: dbProperty.status
+    status: dbProperty.status,
+    like_count: 0,
+    // Add missing availability fields
+    unavailable_dates: dbProperty.unavailable_dates || [],
+    timezone: dbProperty.timezone || 'UTC'
+  }
+}
+
+// Convert DatabaseProperty to PropertySubmissionData for form prefilling
+export const convertDatabasePropertyToSubmissionData = (dbProperty: DatabaseProperty): Partial<PropertySubmissionData> => {
+  return {
+    title: dbProperty.title,
+    description: dbProperty.description,
+    price: dbProperty.price_per_night,
+    currency: dbProperty.currency || 'USD',
+    location: typeof dbProperty.location === 'object' ? {
+      city: dbProperty.location.city || '',
+      country: dbProperty.location.country || '',
+      address: dbProperty.location.address || '',
+      coordinates: dbProperty.location.coordinates || { lat: 0, lng: 0 }
+    } : {
+      city: '',
+      country: '',
+      address: '',
+      coordinates: { lat: 0, lng: 0 }
+    },
+    images: dbProperty.images || [],
+    videos: dbProperty.video ? [dbProperty.video] : [],
+    property_type: dbProperty.property_type || 'house',
+    amenities: dbProperty.amenities || [],
+    max_guests: dbProperty.max_guests || 1,
+    bedrooms: dbProperty.bedrooms || 1,
+    bathrooms: dbProperty.bathrooms || 1,
+    cleaning_fee: dbProperty.cleaning_fee || 0,
+    service_fee: dbProperty.service_fee || 0,
+    instant_book: true,
+    additional_fees: [],
+    // Default host data will be filled by the form component
+    host: {
+      id: '',
+      name: '',
+      username: '',
+      avatar_url: '',
+      display_name: '',
+      is_identity_verified: false,
+      is_email_verified: false,
+      email: '',
+      phone: '',
+      rating: 0,
+      response_rate: 0,
+      response_time: '',
+      bio: '',
+      experience: 0
+    }
   }
 }
 
@@ -108,6 +176,7 @@ const defaultProperty: Property = {
   title: 'Default Property',
   description: 'A default property description',
   price: 0,
+  price_per_night: 0,
   currency: 'USD',
   location: {
     city: 'Default City',
@@ -135,7 +204,10 @@ const defaultProperty: Property = {
   additional_fees: [],
   distance: '0 km away',
   created_at: new Date().toISOString(),
-  status: 'pending'
+  status: 'pending',
+  like_count: 0,
+  unavailable_dates: [],
+  timezone: 'UTC'
 }
 
 // ================================================

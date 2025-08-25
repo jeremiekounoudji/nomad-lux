@@ -132,7 +132,8 @@ export const UserManagement: React.FC = () => {
   }
 
   const filteredUsers = mockUsers.filter(user => {
-    const matchesSearch = user.display_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    const fullName = (user.display_name ?? user.name ?? '').toLowerCase()
+    const matchesSearch = fullName.includes(searchQuery.toLowerCase()) ||
                          user.email.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesTab = selectedTab === 'all' || user.status === selectedTab || user.role === selectedTab
     return matchesSearch && matchesTab
@@ -183,7 +184,7 @@ export const UserManagement: React.FC = () => {
 
   const handleUserSuspension = (reason: string) => {
     if (actionUser) {
-      console.log(`Suspending user ${actionUser.display_name} with reason:`, reason)
+      console.log(`Suspending user ${(actionUser.display_name ?? actionUser.name)} with reason:`, reason)
       // Update user status logic here
     }
   }
@@ -373,12 +374,12 @@ export const UserManagement: React.FC = () => {
                       <div className="flex items-center gap-3">
                         <Avatar
                           src={user.avatar_url}
-                          name={user.display_name}
+                          name={user.display_name ?? user.name}
                           size="sm"
                           className="flex-shrink-0"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">{user.display_name}</p>
+                          <p className="font-medium text-gray-900">{user.display_name ?? user.name}</p>
                           <p className="text-sm text-gray-500">{user.email}</p>
                           <p className="text-xs text-gray-400">{user.phone}</p>
                         </div>

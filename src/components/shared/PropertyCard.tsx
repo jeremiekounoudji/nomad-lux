@@ -48,13 +48,17 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     onClick?.(property)
   }
 
+  // Ensure images array exists and has content
+  const images = property.images || []
+  const currentImage = images[currentImageIndex] || images[0] || ''
+
   return (
     <Card className={`overflow-hidden ${className}`}>
       <div className="relative">
         {/* Image carousel */}
         <div className="relative h-48 overflow-hidden">
           <img
-            src={property.images[currentImageIndex]}
+            src={currentImage}
             alt={property.title}
             className="w-full h-full object-cover"
             onClick={nextImage}
@@ -116,7 +120,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               </div>
               <div className="text-center">
                 <p className="text-sm text-gray-500">{t('revenue')}</p>
-                <p className="font-semibold">${property.total_revenue}</p>
+                <p className="font-semibold">{property.currency} {property.total_revenue}</p>
               </div>
             </div>
           )}
@@ -124,8 +128,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           {/* Price and Action Button */}
           <div className="flex items-center justify-between mt-2">
             <div className="text-left">
-              <p className="font-semibold text-gray-900">${property.price || property.price_per_night}</p>
-                              <p className="text-sm text-gray-500">{t('perNight')}</p>
+              <p className="font-semibold text-gray-900">{property.currency} {property.price || property.price_per_night}</p>
+              <p className="text-sm text-gray-500">{t('perNight')}</p>
             </div>
             {showActions && (
               <Button

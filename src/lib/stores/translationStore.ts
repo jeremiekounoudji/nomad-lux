@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { useMemo } from 'react'
 import i18n from '../i18n'
 import { useAuthStore } from './authStore'
 
@@ -38,6 +39,9 @@ export const useTranslationStore = create<TranslationState>()(
             isLoading: false 
           })
           
+          // Also update localStorage for immediate persistence
+          localStorage.setItem('nomad-lux-language', language)
+          
           // Update user preference in database if user is authenticated
           const authStore = useAuthStore.getState()
           if (authStore.user && authStore.user.language_preference !== language) {
@@ -60,7 +64,7 @@ export const useTranslationStore = create<TranslationState>()(
           
           // Priority order for language detection:
           // 1. User's saved preference in database
-          // 2. Stored preference in localStorage
+          // 2. Stored preference in localStorage (via Zustand persist)
           // 3. Browser language
           // 4. Default to English
           
@@ -68,19 +72,26 @@ export const useTranslationStore = create<TranslationState>()(
             targetLanguage = authStore.user.language_preference as Language
             console.log('🌐 TranslationStore: Using user database preference:', targetLanguage)
           } else {
-            // Check localStorage
-            const storedLanguage = localStorage.getItem('nomad-lux-language')
-            if (storedLanguage && (storedLanguage === 'en' || storedLanguage === 'fr')) {
-              targetLanguage = storedLanguage as Language
-              console.log('🌐 TranslationStore: Using localStorage preference:', targetLanguage)
+            // Check if we have a persisted language from Zustand
+            const currentState = get()
+            if (currentState.currentLanguage && currentState.currentLanguage !== 'en') {
+              targetLanguage = currentState.currentLanguage
+              console.log('🌐 TranslationStore: Using persisted Zustand preference:', targetLanguage)
             } else {
-              // Check browser language
-              const browserLanguage = navigator.language.toLowerCase()
-              if (browserLanguage.startsWith('fr')) {
-                targetLanguage = 'fr'
-                console.log('🌐 TranslationStore: Using browser language preference: fr')
+              // Check localStorage as fallback
+              const storedLanguage = localStorage.getItem('nomad-lux-language')
+              if (storedLanguage && (storedLanguage === 'en' || storedLanguage === 'fr')) {
+                targetLanguage = storedLanguage as Language
+                console.log('🌐 TranslationStore: Using localStorage preference:', targetLanguage)
               } else {
-                console.log('🌐 TranslationStore: Using default language: en')
+                // Check browser language
+                const browserLanguage = navigator.language.toLowerCase()
+                if (browserLanguage.startsWith('fr')) {
+                  targetLanguage = 'fr'
+                  console.log('🌐 TranslationStore: Using browser language preference: fr')
+                } else {
+                  console.log('🌐 TranslationStore: Using default language: en')
+                }
               }
             }
           }
@@ -115,6 +126,7 @@ export const useTranslationStore = create<TranslationState>()(
       },
 
       changeLanguage: async (language: Language) => {
+        console.log('🌐 TranslationStore: Changing language to:', language)
         const { setLanguage } = get()
         await setLanguage(language)
         
@@ -128,35 +140,56 @@ export const useTranslationStore = create<TranslationState>()(
       name: 'nomad-lux-translation',
       partialize: (state) => ({
         currentLanguage: state.currentLanguage
-      })
+      }),
+      // Ensure the store is rehydrated properly
+      onRehydrateStorage: () => (state) => {
+        console.log('🌐 TranslationStore: Rehydrating from storage:', state?.currentLanguage)
+      }
     }
   )
 )
 
 // Helper hook for easier usage in components
 export const useTranslation = (namespace?: string | string[]) => {
-  const { currentLanguage, getTranslation, changeLanguage, isLoading } = useTranslationStore()
+  const currentLanguage = useTranslationStore((state) => state.currentLanguage)
+  const isLoading = useTranslationStore((state) => state.isLoading)
+  const changeLanguage = useTranslationStore((state) => state.changeLanguage)
   
-  const t = (key: string, options?: any) => {
-    // Handle cross-namespace keys (e.g., 'common.messages.loading')
-    if (key.includes('.') && key.split('.').length > 1) {
-      const [ns, ...keyParts] = key.split('.')
-      const actualKey = keyParts.join('.')
-      return getTranslation(actualKey, ns, options)
+  const t = useMemo(() => {
+    return (key: string, options?: any) => {
+      try {
+        // Handle cross-namespace keys (e.g., 'common.messages.loading')
+        if (key.includes('.') && key.split('.').length > 1) {
+          const [ns, ...keyParts] = key.split('.')
+          const actualKey = keyParts.join('.')
+          const fullKey = `${ns}:${actualKey}`
+          const result = i18n.t(fullKey, options)
+          return typeof result === 'string' ? result : String(result)
+        }
+        
+        // Use provided namespace
+        if (typeof namespace === 'string') {
+          const fullKey = `${namespace}:${key}`
+          const result = i18n.t(fullKey, options)
+          return typeof result === 'string' ? result : String(result)
+        }
+        
+        // If multiple namespaces provided, use the first as default
+        if (Array.isArray(namespace) && namespace.length > 0) {
+          const fullKey = `${namespace[0]}:${key}`
+          const result = i18n.t(fullKey, options)
+          return typeof result === 'string' ? result : String(result)
+        }
+        
+        // No namespace
+        const result = i18n.t(key, options)
+        return typeof result === 'string' ? result : String(result)
+      } catch (error) {
+        console.warn('🌐 TranslationStore: Translation failed for key:', key, error)
+        return key // Return key as fallback
+      }
     }
-    
-    // Use provided namespace
-    if (typeof namespace === 'string') {
-      return getTranslation(key, namespace, options)
-    }
-    
-    // If multiple namespaces provided, use the first as default
-    if (Array.isArray(namespace) && namespace.length > 0) {
-      return getTranslation(key, namespace[0], options)
-    }
-    
-    return getTranslation(key, undefined, options)
-  }
+  }, [namespace])
   
   return {
     t,

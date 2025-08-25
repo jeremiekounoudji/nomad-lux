@@ -90,16 +90,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
     }
   }, [formData.existing_settings_id, selectedSettingsId])
 
-  // Available payment methods from admin settings
-  const availablePaymentMethods = useMemo(() => {
-    const methods = adminSettings?.booking?.supportedPaymentMethods || ['card']
-    return methods.map(method => ({
-      value: method,
-      label: method === 'card' ? t('property.settings.paymentMethods.card') : 
-             method === 'paypal' ? t('property.settings.paymentMethods.paypal') : 
-             method === 'bank_transfer' ? t('property.settings.paymentMethods.bankTransfer') : method
-    }))
-  }, [adminSettings?.booking?.supportedPaymentMethods, t])
+
 
   const handleSelectExistingSettings = (settingsId: string) => {
     setSelectedSettingsId(settingsId)
@@ -188,24 +179,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
     }
   }
 
-  const handlePaymentMethodToggle = (method: string, checked: boolean) => {
-    const currentMethods = newSettings.preferred_payment_methods
-    let updatedMethods: string[]
-    
-    if (checked) {
-      updatedMethods = [...currentMethods, method]
-    } else {
-      updatedMethods = currentMethods.filter(m => m !== method)
-    }
-    
-    // Ensure at least one payment method is selected
-    if (updatedMethods.length === 0) {
-      toast.error(t('property.settings.errors.atLeastOnePaymentMethod'))
-      return
-    }
-    
-    handleSettingsFormChange('preferred_payment_methods', updatedMethods)
-  }
+
 
   const selectedSettings = hostSettings.find(s => s.id === selectedSettingsId)
 
@@ -245,37 +219,37 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
       {!showCreateForm && (
         <Card className="border border-gray-200">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between w-full">
-              <h3 className="text-lg font-semibold">Select Property Settings</h3>
-              <Button
-                color="primary"
-                variant="light"
-                startContent={<Plus className="w-4 h-4" />}
-                onPress={handleCreateNewSettings}
-                size="sm"
-              >
-                Create New
-              </Button>
-            </div>
+                          <div className="flex items-center justify-between w-full">
+                <h3 className="text-lg font-semibold">{t('property.settings.selectSettings')}</h3>
+                <Button
+                  color="primary"
+                  variant="light"
+                  startContent={<Plus className="w-4 h-4" />}
+                  onPress={handleCreateNewSettings}
+                  size="sm"
+                >
+                  {t('property.settings.createNew')}
+                </Button>
+              </div>
           </CardHeader>
           <CardBody className="pt-4">
             {hostSettings.length === 0 ? (
               <div className="text-center py-8">
                 <Settings className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600 mb-4">No property settings found</p>
+                <p className="text-gray-600 mb-4">{t('property.settings.noSettingsFound')}</p>
                 <Button
                   color="primary"
                   startContent={<Plus className="w-4 h-4" />}
                   onPress={handleCreateNewSettings}
                 >
-                  Create Your First Settings
+                  {t('property.settings.createFirstSettings')}
                 </Button>
               </div>
             ) : (
               <div className="space-y-4">
                 <Select
-                  label="Choose Settings Profile"
-                  placeholder="Select existing property settings"
+                  label={t('property.settings.chooseSettingsProfile')}
+                  placeholder={t('property.settings.selectExistingSettings')}
                   selectedKeys={selectedSettingsId ? [selectedSettingsId] : []}
                   onSelectionChange={(keys) => {
                     const settingsId = Array.from(keys)[0] as string
@@ -295,7 +269,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                           {settings.is_default && (
                             <Chip size="sm" color="primary" variant="flat">
                               <Star className="w-3 h-3" />
-                              Default
+                              {t('property.settings.default')}
                             </Chip>
                           )}
                         </div>
@@ -310,7 +284,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                     <CardBody className="p-4">
                       <h4 className="font-semibold mb-3 flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-success-600" />
-                        Settings Preview: {selectedSettings.settings_name}
+                        {t('property.settings.settingsPreview')}: {selectedSettings.settings_name}
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div className="space-y-2">
@@ -352,13 +326,13 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
         <Card className="border border-primary-200">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between w-full">
-              <h3 className="text-lg font-semibold text-primary-700">Create New Property Settings</h3>
+              <h3 className="text-lg font-semibold text-primary-700">{t('property.settings.createNewSettings')}</h3>
               <Button
                 variant="light"
                 size="sm"
                 onPress={handleCancelCreate}
               >
-                Cancel
+                {t('property.settings.cancel')}
               </Button>
             </div>
           </CardHeader>
@@ -367,12 +341,12 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
               {/* Basic Settings */}
               <div className="space-y-4">
                 <Input
-                  label="Settings Name"
-                  placeholder="e.g., Standard Booking Rules, Quick Stay Settings"
+                  label={t('property.settings.settingsName')}
+                  placeholder={t('property.settings.settingsNamePlaceholder')}
                   value={newSettings.settings_name}
                   onChange={(e) => handleSettingsFormChange('settings_name', e.target.value)}
                   isRequired
-                  description="Give this settings profile a memorable name"
+                  description={t('property.settings.settingsNameDescription')}
                 />
 
                 <div className="flex items-center gap-4">
@@ -380,12 +354,12 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                     isSelected={newSettings.is_default}
                     onValueChange={(checked) => handleSettingsFormChange('is_default', checked)}
                   >
-                    Set as default settings
+                    {t('property.settings.setAsDefault')}
                   </Switch>
                   {newSettings.is_default && (
                     <Chip size="sm" color="primary" variant="flat">
                       <Star className="w-3 h-3" />
-                      Default
+                      {t('property.settings.default')}
                     </Chip>
                   )}
                 </div>
@@ -395,19 +369,19 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
 
               {/* Booking Rules */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Booking Rules</h4>
+                <h4 className="font-semibold text-gray-900">{t('property.settings.bookingRules')}</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     type="number"
-                    label="Minimum Stay (nights)"
+                    label={t('property.settings.minimumStay')}
                     value={newSettings.min_stay_nights.toString()}
                     onChange={(e) => handleSettingsFormChange('min_stay_nights', parseInt(e.target.value) || 1)}
                     min={1}
                   />
                   <Input
                     type="number"
-                    label="Maximum Stay (nights)"
+                    label={t('property.settings.maximumStay')}
                     value={newSettings.max_stay_nights.toString()}
                     onChange={(e) => handleSettingsFormChange('max_stay_nights', parseInt(e.target.value) || 30)}
                     min={1}
@@ -417,19 +391,19 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     type="number"
-                    label="Minimum Advance Booking (days)"
+                    label={t('property.settings.minimumAdvanceBooking')}
                     value={newSettings.min_advance_booking.toString()}
                     onChange={(e) => handleSettingsFormChange('min_advance_booking', parseInt(e.target.value) || 1)}
                     min={1}
-                    description="How far in advance bookings are required"
+                    description={t('property.settings.advanceBookingRequired')}
                   />
                   <Input
                     type="number"
-                    label="Maximum Advance Booking (days)"
+                    label={t('property.settings.maximumAdvanceBooking')}
                     value={newSettings.max_advance_booking.toString()}
                     onChange={(e) => handleSettingsFormChange('max_advance_booking', parseInt(e.target.value) || 365)}
                     min={1}
-                    description="How far in advance bookings are allowed"
+                    description={t('property.settings.advanceBookingAllowed')}
                   />
                 </div>
               </div>
@@ -438,29 +412,29 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
 
               {/* Check-in/Check-out Times */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Check-in & Check-out</h4>
+                <h4 className="font-semibold text-gray-900">{t('property.settings.checkinCheckout')}</h4>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Input
                     type="time"
-                    label="Check-in Time"
+                    label={t('property.settings.checkinTime')}
                     value={newSettings.checkin_time.slice(0, 5)}
                     onChange={(e) => handleSettingsFormChange('checkin_time', e.target.value + ':00')}
                   />
                   <Input
                     type="time"
-                    label="Check-out Time"
+                    label={t('property.settings.checkoutTime')}
                     value={newSettings.checkout_time.slice(0, 5)}
                     onChange={(e) => handleSettingsFormChange('checkout_time', e.target.value + ':00')}
                   />
                   <Input
                     type="number"
-                    label="Cleaning Time (hours)"
+                    label={t('property.settings.cleaningTime')}
                     value={newSettings.cleaning_time_hours.toString()}
                     onChange={(e) => handleSettingsFormChange('cleaning_time_hours', parseInt(e.target.value) || 2)}
                     min={0}
                     max={24}
-                    description="Time needed between bookings"
+                    description={t('property.settings.cleaningTimeDescription')}
                   />
                 </div>
               </div>
@@ -469,45 +443,31 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
 
               {/* Payment & Approval */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Payment & Approval</h4>
+                <h4 className="font-semibold text-gray-900">{t('property.settings.paymentApproval')}</h4>
                 
                 <Select
-                  label="Payment Timing"
+                  label={t('property.settings.paymentTiming')}
                   selectedKeys={[newSettings.payment_timing]}
                   onSelectionChange={(keys) => {
                     const timing = Array.from(keys)[0] as PaymentTiming
                     handleSettingsFormChange('payment_timing', timing)
                   }}
                 >
-                  <SelectItem key="before_checkin">Before Check-in</SelectItem>
-                  <SelectItem key="after_checkin">After Check-in</SelectItem>
+                  <SelectItem key="before_checkin">{t('property.settings.beforeCheckin')}</SelectItem>
+                  <SelectItem key="after_checkin">{t('property.settings.afterCheckin')}</SelectItem>
                 </Select>
 
-                <div className="space-y-3">
-                  <label className="text-sm font-medium text-gray-700">Preferred Payment Methods</label>
-                  <div className="flex flex-wrap gap-3">
-                    {availablePaymentMethods.map((method) => (
-                      <Switch
-                        key={method.value}
-                        size="sm"
-                        isSelected={newSettings.preferred_payment_methods.includes(method.value)}
-                        onValueChange={(checked) => handlePaymentMethodToggle(method.value, checked)}
-                      >
-                        {method.label}
-                      </Switch>
-                    ))}
-                  </div>
-                </div>
+
 
                 <Switch
                   isSelected={newSettings.auto_approve_bookings}
                   onValueChange={(checked) => handleSettingsFormChange('auto_approve_bookings', checked)}
                 >
-                  Auto-approve bookings
+                  {t('property.settings.autoApproveBookings')}
                 </Switch>
                 {newSettings.auto_approve_bookings && (
                   <p className="text-sm text-gray-600 ml-6">
-                    Bookings will be automatically approved without manual review
+                    {t('property.settings.autoApproveDescription')}
                   </p>
                 )}
               </div>
@@ -522,14 +482,14 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                   startContent={!isCreatingSettings && <CheckCircle className="w-4 h-4" />}
                   className="flex-1"
                 >
-                  {isCreatingSettings ? 'Creating...' : 'Create & Use Settings'}
+                  {isCreatingSettings ? t('property.settings.creating') : t('property.settings.createUseSettings')}
                 </Button>
                 <Button
                   variant="bordered"
                   onPress={handleCancelCreate}
                   disabled={isCreatingSettings}
                 >
-                  Cancel
+                  {t('property.settings.cancel')}
                 </Button>
               </div>
             </div>

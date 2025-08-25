@@ -109,14 +109,11 @@
     "views": "Views",
     "bookings": "Bookings",
     "revenue": "Revenue",
-    "maxGuests": "Max {{count}} guests",
+    "maxGuests": "Maximum {{count}} guests allowed",
     "pricePerNight": "Price per Night",
-    "perNight": "per night",
-    "maxGuests": "Maximum Guests",
-    "bedrooms": "Bedrooms",
-    "beds": "beds",
-    "bathrooms": "Bathrooms",
-    "baths": "baths",
+    "reviews": "reviews",
+    "photos": "Photos",
+    "videos": "Videos",
     "cleaningFee": "Cleaning Fee",
     "serviceFee": "Service Fee",
     "propertyType": "Property Type",
@@ -209,7 +206,8 @@
     "loadingMap": "Loading map...",
     "findingNearbyAmenities": "Finding nearby amenities...",
     "nearbyAmenities": "Nearby amenities",
-    "amenitiesFound": "{{count}} found"
+    "amenitiesFound": "{{count}} found",
+    "bookingCreationFailed": "Booking creation failed"
   },
   "share": {
     "title": "Share Property",
@@ -247,6 +245,25 @@
     "confirmPrompt": "Are you sure you want to proceed with editing this property?",
     "editAndReset": "Edit & Reset Status",
     "editProperty": "Edit Property"
+  },
+  "editProperty": {
+    "banner": {
+      "title": "Edit Property",
+      "subtitle": "Update your property details and information"
+    },
+    "title": "Edit Property Details",
+    "description": "Make changes to your property information. Note that some changes may require admin review before being published."
+  },
+  "actions": {
+    "backToListings": "Back to My Listings"
+  },
+  "messages": {
+    "invalidPropertyId": "Invalid property ID",
+    "propertyNotFound": "Property not found",
+    "propertyNotFoundDescription": "The property you're looking for doesn't exist or you don't have permission to edit it.",
+    "loadError": "Failed to load property details",
+    "updateSuccess": "Property updated successfully!",
+    "updateError": "Failed to update property"
   },
   "stats": {
     "title": "Property Statistics",
@@ -350,6 +367,40 @@
     "description": "Choose existing property settings or create new ones. These settings will control booking rules, payment preferences, and availability for your property.",
     "loading": "Loading your property settings...",
     "success": "Property settings created successfully!",
+    "createNew": "Create New",
+    "createNewSettings": "Create New Property Settings",
+    "cancel": "Cancel",
+    "settingsName": "Settings Name",
+    "settingsNamePlaceholder": "e.g., Standard Booking Rules, Quick Stay Settings",
+    "settingsNameDescription": "Give this settings profile a memorable name",
+    "setAsDefault": "Set as default settings",
+    "default": "Default",
+    "selectSettings": "Select Property Settings",
+    "chooseSettingsProfile": "Choose Settings Profile",
+    "selectExistingSettings": "Select existing property settings",
+    "noSettingsFound": "No property settings found",
+    "createFirstSettings": "Create Your First Settings",
+    "settingsPreview": "Settings Preview",
+    "bookingRules": "Booking Rules",
+    "minimumStay": "Minimum Stay (nights)",
+    "maximumStay": "Maximum Stay (nights)",
+    "minimumAdvanceBooking": "Minimum Advance Booking (days)",
+    "maximumAdvanceBooking": "Maximum Advance Booking (days)",
+    "advanceBookingRequired": "How far in advance bookings are required",
+    "advanceBookingAllowed": "How far in advance bookings are allowed",
+    "checkinCheckout": "Check-in & Check-out",
+    "checkinTime": "Check-in Time",
+    "checkoutTime": "Check-out Time",
+    "cleaningTime": "Cleaning Time (hours)",
+    "cleaningTimeDescription": "Time needed between bookings",
+    "paymentApproval": "Payment & Approval",
+    "paymentTiming": "Payment Timing",
+    "beforeCheckin": "Before Check-in",
+    "afterCheckin": "After Check-in",
+    "autoApproveBookings": "Auto-approve bookings",
+    "autoApproveDescription": "Bookings will be automatically approved without manual review",
+    "createUseSettings": "Create & Use Settings",
+    "creating": "Creating...",
     "paymentMethods": {
       "card": "Credit/Debit Card",
       "paypal": "PayPal",
@@ -445,6 +496,9 @@
       "createFirst": "Create Your First Listing"
     },
     "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {{current}} of {{total}}",
       "showing": "Showing",
       "to": "to", 
       "of": "of",
@@ -455,12 +509,21 @@
     "title": "Meet your host",
     "defaultBio": "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world.",
     "emailVerified": "Email verified",
-    "phoneVerified": "Phone verified"
+    "phoneVerified": "Phone verified",
+    "verified": "Verified",
+    "rating": "Rating",
+    "hostSince": "Host since",
+    "responseRate": "Response rate",
+    "avgResponseTime": "avg. response time"
   },
   "location": {
     "title": "Where you'll be"
   },
   "amenities": {
     "title": "What this place offers"
-  }
+  },
+  "night": "night",
+  "guests": "guests",
+  "bedrooms": "bedrooms",
+  "bathrooms": "bathrooms"
 }

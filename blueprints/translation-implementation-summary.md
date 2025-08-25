@@ -23,8 +23,8 @@
 ### Translation Files Updated
 - `src/locales/en/common.json` - Added pageBanner keys, messages, actions, labels, status, time
 - `src/locales/fr/common.json` - Added pageBanner keys, messages, actions, labels, status, time  
-- `src/locales/en/property.json` - **UPDATED**: Added missing labels (hostRating, avgResponse, responseTime), listings section with tabs, actions, modals, stats, errors, empty states, pagination, labels, actions
-- `src/locales/fr/property.json` - **UPDATED**: Added missing labels (hostRating, avgResponse, responseTime), listings section with tabs, actions, modals, stats, errors, empty states, pagination, labels, actions
+- `src/locales/en/property.json` - **UPDATED**: Added missing labels (hostRating, avgResponse, responseTime), listings section with tabs, actions, modals, stats, errors, empty states, pagination, labels, actions, **NEW**: Added comprehensive property settings translations
+- `src/locales/fr/property.json` - **UPDATED**: Added missing labels (hostRating, avgResponse, responseTime), listings section with tabs, actions, modals, stats, errors, empty states, pagination, labels, actions, **NEW**: Added comprehensive property settings translations
 - `src/locales/en/booking.json` - **UPDATED**: Added missing labels (rejectionReason), myBookings.banner section, messages, details, actions
 - `src/locales/fr/booking.json` - **UPDATED**: Added missing labels (rejectionReason), myBookings.banner section, messages, details, actions
 - `src/locales/en/home.json` - **NEW**: Created with hero banner and popular places keys
@@ -39,6 +39,14 @@
 - `src/pages/MyBookingsPage.tsx` - **UPDATED**: Fixed hardcoded strings, added translation keys
 - `src/pages/HomePage.tsx` - **UPDATED**: Added 'home' namespace to useTranslation call
 - `src/pages/PropertyDetailPage.tsx` - **UPDATED**: Fixed incorrect namespace key usage
+
+### Components Using Working Pattern
+- `src/components/shared/PageBanner.tsx` - Uses common.pageBanner keys
+- `src/components/shared/HomePagePropertyCard.tsx` - **UPDATED**: Fixed incorrect namespace key usage
+- `src/components/shared/CityPropertyCard.tsx` - **UPDATED**: Fixed incorrect namespace key usage
+- `src/components/shared/PropertyCard.tsx` - **UPDATED**: Fixed incorrect namespace key usage
+- `src/components/shared/PopularPlaces.tsx` - **UPDATED**: Added 'home' and 'labels' namespaces
+- `src/components/features/property/steps/PropertySettingsStep.tsx` - **UPDATED**: Removed preferred payment method selection, added comprehensive translations following blueprint pattern
 
 ### Components Using Working Pattern
 - `src/components/shared/PageBanner.tsx` - Uses common.pageBanner keys
@@ -67,6 +75,7 @@
 - `property.listings.empty.*` - Empty state messages
 - `property.listings.pagination.*` - Pagination text
 - `property.listings.modals.*` - Modal dialog text
+- `property.settings.*` - **NEW**: Comprehensive property settings translations (title, description, form fields, buttons, sections)
 
 #### Booking Namespace
 - `booking.myBookings.banner.title` - My Bookings page title

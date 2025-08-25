@@ -98,6 +98,17 @@
     "seenAllProperties": "You've seen all available properties",
     "unexpectedError": "An unexpected error occurred. Please try again later."
   },
+  "pagination": {
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "goToPage": "Go to page",
+    "itemsPerPage": "Items per page"
+  },
   "actions": {
     "close": "Close",
     "retry": "Retry",
@@ -149,6 +160,7 @@
     "home": "Luxury property discovery background",
     "search": "Property search and discovery background",
     "createProperty": "Modern house architecture background",
+    "editProperty": "Property editing and updates background",
     "myListings": "Property management background",
     "myBookings": "Travel and booking background",
     "likedProperties": "Favorite properties background",

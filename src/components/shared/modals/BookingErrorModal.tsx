@@ -22,7 +22,17 @@ const BookingErrorModal: React.FC<BookingErrorModalProps> = ({
   onTryAgain
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md" hideCloseButton>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={onClose} 
+      size="md" 
+      hideCloseButton
+      classNames={{
+        wrapper: "z-[9999]",
+        backdrop: "z-[9998]",
+        base: "z-[9999]"
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>

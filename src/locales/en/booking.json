@@ -46,7 +46,16 @@
     "specialRequestsHelper": "Share any specific needs or preferences",
     "totalBeforeTaxes": "Total before taxes",
     "rejectionReason": "Rejection Reason",
-    "superhost": "Superhost"
+    "superhost": "Superhost",
+    "guest": "guest",
+    "guestsPlural": "guests",
+    "night": "night",
+    "maxGuests": "Maximum {{guests}} guests allowed",
+    "reviews": "reviews",
+    "checkInTime": "CHECK-IN TIME",
+    "checkOutTime": "CHECK-OUT TIME",
+    "specialRequestsOptional": "SPECIAL REQUESTS (OPTIONAL)",
+    "nights": "nights"
   },
   "actions": {
     "selectDates": "Select Dates",
@@ -71,17 +80,37 @@
     "checkingAvailability": "Checking Availability...",
     "creatingBooking": "Creating Booking...",
     "reserveNow": "Reserve Now",
-    "viewMyBookings": "View My Bookings"
+    "viewMyBookings": "View My Bookings",
+    "bookNow": "Book Now",
+    "reserve": "Reserve",
+    "cancelBooking": "Cancel Booking",
+    "confirmCancellation": "Confirm Cancellation",
+    "cancelling": "Cancelling...",
+    "contactHost": "Contact Host",
+    "rebook": "Rebook",
+    "leaveReview": "Leave Review",
+    "payNow": "Pay Now",
+    "viewDetails": "View Details",
+    "editBooking": "Edit Booking",
+    "requestCancellation": "Request Cancellation",
+    "acceptBooking": "Accept Booking",
+    "declineBooking": "Decline Booking",
+    "markAsCompleted": "Mark as Completed",
+    "processRefund": "Process Refund",
+    "sendMessage": "Send Message",
+    "callHost": "Call Host",
+    "emailHost": "Email Host",
+    "whatsapp": "WhatsApp"
   },
   "cancel": {
     "title": "Cancel Booking",
     "subtitle": "We're sorry to see you cancel your booking",
     "policy": {
       "title": "Cancellation Policy",
-      "description": "Your refund amount depends on when you cancel:",
-      "rule7": "7+ days before check-in: 90% refund",
-      "rule3to6": "3-6 days before check-in: 50% refund",
-      "ruleLess3": "Less than 3 days: No refund"
+      "description": "Your refund amount depends on when you cancel after making the booking:",
+      "rule24h": "Within 24 hours of booking: 100% refund",
+      "rule7d": "Within 7 days of booking: 50% refund",
+      "rule14d": "After 14 days of booking: No refund"
     },
     "refund": {
       "title": "Refund Breakdown",
@@ -110,10 +139,9 @@
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
     "completed": "Completed",
-    "noShow": "No Show",
-    "acceptedWaitingPayment": "Accepted - Waiting for Payment",
-    "paymentFailed": "Payment Failed",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "accepted-and-waiting-for-payment": "Accepted and waiting for payment",
+    "payment-failed": "Payment failed"
   },
   "reviews": {
     "count": "{{count}} reviews"
@@ -188,7 +216,12 @@
     "checkOutClearedDueToCheckIn": "Check-out date cleared due to new check-in date",
     "selectCheckInFirst": "Please select a check-in date first",
     "checkoutAfterCheckin": "Check-out date must be after check-in date",
-    "checkOutUpdated": "Check-out date updated"
+    "checkOutUpdated": "Check-out date updated",
+    "propertyDataMissing": "Cannot process booking: property data is missing.",
+    "timeUpdated": "Time updated",
+    "noChargeYet": "You won't be charged yet",
+    "reservationSubmitted": "Your reservation has been successfully submitted. You'll receive a confirmation email shortly.",
+    "processingReservation": "Processing your reservation..."
   },
   "validation": {
     "selectDates": "Please select check-in and check-out dates",
@@ -197,17 +230,7 @@
     "checkInTimeRange": "Check-in time must be between 6:00 AM and 10:00 PM",
     "checkOutTimeRange": "Check-out time must be between 6:00 AM and 12:00 PM"
   },
-  "messages": {
-    "propertyDataMissing": "Cannot process booking: property data is missing.",
-    "checkInSelected": "Check-in date selected",
-    "checkOutSelected": "Check-out date selected",
-    "timeUpdated": "Time updated",
-    "checkInTimeUpdated": "Check-in time updated",
-    "checkOutTimeUpdated": "Check-out time updated",
-    "noChargeYet": "You won't be charged yet",
-    "reservationSubmitted": "Your reservation has been successfully submitted. You'll receive a confirmation email shortly.",
-    "processingReservation": "Processing your reservation..."
-  },
+
   "calendar": {
     "localTimeLabel": "Local time:",
     "timezoneNotice": "All times shown are in the property's local timezone to avoid confusion",

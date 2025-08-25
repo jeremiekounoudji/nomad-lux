@@ -290,28 +290,33 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
   if (error) {
     return (
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-        <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg">
-          <h2 className="text-lg font-semibold mb-2">{t('notifications.errors.loadingError')}</h2>
-          <p>{error}</p>
-          <Button 
-            color="primary" 
-            variant="flat" 
-            className="mt-4"
-            onClick={() => fetchNotifications()}
-          >
-            {t('notifications.actions.tryAgain')}
-          </Button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
+            <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg">
+              <h2 className="text-lg font-semibold mb-2">{t('notifications.errors.loadingError')}</h2>
+              <p>{error}</p>
+              <Button 
+                color="primary" 
+                variant="flat" 
+                className="mt-4"
+                onClick={() => fetchNotifications()}
+              >
+                {t('notifications.actions.tryAgain')}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <>
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-        {/* Header Banner */}
-        <PageBanner
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
+          {/* Header Banner */}
+          <PageBanner
           backgroundImage={getBannerConfig('notifications').image}
           title={t('notifications.labels.notifications')}
           subtitle={unreadCount > 0 ? t('notifications.banner.subtitleUnread', { count: unreadCount }) : t('notifications.banner.subtitleAllCaughtUp')}
@@ -568,8 +573,9 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
             </div>
           </div>
         )}
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 

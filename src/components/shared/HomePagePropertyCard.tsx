@@ -19,7 +19,7 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
   className = ''
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
-  const { t } = useTranslation('property')
+  const { t } = useTranslation(['property', 'labels', 'actions'])
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -42,6 +42,10 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
     onShare?.(property)
   }
 
+  // Ensure images array exists and has content
+  const images = property.images || []
+  const currentImage = images[currentImageIndex] || images[0] || ''
+
   return (
     <div 
       className={`bg-white rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 w-full ${className}`}
@@ -51,15 +55,15 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
       <div className="flex items-center justify-between p-3 border-b border-gray-100">
         <div className="flex items-center gap-3 text-left">
           <img
-            src={property.host.avatar_url}
-            alt={property.host.name}
+            src={property.host?.avatar_url || ''}
+            alt={property.host?.name || 'Host'}
             className="w-8 h-8 rounded-full object-cover"
           />
           <div className="text-left">
-            <p className="font-semibold text-sm text-gray-900 text-left truncate">{property.host.name}</p>
+            <p className="font-semibold text-sm text-gray-900 text-left truncate">{property.host?.name || 'Host'}</p>
             <div className="flex items-center gap-1 text-xs text-gray-500 text-left">
               <MapPin className="w-3 h-3" />
-              <span>{property.location.city}, {property.location.country}</span>
+              <span>{property.location?.city || ''}, {property.location?.country || ''}</span>
             </div>
           </div>
         </div>
@@ -68,16 +72,16 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
       {/* Image */}
       <div className="relative p-3">
         <img
-          src={property.images[currentImageIndex]}
+          src={currentImage}
           alt={property.title}
           className="w-full h-40 object-cover rounded-lg"
           onClick={nextImage}
         />
         
         {/* Image indicators */}
-        {property.images.length > 1 && (
+        {images.length > 1 && (
           <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1">
-            {property.images.map((_, index) => (
+            {images.map((_, index) => (
               <div
                 key={index}
                 className={`w-1.5 h-1.5 rounded-full ${
@@ -163,8 +167,8 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           <div className="flex items-center justify-between pt-2">
             <div className="text-left">
               <p className="text-gray-900">
-                <span className="font-semibold text-lg">${property.price}</span>
-                <span className="text-gray-600 text-sm ml-1">{t('perNight')}</span>
+                <span className="font-semibold text-lg">{property.currency} {property.price}</span>
+                <span className="text-gray-600 text-sm ml-1">{t('labels.perNight')}</span>
               </p>
             </div>
             <button
