@@ -49,4 +49,5 @@ When working with task lists, the AI must:
 3. Add newly discovered tasks.
 4. Keep "Relevant Files" accurate and up to date.
 5. Before starting work, check which sub‑task is next.
-6. After implementing a sub‑task, update the file and automatically proceed with the following task.
+6. After implementing a sub‑task, update the file and pause to ask for user go ahead before proceed with the following task. the user shout responde "y" or "yes" 
+7. create and maintain a summary file in the /doc folder of the project. this file will contain a short summary of what you did. nothing more. to technical detail. plain english so that a junior dev can undestant how a certain functionnality is implemented from the beginning to the end

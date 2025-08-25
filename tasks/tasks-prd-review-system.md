@@ -30,15 +30,15 @@
 
 ## Tasks
 
-- [ ] 1.0 Database Schema and Backend Setup
-  - [ ] 1.1 Create reviews table migration with proper schema and constraints
-  - [ ] 1.2 Create database indexes for efficient review queries
-  - [ ] 1.3 Implement review creation RPC function with validation
-  - [ ] 1.4 Implement review retrieval RPC functions for different contexts
-  - [ ] 1.5 Create database triggers for automatic user rating updates
-  - [ ] 1.6 Implement review statistics aggregation functions
-  - [ ] 1.7 Add review-related columns to existing tables (properties, users)
-  - [ ] 1.8 Test all database functions and triggers with sample data
+- [x] 1.0 Database Schema and Backend Setup
+  - [x] 1.1 Create reviews table migration with proper schema and constraints
+  - [x] 1.2 Create database indexes for efficient review queries
+  - [x] 1.3 Implement review creation RPC function with validation
+- [x] 1.4 Implement review retrieval RPC functions for different contexts
+  - [x] 1.5 Create database triggers for automatic user rating updates
+- [x] 1.6 Implement review statistics aggregation functions
+  - [x] 1.7 Add review-related columns to existing tables (properties, users)
+  - [x] 1.8 Test all database functions and triggers with sample data
 
 - [ ] 2.0 Translation System Implementation
   - [ ] 2.1 Create English review.json translation file with all required keys
