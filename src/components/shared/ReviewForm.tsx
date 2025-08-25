@@ -125,10 +125,9 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       <div className="flex gap-3 pt-4">
         <Button
           type="submit"
-          color="primary"
+          className="flex-1 bg-main text-white hover:bg-main/90 disabled:bg-gray-300 disabled:text-gray-500"
           isLoading={formState.isSubmitting}
           disabled={!isFormValid || formState.isSubmitting}
-          className="flex-1"
         >
           {mode === 'create' 
             ? t('common.buttons.submitReview')

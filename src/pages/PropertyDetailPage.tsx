@@ -578,8 +578,7 @@ const PropertyDetailPage: React.FC = () => {
                       {/* Write Review Button - Show for all logged-in users */}
                       {user && (
                         <Button
-                          color="primary"
-                          variant="bordered"
+                          className="bg-main text-white hover:bg-main/90"
                           size="sm"
                           onPress={() => {
                             // Open public review modal
@@ -615,18 +614,7 @@ const PropertyDetailPage: React.FC = () => {
                     showActions={Boolean(user && property?.host?.id === user.id)}
                   />
                   
-                  {/* Debug information for testing different property states */}
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="mt-4 p-4 bg-gray-100 rounded-lg text-xs text-gray-600">
-                      <h4 className="font-semibold mb-2">Debug Info (Development Only):</h4>
-                      <div>Property Status: {property?.status || 'unknown'}</div>
-                      <div>Property Host ID: {property?.host?.id || 'unknown'}</div>
-                      <div>Current User ID: {user?.id || 'not logged in'}</div>
-                      <div>Can Show Actions: {Boolean(user && property?.host?.id === user.id).toString()}</div>
-                      <div>Reviews Count: {reviews.length}</div>
-                      <div>Review Stats: {JSON.stringify(reviewStats)}</div>
-                    </div>
-                  )}
+
                 </div>
 
                 {/* Location */}
@@ -643,7 +631,7 @@ const PropertyDetailPage: React.FC = () => {
                       showRadius={false}
                       onContactHost={() => onContactOpen()}
                       onDirectionsRequest={(coordinates: MapCoordinates) => {
-                        console.log('🗺️ Directions requested for:', coordinates);
+
                         const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
                         window.open(url, '_blank');
                       }}
@@ -762,7 +750,6 @@ const PropertyDetailPage: React.FC = () => {
       <CreateReviewModal
         isOpen={modalState.isOpen && modalState.mode === 'create'}
         onClose={closeModal}
-        bookingId={modalState.bookingId || ''}
         reviewType={modalState.reviewType || 'property'}
         propertyId={property?.id}
       />
