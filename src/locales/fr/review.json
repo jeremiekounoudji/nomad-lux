@@ -1,0 +1,68 @@
+{
+  "createReview": "Créer un avis",
+  "editReview": "Modifier l'avis",
+  "deleteReview": "Supprimer l'avis",
+  "rating": {
+    "title": "Note",
+    "stars": "{{count}} étoiles",
+    "outOf": "sur 5",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "average": "Moyen",
+    "poor": "Mauvais",
+    "terrible": "Terrible"
+  },
+  "reviewText": {
+    "label": "Avis",
+    "placeholder": "Partagez votre expérience...",
+    "minLength": "Minimum 10 caractères",
+    "maxLength": "Maximum 1000 caractères",
+    "charCount": "{{count}}/1000 caractères"
+  },
+  "reviewType": {
+    "guestToHost": "Voyageur vers Hôte",
+    "hostToGuest": "Hôte vers Voyageur",
+    "property": "Avis sur la propriété"
+  },
+  "reviews": {
+    "title": "Avis",
+    "noReviews": "Aucun avis pour le moment",
+    "beFirst": "Soyez le premier à évaluer cette propriété",
+    "totalReviews": "{{count}} avis",
+    "averageRating": "{{rating}} note moyenne",
+    "newestFirst": "Plus récents en premier",
+    "oldestFirst": "Plus anciens en premier"
+  },
+  "reviewCard": {
+    "by": "par {{name}}",
+    "on": "le {{date}}",
+    "verified": "Séjour vérifié",
+    "helpful": "Utile",
+    "report": "Signaler"
+  },
+  "modals": {
+    "createTitle": "Écrire un avis",
+    "editTitle": "Modifier votre avis",
+    "deleteTitle": "Supprimer l'avis",
+    "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet avis ?",
+    "success": "Avis soumis avec succès",
+    "error": "Erreur lors de la soumission de l'avis",
+    "editSuccess": "Avis mis à jour avec succès",
+    "deleteSuccess": "Avis supprimé avec succès"
+  },
+  "validation": {
+    "ratingRequired": "Veuillez sélectionner une note",
+    "textRequired": "Veuillez écrire un avis",
+    "textMinLength": "L'avis doit contenir au moins 10 caractères",
+    "textMaxLength": "L'avis ne peut pas dépasser 1000 caractères",
+    "alreadyReviewed": "Vous avez déjà évalué cette réservation",
+    "bookingNotCompleted": "Vous ne pouvez évaluer que les réservations terminées",
+    "cannotReviewSelf": "Vous ne pouvez pas évaluer votre propre propriété"
+  },
+  "timing": {
+    "immediate": "Évaluer maintenant",
+    "reminder": "Me rappeler plus tard",
+    "reminderSent": "Rappel d'avis envoyé",
+    "expired": "La période d'évaluation a expiré"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "createReview": "Create Review",
+  "editReview": "Edit Review",
+  "deleteReview": "Delete Review",
+  "rating": {
+    "title": "Rating",
+    "stars": "{{count}} stars",
+    "outOf": "out of 5",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "poor": "Poor",
+    "terrible": "Terrible"
+  },
+  "reviewText": {
+    "label": "Review",
+    "placeholder": "Share your experience...",
+    "minLength": "Minimum 10 characters",
+    "maxLength": "Maximum 1000 characters",
+    "charCount": "{{count}}/1000 characters"
+  },
+  "reviewType": {
+    "guestToHost": "Guest to Host",
+    "hostToGuest": "Host to Guest",
+    "property": "Property Review"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "noReviews": "No reviews yet",
+    "beFirst": "Be the first to review this property",
+    "totalReviews": "{{count}} reviews",
+    "averageRating": "{{rating}} average rating",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first"
+  },
+  "reviewCard": {
+    "by": "by {{name}}",
+    "on": "on {{date}}",
+    "verified": "Verified stay",
+    "helpful": "Helpful",
+    "report": "Report"
+  },
+  "modals": {
+    "createTitle": "Write a Review",
+    "editTitle": "Edit Your Review",
+    "deleteTitle": "Delete Review",
+    "deleteMessage": "Are you sure you want to delete this review?",
+    "success": "Review submitted successfully",
+    "error": "Error submitting review",
+    "editSuccess": "Review updated successfully",
+    "deleteSuccess": "Review deleted successfully"
+  },
+  "validation": {
+    "ratingRequired": "Please select a rating",
+    "textRequired": "Please write a review",
+    "textMinLength": "Review must be at least 10 characters",
+    "textMaxLength": "Review cannot exceed 1000 characters",
+    "alreadyReviewed": "You have already reviewed this booking",
+    "bookingNotCompleted": "You can only review completed bookings",
+    "cannotReviewSelf": "You cannot review your own property"
+  },
+  "timing": {
+    "immediate": "Review now",
+    "reminder": "Remind me later",
+    "reminderSent": "Review reminder sent",
+    "expired": "Review period has expired"
+  }
+}

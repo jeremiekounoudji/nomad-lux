@@ -20,6 +20,7 @@ import enHome from '../locales/en/home.json'
 import enLabels from '../locales/en/labels.json'
 import enActions from '../locales/en/actions.json'
 import enMap from '../locales/en/map.json'
+import enReview from '../locales/en/review.json'
 
 import frCommon from '../locales/fr/common.json'
 import frNavigation from '../locales/fr/navigation.json'
@@ -38,6 +39,7 @@ import frHome from '../locales/fr/home.json'
 import frLabels from '../locales/fr/labels.json'
 import frActions from '../locales/fr/actions.json'
 import frMap from '../locales/fr/map.json'
+import frReview from '../locales/fr/review.json'
 
 const resources = {
   en: {
@@ -57,7 +59,8 @@ const resources = {
     home: enHome,
     labels: enLabels,
     actions: enActions,
-    map: enMap
+    map: enMap,
+    review: enReview
   },
   fr: {
     common: frCommon,
@@ -76,7 +79,8 @@ const resources = {
     home: frHome,
     labels: frLabels,
     actions: frActions,
-    map: frMap
+    map: frMap,
+    review: frReview
   }
 }
 

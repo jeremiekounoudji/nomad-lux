@@ -25,7 +25,12 @@
     "tryAgain": "Réessayer",
     "updateLocation": "Mettre à jour l'emplacement",
     "refreshFeed": "Actualiser le flux",
-    "refreshForNewListings": "Actualiser pour de nouvelles annonces"
+    "refreshForNewListings": "Actualiser pour de nouvelles annonces",
+    "submitReview": "Soumettre l'avis",
+    "editReview": "Modifier l'avis",
+    "deleteReview": "Supprimer l'avis",
+    "cancelReview": "Annuler",
+    "saveReview": "Enregistrer les modifications"
   },
   "labels": {
     "name": "Nom",
@@ -52,7 +57,8 @@
     "target": "Cible",
     "ip": "IP",
     "from": "De :",
-    "to": "À :"
+    "to": "À :",
+    "verifiedStay": "Séjour vérifié"
   },
   "status": {
     "active": "Actif",
@@ -96,7 +102,11 @@
     "noPropertiesInCity": "Aucune propriété trouvée à {{city}}",
     "failedToLoadProperties": "Échec du chargement des propriétés. Veuillez réessayer.",
     "seenAllProperties": "Vous avez vu toutes les propriétés disponibles",
-    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+    "reviewSubmitted": "Avis soumis avec succès",
+    "reviewUpdated": "Avis mis à jour avec succès",
+    "reviewDeleted": "Avis supprimé avec succès",
+    "reviewError": "Erreur lors du traitement de l'avis"
   },
   "pagination": {
     "showing": "Affichage",
