@@ -125,4 +125,5 @@ export interface ReviewStoreState {
   setFormState: (state: Partial<ReviewFormState>) => void
   resetForm: () => void
   clearError: () => void
+  canEditReview: (review: Review) => boolean
 }

@@ -38,13 +38,15 @@
     "on": "le {{date}}",
     "verified": "Séjour vérifié",
     "helpful": "Utile",
-    "report": "Signaler"
+    "report": "Signaler",
+    "editingExpired": "Période d'édition expirée"
   },
   "modals": {
     "createTitle": "Écrire un avis",
     "editTitle": "Modifier votre avis",
     "deleteTitle": "Supprimer l'avis",
     "deleteMessage": "Êtes-vous sûr de vouloir supprimer cet avis ?",
+    "editingExpiredMessage": "Cet avis ne peut plus être modifié car il a été créé il y a plus de 30 jours.",
     "success": "Avis soumis avec succès",
     "error": "Erreur lors de la soumission de l'avis",
     "editSuccess": "Avis mis à jour avec succès",

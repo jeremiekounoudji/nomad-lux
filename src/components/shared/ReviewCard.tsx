@@ -4,6 +4,7 @@ import { MoreVertical, CheckCircle, Flag } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import StarRating from './StarRating'
 import { ReviewWithUser } from '../../interfaces/Review'
+import { useReviewStore } from '../../lib/stores/reviewStore'
 
 interface ReviewCardProps {
   review: ReviewWithUser
@@ -23,6 +24,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   className = ''
 }) => {
   const { t } = useTranslation(['review', 'common'])
+  const { canEditReview } = useReviewStore()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -146,7 +148,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         {/* Action Buttons */}
         {showActions && (
           <div className="flex items-center gap-2">
-            {onEdit && (
+            {onEdit && canEditReview(review) && (
               <Button
                 size="sm"
                 variant="light"
@@ -155,6 +157,12 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
               >
                 {t('common.buttons.edit')}
               </Button>
+            )}
+            
+            {onEdit && !canEditReview(review) && (
+              <span className="text-xs text-gray-400 italic">
+                {t('review.reviewCard.editingExpired')}
+              </span>
             )}
             
             {onDelete && (

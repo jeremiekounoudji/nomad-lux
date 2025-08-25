@@ -1,6 +1,23 @@
 import { create } from 'zustand'
 import { ReviewStoreState, ReviewWithUser, Review, ReviewStats, ReviewFilters, CreateReviewData, UpdateReviewData, ReviewResponse, ReviewFormState, ReviewModalState } from '../../interfaces/Review'
 
+// Utility function to check if a review is within the 30-day editing window
+const canEditReview = (review: Review): boolean => {
+  if (!review.created_at) return false
+  
+  const createdDate = new Date(review.created_at)
+  const currentDate = new Date()
+  const daysDifference = (currentDate.getTime() - createdDate.getTime()) / (1000 * 3600 * 24)
+  
+  console.log('📝 ReviewStore: Checking edit eligibility for review:', review.id, {
+    created_at: review.created_at,
+    daysDifference: Math.round(daysDifference * 100) / 100,
+    canEdit: daysDifference <= 30
+  })
+  
+  return daysDifference <= 30
+}
+
 const initialFormState: ReviewFormState = {
   rating: 0,
   review_text: '',
@@ -152,6 +169,27 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
     try {
       const { supabase } = await import('../supabase')
       
+      // First, get the current review to check if it's within the 30-day editing window
+      const { data: currentReview, error: fetchError } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('id', reviewId)
+        .single()
+
+      if (fetchError) {
+        console.error('📝 ReviewStore: Error fetching review for validation:', fetchError)
+        set({ loading: false, error: fetchError.message })
+        return { success: false, error: fetchError.message }
+      }
+
+      // Check if the review is within the 30-day editing window
+      if (!canEditReview(currentReview)) {
+        const errorMessage = 'Reviews can only be edited within 30 days of creation'
+        console.error('📝 ReviewStore: Review editing time limit exceeded:', errorMessage)
+        set({ loading: false, error: errorMessage })
+        return { success: false, error: errorMessage }
+      }
+
       const { data: result, error } = await supabase
         .from('reviews')
         .update({
@@ -272,5 +310,10 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
 
   clearError: () => {
     set({ error: null })
+  },
+
+  // Utility function to check if a review can be edited (exposed for components)
+  canEditReview: (review: Review): boolean => {
+    return canEditReview(review)
   }
 }))
