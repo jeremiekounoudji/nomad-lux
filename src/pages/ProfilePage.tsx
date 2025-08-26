@@ -300,7 +300,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       disabled={isUploading}
                       aria-label={t('profile.actions.changePhoto')}
                     >
-                      <Camera className="w-4 h-4" />
+                      <Camera className="w-4 h-4 text-white" />
                     </Button>
                   </div>
                   <div className="space-y-2">
