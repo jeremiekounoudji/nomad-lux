@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Card, CardBody, Button, Spinner, Avatar, Chip } from '@heroui/react'
-import { ArrowLeft, User, Settings, Shield, Bell, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone } from 'lucide-react'
+import { ArrowLeft, User, Settings, Shield, Bell, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone, Star, Globe, Music, Heart, Clock, Play, Eye, MoreVertical } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../lib/stores/translationStore'
 import { useAuthStore } from '../lib/stores/authStore'
@@ -228,11 +228,21 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-          {/* Left Column - Profile Info */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Profile Header Card */}
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+            {t('profile.title')}
+          </h1>
+          <p className="text-lg text-gray-600">
+            {t('profile.subtitle')}
+          </p>
+        </div>
+
+        {/* Profile Cards Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
+          {/* Profile Header Card */}
+          <div className="lg:col-span-1">
+            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm h-fit">
               <CardBody className="p-6 sm:p-8">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
@@ -261,58 +271,46 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     </Button>
                   </div>
                   <div className="space-y-2">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                      {profile.firstName} {profile.lastName}
+                    </h2>
                     <div className="flex items-center justify-center space-x-2">
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                        {profile.firstName} {profile.lastName}
-                      </h2>
                       {profile.isVerified && (
-                        <CheckCircle className="w-5 h-5 text-blue-600" aria-hidden="true" />
+                        <CheckCircle className="w-4 h-4 text-blue-600" aria-hidden="true" />
                       )}
-                    </div>
-                    <p className="text-sm text-gray-600 flex items-center justify-center space-x-1">
-                      <Mail className="w-4 h-4" aria-hidden="true" />
-                      <span>{profile.email}</span>
-                    </p>
-                    <div className="flex items-center justify-center space-x-4 text-xs text-gray-500">
-                      <span className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3" aria-hidden="true" />
-                        <span>{t('profile.memberSince')} {new Date(profile.joinDate).toLocaleDateString()}</span>
+                      <span className="text-sm text-green-600 font-medium">
+                        {profile.isVerified ? t('profile.verified') : t('profile.status.active')}
                       </span>
-                      {profile.location && (
-                        <span className="flex items-center space-x-1">
-                          <MapPin className="w-3 h-3" aria-hidden="true" />
-                          <span>{profile.location}</span>
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>
               </CardBody>
             </Card>
+          </div>
 
-            {/* Profile Information Card */}
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+          {/* Bio & Details Card */}
+          <div className="lg:col-span-2">
+            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm h-fit">
               <CardBody className="p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <User className="w-5 h-5 text-blue-600" aria-hidden="true" />
-                    </div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-2">
                     <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                      {t('profile.sections.personalInfo')}
+                      {t('profile.accountDetails')}
                     </h3>
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   </div>
                   <Button 
                     size="sm" 
                     color="primary" 
                     variant="flat"
                     startContent={<Edit3 className="w-4 h-4" />}
-                    className="self-start sm:self-auto font-semibold"
+                    className="font-semibold"
                     aria-label={t('profile.actions.editPersonalInfo')}
                   >
                     {t('common.edit')}
                   </Button>
                 </div>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -333,6 +331,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                         {profile.email}
                       </p>
                     </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                        <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                        <span>{t('profile.fields.phone')}</span>
+                      </label>
+                      <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+                        {profile.phone || t('common.notProvided')}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                        <MapPin className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                        <span>{t('profile.fields.location')}</span>
+                      </label>
+                      <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+                        {profile.location || t('common.notProvided')}
+                      </p>
+                    </div>
                   </div>
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -346,162 +362,174 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.phone')}</span>
+                        <Calendar className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                        <span>{t('profile.account.memberSince')}</span>
                       </label>
                       <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
-                        {profile.phone || t('common.notProvided')}
+                        {new Date(profile.joinDate).toLocaleDateString()}
                       </p>
                     </div>
-                  </div>
-                </div>
-                {profile.bio && (
-                  <div className="mt-6 space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">
-                      {t('profile.fields.bio')}
-                    </label>
-                    <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
-                      {profile.bio}
-                    </p>
-                  </div>
-                )}
-              </CardBody>
-            </Card>
-
-            {/* Password Change Card */}
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardBody className="p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-green-600" aria-hidden="true" />
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                        <Globe className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                        <span>{t('profile.account.preferredLanguage')}</span>
+                      </label>
+                      <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+                        {t(`profile.languages.${profile.preferences.language}`)}
+                      </p>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                      {t('profile.sections.security')}
-                    </h3>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    color="success" 
-                    variant="flat"
-                    onPress={handlePasswordChange}
-                    className="self-start sm:self-auto font-semibold"
-                    aria-label={t('profile.actions.changePassword')}
-                  >
-                    {t('profile.actions.changePassword')}
-                  </Button>
-                </div>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {t('profile.security.description')}
-                </p>
-              </CardBody>
-            </Card>
-          </div>
-
-          {/* Right Column - Settings */}
-          <div className="space-y-6">
-            {/* Privacy Settings Card */}
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardBody className="p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                      <Settings className="w-5 h-5 text-purple-600" aria-hidden="true" />
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                        <Star className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                        <span>Status</span>
+                      </label>
+                      <Chip 
+                        size="sm" 
+                        color="success"
+                        variant="flat"
+                        startContent={<div className="w-2 h-2 bg-green-500 rounded-full"></div>}
+                      >
+                        {t('profile.status.active')}
+                      </Chip>
                     </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                      {t('profile.sections.privacy')}
-                    </h3>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    color="secondary" 
-                    variant="flat"
-                    className="self-start sm:self-auto font-semibold"
-                    aria-label={t('profile.actions.editPrivacySettings')}
-                  >
-                    {t('common.edit')}
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      {t('profile.privacy.profileVisibility')}
-                    </span>
-                    <Chip 
-                      size="sm" 
-                      color={profile.privacySettings.profileVisibility === 'public' ? 'success' : 'warning'}
-                      variant="flat"
-                    >
-                      {t(`profile.privacy.visibility.${profile.privacySettings.profileVisibility}`)}
-                    </Chip>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      {t('profile.privacy.showEmail')}
-                    </span>
-                    <Chip 
-                      size="sm" 
-                      color={profile.privacySettings.showEmail ? 'success' : 'danger'}
-                      variant="flat"
-                    >
-                      {profile.privacySettings.showEmail ? t('common.yes') : t('common.no')}
-                    </Chip>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Notification Settings Card */}
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardBody className="p-6 sm:p-8">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
-                      <Bell className="w-5 h-5 text-orange-600" aria-hidden="true" />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">
-                      {t('profile.sections.notifications')}
-                    </h3>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    color="warning" 
-                    variant="flat"
-                    className="self-start sm:self-auto font-semibold"
-                    aria-label={t('profile.actions.editNotificationSettings')}
-                  >
-                    {t('common.edit')}
-                  </Button>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      {t('profile.notifications.email')}
-                    </span>
-                    <Chip 
-                      size="sm" 
-                      color={profile.notificationSettings.emailNotifications.bookingUpdates ? 'success' : 'default'}
-                      variant="flat"
-                    >
-                      {profile.notificationSettings.emailNotifications.bookingUpdates ? t('common.on') : t('common.off')}
-                    </Chip>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-sm font-medium text-gray-700">
-                      {t('profile.notifications.push')}
-                    </span>
-                    <Chip 
-                      size="sm" 
-                      color={profile.notificationSettings.pushNotifications.bookingUpdates ? 'success' : 'default'}
-                      variant="flat"
-                    >
-                      {profile.notificationSettings.pushNotifications.bookingUpdates ? t('common.on') : t('common.off')}
-                    </Chip>
                   </div>
                 </div>
               </CardBody>
             </Card>
           </div>
+        </div>
+
+        {/* Settings Cards Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Security Card */}
+          <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardBody className="p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Shield className="w-5 h-5 text-green-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {t('profile.sections.security')}
+                  </h3>
+                </div>
+              </div>
+              <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                {t('profile.security.description')}
+              </p>
+              <Button 
+                color="success" 
+                variant="flat"
+                onPress={handlePasswordChange}
+                className="w-full font-semibold"
+                aria-label={t('profile.actions.changePassword')}
+              >
+                {t('profile.actions.changePassword')}
+              </Button>
+            </CardBody>
+          </Card>
+
+          {/* Privacy Settings Card */}
+          <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardBody className="p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <Settings className="w-5 h-5 text-purple-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {t('profile.sections.privacy')}
+                  </h3>
+                </div>
+                <Button 
+                  size="sm" 
+                  color="secondary" 
+                  variant="flat"
+                  className="font-semibold"
+                  aria-label={t('profile.actions.editPrivacySettings')}
+                >
+                  {t('common.edit')}
+                </Button>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('profile.privacy.profileVisibility')}
+                  </span>
+                  <Chip 
+                    size="sm" 
+                    color={profile.privacySettings.profileVisibility === 'public' ? 'success' : 'warning'}
+                    variant="flat"
+                  >
+                    {t(`profile.privacy.visibility.${profile.privacySettings.profileVisibility}`)}
+                  </Chip>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('profile.privacy.showEmail')}
+                  </span>
+                  <Chip 
+                    size="sm" 
+                    color={profile.privacySettings.showEmail ? 'success' : 'danger'}
+                    variant="flat"
+                  >
+                    {profile.privacySettings.showEmail ? t('common.yes') : t('common.no')}
+                  </Chip>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
+
+          {/* Notification Settings Card */}
+          <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+            <CardBody className="p-6 sm:p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-orange-600" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {t('profile.sections.notifications')}
+                  </h3>
+                </div>
+                <Button 
+                  size="sm" 
+                  color="warning" 
+                  variant="flat"
+                  className="font-semibold"
+                  aria-label={t('profile.actions.editNotificationSettings')}
+                >
+                  {t('common.edit')}
+                </Button>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('profile.notifications.email')}
+                  </span>
+                  <Chip 
+                    size="sm" 
+                    color={profile.notificationSettings.emailNotifications.bookingUpdates ? 'success' : 'default'}
+                    variant="flat"
+                  >
+                    {profile.notificationSettings.emailNotifications.bookingUpdates ? t('common.on') : t('common.off')}
+                  </Chip>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('profile.notifications.push')}
+                  </span>
+                  <Chip 
+                    size="sm" 
+                    color={profile.notificationSettings.pushNotifications.bookingUpdates ? 'success' : 'default'}
+                    variant="flat"
+                  >
+                    {profile.notificationSettings.pushNotifications.bookingUpdates ? t('common.on') : t('common.off')}
+                  </Chip>
+                </div>
+              </div>
+            </CardBody>
+          </Card>
         </div>
       </main>
     </div>
