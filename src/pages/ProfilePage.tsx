@@ -16,6 +16,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { t } = useTranslation(['profile', 'common'])
@@ -110,16 +111,36 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     toast.success(t('profile.messages.passwordChangeSuccess'))
   }
 
-  const handleImageUpload = (imageData: any) => {
-    onImageUpload?.(imageData)
-    toast.success(t('profile.messages.imageUploadSuccess'))
+  const handleImageUpload = async (imageData: any) => {
+    try {
+      setIsUploading(true)
+      
+      // Call the parent handler
+      await onImageUpload?.(imageData)
+      
+      // Update the local profile state with new avatar URL
+      if (profile) {
+        const updatedProfile = {
+          ...profile,
+          avatarUrl: imageData.previewUrl || imageData.cropData
+        }
+        setProfile(updatedProfile)
+      }
+      
+      toast.success(t('profile.messages.imageUploadSuccess'))
+    } catch (error: any) {
+      console.error('❌ Error uploading image:', error)
+      toast.error(error.message || t('profile.image.errors.uploadFailed'))
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   const handleCameraClick = () => {
     fileInputRef.current?.click()
   }
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
       // Validate file
@@ -136,14 +157,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         return
       }
 
-      // Create image data and upload
-      const imageData = {
-        file: file,
-        previewUrl: URL.createObjectURL(file),
-        cropData: null
+      try {
+        // Create preview URL
+        const previewUrl = URL.createObjectURL(file)
+        
+        // Create image data
+        const imageData = {
+          file: file,
+          previewUrl: previewUrl,
+          cropData: null
+        }
+        
+        // Upload the image
+        await handleImageUpload(imageData)
+        
+      } catch (error: any) {
+        console.error('❌ Error processing image:', error)
+        toast.error(error.message || t('profile.image.errors.uploadFailed'))
       }
-      
-      handleImageUpload(imageData)
     }
     
     // Reset input value to allow selecting the same file again
@@ -240,10 +271,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
         {/* Profile Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 mb-8">
-          {/* Profile Header Card */}
+          {/* Profile Header Card - Full Height */}
           <div className="lg:col-span-1">
-            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm h-fit">
-              <CardBody className="p-6 sm:p-8">
+            <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm h-full">
+              <CardBody className="p-6 sm:p-8 flex flex-col justify-center">
                 <div className="text-center">
                   <div className="relative inline-block mb-6">
                     <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
@@ -265,6 +296,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       variant="solid"
                       className="absolute -bottom-2 -right-2 shadow-lg hover:scale-110 transition-transform duration-200"
                       onPress={handleCameraClick}
+                      isLoading={isUploading}
+                      disabled={isUploading}
                       aria-label={t('profile.actions.changePhoto')}
                     >
                       <Camera className="w-4 h-4" />
