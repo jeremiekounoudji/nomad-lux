@@ -6,6 +6,7 @@ import { useTranslation } from '../lib/stores/translationStore'
 import { useAuthStore } from '../lib/stores/authStore'
 import { Profile, ProfilePageProps } from '../interfaces/Profile'
 import { ROUTES } from '../router/types'
+import { useProfileImage } from '../hooks/useProfileImage'
 import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
@@ -16,12 +17,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { t } = useTranslation(['profile', 'common'])
   const { user } = useAuthStore()
   const navigate = useNavigate()
+  const { isUploading, uploadImage, processImage } = useProfileImage()
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -32,14 +33,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         // TODO: Load profile data from API
         // For now, create a mock profile from user data
         if (user) {
+          const userWithMetadata = user as any // Cast to include user_metadata
           const mockProfile: Profile = {
             id: user.id,
             userId: user.id,
-            firstName: user.user_metadata?.first_name || '',
-            lastName: user.user_metadata?.last_name || '',
+            firstName: userWithMetadata.user_metadata?.first_name || '',
+            lastName: userWithMetadata.user_metadata?.last_name || '',
             email: user.email || '',
             phone: user.phone || '',
-            avatarUrl: user.user_metadata?.avatar_url || '',
+            avatarUrl: userWithMetadata.user_metadata?.avatar_url || '',
             bio: '',
             dateOfBirth: '',
             location: '',
@@ -113,26 +115,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
   const handleImageUpload = async (imageData: any) => {
     try {
-      setIsUploading(true)
+      // Upload image to Supabase Storage and update user metadata
+      const uploadedUrl = await uploadImage(imageData)
       
-      // Call the parent handler
-      await onImageUpload?.(imageData)
-      
-      // Update the local profile state with new avatar URL
-      if (profile) {
+      if (uploadedUrl && profile) {
+        // Update the local profile state with new avatar URL
         const updatedProfile = {
           ...profile,
-          avatarUrl: imageData.previewUrl || imageData.cropData
+          avatarUrl: uploadedUrl
         }
         setProfile(updatedProfile)
       }
       
-      toast.success(t('profile.messages.imageUploadSuccess'))
+      // Call the parent handler if provided
+      await onImageUpload?.(imageData)
+      
     } catch (error: any) {
       console.error('❌ Error uploading image:', error)
       toast.error(error.message || t('profile.image.errors.uploadFailed'))
-    } finally {
-      setIsUploading(false)
     }
   }
 
@@ -143,30 +143,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      // Validate file
-      const maxSize = 5 * 1024 * 1024 // 5MB
-      const acceptedFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-      
-      if (file.size > maxSize) {
-        toast.error(t('profile.image.errors.fileTooLarge', { maxSize: 5 }))
-        return
-      }
-      
-      if (!acceptedFormats.includes(file.type)) {
-        toast.error(t('profile.image.errors.invalidFormat', { formats: 'JPEG, PNG, WebP' }))
-        return
-      }
-
       try {
-        // Create preview URL
-        const previewUrl = URL.createObjectURL(file)
-        
-        // Create image data
-        const imageData = {
-          file: file,
-          previewUrl: previewUrl,
-          cropData: null
-        }
+        // Process the image using the hook
+        const imageData = await processImage(file)
         
         // Upload the image
         await handleImageUpload(imageData)
@@ -276,31 +255,29 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm h-full">
               <CardBody className="p-6 sm:p-8 flex flex-col justify-center">
                 <div className="text-center">
-                  <div className="relative inline-block mb-6">
-                    <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
-                      {profile.avatarUrl ? (
-                        <img 
-                          src={profile.avatarUrl} 
-                          alt={`${profile.firstName} ${profile.lastName} profile picture`}
-                          className="w-full h-full rounded-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <User className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400" aria-hidden="true" />
-                      )}
-                    </div>
+                  <div className="text-center mb-6">
+                                         <div className="w-56 h-56 sm:w-64 sm:h-64 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden shadow-sm border-4 border-white mb-4">
+                       {profile.avatarUrl ? (
+                         <img 
+                           src={profile.avatarUrl} 
+                           alt={`${profile.firstName} ${profile.lastName} profile picture`}
+                           className="w-full h-full rounded-full object-cover"
+                           loading="lazy"
+                         />
+                       ) : (
+                         <User className="w-28 h-28 sm:w-32 sm:h-32 text-gray-400" aria-hidden="true" />
+                       )}
+                     </div>
                     <Button
-                      isIconOnly
                       size="sm"
-                      color="primary"
-                      variant="solid"
-                      className="absolute -bottom-2 -right-2 shadow-lg hover:scale-110 transition-transform duration-200"
+                      className="font-semibold bg-main text-white hover:bg-main/90"
+                      startContent={<Camera className="w-4 h-4 text-white" />}
                       onPress={handleCameraClick}
                       isLoading={isUploading}
                       disabled={isUploading}
                       aria-label={t('profile.actions.changePhoto')}
                     >
-                      <Camera className="w-4 h-4 text-white" />
+                      {t('profile.actions.changePhoto')}
                     </Button>
                   </div>
                   <div className="space-y-2">
@@ -433,7 +410,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
         </div>
 
         {/* Settings Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {/* Security Card */}
           <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
             <CardBody className="p-6 sm:p-8">

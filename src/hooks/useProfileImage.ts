@@ -50,9 +50,9 @@ export const useProfileImage = (): UseProfileImageReturn => {
 
       console.log('🔄 Starting image upload for user:', user.id)
 
-      // Generate unique filename
+      // Generate unique filename with user folder structure
       const fileExt = imageData.file.name.split('.').pop()
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`
+      const fileName = `${user.id}/${user.id}-${Date.now()}.${fileExt}`
 
       // Upload to Supabase Storage
       const { data, error: uploadError } = await supabase.storage
