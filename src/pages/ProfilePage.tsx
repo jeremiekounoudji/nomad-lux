@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Card, CardBody, Button, Spinner, Avatar, Chip } from '@heroui/react'
 import { ArrowLeft, User, Settings, Shield, Bell, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
@@ -16,6 +16,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { t } = useTranslation(['profile', 'common'])
   const { user } = useAuthStore()
@@ -114,6 +115,41 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     toast.success(t('profile.messages.imageUploadSuccess'))
   }
 
+  const handleCameraClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      const acceptedFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+      
+      if (file.size > maxSize) {
+        toast.error(t('profile.image.errors.fileTooLarge', { maxSize: 5 }))
+        return
+      }
+      
+      if (!acceptedFormats.includes(file.type)) {
+        toast.error(t('profile.image.errors.invalidFormat', { formats: 'JPEG, PNG, WebP' }))
+        return
+      }
+
+      // Create image data and upload
+      const imageData = {
+        file: file,
+        previewUrl: URL.createObjectURL(file),
+        cropData: null
+      }
+      
+      handleImageUpload(imageData)
+    }
+    
+    // Reset input value to allow selecting the same file again
+    event.target.value = ''
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -180,6 +216,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" role="main" aria-label={t('profile.title')}>
+      {/* Hidden file input for avatar upload */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        onChange={handleFileSelect}
+        className="hidden"
+        aria-label={t('profile.image.fileInput')}
+      />
+      
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -207,7 +253,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       size="sm"
                       color="primary"
                       variant="solid"
-                      className="absolute -bottom-2 -right-2 shadow-lg"
+                      className="absolute -bottom-2 -right-2 shadow-lg hover:scale-110 transition-transform duration-200"
+                      onPress={handleCameraClick}
                       aria-label={t('profile.actions.changePhoto')}
                     >
                       <Camera className="w-4 h-4" />
