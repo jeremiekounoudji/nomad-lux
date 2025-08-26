@@ -180,33 +180,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" role="main" aria-label={t('profile.title')}>
-      {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-10">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <Button
-                isIconOnly
-                variant="light"
-                onPress={handleBackToHome}
-                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 rounded-full"
-                aria-label={t('common.back')}
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-              <div className="min-w-0 flex-1">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
-                  {t('profile.title')}
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-600 truncate">
-                  {t('profile.subtitle')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
