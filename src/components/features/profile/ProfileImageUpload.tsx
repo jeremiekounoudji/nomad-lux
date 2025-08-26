@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
-import { Card, CardBody, Button, Progress, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react'
-import { Upload, Camera, X, Crop, RotateCw, Download, Trash2 } from 'lucide-react'
+import { Card, CardBody, Button, Progress, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Chip } from '@heroui/react'
+import { Upload, Camera, X, Crop, RotateCw, Download, Trash2, Image, AlertCircle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { ProfileImageData } from '../../../interfaces/Profile'
 
@@ -99,11 +99,12 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
   // Handle upload
   const handleUpload = async () => {
-    if (!selectedFile || !previewUrl) return
+    if (!selectedFile) return
 
     try {
       setUploadProgress(0)
-      
+      setError(null)
+
       // Simulate upload progress
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
@@ -115,30 +116,33 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
         })
       }, 100)
 
+      // Create image data
       const imageData: ProfileImageData = {
         file: selectedFile,
-        previewUrl,
-        croppedData: cropData || undefined
+        previewUrl: previewUrl || '',
+        cropData: cropData || null
       }
 
       await onImageUpload(imageData)
       
+      clearInterval(progressInterval)
       setUploadProgress(100)
+      
+      // Reset state
       setTimeout(() => {
-        setUploadProgress(0)
         setSelectedFile(null)
         setPreviewUrl(null)
         setCropData(null)
-        setError(null)
+        setUploadProgress(0)
       }, 1000)
 
     } catch (err: any) {
+      console.error('❌ Error uploading image:', err)
       setError(err.message || t('profile.image.errors.uploadFailed'))
-      setUploadProgress(0)
     }
   }
 
-  // Handle image removal
+  // Handle remove
   const handleRemove = async () => {
     try {
       await onImageRemove()
@@ -147,6 +151,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       setCropData(null)
       setError(null)
     } catch (err: any) {
+      console.error('❌ Error removing image:', err)
       setError(err.message || t('profile.image.errors.removeFailed'))
     }
   }
@@ -161,17 +166,17 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
     const img = new Image()
     img.onload = () => {
-      // Set canvas size to desired crop dimensions
-      const cropSize = Math.min(img.width, img.height)
-      canvas.width = cropSize
-      canvas.height = cropSize
+      // Set canvas size for square crop
+      const size = Math.min(img.width, img.height)
+      canvas.width = size
+      canvas.height = size
 
       // Calculate crop position (center crop)
-      const offsetX = (img.width - cropSize) / 2
-      const offsetY = (img.height - cropSize) / 2
+      const offsetX = (img.width - size) / 2
+      const offsetY = (img.height - size) / 2
 
       // Draw cropped image
-      ctx.drawImage(img, offsetX, offsetY, cropSize, cropSize, 0, 0, cropSize, cropSize)
+      ctx.drawImage(img, offsetX, offsetY, size, size, 0, 0, size, size)
 
       // Get cropped data URL
       const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.8)
@@ -191,7 +196,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
     const img = new Image()
     img.onload = () => {
-      // Swap width and height for rotation
+      // Swap dimensions for rotation
       canvas.width = img.height
       canvas.height = img.width
 
@@ -220,52 +225,141 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   }
 
   return (
-    <>
-      <Card className="w-full transition-all duration-200 hover:shadow-md">
-        <CardBody className="p-4 sm:p-6">
-          <div className="text-center" role="region" aria-label={t('profile.image.uploadSection')}>
-            {/* Current Image Display */}
-            {currentImageUrl && !selectedFile && (
-              <div className="mb-4 sm:mb-6">
-                <div className="relative inline-block">
-                  <img
-                    src={currentImageUrl}
-                    alt={t('profile.image.currentProfileImage')}
-                    className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
-                  />
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    color="danger"
-                    variant="solid"
-                    className="absolute -top-2 -right-2 min-h-[44px] min-w-[44px]"
-                    onPress={handleRemove}
-                    disabled={isUploading}
-                    aria-label={t('profile.image.actions.removeImage')}
-                  >
-                    <Trash2 className="w-4 h-4" aria-hidden="true" />
-                  </Button>
-                </div>
-                <p className="text-xs sm:text-sm text-gray-600 mt-2">
-                  {t('profile.image.currentImage')}
-                </p>
-              </div>
-            )}
+    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm" role="region" aria-label={t('profile.image.title')}>
+      <CardBody className="p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+              <Camera className="w-5 h-5 text-purple-600" aria-hidden="true" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+              {t('profile.image.title')}
+            </h3>
+          </div>
+        </div>
 
-            {/* Upload Area */}
-            {!currentImageUrl || selectedFile ? (
+        <div className="space-y-6">
+          {/* Current Image Display */}
+          {currentImageUrl && !selectedFile && (
+            <div className="text-center">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
+                  <img 
+                    src={currentImageUrl} 
+                    alt={t('profile.image.currentImage')}
+                    className="w-full h-full rounded-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <Button
+                  isIconOnly
+                  size="sm"
+                  color="danger"
+                  variant="solid"
+                  className="absolute -top-2 -right-2 shadow-lg"
+                  onPress={handleRemove}
+                  aria-label={t('profile.image.actions.remove')}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-gray-600 mt-3">
+                {t('profile.image.currentImageDescription')}
+              </p>
+            </div>
+          )}
+
+          {/* Preview Image */}
+          {previewUrl && (
+            <div className="text-center">
+              <div className="relative inline-block">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
+                  <img 
+                    src={cropData || previewUrl} 
+                    alt={t('profile.image.preview')}
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-center space-x-2 mt-4">
+                <Button
+                  size="sm"
+                  color="primary"
+                  variant="flat"
+                  startContent={<Crop className="w-4 h-4" />}
+                  onPress={() => setShowCropModal(true)}
+                  className="font-semibold"
+                  aria-label={t('profile.image.actions.crop')}
+                >
+                  {t('profile.image.actions.crop')}
+                </Button>
+                <Button
+                  size="sm"
+                  color="secondary"
+                  variant="flat"
+                  startContent={<RotateCw className="w-4 h-4" />}
+                  onPress={handleRotate}
+                  className="font-semibold"
+                  aria-label={t('profile.image.actions.rotate')}
+                >
+                  {t('profile.image.actions.rotate')}
+                </Button>
+                <Button
+                  size="sm"
+                  color="success"
+                  variant="flat"
+                  startContent={<Download className="w-4 h-4" />}
+                  onPress={handleDownload}
+                  className="font-semibold"
+                  aria-label={t('profile.image.actions.download')}
+                >
+                  {t('profile.image.actions.download')}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Upload Progress */}
+          {uploadProgress > 0 && (
+            <div className="space-y-2" role="status" aria-live="polite" aria-label={t('profile.image.uploadProgress')}>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-gray-700 font-medium">
+                  {t('profile.image.uploading')}
+                </span>
+                <span className="text-gray-500">{uploadProgress}%</span>
+              </div>
+              <Progress 
+                value={uploadProgress} 
+                color="primary" 
+                className="w-full"
+                aria-label={`${uploadProgress}% complete`}
+              />
+            </div>
+          )}
+
+          {/* Error Display */}
+          {error && (
+            <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="assertive">
+              <AlertCircle className="w-5 h-5 text-red-600" aria-hidden="true" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          {/* Upload Actions */}
+          {!currentImageUrl && !selectedFile && (
+            <div className="space-y-4">
               <div
-                className={`border-2 border-dashed rounded-lg p-4 sm:p-8 transition-colors ${
-                  isDragOver
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-300 hover:border-gray-400'
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
+                  isDragOver 
+                    ? 'border-blue-400 bg-blue-50' 
+                    : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
                 }`}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
                 role="button"
                 tabIndex={0}
                 aria-label={t('profile.image.dragDropArea')}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
@@ -273,219 +367,119 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                   }
                 }}
               >
-                {/* Preview Image */}
-                {previewUrl ? (
-                  <div className="space-y-3 sm:space-y-4">
-                    <img
-                      src={previewUrl}
-                      alt={t('profile.image.previewImage')}
-                      className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover mx-auto border-4 border-gray-200"
-                    />
-                    <div className="flex flex-wrap justify-center gap-2">
-                      <Button
-                        size="sm"
-                        color="primary"
-                        variant="flat"
-                        startContent={<Crop className="w-4 h-4" aria-hidden="true" />}
-                        onPress={() => setShowCropModal(true)}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.cropImage')}
-                      >
-                        {t('profile.image.actions.crop')}
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="secondary"
-                        variant="flat"
-                        startContent={<RotateCw className="w-4 h-4" aria-hidden="true" />}
-                        onPress={handleRotate}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.rotateImage')}
-                      >
-                        {t('profile.image.actions.rotate')}
-                      </Button>
-                      <Button
-                        size="sm"
-                        color="default"
-                        variant="flat"
-                        startContent={<Download className="w-4 h-4" aria-hidden="true" />}
-                        onPress={handleDownload}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.downloadImage')}
-                      >
-                        {t('profile.image.actions.download')}
-                      </Button>
-                    </div>
-                    <div className="flex flex-col sm:flex-row justify-center gap-2">
-                      <Button
-                        color="success"
-                        variant="flat"
-                        onPress={handleUpload}
-                        isLoading={isUploading}
-                        disabled={isUploading}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.uploadImage')}
-                      >
-                        {t('profile.image.actions.upload')}
-                      </Button>
-                      <Button
-                        color="default"
-                        variant="flat"
-                        onPress={() => {
-                          setSelectedFile(null)
-                          setPreviewUrl(null)
-                          setCropData(null)
-                          setError(null)
-                        }}
-                        disabled={isUploading}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.cancelUpload')}
-                      >
-                        {t('common.cancel')}
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" aria-hidden="true" />
-                    </div>
-                    <div>
-                      <p className="text-base sm:text-lg font-medium text-gray-900">
-                        {t('profile.image.uploadTitle')}
-                      </p>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        {t('profile.image.uploadDescription')}
-                      </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row justify-center items-center gap-2">
-                      <Button
-                        color="primary"
-                        variant="flat"
-                        startContent={<Upload className="w-4 h-4" aria-hidden="true" />}
-                        onPress={() => fileInputRef.current?.click()}
-                        className="min-h-[44px] touch-manipulation"
-                        aria-label={t('profile.image.actions.selectFile')}
-                      >
-                        {t('profile.image.actions.selectFile')}
-                      </Button>
-                      <span className="text-xs sm:text-sm text-gray-500">
-                        {t('profile.image.orDragDrop')}
-                      </span>
-                    </div>
-                    <div className="text-xs text-gray-500" role="note" aria-label={t('profile.image.fileRequirements')}>
-                      <p>{t('profile.image.supportedFormats', { formats: acceptedFormats.join(', ') })}</p>
-                      <p>{t('profile.image.maxFileSize', { size: maxFileSize })}</p>
-                    </div>
-                  </div>
-                )}
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
+                  <Upload className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                  {t('profile.image.uploadTitle')}
+                </h4>
+                <p className="text-sm text-gray-600 mb-4">
+                  {t('profile.image.uploadDescription')}
+                </p>
+                <Button
+                  color="primary"
+                  variant="flat"
+                  startContent={<Camera className="w-4 h-4" />}
+                  onPress={() => fileInputRef.current?.click()}
+                  className="font-semibold"
+                >
+                  {t('profile.image.actions.selectFile')}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept={acceptedFormats.join(',')}
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                  aria-label={t('profile.image.fileInput')}
+                />
               </div>
-            ) : (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-8">
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="mx-auto w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Camera className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" aria-hidden="true" />
-                  </div>
-                  <div>
-                    <p className="text-base sm:text-lg font-medium text-gray-900">
-                      {t('profile.image.changeImage')}
-                    </p>
-                    <p className="text-xs sm:text-sm text-gray-600">
-                      {t('profile.image.changeDescription')}
-                    </p>
-                  </div>
-                  <Button
-                    color="primary"
-                    variant="flat"
-                    startContent={<Upload className="w-4 h-4" aria-hidden="true" />}
-                    onPress={() => fileInputRef.current?.click()}
-                    className="min-h-[44px] touch-manipulation"
-                    aria-label={t('profile.image.actions.selectNewImage')}
-                  >
-                    {t('profile.image.actions.selectNewImage')}
-                  </Button>
+              
+              <div className="text-center">
+                <Chip size="sm" variant="flat" color="default">
+                  {t('profile.image.supportedFormats', { formats: acceptedFormats.map(f => f.split('/')[1].toUpperCase()).join(', ') })}
+                </Chip>
+                <Chip size="sm" variant="flat" color="default" className="ml-2">
+                  {t('profile.image.maxSize', { size: maxFileSize })}
+                </Chip>
+              </div>
+            </div>
+          )}
+
+          {/* Upload Button */}
+          {selectedFile && !isUploading && (
+            <div className="flex items-center justify-center space-x-3">
+              <Button
+                color="success"
+                variant="solid"
+                startContent={<Upload className="w-4 h-4" />}
+                onPress={handleUpload}
+                className="font-semibold"
+                aria-label={t('profile.image.actions.upload')}
+              >
+                {t('profile.image.actions.upload')}
+              </Button>
+              <Button
+                color="danger"
+                variant="light"
+                startContent={<X className="w-4 h-4" />}
+                onPress={() => {
+                  setSelectedFile(null)
+                  setPreviewUrl(null)
+                  setCropData(null)
+                  setError(null)
+                }}
+                className="font-semibold"
+                aria-label={t('profile.image.actions.cancel')}
+              >
+                {t('profile.image.actions.cancel')}
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Crop Modal */}
+        <Modal isOpen={showCropModal} onClose={() => setShowCropModal(false)} size="2xl">
+          <ModalContent>
+            <ModalHeader>
+              <h3 className="text-lg font-semibold">{t('profile.image.cropTitle')}</h3>
+            </ModalHeader>
+            <ModalBody>
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  {t('profile.image.cropDescription')}
+                </p>
+                <div className="flex justify-center">
+                  <canvas
+                    ref={canvasRef}
+                    className="border border-gray-300 rounded-lg max-w-full"
+                    aria-label={t('profile.image.cropCanvas')}
+                  />
                 </div>
               </div>
-            )}
-
-            {/* Upload Progress */}
-            {uploadProgress > 0 && (
-              <div className="mt-4" role="status" aria-live="polite" aria-label={t('profile.image.uploadProgress')}>
-                <Progress
-                  value={uploadProgress}
-                  className="w-full"
-                  color="primary"
-                  showValueLabel
-                  aria-label={`${t('profile.image.uploading')} ${uploadProgress}%`}
-                />
-                <p className="text-xs sm:text-sm text-gray-600 mt-2">
-                  {t('profile.image.uploading')}... {uploadProgress}%
-                </p>
-              </div>
-            )}
-
-            {/* Error Display */}
-            {error && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="assertive">
-                <p className="text-xs sm:text-sm text-red-600">{error}</p>
-              </div>
-            )}
-
-            {/* Hidden File Input */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept={acceptedFormats.join(',')}
-              onChange={handleFileInputChange}
-              className="hidden"
-              aria-label={t('profile.image.fileInput')}
-            />
-          </div>
-        </CardBody>
-      </Card>
-
-      {/* Crop Modal */}
-      <Modal isOpen={showCropModal} onClose={() => setShowCropModal(false)} size="lg">
-        <ModalContent>
-          <ModalHeader>
-            {t('profile.image.cropTitle')}
-          </ModalHeader>
-          <ModalBody>
-            <div className="text-center">
-              <canvas
-                ref={canvasRef}
-                className="max-w-full h-auto border border-gray-300 rounded-lg"
-                style={{ maxHeight: '400px' }}
-                aria-label={t('profile.image.cropCanvas')}
-              />
-              <p className="text-xs sm:text-sm text-gray-600 mt-2">
-                {t('profile.image.cropDescription')}
-              </p>
-            </div>
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color="default"
-              variant="flat"
-              onPress={() => setShowCropModal(false)}
-              className="min-h-[44px] touch-manipulation"
-              aria-label={t('profile.image.actions.cancelCrop')}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
-              color="primary"
-              variant="flat"
-              onPress={handleCrop}
-              className="min-h-[44px] touch-manipulation"
-              aria-label={t('profile.image.actions.applyCrop')}
-            >
-              {t('profile.image.actions.crop')}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                color="primary"
+                variant="flat"
+                onPress={handleCrop}
+                className="font-semibold"
+              >
+                {t('profile.image.actions.applyCrop')}
+              </Button>
+              <Button
+                color="danger"
+                variant="light"
+                onPress={() => setShowCropModal(false)}
+                className="font-semibold"
+              >
+                {t('common.cancel')}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </CardBody>
+    </Card>
   )
 }
 

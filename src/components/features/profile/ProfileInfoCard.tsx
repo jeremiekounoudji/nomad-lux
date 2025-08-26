@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Card, CardBody, Button, Input, Textarea, Chip } from '@heroui/react'
-import { Edit, Save, X, User, Mail, Phone, MapPin, Calendar, FileText } from 'lucide-react'
+import { Edit, Save, X, User, Mail, Phone, MapPin, Calendar, FileText, CheckCircle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { Profile, ProfileUpdateData, ProfileFormErrors } from '../../../interfaces/Profile'
 
@@ -98,48 +98,38 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
     type: 'text' | 'textarea' = 'text',
     placeholder?: string
   ) => {
+    const hasError = errors[field as keyof ProfileFormErrors]
     const value = formData[field] || ''
-    const error = errors[field as keyof ProfileFormErrors]
 
     return (
       <div className="space-y-2">
-        <label className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
+        <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
           {icon}
-          {label}
+          <span>{label}</span>
         </label>
-        {isEditing ? (
-          <div className="space-y-1">
-            {type === 'textarea' ? (
-              <Textarea
-                value={value}
-                onChange={(e) => handleInputChange(field, e.target.value)}
-                placeholder={placeholder}
-                className={`w-full min-h-[44px] ${error ? 'border-red-500' : ''}`}
-                maxLength={500}
-                minRows={3}
-                aria-describedby={error ? `${field}-error` : undefined}
-                aria-invalid={!!error}
-              />
-            ) : (
-              <Input
-                type={type}
-                value={value}
-                onChange={(e) => handleInputChange(field, e.target.value)}
-                placeholder={placeholder}
-                className={`w-full min-h-[44px] ${error ? 'border-red-500' : ''}`}
-                aria-describedby={error ? `${field}-error` : undefined}
-                aria-invalid={!!error}
-              />
-            )}
-            {error && (
-              <p id={`${field}-error`} className="text-xs sm:text-sm text-red-500" role="alert">
-                {error}
-              </p>
-            )}
-          </div>
+        {type === 'textarea' ? (
+          <Textarea
+            value={value}
+            onChange={(e) => handleInputChange(field, e.target.value)}
+            placeholder={placeholder}
+            className={`min-h-[44px] ${hasError ? 'border-red-500' : ''}`}
+            aria-describedby={hasError ? `${field}-error` : undefined}
+            aria-invalid={hasError ? 'true' : 'false'}
+          />
         ) : (
-          <p className="text-sm sm:text-base text-gray-900 break-words">
-            {value || t('common.notProvided')}
+          <Input
+            type="text"
+            value={value}
+            onChange={(e) => handleInputChange(field, e.target.value)}
+            placeholder={placeholder}
+            className={`min-h-[44px] ${hasError ? 'border-red-500' : ''}`}
+            aria-describedby={hasError ? `${field}-error` : undefined}
+            aria-invalid={hasError ? 'true' : 'false'}
+          />
+        )}
+        {hasError && (
+          <p id={`${field}-error`} className="text-sm text-red-600" role="alert">
+            {hasError}
           </p>
         )}
       </div>
@@ -147,12 +137,14 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   }
 
   return (
-    <Card className="w-full transition-all duration-200 hover:shadow-md">
-      <CardBody className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-          <div className="flex items-center space-x-2">
-            <User className="w-5 h-5 text-gray-600" aria-hidden="true" />
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+      <CardBody className="p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <User className="w-5 h-5 text-blue-600" aria-hidden="true" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
               {t('profile.sections.personalInfo')}
             </h3>
           </div>
@@ -163,13 +155,13 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               variant="flat"
               startContent={<Edit className="w-4 h-4" />}
               onPress={handleEdit}
-              className="w-full sm:w-auto min-h-[44px] touch-manipulation"
+              className="self-start sm:self-auto font-semibold"
               aria-label={t('profile.actions.editPersonalInfo')}
             >
               {t('common.edit')}
             </Button>
           ) : (
-            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+            <div className="flex items-center space-x-2 self-start sm:self-auto">
               <Button 
                 size="sm" 
                 color="success" 
@@ -177,21 +169,19 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 startContent={<Save className="w-4 h-4" />}
                 onPress={handleSave}
                 isLoading={isUpdating}
-                disabled={isUpdating}
-                className="w-full sm:w-auto min-h-[44px] touch-manipulation"
-                aria-label={t('profile.actions.saveChanges')}
+                className="font-semibold"
+                aria-label={t('common.save')}
               >
                 {t('common.save')}
               </Button>
               <Button 
                 size="sm" 
-                color="default" 
-                variant="flat"
+                color="danger" 
+                variant="light"
                 startContent={<X className="w-4 h-4" />}
                 onPress={handleCancel}
-                disabled={isUpdating}
-                className="w-full sm:w-auto min-h-[44px] touch-manipulation"
-                aria-label={t('profile.actions.cancelChanges')}
+                className="font-semibold"
+                aria-label={t('common.cancel')}
               >
                 {t('common.cancel')}
               </Button>
@@ -199,82 +189,145 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
           )}
         </div>
 
-        <div className="space-y-4 sm:space-y-6">
-          {/* Name Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            {renderField(
-              'firstName',
-              t('profile.fields.firstName'),
-              <User className="w-4 h-4" aria-hidden="true" />,
-              'text',
-              t('profile.placeholders.firstName')
-            )}
-            {renderField(
-              'lastName',
-              t('profile.fields.lastName'),
-              <User className="w-4 h-4" aria-hidden="true" />,
-              'text',
-              t('profile.placeholders.lastName')
-            )}
-          </div>
-
-          {/* Contact Fields */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                <Mail className="w-4 h-4" aria-hidden="true" />
-                {t('profile.fields.email')}
-              </label>
-              <p className="text-gray-900 break-all">{profile.email}</p>
-              <Chip size="sm" color="primary" variant="flat">
-                {t('profile.fields.emailReadOnly')}
-              </Chip>
+        {isEditing ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {renderField(
+                'firstName',
+                t('profile.fields.firstName'),
+                <User className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                'text',
+                t('profile.placeholders.firstName')
+              )}
+              {renderField(
+                'lastName',
+                t('profile.fields.lastName'),
+                <User className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                'text',
+                t('profile.placeholders.lastName')
+              )}
+              {renderField(
+                'phone',
+                t('profile.fields.phone'),
+                <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                'text',
+                t('profile.placeholders.phone')
+              )}
+              {renderField(
+                'location',
+                t('profile.fields.location'),
+                <MapPin className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                'text',
+                t('profile.placeholders.location')
+              )}
             </div>
             {renderField(
-              'phone',
-              t('profile.fields.phone'),
-              <Phone className="w-4 h-4" aria-hidden="true" />,
-              'text',
-              t('profile.placeholders.phone')
-            )}
-          </div>
-
-          {/* Location and Date of Birth */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-            {renderField(
-              'location',
-              t('profile.fields.location'),
-              <MapPin className="w-4 h-4" aria-hidden="true" />,
-              'text',
-              t('profile.placeholders.location')
+              'bio',
+              t('profile.fields.bio'),
+              <FileText className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              'textarea',
+              t('profile.placeholders.bio')
             )}
             {renderField(
               'dateOfBirth',
               t('profile.fields.dateOfBirth'),
-              <Calendar className="w-4 h-4" aria-hidden="true" />,
+              <Calendar className="w-4 h-4 text-gray-500" aria-hidden="true" />,
               'text',
               t('profile.placeholders.dateOfBirth')
             )}
           </div>
-
-          {/* Bio Field */}
-          {renderField(
-            'bio',
-            t('profile.fields.bio'),
-            <FileText className="w-4 h-4" aria-hidden="true" />,
-            'textarea',
-            t('profile.placeholders.bio')
-          )}
-
-          {/* Character Count for Bio */}
-          {isEditing && formData.bio && (
-            <div className="text-right">
-              <span className={`text-sm ${formData.bio.length > 450 ? 'text-red-500' : 'text-gray-500'}`}>
-                {formData.bio.length}/500
-              </span>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                  <User className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                  <span>{t('profile.fields.firstName')}</span>
+                </label>
+                <div className="flex items-center space-x-2">
+                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                    {profile.firstName || t('common.notProvided')}
+                  </p>
+                  {profile.firstName && (
+                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                  <Mail className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                  <span>{t('profile.fields.email')}</span>
+                </label>
+                <div className="flex items-center space-x-2">
+                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg break-all flex-1">
+                    {profile.email}
+                  </p>
+                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                  <User className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                  <span>{t('profile.fields.lastName')}</span>
+                </label>
+                <div className="flex items-center space-x-2">
+                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                    {profile.lastName || t('common.notProvided')}
+                  </p>
+                  {profile.lastName && (
+                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+                  <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                  <span>{t('profile.fields.phone')}</span>
+                </label>
+                <div className="flex items-center space-x-2">
+                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                    {profile.phone || t('common.notProvided')}
+                  </p>
+                  {profile.phone && (
+                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!isEditing && profile.bio && (
+          <div className="mt-6 space-y-2">
+            <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-gray-500" aria-hidden="true" />
+              <span>{t('profile.fields.bio')}</span>
+            </label>
+            <div className="flex items-start space-x-2">
+              <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                {profile.bio}
+              </p>
+              <CheckCircle className="w-4 h-4 text-green-500 mt-2" aria-hidden="true" />
+            </div>
+          </div>
+        )}
+
+        {!isEditing && profile.location && (
+          <div className="mt-6 space-y-2">
+            <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+              <MapPin className="w-4 h-4 text-gray-500" aria-hidden="true" />
+              <span>{t('profile.fields.location')}</span>
+            </label>
+            <div className="flex items-center space-x-2">
+              <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                {profile.location}
+              </p>
+              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+            </div>
+          </div>
+        )}
       </CardBody>
     </Card>
   )

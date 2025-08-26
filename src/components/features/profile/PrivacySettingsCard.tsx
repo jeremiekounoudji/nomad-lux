@@ -1,114 +1,115 @@
-import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Button, Switch, Select, SelectItem, Divider, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react'
-import { Shield, Bell, Eye, EyeOff, Globe, Users, Settings, AlertTriangle, CheckCircle } from 'lucide-react'
+import React, { useState } from 'react'
+import { Card, CardBody, Button, Switch, Select, SelectItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Chip } from '@heroui/react'
+import { Settings, Bell, Globe, Eye, EyeOff, Save, RotateCcw, AlertTriangle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { PrivacySettings, NotificationSettings, ProfilePreferences } from '../../../interfaces/Profile'
 import toast from 'react-hot-toast'
 
 interface PrivacySettingsCardProps {
-  privacySettings: PrivacySettings
-  notificationSettings: NotificationSettings
-  preferences: ProfilePreferences
-  onPrivacySettingsChange: (settings: PrivacySettings) => Promise<void>
-  onNotificationSettingsChange: (settings: NotificationSettings) => Promise<void>
-  onPreferencesChange: (preferences: ProfilePreferences) => Promise<void>
-  isSaving?: boolean
+  onPrivacySettingsChange?: (settings: PrivacySettings) => Promise<void>
+  onNotificationSettingsChange?: (settings: NotificationSettings) => Promise<void>
+  onPreferencesChange?: (preferences: ProfilePreferences) => Promise<void>
 }
 
 const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
-  privacySettings,
-  notificationSettings,
-  preferences,
   onPrivacySettingsChange,
   onNotificationSettingsChange,
-  onPreferencesChange,
-  isSaving = false
+  onPreferencesChange
 }) => {
-  const [localPrivacySettings, setLocalPrivacySettings] = useState<PrivacySettings>(privacySettings)
-  const [localNotificationSettings, setLocalNotificationSettings] = useState<NotificationSettings>(notificationSettings)
-  const [localPreferences, setLocalPreferences] = useState<ProfilePreferences>(preferences)
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettings>({
+    profileVisibility: 'public',
+    showEmail: true,
+    showPhone: false,
+    showLocation: true,
+    allowDataSharing: true,
+    allowAnalytics: true
+  })
+
+  const [notificationSettings, setNotificationSettings] = useState<NotificationSettings>({
+    emailNotifications: {
+      bookingUpdates: true,
+      newMessages: true,
+      propertyApprovals: true,
+      paymentConfirmations: true,
+      marketing: false
+    },
+    pushNotifications: {
+      bookingUpdates: true,
+      newMessages: true,
+      propertyApprovals: true,
+      paymentConfirmations: true,
+      marketing: false
+    },
+    smsNotifications: {
+      bookingUpdates: false,
+      paymentConfirmations: true
+    }
+  })
+
+  const [preferences, setPreferences] = useState<ProfilePreferences>({
+    language: 'en',
+    currency: 'USD',
+    timezone: 'UTC',
+    theme: 'auto'
+  })
+
   const [showResetModal, setShowResetModal] = useState(false)
-  const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [pendingChanges, setPendingChanges] = useState<{
-    privacy?: PrivacySettings
-    notifications?: NotificationSettings
-    preferences?: ProfilePreferences
-  }>({})
+  const [isSaving, setIsSaving] = useState(false)
 
   const { t } = useTranslation(['profile', 'common'])
 
-  // Update local state when props change
-  useEffect(() => {
-    setLocalPrivacySettings(privacySettings)
-    setLocalNotificationSettings(notificationSettings)
-    setLocalPreferences(preferences)
-  }, [privacySettings, notificationSettings, preferences])
-
-  // Handle privacy setting changes
   const handlePrivacyChange = (key: keyof PrivacySettings, value: any) => {
-    const newSettings = { ...localPrivacySettings, [key]: value }
-    setLocalPrivacySettings(newSettings)
-    setPendingChanges(prev => ({ ...prev, privacy: newSettings }))
+    setPrivacySettings(prev => ({ ...prev, [key]: value }))
   }
 
-  // Handle notification setting changes
-  const handleNotificationChange = (category: keyof NotificationSettings, key: string, value: boolean) => {
-    const newSettings = {
-      ...localNotificationSettings,
-      [category]: {
-        ...localNotificationSettings[category],
+  const handleNotificationChange = (type: 'email' | 'push' | 'sms', key: string, value: boolean) => {
+    setNotificationSettings(prev => ({
+      ...prev,
+      [`${type}Notifications`]: {
+        ...prev[`${type}Notifications` as keyof NotificationSettings],
         [key]: value
       }
-    }
-    setLocalNotificationSettings(newSettings)
-    setPendingChanges(prev => ({ ...prev, notifications: newSettings }))
+    }))
   }
 
-  // Handle preference changes
   const handlePreferenceChange = (key: keyof ProfilePreferences, value: any) => {
-    const newPreferences = { ...localPreferences, [key]: value }
-    setLocalPreferences(newPreferences)
-    setPendingChanges(prev => ({ ...prev, preferences: newPreferences }))
+    setPreferences(prev => ({ ...prev, [key]: value }))
   }
 
-  // Save all pending changes
   const saveChanges = async () => {
+    setIsSaving(true)
     try {
-      const promises: Promise<void>[] = []
-
-      if (pendingChanges.privacy) {
-        promises.push(onPrivacySettingsChange(pendingChanges.privacy))
+      const promises = []
+      
+      if (onPrivacySettingsChange) {
+        promises.push(onPrivacySettingsChange(privacySettings))
       }
-      if (pendingChanges.notifications) {
-        promises.push(onNotificationSettingsChange(pendingChanges.notifications))
+      
+      if (onNotificationSettingsChange) {
+        promises.push(onNotificationSettingsChange(notificationSettings))
       }
-      if (pendingChanges.preferences) {
-        promises.push(onPreferencesChange(pendingChanges.preferences))
+      
+      if (onPreferencesChange) {
+        promises.push(onPreferencesChange(preferences))
       }
 
       await Promise.all(promises)
-      setPendingChanges({})
-      toast.success(t('profile.settings.savedSuccessfully'))
+      toast.success(t('profile.settings.saveSuccess'))
       
-      // Focus on the save button after successful save for feedback
+      // Focus on save button after success
       const saveButton = document.querySelector('[data-focus-after-save]') as HTMLElement
       if (saveButton) {
-        setTimeout(() => saveButton.focus(), 100)
+        saveButton.focus()
       }
     } catch (error) {
       console.error('Error saving settings:', error)
       toast.error(t('profile.settings.saveError'))
-      
-      // Focus on the save button after error for retry
-      const saveButton = document.querySelector('[data-focus-after-save]') as HTMLElement
-      if (saveButton) {
-        setTimeout(() => saveButton.focus(), 100)
-      }
+    } finally {
+      setIsSaving(false)
     }
   }
 
-  // Reset to defaults
-  const resetToDefaults = async () => {
+  const resetToDefaults = () => {
     const defaultPrivacySettings: PrivacySettings = {
       profileVisibility: 'public',
       showEmail: true,
@@ -146,412 +147,341 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
       theme: 'auto'
     }
 
-    try {
-      await Promise.all([
-        onPrivacySettingsChange(defaultPrivacySettings),
-        onNotificationSettingsChange(defaultNotificationSettings),
-        onPreferencesChange(defaultPreferences)
-      ])
+    setPrivacySettings(defaultPrivacySettings)
+    setNotificationSettings(defaultNotificationSettings)
+    setPreferences(defaultPreferences)
+    setShowResetModal(false)
+    toast.success(t('profile.settings.resetSuccess'))
+  }
 
-      setLocalPrivacySettings(defaultPrivacySettings)
-      setLocalNotificationSettings(defaultNotificationSettings)
-      setLocalPreferences(defaultPreferences)
-      setPendingChanges({})
-      setShowResetModal(false)
-      toast.success(t('profile.settings.resetSuccessfully'))
-    } catch (error) {
-      console.error('Error resetting settings:', error)
-      toast.error(t('profile.settings.resetError'))
+  const announceToScreenReader = (message: string) => {
+    const srAnnouncements = document.getElementById('sr-announcements')
+    if (srAnnouncements) {
+      srAnnouncements.textContent = message
     }
   }
 
-  // Check if there are unsaved changes
-  const hasUnsavedChanges = Object.keys(pendingChanges).length > 0
-
   return (
     <>
-      {/* Screen Reader Announcements */}
-      <div id="sr-announcements" className="sr-only" aria-live="polite" aria-atomic="true"></div>
-      
-      <Card className="w-full">
-        <CardBody className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-2">
-              <Settings className="w-5 h-5 text-gray-600" />
-              <h3 className="text-lg font-semibold text-gray-900">
-                {t('profile.sections.settings')}
+      <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+        <CardBody className="p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                <Settings className="w-5 h-5 text-purple-600" aria-hidden="true" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+                {t('profile.sections.privacy')}
               </h3>
             </div>
-            <div className="flex space-x-2">
-                             {hasUnsavedChanges && (
-                 <Button
-                   size="sm"
-                   color="primary"
-                   variant="flat"
-                   onPress={saveChanges}
-                   isLoading={isSaving}
-                   disabled={isSaving}
-                   startContent={<CheckCircle className="w-4 h-4" aria-hidden="true" />}
-                   className="min-h-[44px] touch-manipulation"
-                   data-focus-after-save
-                   aria-label={t('profile.settings.actions.saveChanges')}
-                 >
-                   {t('common.save')}
-                 </Button>
-               )}
-              <Button
-                size="sm"
-                color="default"
+            <div className="flex items-center space-x-2 self-start sm:self-auto">
+              <Button 
+                size="sm" 
+                color="secondary" 
                 variant="flat"
+                startContent={<RotateCcw className="w-4 h-4" />}
                 onPress={() => setShowResetModal(true)}
-                disabled={isSaving}
-                startContent={<AlertTriangle className="w-4 h-4" />}
+                className="font-semibold"
+                aria-label={t('profile.settings.actions.reset')}
               >
-                {t('profile.settings.resetToDefaults')}
+                {t('profile.settings.actions.reset')}
+              </Button>
+              <Button 
+                size="sm" 
+                color="primary" 
+                variant="flat"
+                startContent={<Save className="w-4 h-4" />}
+                onPress={saveChanges}
+                isLoading={isSaving}
+                disabled={isSaving}
+                data-focus-after-save
+                className="font-semibold min-h-[44px] touch-manipulation"
+                aria-label={t('profile.settings.actions.save')}
+              >
+                {t('profile.settings.actions.save')}
               </Button>
             </div>
           </div>
 
           <div className="space-y-8">
             {/* Privacy Settings */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Shield className="w-5 h-5 text-gray-600" />
-                <h4 className="text-md font-semibold text-gray-900">
-                  {t('profile.settings.privacy.title')}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Globe className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <h4 className="text-base font-semibold text-gray-900">
+                  {t('profile.privacy.title')}
                 </h4>
               </div>
               
               <div className="space-y-4">
-                {/* Profile Visibility */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Globe className="w-4 h-4 text-gray-500" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">
-                        {t('profile.settings.privacy.profileVisibility')}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {t('profile.settings.privacy.profileVisibilityDescription')}
-                      </p>
-                    </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.privacy.profileVisibility')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.privacy.profileVisibilityDescription')}
+                    </p>
                   </div>
-                                     <Select
-                     size="sm"
-                     value={localPrivacySettings.profileVisibility}
-                     onChange={(e) => handlePrivacyChange('profileVisibility', e.target.value)}
-                     disabled={isSaving}
-                     className="w-32"
-                     aria-label={t('profile.settings.privacy.profileVisibility')}
-                     onFocus={() => {
-                       // Announce the current selection to screen readers
-                       const announcement = `${t('profile.settings.privacy.profileVisibility')}: ${t(`profile.settings.privacy.visibility.${localPrivacySettings.profileVisibility}`)}`
-                       const liveRegion = document.getElementById('sr-announcements')
-                       if (liveRegion) {
-                         liveRegion.textContent = announcement
-                       }
-                     }}
-                   >
+                  <Select
+                    selectedKeys={[privacySettings.profileVisibility]}
+                    onSelectionChange={(keys) => {
+                      const value = Array.from(keys)[0] as string
+                      handlePrivacyChange('profileVisibility', value)
+                    }}
+                    className="w-32"
+                    aria-label={t('profile.privacy.profileVisibility')}
+                    onFocus={() => announceToScreenReader(`${t('profile.privacy.profileVisibility')}: ${privacySettings.profileVisibility}`)}
+                  >
                     <SelectItem key="public" value="public">
-                      {t('profile.settings.privacy.visibility.public')}
+                      {t('profile.privacy.visibility.public')}
                     </SelectItem>
                     <SelectItem key="private" value="private">
-                      {t('profile.settings.privacy.visibility.private')}
+                      {t('profile.privacy.visibility.private')}
                     </SelectItem>
                     <SelectItem key="friends" value="friends">
-                      {t('profile.settings.privacy.visibility.friends')}
+                      {t('profile.privacy.visibility.friends')}
                     </SelectItem>
                   </Select>
                 </div>
 
-                <Divider />
-
-                {/* Data Sharing Toggles */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {t('profile.settings.privacy.showEmail')}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t('profile.settings.privacy.showEmailDescription')}
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      isSelected={localPrivacySettings.showEmail}
-                      onValueChange={(value) => handlePrivacyChange('showEmail', value)}
-                      disabled={isSaving}
-                    />
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.privacy.showEmail')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.privacy.showEmailDescription')}
+                    </p>
                   </div>
+                  <Switch
+                    isSelected={privacySettings.showEmail}
+                    onValueChange={(value) => handlePrivacyChange('showEmail', value)}
+                    aria-label={t('profile.privacy.showEmail')}
+                  />
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {t('profile.settings.privacy.showPhone')}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t('profile.settings.privacy.showPhoneDescription')}
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      isSelected={localPrivacySettings.showPhone}
-                      onValueChange={(value) => handlePrivacyChange('showPhone', value)}
-                      disabled={isSaving}
-                    />
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.privacy.showPhone')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.privacy.showPhoneDescription')}
+                    </p>
                   </div>
+                  <Switch
+                    isSelected={privacySettings.showPhone}
+                    onValueChange={(value) => handlePrivacyChange('showPhone', value)}
+                    aria-label={t('profile.privacy.showPhone')}
+                  />
+                </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Eye className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {t('profile.settings.privacy.showLocation')}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t('profile.settings.privacy.showLocationDescription')}
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      isSelected={localPrivacySettings.showLocation}
-                      onValueChange={(value) => handlePrivacyChange('showLocation', value)}
-                      disabled={isSaving}
-                    />
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.privacy.showLocation')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.privacy.showLocationDescription')}
+                    </p>
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Users className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {t('profile.settings.privacy.allowDataSharing')}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t('profile.settings.privacy.allowDataSharingDescription')}
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      isSelected={localPrivacySettings.allowDataSharing}
-                      onValueChange={(value) => handlePrivacyChange('allowDataSharing', value)}
-                      disabled={isSaving}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Settings className="w-4 h-4 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {t('profile.settings.privacy.allowAnalytics')}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {t('profile.settings.privacy.allowAnalyticsDescription')}
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      isSelected={localPrivacySettings.allowAnalytics}
-                      onValueChange={(value) => handlePrivacyChange('allowAnalytics', value)}
-                      disabled={isSaving}
-                    />
-                  </div>
+                  <Switch
+                    isSelected={privacySettings.showLocation}
+                    onValueChange={(value) => handlePrivacyChange('showLocation', value)}
+                    aria-label={t('profile.privacy.showLocation')}
+                  />
                 </div>
               </div>
             </div>
-
-            <Divider />
 
             {/* Notification Settings */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Bell className="w-5 h-5 text-gray-600" />
-                <h4 className="text-md font-semibold text-gray-900">
-                  {t('profile.settings.notifications.title')}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Bell className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <h4 className="text-base font-semibold text-gray-900">
+                  {t('profile.notifications.title')}
                 </h4>
               </div>
-
-              <div className="space-y-6">
-                {/* Email Notifications */}
-                <div>
-                  <h5 className="text-sm font-medium text-gray-900 mb-3">
-                    {t('profile.settings.notifications.email')}
-                  </h5>
-                  <div className="space-y-3">
-                    {Object.entries(localNotificationSettings.emailNotifications).map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">
-                          {t(`profile.settings.notifications.types.${key}`)}
-                        </span>
-                        <Switch
-                          isSelected={value}
-                          onValueChange={(newValue) => handleNotificationChange('emailNotifications', key, newValue)}
-                          disabled={isSaving}
-                        />
-                      </div>
-                    ))}
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.notifications.email')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.notifications.emailDescription')}
+                    </p>
                   </div>
+                  <Switch
+                    isSelected={notificationSettings.emailNotifications.bookingUpdates}
+                    onValueChange={(value) => handleNotificationChange('email', 'bookingUpdates', value)}
+                    aria-label={t('profile.notifications.email')}
+                  />
                 </div>
 
-                <Divider />
-
-                {/* Push Notifications */}
-                <div>
-                  <h5 className="text-sm font-medium text-gray-900 mb-3">
-                    {t('profile.settings.notifications.push')}
-                  </h5>
-                  <div className="space-y-3">
-                    {Object.entries(localNotificationSettings.pushNotifications).map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">
-                          {t(`profile.settings.notifications.types.${key}`)}
-                        </span>
-                        <Switch
-                          isSelected={value}
-                          onValueChange={(newValue) => handleNotificationChange('pushNotifications', key, newValue)}
-                          disabled={isSaving}
-                        />
-                      </div>
-                    ))}
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.notifications.push')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.notifications.pushDescription')}
+                    </p>
                   </div>
+                  <Switch
+                    isSelected={notificationSettings.pushNotifications.bookingUpdates}
+                    onValueChange={(value) => handleNotificationChange('push', 'bookingUpdates', value)}
+                    aria-label={t('profile.notifications.push')}
+                  />
                 </div>
 
-                <Divider />
-
-                {/* SMS Notifications */}
-                <div>
-                  <h5 className="text-sm font-medium text-gray-900 mb-3">
-                    {t('profile.settings.notifications.sms')}
-                  </h5>
-                  <div className="space-y-3">
-                    {Object.entries(localNotificationSettings.smsNotifications).map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between">
-                        <span className="text-sm text-gray-700">
-                          {t(`profile.settings.notifications.types.${key}`)}
-                        </span>
-                        <Switch
-                          isSelected={value}
-                          onValueChange={(newValue) => handleNotificationChange('smsNotifications', key, newValue)}
-                          disabled={isSaving}
-                        />
-                      </div>
-                    ))}
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">
+                      {t('profile.notifications.sms')}
+                    </label>
+                    <p className="text-xs text-gray-500">
+                      {t('profile.notifications.smsDescription')}
+                    </p>
                   </div>
+                  <Switch
+                    isSelected={notificationSettings.smsNotifications.paymentConfirmations}
+                    onValueChange={(value) => handleNotificationChange('sms', 'paymentConfirmations', value)}
+                    aria-label={t('profile.notifications.sms')}
+                  />
                 </div>
               </div>
             </div>
 
-            <Divider />
-
             {/* Preferences */}
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Settings className="w-5 h-5 text-gray-600" />
-                <h4 className="text-md font-semibold text-gray-900">
-                  {t('profile.settings.preferences.title')}
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Settings className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <h4 className="text-base font-semibold text-gray-900">
+                  {t('profile.preferences.title')}
                 </h4>
               </div>
-
-              <div className="space-y-4">
-                {/* Language */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900">
-                    {t('profile.settings.preferences.language')}
-                  </span>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('profile.preferences.language')}
+                  </label>
                   <Select
-                    size="sm"
-                    value={localPreferences.language}
-                    onChange={(e) => handlePreferenceChange('language', e.target.value)}
-                    disabled={isSaving}
-                    className="w-32"
+                    selectedKeys={[preferences.language]}
+                    onSelectionChange={(keys) => {
+                      const value = Array.from(keys)[0] as string
+                      handlePreferenceChange('language', value)
+                    }}
+                    aria-label={t('profile.preferences.language')}
+                    onFocus={() => announceToScreenReader(`${t('profile.preferences.language')}: ${preferences.language}`)}
                   >
                     <SelectItem key="en" value="en">English</SelectItem>
-                    <SelectItem key="fr" value="fr">Français</SelectItem>
                     <SelectItem key="es" value="es">Español</SelectItem>
+                    <SelectItem key="fr" value="fr">Français</SelectItem>
+                    <SelectItem key="de" value="de">Deutsch</SelectItem>
                   </Select>
                 </div>
 
-                {/* Currency */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900">
-                    {t('profile.settings.preferences.currency')}
-                  </span>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('profile.preferences.currency')}
+                  </label>
                   <Select
-                    size="sm"
-                    value={localPreferences.currency}
-                    onChange={(e) => handlePreferenceChange('currency', e.target.value)}
-                    disabled={isSaving}
-                    className="w-32"
+                    selectedKeys={[preferences.currency]}
+                    onSelectionChange={(keys) => {
+                      const value = Array.from(keys)[0] as string
+                      handlePreferenceChange('currency', value)
+                    }}
+                    aria-label={t('profile.preferences.currency')}
+                    onFocus={() => announceToScreenReader(`${t('profile.preferences.currency')}: ${preferences.currency}`)}
                   >
                     <SelectItem key="USD" value="USD">USD ($)</SelectItem>
                     <SelectItem key="EUR" value="EUR">EUR (€)</SelectItem>
                     <SelectItem key="GBP" value="GBP">GBP (£)</SelectItem>
-                    <SelectItem key="CAD" value="CAD">CAD (C$)</SelectItem>
+                    <SelectItem key="JPY" value="JPY">JPY (¥)</SelectItem>
                   </Select>
                 </div>
 
-                {/* Theme */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-900">
-                    {t('profile.settings.preferences.theme')}
-                  </span>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('profile.preferences.timezone')}
+                  </label>
                   <Select
-                    size="sm"
-                    value={localPreferences.theme}
-                    onChange={(e) => handlePreferenceChange('theme', e.target.value)}
-                    disabled={isSaving}
-                    className="w-32"
+                    selectedKeys={[preferences.timezone]}
+                    onSelectionChange={(keys) => {
+                      const value = Array.from(keys)[0] as string
+                      handlePreferenceChange('timezone', value)
+                    }}
+                    aria-label={t('profile.preferences.timezone')}
+                    onFocus={() => announceToScreenReader(`${t('profile.preferences.timezone')}: ${preferences.timezone}`)}
                   >
-                    <SelectItem key="light" value="light">
-                      {t('profile.settings.preferences.theme.light')}
-                    </SelectItem>
-                    <SelectItem key="dark" value="dark">
-                      {t('profile.settings.preferences.theme.dark')}
-                    </SelectItem>
-                    <SelectItem key="auto" value="auto">
-                      {t('profile.settings.preferences.theme.auto')}
-                    </SelectItem>
+                    <SelectItem key="UTC" value="UTC">UTC</SelectItem>
+                    <SelectItem key="EST" value="EST">EST</SelectItem>
+                    <SelectItem key="PST" value="PST">PST</SelectItem>
+                    <SelectItem key="GMT" value="GMT">GMT</SelectItem>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t('profile.preferences.theme')}
+                  </label>
+                  <Select
+                    selectedKeys={[preferences.theme]}
+                    onSelectionChange={(keys) => {
+                      const value = Array.from(keys)[0] as string
+                      handlePreferenceChange('theme', value)
+                    }}
+                    aria-label={t('profile.preferences.theme')}
+                    onFocus={() => announceToScreenReader(`${t('profile.preferences.theme')}: ${preferences.theme}`)}
+                  >
+                    <SelectItem key="auto" value="auto">{t('profile.preferences.theme.auto')}</SelectItem>
+                    <SelectItem key="light" value="light">{t('profile.preferences.theme.light')}</SelectItem>
+                    <SelectItem key="dark" value="dark">{t('profile.preferences.theme.dark')}</SelectItem>
                   </Select>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Screen Reader Announcements */}
+          <div id="sr-announcements" className="sr-only" aria-live="polite" aria-atomic="true"></div>
         </CardBody>
       </Card>
 
-      {/* Reset to Defaults Modal */}
+      {/* Reset Confirmation Modal */}
       <Modal isOpen={showResetModal} onClose={() => setShowResetModal(false)}>
         <ModalContent>
           <ModalHeader>
-            {t('profile.settings.resetModal.title')}
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="w-5 h-5 text-orange-600" aria-hidden="true" />
+              <h3 className="text-lg font-semibold">{t('profile.settings.resetTitle')}</h3>
+            </div>
           </ModalHeader>
           <ModalBody>
             <p className="text-gray-600">
-              {t('profile.settings.resetModal.description')}
+              {t('profile.settings.resetDescription')}
             </p>
           </ModalBody>
           <ModalFooter>
             <Button
-              color="default"
-              variant="flat"
-              onPress={() => setShowResetModal(false)}
-            >
-              {t('common.cancel')}
-            </Button>
-            <Button
               color="danger"
               variant="flat"
               onPress={resetToDefaults}
-              isLoading={isSaving}
-              disabled={isSaving}
+              className="font-semibold"
             >
-              {t('profile.settings.resetModal.confirm')}
+              {t('profile.settings.actions.confirmReset')}
+            </Button>
+            <Button
+              color="default"
+              variant="light"
+              onPress={() => setShowResetModal(false)}
+              className="font-semibold"
+            >
+              {t('common.cancel')}
             </Button>
           </ModalFooter>
         </ModalContent>

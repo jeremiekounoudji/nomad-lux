@@ -1,101 +1,121 @@
 import React, { useState } from 'react'
-import { Card, CardBody, Button, Input, Progress } from '@heroui/react'
-import { Lock, Eye, EyeOff, Shield, CheckCircle, AlertCircle } from 'lucide-react'
+import { Card, CardBody, Button, Input, Progress, Chip } from '@heroui/react'
+import { Eye, EyeOff, Shield, CheckCircle, AlertCircle, Lock, Key } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
-import { validatePasswordStrength, validatePasswordConfirmation, getPasswordStrengthLevel } from '../../../utils/profileValidation'
 
 interface PasswordChangeFormProps {
   onPasswordChange: (currentPassword: string, newPassword: string) => Promise<void>
   isChanging?: boolean
 }
 
-const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
-  onPasswordChange,
-  isChanging = false
+const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({ 
+  onPasswordChange, 
+  isChanging = false 
 }) => {
   const [formData, setFormData] = useState({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   })
-  const [errors, setErrors] = useState<{
-    currentPassword?: string
-    newPassword?: string
-    confirmPassword?: string
-  }>({})
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
-    isValid: false,
     feedback: [] as string[]
   })
 
   const { t } = useTranslation(['profile', 'common'])
 
-  // Handle input changes
-  const handleInputChange = (field: keyof typeof formData, value: string) => {
+  const validatePassword = (password: string) => {
+    const feedback: string[] = []
+    let score = 0
+
+    if (password.length >= 8) {
+      score += 1
+      feedback.push(t('profile.password.requirements.length'))
+    } else {
+      feedback.push(t('profile.password.requirements.lengthMissing'))
+    }
+
+    if (/[A-Z]/.test(password)) {
+      score += 1
+      feedback.push(t('profile.password.requirements.uppercase'))
+    } else {
+      feedback.push(t('profile.password.requirements.uppercaseMissing'))
+    }
+
+    if (/[a-z]/.test(password)) {
+      score += 1
+      feedback.push(t('profile.password.requirements.lowercase'))
+    } else {
+      feedback.push(t('profile.password.requirements.lowercaseMissing'))
+    }
+
+    if (/[0-9]/.test(password)) {
+      score += 1
+      feedback.push(t('profile.password.requirements.number'))
+    } else {
+      feedback.push(t('profile.password.requirements.numberMissing'))
+    }
+
+    if (/[^A-Za-z0-9]/.test(password)) {
+      score += 1
+      feedback.push(t('profile.password.requirements.special'))
+    } else {
+      feedback.push(t('profile.password.requirements.specialMissing'))
+    }
+
+    return { score, feedback }
+  }
+
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     
     // Clear error when user starts typing
-    if (errors[field as keyof typeof errors]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }))
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
     }
 
-    // Validate password strength for new password
+    // Update password strength for new password
     if (field === 'newPassword') {
-      const strength = validatePasswordStrength(value)
+      const strength = validatePassword(value)
       setPasswordStrength(strength)
     }
-
-    // Validate password confirmation
-    if (field === 'confirmPassword' && formData.newPassword) {
-      const confirmationError = validatePasswordConfirmation(formData.newPassword, value)
-      setErrors(prev => ({
-        ...prev,
-        confirmPassword: confirmationError || undefined
-      }))
-    }
   }
 
-  // Toggle password visibility
-  const togglePasswordVisibility = (field: keyof typeof showPasswords) => {
-    setShowPasswords(prev => ({
-      ...prev,
-      [field]: !prev[field]
-    }))
+  const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
+    setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }))
   }
 
-  // Validate form
   const validateForm = (): boolean => {
-    const newErrors: typeof errors = {}
+    const newErrors: Record<string, string> = {}
 
-    // Validate current password
     if (!formData.currentPassword.trim()) {
-      newErrors.currentPassword = t('profile.password.errors.currentPasswordRequired')
+      newErrors.currentPassword = t('profile.password.validation.currentRequired')
     }
 
-    // Validate new password
     if (!formData.newPassword.trim()) {
-      newErrors.newPassword = t('profile.password.errors.newPasswordRequired')
-    } else if (!passwordStrength.isValid) {
-      newErrors.newPassword = t('profile.password.errors.passwordTooWeak')
+      newErrors.newPassword = t('profile.password.validation.newRequired')
+    } else if (formData.newPassword.length < 8) {
+      newErrors.newPassword = t('profile.password.validation.tooShort')
+    } else if (passwordStrength.score < 3) {
+      newErrors.newPassword = t('profile.password.validation.tooWeak')
     }
 
-    // Validate password confirmation
-    const confirmationError = validatePasswordConfirmation(formData.newPassword, formData.confirmPassword)
-    if (confirmationError) {
-      newErrors.confirmPassword = confirmationError
+    if (!formData.confirmPassword.trim()) {
+      newErrors.confirmPassword = t('profile.password.validation.confirmRequired')
+    } else if (formData.newPassword !== formData.confirmPassword) {
+      newErrors.confirmPassword = t('profile.password.validation.mismatch')
     }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -112,84 +132,94 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
         newPassword: '',
         confirmPassword: ''
       })
-      setErrors({})
-      setPasswordStrength({
-        score: 0,
-        isValid: false,
-        feedback: []
+      setShowPasswords({
+        current: false,
+        new: false,
+        confirm: false
       })
+      setErrors({})
+      setPasswordStrength({ score: 0, feedback: [] })
     } catch (error) {
       console.error('Error changing password:', error)
     }
   }
 
-  // Get password strength display
-  const strengthLevel = getPasswordStrengthLevel(passwordStrength.score)
+  const getStrengthColor = (score: number) => {
+    if (score <= 1) return 'danger'
+    if (score <= 2) return 'warning'
+    if (score <= 3) return 'secondary'
+    if (score <= 4) return 'primary'
+    return 'success'
+  }
 
-  // Render password input field
+  const getStrengthLabel = (score: number) => {
+    if (score <= 1) return t('profile.password.strength.veryWeak')
+    if (score <= 2) return t('profile.password.strength.weak')
+    if (score <= 3) return t('profile.password.strength.fair')
+    if (score <= 4) return t('profile.password.strength.good')
+    return t('profile.password.strength.strong')
+  }
+
   const renderPasswordField = (
-    field: keyof typeof formData,
+    field: 'currentPassword' | 'newPassword' | 'confirmPassword',
     label: string,
+    icon: React.ReactNode,
     placeholder: string,
-    showKey: keyof typeof showPasswords
+    showField: 'current' | 'new' | 'confirm'
   ) => {
+    const hasError = errors[field]
     const value = formData[field]
-    const error = errors[field as keyof typeof errors]
-    const isVisible = showPasswords[showKey]
-    const fieldId = `${field}-input`
-    const errorId = `${field}-error`
-    const toggleId = `${field}-toggle`
 
     return (
       <div className="space-y-2">
-        <label htmlFor={fieldId} className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
-          <Lock className="w-4 h-4" aria-hidden="true" />
-          {label}
+        <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2" htmlFor={field}>
+          {icon}
+          <span>{label}</span>
         </label>
         <div className="relative">
           <Input
-            id={fieldId}
-            type={isVisible ? 'text' : 'password'}
+            id={field}
+            type={showPasswords[showField] ? 'text' : 'password'}
             value={value}
             onChange={(e) => handleInputChange(field, e.target.value)}
             placeholder={placeholder}
-            className={`w-full pr-10 min-h-[44px] ${error ? 'border-red-500' : ''}`}
-            disabled={isChanging}
-            aria-describedby={error ? errorId : undefined}
-            aria-invalid={!!error}
+            className={`min-h-[44px] pr-12 ${hasError ? 'border-red-500' : ''}`}
+            aria-describedby={hasError ? `${field}-error` : undefined}
+            aria-invalid={hasError ? 'true' : 'false'}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && e.target !== e.currentTarget) {
+              if (e.key === 'Enter' && field !== 'confirmPassword') {
                 e.preventDefault()
-                const nextInput = e.currentTarget.parentElement?.nextElementSibling?.querySelector('input')
-                if (nextInput) {
-                  nextInput.focus()
-                }
+                const nextField = field === 'currentPassword' ? 'newPassword' : 'confirmPassword'
+                document.getElementById(nextField)?.focus()
               }
             }}
           />
           <Button
-            id={toggleId}
+            id={`${field}-toggle`}
             isIconOnly
             size="sm"
             variant="light"
             className="absolute right-1 top-1/2 transform -translate-y-1/2 min-h-[44px] min-w-[44px]"
-            onPress={() => togglePasswordVisibility(showKey)}
-            disabled={isChanging}
-            aria-label={isVisible ? t('profile.password.actions.hidePassword') : t('profile.password.actions.showPassword')}
+            onPress={() => togglePasswordVisibility(showField)}
+            aria-label={showPasswords[showField] ? t('profile.password.hide') : t('profile.password.show')}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
-                togglePasswordVisibility(showKey)
+                togglePasswordVisibility(showField)
               }
             }}
           >
-            {isVisible ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
+            {showPasswords[showField] ? (
+              <EyeOff className="w-4 h-4" aria-hidden="true" />
+            ) : (
+              <Eye className="w-4 h-4" aria-hidden="true" />
+            )}
           </Button>
         </div>
-        {error && (
-          <p id={errorId} className="text-xs sm:text-sm text-red-500 flex items-center gap-1" role="alert">
+        {hasError && (
+          <p id={`${field}-error`} className="text-sm text-red-600 flex items-center space-x-1" role="alert">
             <AlertCircle className="w-4 h-4" aria-hidden="true" />
-            {error}
+            <span>{hasError}</span>
           </p>
         )}
       </div>
@@ -197,156 +227,121 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
   }
 
   return (
-    <Card className="w-full transition-all duration-200 hover:shadow-md">
-      <CardBody className="p-4 sm:p-6">
-        <div className="flex items-center space-x-2 mb-4 sm:mb-6">
-          <Shield className="w-5 h-5 text-gray-600" aria-hidden="true" />
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-            {t('profile.sections.passwordChange')}
-          </h3>
+    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+      <CardBody className="p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <Shield className="w-5 h-5 text-green-600" aria-hidden="true" />
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+              {t('profile.sections.security')}
+            </h3>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6" role="form" aria-label={t('profile.password.formLabel')}>
-          {/* Current Password */}
+        <form role="form" aria-label={t('profile.password.formTitle')} onSubmit={handleSubmit} className="space-y-6">
           {renderPasswordField(
             'currentPassword',
-            t('profile.password.fields.currentPassword'),
-            t('profile.password.placeholders.currentPassword'),
+            t('profile.password.fields.current'),
+            <Lock className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+            t('profile.password.placeholders.current'),
             'current'
           )}
 
-          {/* New Password */}
-          <div className="space-y-2">
-            <label htmlFor="newPassword-input" className="text-xs sm:text-sm font-medium text-gray-700 flex items-center gap-2">
-              <Lock className="w-4 h-4" aria-hidden="true" />
-              {t('profile.password.fields.newPassword')}
-            </label>
-            <div className="relative">
-              <Input
-                id="newPassword-input"
-                type={showPasswords.new ? 'text' : 'password'}
-                value={formData.newPassword}
-                onChange={(e) => handleInputChange('newPassword', e.target.value)}
-                placeholder={t('profile.password.placeholders.newPassword')}
-                className={`w-full pr-10 min-h-[44px] ${errors.newPassword ? 'border-red-500' : ''}`}
-                disabled={isChanging}
-                aria-describedby={errors.newPassword ? 'newPassword-error' : 'password-strength'}
-                aria-invalid={!!errors.newPassword}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault()
-                    const confirmInput = document.getElementById('confirmPassword-input') as HTMLInputElement
-                    if (confirmInput) {
-                      confirmInput.focus()
-                    }
-                  }
-                }}
-              />
-              <Button
-                isIconOnly
-                size="sm"
-                variant="light"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 min-h-[44px] min-w-[44px]"
-                onPress={() => togglePasswordVisibility('new')}
-                disabled={isChanging}
-                aria-label={showPasswords.new ? t('profile.password.actions.hidePassword') : t('profile.password.actions.showPassword')}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    togglePasswordVisibility('new')
-                  }
-                }}
-              >
-                {showPasswords.new ? <EyeOff className="w-4 h-4" aria-hidden="true" /> : <Eye className="w-4 h-4" aria-hidden="true" />}
-              </Button>
-            </div>
+          <div className="space-y-4">
+            {renderPasswordField(
+              'newPassword',
+              t('profile.password.fields.new'),
+              <Key className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              t('profile.password.placeholders.new'),
+              'new'
+            )}
 
             {/* Password Strength Indicator */}
             {formData.newPassword && (
-              <div id="password-strength" className="space-y-2" role="status" aria-live="polite">
+              <div id="password-strength" className="space-y-3" role="status" aria-live="polite">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm text-gray-600">
-                    {t('profile.password.strength')}:
+                  <span className="text-sm font-medium text-gray-700">
+                    {t('profile.password.strength.label')}
                   </span>
-                  <span className={`text-xs sm:text-sm font-medium ${strengthLevel.color}`}>
-                    {strengthLevel.label}
-                  </span>
+                  <Chip 
+                    size="sm" 
+                    color={getStrengthColor(passwordStrength.score)}
+                    variant="flat"
+                  >
+                    {getStrengthLabel(passwordStrength.score)}
+                  </Chip>
                 </div>
-                <Progress
-                  value={(passwordStrength.score / 5) * 100}
+                <Progress 
+                  value={(passwordStrength.score / 5) * 100} 
+                  color={getStrengthColor(passwordStrength.score)}
                   className="w-full"
-                  color={passwordStrength.isValid ? 'success' : 'warning'}
-                  size="sm"
-                  aria-label={`${t('profile.password.strength')}: ${strengthLevel.label}`}
+                  aria-label={`${passwordStrength.score} out of 5 strength requirements met`}
                 />
                 
                 {/* Password Requirements */}
-                <div className="space-y-1" role="list" aria-label={t('profile.password.requirements')}>
+                <div role="list" className="space-y-2">
+                  <h4 className="text-sm font-semibold text-gray-700">
+                    {t('profile.password.requirements.title')}
+                  </h4>
                   {passwordStrength.feedback.map((feedback, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs" role="listitem">
-                      <AlertCircle className="w-3 h-3 text-red-500" aria-hidden="true" />
-                      <span className="text-red-600">{feedback}</span>
-                    </div>
-                  ))}
-                  {passwordStrength.isValid && (
-                    <div className="flex items-center gap-2 text-xs" role="listitem">
-                      <CheckCircle className="w-3 h-3 text-green-500" aria-hidden="true" />
-                      <span className="text-green-600">
-                        {t('profile.password.strengthValid')}
+                    <div 
+                      key={index} 
+                      className="flex items-center space-x-2 text-sm"
+                      role="listitem"
+                    >
+                      {feedback.includes('Missing') ? (
+                        <AlertCircle className="w-4 h-4 text-red-500" aria-hidden="true" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                      )}
+                      <span className={feedback.includes('Missing') ? 'text-red-600' : 'text-green-600'}>
+                        {feedback}
                       </span>
                     </div>
-                  )}
+                  ))}
                 </div>
               </div>
             )}
 
-            {errors.newPassword && (
-              <p id="newPassword-error" className="text-xs sm:text-sm text-red-500 flex items-center gap-1" role="alert">
-                <AlertCircle className="w-4 h-4" aria-hidden="true" />
-                {errors.newPassword}
-              </p>
+            {renderPasswordField(
+              'confirmPassword',
+              t('profile.password.fields.confirm'),
+              <Key className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              t('profile.password.placeholders.confirm'),
+              'confirm'
             )}
           </div>
 
-          {/* Confirm Password */}
-          {renderPasswordField(
-            'confirmPassword',
-            t('profile.password.fields.confirmPassword'),
-            t('profile.password.placeholders.confirmPassword'),
-            'confirm'
-          )}
+          <Button
+            type="submit"
+            color="success"
+            variant="solid"
+            size="lg"
+            isLoading={isChanging}
+            disabled={isChanging}
+            className="w-full font-semibold min-h-[44px] touch-manipulation"
+            aria-label={t('profile.password.actions.change')}
+          >
+            {t('profile.password.actions.change')}
+          </Button>
+        </form>
 
-          {/* Submit Button */}
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              color="primary"
-              variant="flat"
-              isLoading={isChanging}
-              disabled={isChanging || !passwordStrength.isValid || !formData.confirmPassword}
-              startContent={<Shield className="w-4 h-4" aria-hidden="true" />}
-              className="min-h-[44px] touch-manipulation"
-              aria-label={t('profile.password.actions.changePassword')}
-            >
-              {t('profile.password.actions.changePassword')}
-            </Button>
-          </div>
-
-          {/* Security Notice */}
-          <div className="p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.securityNotice.title')}>
-            <div className="flex items-start gap-2">
-              <Shield className="w-4 h-4 text-blue-600 mt-0.5" aria-hidden="true" />
-              <div className="text-xs sm:text-sm text-blue-800">
-                <p className="font-medium mb-1">
-                  {t('profile.password.securityNotice.title')}
-                </p>
-                <p className="text-blue-700">
-                  {t('profile.password.securityNotice.description')}
-                </p>
-              </div>
+        {/* Security Notice */}
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.securityNotice')}>
+          <div className="flex items-start space-x-3">
+            <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
+            <div className="space-y-1">
+              <h4 className="text-sm font-semibold text-blue-900">
+                {t('profile.password.security.title')}
+              </h4>
+              <p className="text-sm text-blue-700 leading-relaxed">
+                {t('profile.password.security.description')}
+              </p>
             </div>
           </div>
-        </form>
+        </div>
       </CardBody>
     </Card>
   )
