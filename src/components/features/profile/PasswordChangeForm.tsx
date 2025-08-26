@@ -329,7 +329,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
         </form>
 
         {/* Security Notice */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.securityNotice')}>
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.security.title')}>
           <div className="flex items-start space-x-3">
             <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
             <div className="space-y-1">

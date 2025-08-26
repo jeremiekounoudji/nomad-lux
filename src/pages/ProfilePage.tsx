@@ -182,7 +182,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" role="main" aria-label={t('profile.title')}>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200/50 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <Button
@@ -208,7 +208,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
+      <main className="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column - Profile Info */}
           <div className="lg:col-span-2 space-y-6">
@@ -412,7 +412,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       color={profile.privacySettings.profileVisibility === 'public' ? 'success' : 'warning'}
                       variant="flat"
                     >
-                      {profile.privacySettings.profileVisibility}
+                      {t(`profile.privacy.visibility.${profile.privacySettings.profileVisibility}`)}
                     </Chip>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
