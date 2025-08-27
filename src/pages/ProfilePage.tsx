@@ -8,6 +8,8 @@ import { Profile, ProfilePageProps } from '../interfaces/Profile'
 import { ROUTES } from '../router/types'
 import { useProfileImage } from '../hooks/useProfileImage'
 import { useProfile } from '../hooks/useProfile'
+import { ProfileEditModal } from '../components/features/profile/ProfileEditModal'
+import { PasswordChangeModal } from '../components/features/profile/PasswordChangeModal'
 import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
@@ -22,6 +24,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const navigate = useNavigate()
   const { isUploading, uploadImage, processImage } = useProfileImage()
   const { profile, isLoading, error, updateProfile, refreshProfile } = useProfile()
+  
+  // Modal states
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
 
   // Profile loading is handled by the useProfile hook
 
@@ -29,25 +35,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     navigate(ROUTES.HOME)
   }
 
-  const handleProfileUpdate = async (updatedProfile: Profile) => {
+  const handleProfileUpdate = async (updateData: any) => {
     try {
-      await updateProfile({
-        firstName: updatedProfile.firstName,
-        lastName: updatedProfile.lastName,
-        phone: updatedProfile.phone,
-        bio: updatedProfile.bio,
-        dateOfBirth: updatedProfile.dateOfBirth,
-        location: updatedProfile.location
-      })
-      onProfileUpdate?.(updatedProfile)
+      await updateProfile(updateData)
+      onProfileUpdate?.(profile!)
     } catch (error) {
       console.error('❌ Error updating profile:', error)
     }
   }
 
   const handlePasswordChange = () => {
-    onPasswordChange?.()
-    toast.success(t('profile.messages.passwordChangeSuccess'))
+    setIsPasswordModalOpen(true)
   }
 
   const handleImageUpload = async (imageData: any) => {
@@ -244,16 +242,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                     </h3>
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   </div>
-                  <Button 
-                    size="sm" 
-                    color="primary" 
-                    variant="flat"
-                    startContent={<Edit3 className="w-4 h-4" />}
-                    className="font-semibold"
-                    aria-label={t('profile.actions.editPersonalInfo')}
-                  >
-                    {t('common.edit')}
-                  </Button>
+                                     <Button 
+                     size="sm" 
+                     color="primary" 
+                     variant="flat"
+                     startContent={<Edit3 className="w-4 h-4" />}
+                     className="font-semibold"
+                     aria-label={t('profile.actions.editPersonalInfo')}
+                     onPress={() => setIsEditModalOpen(true)}
+                   >
+                     {t('common.edit')}
+                   </Button>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -475,10 +474,23 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
               </div>
             </CardBody>
           </Card>
-        </div>
-      </main>
-    </div>
-  )
-}
+                 </div>
+       </main>
+
+       {/* Modals */}
+       <ProfileEditModal
+         isOpen={isEditModalOpen}
+         onClose={() => setIsEditModalOpen(false)}
+         profile={profile!}
+         onSave={handleProfileUpdate}
+       />
+
+       <PasswordChangeModal
+         isOpen={isPasswordModalOpen}
+         onClose={() => setIsPasswordModalOpen(false)}
+       />
+     </div>
+   )
+ }
 
 export default ProfilePage

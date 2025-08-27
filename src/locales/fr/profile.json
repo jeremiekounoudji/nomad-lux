@@ -85,6 +85,21 @@
     "passwordChangeSuccess": "Mot de passe changé avec succès",
     "imageUploadSuccess": "Image de profil téléchargée avec succès"
   },
+  "password": {
+    "description": "Entrez votre mot de passe actuel et choisissez un nouveau",
+    "fields": {
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe"
+    },
+    "errors": {
+      "currentPasswordRequired": "Le mot de passe actuel est requis",
+      "newPasswordRequired": "Le nouveau mot de passe est requis",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+      "changeFailed": "Échec du changement de mot de passe"
+    }
+  },
   "errors": {
     "title": "Erreur de Chargement du Profil",
     "loadFailed": "Échec du chargement des informations du profil",
