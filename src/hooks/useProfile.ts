@@ -201,74 +201,173 @@ export const useProfile = (): UseProfileReturn => {
         updateFields.avatar_url = updateData.avatarUrl
       }
 
-      // Update the users table
-      const { data: updatedUser, error: updateError } = await supabase
-        .from('users')
-        .update(updateFields)
-        .eq('auth_id', user.id)
-        .select()
-        .single()
+      // First, check if user exists in the database
+      const existingUser = await fetchUserByAuthId(user.id)
 
-      if (updateError) {
-        console.error('❌ Error updating user data:', updateError)
-        throw new Error(updateError.message)
-      }
-
-      if (updatedUser) {
-        // Transform updated user data back to Profile interface
-        const updatedProfileData: Profile = {
-          id: updatedUser.id,
-          userId: updatedUser.auth_id,
-          firstName: updatedUser.display_name?.split(' ')[0] || '',
-          lastName: updatedUser.display_name?.split(' ').slice(1).join(' ') || '',
-          email: updatedUser.email,
-          phone: updatedUser.phone || '',
-          avatarUrl: updatedUser.avatar_url || '',
-          bio: updatedUser.bio || '',
-          dateOfBirth: updatedUser.date_of_birth || '',
-          location: updatedUser.location || '',
-          joinDate: updatedUser.created_at,
-          lastUpdated: updatedUser.updated_at,
-          isVerified: updatedUser.is_identity_verified || false,
-          preferences: {
-            language: updatedUser.language_preference || 'en',
-            currency: updatedUser.preferred_currency || 'USD',
-            timezone: updatedUser.timezone || 'UTC',
-            theme: 'auto'
-          },
-          privacySettings: {
-            profileVisibility: 'public',
-            showEmail: true,
-            showPhone: false,
-            showLocation: true,
-            allowDataSharing: true,
-            allowAnalytics: true
-          },
-          notificationSettings: {
-            emailNotifications: {
-              bookingUpdates: true,
-              newMessages: true,
-              propertyApprovals: true,
-              paymentConfirmations: true,
-              marketing: false
-            },
-            pushNotifications: {
-              bookingUpdates: true,
-              newMessages: true,
-              propertyApprovals: true,
-              paymentConfirmations: true,
-              marketing: false
-            },
-            smsNotifications: {
-              bookingUpdates: false,
-              paymentConfirmations: true
-            }
-          }
+      if (!existingUser) {
+        console.log('ℹ️ User not found in database, creating new user record')
+        
+        // Create new user record with current profile data
+        const createFields = {
+          auth_id: user.id,
+          email: user.email,
+          display_name: `${profile.firstName} ${profile.lastName}`.trim(),
+          phone: profile.phone || '',
+          bio: profile.bio || '',
+          date_of_birth: profile.dateOfBirth || '',
+          location: profile.location || '',
+          avatar_url: profile.avatarUrl || '',
+          language_preference: profile.preferences.language || 'en',
+          preferred_currency: profile.preferences.currency || 'USD',
+          timezone: profile.preferences.timezone || 'UTC',
+          is_identity_verified: profile.isVerified || false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
 
-        setProfile(updatedProfileData)
-        console.log('✅ Profile updated successfully')
-        toast.success('Profile updated successfully')
+        // Add the update fields to the create fields
+        Object.assign(createFields, updateFields)
+
+        const { data: newUser, error: createError } = await supabase
+          .from('users')
+          .insert(createFields)
+          .select()
+          .single()
+
+        if (createError) {
+          console.error('❌ Error creating user data:', createError)
+          throw new Error(createError.message)
+        }
+
+        if (newUser) {
+          // Transform new user data back to Profile interface
+          const newProfileData: Profile = {
+            id: newUser.id,
+            userId: newUser.auth_id,
+            firstName: newUser.display_name?.split(' ')[0] || '',
+            lastName: newUser.display_name?.split(' ').slice(1).join(' ') || '',
+            email: newUser.email,
+            phone: newUser.phone || '',
+            avatarUrl: newUser.avatar_url || '',
+            bio: newUser.bio || '',
+            dateOfBirth: newUser.date_of_birth || '',
+            location: newUser.location || '',
+            joinDate: newUser.created_at,
+            lastUpdated: newUser.updated_at,
+            isVerified: newUser.is_identity_verified || false,
+            preferences: {
+              language: newUser.language_preference || 'en',
+              currency: newUser.preferred_currency || 'USD',
+              timezone: newUser.timezone || 'UTC',
+              theme: 'auto'
+            },
+            privacySettings: {
+              profileVisibility: 'public',
+              showEmail: true,
+              showPhone: false,
+              showLocation: true,
+              allowDataSharing: true,
+              allowAnalytics: true
+            },
+            notificationSettings: {
+              emailNotifications: {
+                bookingUpdates: true,
+                newMessages: true,
+                propertyApprovals: true,
+                paymentConfirmations: true,
+                marketing: false
+              },
+              pushNotifications: {
+                bookingUpdates: true,
+                newMessages: true,
+                propertyApprovals: true,
+                paymentConfirmations: true,
+                marketing: false
+              },
+              smsNotifications: {
+                bookingUpdates: false,
+                paymentConfirmations: true
+              }
+            }
+          }
+
+          setProfile(newProfileData)
+          console.log('✅ New user profile created and updated successfully')
+          toast.success('Profile updated successfully')
+          return
+        }
+      } else {
+        console.log('✅ User found in database, updating existing record')
+        
+        // Update the existing users table record
+        const { data: updatedUser, error: updateError } = await supabase
+          .from('users')
+          .update(updateFields)
+          .eq('auth_id', user.id)
+          .select()
+          .single()
+
+        if (updateError) {
+          console.error('❌ Error updating user data:', updateError)
+          throw new Error(updateError.message)
+        }
+
+        if (updatedUser) {
+          // Transform updated user data back to Profile interface
+          const updatedProfileData: Profile = {
+            id: updatedUser.id,
+            userId: updatedUser.auth_id,
+            firstName: updatedUser.display_name?.split(' ')[0] || '',
+            lastName: updatedUser.display_name?.split(' ').slice(1).join(' ') || '',
+            email: updatedUser.email,
+            phone: updatedUser.phone || '',
+            avatarUrl: updatedUser.avatar_url || '',
+            bio: updatedUser.bio || '',
+            dateOfBirth: updatedUser.date_of_birth || '',
+            location: updatedUser.location || '',
+            joinDate: updatedUser.created_at,
+            lastUpdated: updatedUser.updated_at,
+            isVerified: updatedUser.is_identity_verified || false,
+            preferences: {
+              language: updatedUser.language_preference || 'en',
+              currency: updatedUser.preferred_currency || 'USD',
+              timezone: updatedUser.timezone || 'UTC',
+              theme: 'auto'
+            },
+            privacySettings: {
+              profileVisibility: 'public',
+              showEmail: true,
+              showPhone: false,
+              showLocation: true,
+              allowDataSharing: true,
+              allowAnalytics: true
+            },
+            notificationSettings: {
+              emailNotifications: {
+                bookingUpdates: true,
+                newMessages: true,
+                propertyApprovals: true,
+                paymentConfirmations: true,
+                marketing: false
+              },
+              pushNotifications: {
+                bookingUpdates: true,
+                newMessages: true,
+                propertyApprovals: true,
+                paymentConfirmations: true,
+                marketing: false
+              },
+              smsNotifications: {
+                bookingUpdates: false,
+                paymentConfirmations: true
+              }
+            }
+          }
+
+          setProfile(updatedProfileData)
+          console.log('✅ Profile updated successfully')
+          toast.success('Profile updated successfully')
+        }
       }
 
     } catch (err: any) {
@@ -276,7 +375,7 @@ export const useProfile = (): UseProfileReturn => {
       toast.error(err.message || 'Failed to update profile')
       throw err
     }
-  }, [user, profile])
+  }, [user, profile, fetchUserByAuthId])
 
   const refreshProfile = useCallback(async () => {
     await loadProfile()
