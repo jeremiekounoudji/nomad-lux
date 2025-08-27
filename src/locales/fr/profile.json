@@ -86,7 +86,7 @@
     "imageUploadSuccess": "Image de profil téléchargée avec succès"
   },
   "password": {
-    "description": "Entrez votre mot de passe actuel et choisissez un nouveau",
+    "description": "Choisissez un nouveau mot de passe pour votre compte",
     "fields": {
       "currentPassword": "Mot de passe actuel",
       "newPassword": "Nouveau mot de passe",

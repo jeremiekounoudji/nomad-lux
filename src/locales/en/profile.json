@@ -86,7 +86,7 @@
     "imageUploadSuccess": "Profile image uploaded successfully"
   },
   "password": {
-    "description": "Enter your current password and choose a new one",
+    "description": "Choose a new password for your account",
     "fields": {
       "currentPassword": "Current Password",
       "newPassword": "New Password",

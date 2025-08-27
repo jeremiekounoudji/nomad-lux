@@ -18,12 +18,10 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
   const { changePassword, isChanging } = usePasswordChange()
   
   const [formData, setFormData] = useState({
-    currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   })
   const [showPasswords, setShowPasswords] = useState({
-    current: false,
     new: false,
     confirm: false
   })
@@ -32,16 +30,11 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const togglePasswordVisibility = (field: 'current' | 'new' | 'confirm') => {
+  const togglePasswordVisibility = (field: 'new' | 'confirm') => {
     setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }))
   }
 
   const validateForm = (): boolean => {
-    if (!formData.currentPassword.trim()) {
-      toast.error(t('profile.password.errors.currentPasswordRequired'))
-      return false
-    }
-    
     if (!formData.newPassword.trim()) {
       toast.error(t('profile.password.errors.newPasswordRequired'))
       return false
@@ -66,12 +59,11 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
     }
 
     try {
-      await changePassword(formData.currentPassword, formData.newPassword)
+      await changePassword('', formData.newPassword) // Empty string for current password since we removed it
       toast.success(t('profile.messages.passwordChangeSuccess'))
       onClose()
       // Reset form
       setFormData({
-        currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       })
@@ -86,7 +78,6 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
       onClose()
       // Reset form
       setFormData({
-        currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       })
@@ -112,28 +103,6 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         
         <ModalBody>
           <div className="space-y-4">
-            {/* Current Password */}
-            <Input
-              label={t('profile.password.fields.currentPassword')}
-              type={showPasswords.current ? 'text' : 'password'}
-              value={formData.currentPassword}
-              onChange={(e) => handleInputChange('currentPassword', e.target.value)}
-              startContent={<Lock className="w-4 h-4 text-gray-400" />}
-              endContent={
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility('current')}
-                  className="focus:outline-none"
-                >
-                  {showPasswords.current ? (
-                    <EyeOff className="w-4 h-4 text-gray-400" />
-                  ) : (
-                    <Eye className="w-4 h-4 text-gray-400" />
-                  )}
-                </button>
-              }
-            />
-
             {/* New Password */}
             <Input
               label={t('profile.password.fields.newPassword')}
@@ -186,10 +155,10 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
             onPress={handleClose}
             disabled={isChanging}
           >
-            {t('common.cancel')}
+            {t('common.buttons.cancel')}
           </Button>
           <Button 
-            color="primary" 
+            className="bg-main text-white hover:bg-main/90"
             onPress={handleSubmit}
             isLoading={isChanging}
             disabled={isChanging}

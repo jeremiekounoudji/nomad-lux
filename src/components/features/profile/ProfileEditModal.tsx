@@ -124,10 +124,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
         <ModalFooter>
           <Button variant="flat" onPress={onClose} disabled={isLoading}>
-            {t('common.cancel')}
+            {t('common.buttons.cancel')}
           </Button>
-          <Button color="primary" onPress={handleSave} isLoading={isLoading}>
-            {t('common.save')}
+          <Button 
+            className="bg-main text-white hover:bg-main/90"
+            onPress={handleSave} 
+            isLoading={isLoading}
+          >
+            {t('common.buttons.save')}
           </Button>
         </ModalFooter>
       </ModalContent>
