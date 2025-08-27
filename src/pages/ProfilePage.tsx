@@ -7,6 +7,7 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { Profile, ProfilePageProps } from '../interfaces/Profile'
 import { ROUTES } from '../router/types'
 import { useProfileImage } from '../hooks/useProfileImage'
+import { useProfile } from '../hooks/useProfile'
 import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
@@ -14,98 +15,34 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   onPasswordChange, 
   onImageUpload 
 }) => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { t } = useTranslation(['profile', 'common'])
   const { user } = useAuthStore()
   const navigate = useNavigate()
   const { isUploading, uploadImage, processImage } = useProfileImage()
+  const { profile, isLoading, error, updateProfile, refreshProfile } = useProfile()
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        // TODO: Load profile data from API
-        // For now, create a mock profile from user data
-        if (user) {
-          const userWithMetadata = user as any // Cast to include user_metadata
-          const mockProfile: Profile = {
-            id: user.id,
-            userId: user.id,
-            firstName: userWithMetadata.user_metadata?.first_name || '',
-            lastName: userWithMetadata.user_metadata?.last_name || '',
-            email: user.email || '',
-            phone: user.phone || '',
-            avatarUrl: userWithMetadata.user_metadata?.avatar_url || '',
-            bio: '',
-            dateOfBirth: '',
-            location: '',
-            joinDate: new Date(user.created_at).toISOString(),
-            lastUpdated: new Date().toISOString(),
-            isVerified: false,
-            preferences: {
-              language: 'en',
-              currency: 'USD',
-              timezone: 'UTC',
-              theme: 'auto'
-            },
-            privacySettings: {
-              profileVisibility: 'public',
-              showEmail: true,
-              showPhone: false,
-              showLocation: true,
-              allowDataSharing: true,
-              allowAnalytics: true
-            },
-            notificationSettings: {
-              emailNotifications: {
-                bookingUpdates: true,
-                newMessages: true,
-                propertyApprovals: true,
-                paymentConfirmations: true,
-                marketing: false
-              },
-              pushNotifications: {
-                bookingUpdates: true,
-                newMessages: true,
-                propertyApprovals: true,
-                paymentConfirmations: true,
-                marketing: false
-              },
-              smsNotifications: {
-                bookingUpdates: false,
-                paymentConfirmations: true
-              }
-            }
-          }
-          
-          setProfile(mockProfile)
-        }
-      } catch (err: any) {
-        console.error('❌ Error loading profile:', err)
-        setError(err.message || t('profile.errors.loadFailed'))
-        toast.error(err.message || t('profile.errors.loadFailed'))
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    loadProfile()
-  }, [user, t])
+  // Profile loading is handled by the useProfile hook
 
   const handleBackToHome = () => {
     navigate(ROUTES.HOME)
   }
 
-  const handleProfileUpdate = (updatedProfile: Profile) => {
-    setProfile(updatedProfile)
-    onProfileUpdate?.(updatedProfile)
-    toast.success(t('profile.messages.updateSuccess'))
+  const handleProfileUpdate = async (updatedProfile: Profile) => {
+    try {
+      await updateProfile({
+        firstName: updatedProfile.firstName,
+        lastName: updatedProfile.lastName,
+        phone: updatedProfile.phone,
+        bio: updatedProfile.bio,
+        dateOfBirth: updatedProfile.dateOfBirth,
+        location: updatedProfile.location
+      })
+      onProfileUpdate?.(updatedProfile)
+    } catch (error) {
+      console.error('❌ Error updating profile:', error)
+    }
   }
 
   const handlePasswordChange = () => {
@@ -119,12 +56,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       const uploadedUrl = await uploadImage(imageData)
       
       if (uploadedUrl && profile) {
-        // Update the local profile state with new avatar URL
-        const updatedProfile = {
-          ...profile,
+        // Update the profile with new avatar URL using the hook
+        await updateProfile({
           avatarUrl: uploadedUrl
-        }
-        setProfile(updatedProfile)
+        })
       }
       
       // Call the parent handler if provided

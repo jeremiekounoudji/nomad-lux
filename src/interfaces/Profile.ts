@@ -63,6 +63,7 @@ export interface ProfileUpdateData {
   bio?: string
   dateOfBirth?: string
   location?: string
+  avatarUrl?: string
 }
 
 export interface PasswordChangeData {

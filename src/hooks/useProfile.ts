@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useAuthStore } from '../lib/stores/authStore'
 import { Profile, ProfileUpdateData } from '../interfaces/Profile'
 import { supabase } from '../lib/supabase'
+import { useUser } from './useUser'
 import toast from 'react-hot-toast'
 
 interface UseProfileReturn {
@@ -18,6 +19,7 @@ export const useProfile = (): UseProfileReturn => {
   const [error, setError] = useState<string | null>(null)
 
   const { user } = useAuthStore()
+  const { fetchUserByAuthId } = useUser()
 
   const loadProfile = useCallback(async () => {
     if (!user) {
@@ -32,60 +34,123 @@ export const useProfile = (): UseProfileReturn => {
 
       console.log('🔄 Loading profile for user:', user.id)
 
-      // TODO: Replace with actual API call when profile table is created
-      // For now, create a mock profile from user data
-      const mockProfile: Profile = {
-        id: user.id,
-        userId: user.id,
-        firstName: user.user_metadata?.first_name || '',
-        lastName: user.user_metadata?.last_name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        avatarUrl: user.user_metadata?.avatar_url || '',
-        bio: '',
-        dateOfBirth: '',
-        location: '',
-        joinDate: new Date(user.created_at).toISOString(),
-        lastUpdated: new Date().toISOString(),
-        isVerified: false,
-        preferences: {
-          language: 'en',
-          currency: 'USD',
-          timezone: 'UTC',
-          theme: 'auto'
-        },
-        privacySettings: {
-          profileVisibility: 'public',
-          showEmail: true,
-          showPhone: false,
-          showLocation: true,
-          allowDataSharing: true,
-          allowAnalytics: true
-        },
-        notificationSettings: {
-          emailNotifications: {
-            bookingUpdates: true,
-            newMessages: true,
-            propertyApprovals: true,
-            paymentConfirmations: true,
-            marketing: false
+      // Use the existing fetchUserByAuthId function
+      const userData = await fetchUserByAuthId(user.id)
+
+            if (userData) {
+        console.log('✅ User data loaded from database:', userData)
+        
+        // Transform database user data to Profile interface
+        const profileData: Profile = {
+          id: userData.id,
+          userId: userData.auth_id,
+          firstName: userData.display_name?.split(' ')[0] || '',
+          lastName: userData.display_name?.split(' ').slice(1).join(' ') || '',
+          email: userData.email,
+          phone: userData.phone || '',
+          avatarUrl: userData.avatar_url || '',
+          bio: userData.bio || '',
+          dateOfBirth: userData.date_of_birth || '',
+          location: userData.location || '',
+          joinDate: userData.created_at,
+          lastUpdated: userData.updated_at,
+          isVerified: userData.is_identity_verified || false,
+          preferences: {
+            language: userData.language_preference || 'en',
+            currency: userData.preferred_currency || 'USD',
+            timezone: userData.timezone || 'UTC',
+            theme: 'auto'
           },
-          pushNotifications: {
-            bookingUpdates: true,
-            newMessages: true,
-            propertyApprovals: true,
-            paymentConfirmations: true,
-            marketing: false
+          privacySettings: {
+            profileVisibility: 'public', // Default value
+            showEmail: true,
+            showPhone: false,
+            showLocation: true,
+            allowDataSharing: true,
+            allowAnalytics: true
           },
-          smsNotifications: {
-            bookingUpdates: false,
-            paymentConfirmations: true
+          notificationSettings: {
+            emailNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            pushNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            smsNotifications: {
+              bookingUpdates: false,
+              paymentConfirmations: true
+            }
           }
         }
+        
+        setProfile(profileData)
+        console.log('✅ Profile loaded successfully from database')
+      } else {
+        console.log('ℹ️ User not found in database, creating profile from auth data')
+        
+        // Create profile from Supabase auth user data
+        const userWithMetadata = user as any // Cast to access user_metadata
+        const profileData: Profile = {
+          id: user.id,
+          userId: user.id,
+          firstName: userWithMetadata.user_metadata?.first_name || user.email?.split('@')[0] || '',
+          lastName: userWithMetadata.user_metadata?.last_name || '',
+          email: user.email || '',
+          phone: user.phone || '',
+          avatarUrl: userWithMetadata.user_metadata?.avatar_url || '',
+          bio: '',
+          dateOfBirth: '',
+          location: '',
+          joinDate: user.created_at,
+          lastUpdated: user.updated_at || user.created_at,
+          isVerified: false,
+          preferences: {
+            language: 'en',
+            currency: 'USD',
+            timezone: 'UTC',
+            theme: 'auto'
+          },
+          privacySettings: {
+            profileVisibility: 'public',
+            showEmail: true,
+            showPhone: false,
+            showLocation: true,
+            allowDataSharing: true,
+            allowAnalytics: true
+          },
+          notificationSettings: {
+            emailNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            pushNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            smsNotifications: {
+              bookingUpdates: false,
+              paymentConfirmations: true
+            }
+          }
+        }
+        
+        setProfile(profileData)
+        console.log('✅ Profile created from auth data')
       }
-
-      setProfile(mockProfile)
-      console.log('✅ Profile loaded successfully')
 
     } catch (err: any) {
       console.error('❌ Error loading profile:', err)
@@ -104,34 +169,107 @@ export const useProfile = (): UseProfileReturn => {
     try {
       console.log('🔄 Updating profile:', updateData)
 
-      // TODO: Replace with actual API call when profile table is created
-      // For now, simulate API call with timeout
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Update the profile with new data
-      const updatedProfile: Profile = {
-        ...profile,
-        ...updateData,
-        lastUpdated: new Date().toISOString()
+      // Prepare update data for the users table
+      const updateFields: any = {
+        updated_at: new Date().toISOString()
       }
 
-      setProfile(updatedProfile)
-      console.log('✅ Profile updated successfully')
+      // Map ProfileUpdateData fields to users table fields
+      if (updateData.firstName !== undefined || updateData.lastName !== undefined) {
+        const firstName = updateData.firstName || profile.firstName
+        const lastName = updateData.lastName || profile.lastName
+        updateFields.display_name = `${firstName} ${lastName}`.trim()
+      }
 
-      // TODO: Update user metadata in Supabase Auth
-      const { error: updateError } = await supabase.auth.updateUser({
-        data: {
-          first_name: updateData.firstName,
-          last_name: updateData.lastName
-        }
-      })
+      if (updateData.phone !== undefined) {
+        updateFields.phone = updateData.phone
+      }
+
+      if (updateData.bio !== undefined) {
+        updateFields.bio = updateData.bio
+      }
+
+      if (updateData.dateOfBirth !== undefined) {
+        updateFields.date_of_birth = updateData.dateOfBirth
+      }
+
+      if (updateData.location !== undefined) {
+        updateFields.location = updateData.location
+      }
+
+      if (updateData.avatarUrl !== undefined) {
+        updateFields.avatar_url = updateData.avatarUrl
+      }
+
+      // Update the users table
+      const { data: updatedUser, error: updateError } = await supabase
+        .from('users')
+        .update(updateFields)
+        .eq('auth_id', user.id)
+        .select()
+        .single()
 
       if (updateError) {
-        console.error('❌ Error updating user metadata:', updateError)
-        toast.error('Profile updated but user metadata failed to update')
+        console.error('❌ Error updating user data:', updateError)
+        throw new Error(updateError.message)
       }
 
-      toast.success('Profile updated successfully')
+      if (updatedUser) {
+        // Transform updated user data back to Profile interface
+        const updatedProfileData: Profile = {
+          id: updatedUser.id,
+          userId: updatedUser.auth_id,
+          firstName: updatedUser.display_name?.split(' ')[0] || '',
+          lastName: updatedUser.display_name?.split(' ').slice(1).join(' ') || '',
+          email: updatedUser.email,
+          phone: updatedUser.phone || '',
+          avatarUrl: updatedUser.avatar_url || '',
+          bio: updatedUser.bio || '',
+          dateOfBirth: updatedUser.date_of_birth || '',
+          location: updatedUser.location || '',
+          joinDate: updatedUser.created_at,
+          lastUpdated: updatedUser.updated_at,
+          isVerified: updatedUser.is_identity_verified || false,
+          preferences: {
+            language: updatedUser.language_preference || 'en',
+            currency: updatedUser.preferred_currency || 'USD',
+            timezone: updatedUser.timezone || 'UTC',
+            theme: 'auto'
+          },
+          privacySettings: {
+            profileVisibility: 'public',
+            showEmail: true,
+            showPhone: false,
+            showLocation: true,
+            allowDataSharing: true,
+            allowAnalytics: true
+          },
+          notificationSettings: {
+            emailNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            pushNotifications: {
+              bookingUpdates: true,
+              newMessages: true,
+              propertyApprovals: true,
+              paymentConfirmations: true,
+              marketing: false
+            },
+            smsNotifications: {
+              bookingUpdates: false,
+              paymentConfirmations: true
+            }
+          }
+        }
+
+        setProfile(updatedProfileData)
+        console.log('✅ Profile updated successfully')
+        toast.success('Profile updated successfully')
+      }
 
     } catch (err: any) {
       console.error('❌ Error updating profile:', err)

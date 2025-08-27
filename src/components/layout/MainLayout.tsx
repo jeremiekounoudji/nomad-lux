@@ -53,7 +53,8 @@ const MainLayout: React.FC = () => {
   const shouldShowBottomNav = !location.pathname.includes('/login') && 
                              !location.pathname.includes('/register') && 
                              !location.pathname.includes('/admin/login') && 
-                             !location.pathname.includes('/admin/register')
+                             !location.pathname.includes('/admin/register') &&
+                             !location.pathname.includes('/profile')
 
   return (
     <div className="h-screen bg-gray-50 flex overflow-hidden">
@@ -324,7 +325,7 @@ const MainLayout: React.FC = () => {
               </NavLink>
 
               <NavLink
-                to={isAuthenticated ? ROUTES.MY_LISTINGS : ROUTES.LOGIN}
+                to={isAuthenticated ? ROUTES.PROFILE : ROUTES.LOGIN}
                 className={({ isActive }) => `
                   flex flex-col items-center h-auto py-2 px-3 transition-colors
                   ${isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'}
