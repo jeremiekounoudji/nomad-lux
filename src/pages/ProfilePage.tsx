@@ -10,6 +10,7 @@ import { useProfileImage } from '../hooks/useProfileImage'
 import { useProfile } from '../hooks/useProfile'
 import { ProfileEditModal } from '../components/features/profile/ProfileEditModal'
 import { PasswordChangeModal } from '../components/features/profile/PasswordChangeModal'
+import { ImagePreviewModal } from '../components/features/profile/ImagePreviewModal'
 import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
@@ -22,12 +23,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const { t } = useTranslation(['profile', 'common'])
   const { user } = useAuthStore()
   const navigate = useNavigate()
-  const { isUploading, uploadImage, processImage } = useProfileImage()
+  const { isUploading, uploadProgress, uploadImage, processImage } = useProfileImage()
   const { profile, isLoading, error, updateProfile, refreshProfile } = useProfile()
   
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false)
+  const [previewImageData, setPreviewImageData] = useState<ProfileImageData | null>(null)
 
   // Profile loading is handled by the useProfile hook
 
