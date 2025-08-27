@@ -36,17 +36,17 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
 
   const validateForm = (): boolean => {
     if (!formData.newPassword.trim()) {
-      toast.error(t('profile.password.errors.newPasswordRequired'))
+      toast.error(t('profile:password.errors.newPasswordRequired'))
       return false
     }
     
     if (formData.newPassword.length < 6) {
-      toast.error(t('profile.password.errors.passwordTooShort'))
+      toast.error(t('profile:password.errors.passwordTooShort'))
       return false
     }
     
     if (formData.newPassword !== formData.confirmPassword) {
-      toast.error(t('profile.password.errors.passwordsDoNotMatch'))
+      toast.error(t('profile:password.errors.passwordsDoNotMatch'))
       return false
     }
     
@@ -60,7 +60,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
 
     try {
       await changePassword('', formData.newPassword) // Empty string for current password since we removed it
-      toast.success(t('profile.messages.passwordChangeSuccess'))
+      toast.success(t('profile:messages.passwordChangeSuccess'))
       onClose()
       // Reset form
       setFormData({
@@ -69,7 +69,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
       })
     } catch (error: any) {
       console.error('❌ Error changing password:', error)
-      toast.error(error.message || t('profile.password.errors.changeFailed'))
+      toast.error(error.message || t('profile:password.errors.changeFailed'))
     }
   }
 
@@ -94,10 +94,10 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-primary-600" />
-            <span>{t('profile.actions.changePassword')}</span>
+            <span>{t('profile:actions.changePassword')}</span>
           </div>
           <p className="text-sm text-gray-600 font-normal">
-            {t('profile.password.description')}
+            {t('profile:password.description')}
           </p>
         </ModalHeader>
         
@@ -105,7 +105,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
           <div className="space-y-4">
             {/* New Password */}
             <Input
-              label={t('profile.password.fields.newPassword')}
+              label={t('profile:password.fields.newPassword')}
               type={showPasswords.new ? 'text' : 'password'}
               value={formData.newPassword}
               onChange={(e) => handleInputChange('newPassword', e.target.value)}
@@ -127,7 +127,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
 
             {/* Confirm Password */}
             <Input
-              label={t('profile.password.fields.confirmPassword')}
+              label={t('profile:password.fields.confirmPassword')}
               type={showPasswords.confirm ? 'text' : 'password'}
               value={formData.confirmPassword}
               onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
@@ -155,7 +155,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
             onPress={handleClose}
             disabled={isChanging}
           >
-            {t('common.buttons.cancel')}
+            {t('common:buttons.cancel')}
           </Button>
           <Button 
             className="bg-main text-white hover:bg-main/90"
@@ -163,7 +163,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
             isLoading={isChanging}
             disabled={isChanging}
           >
-            {t('profile.actions.changePassword')}
+            {t('profile:actions.changePassword')}
           </Button>
         </ModalFooter>
       </ModalContent>
