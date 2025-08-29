@@ -37,7 +37,7 @@
   - [x] 1.5 Add tutorial completion tracking and "never show again" functionality
   - [x] 1.6 Write unit tests for tutorialStore and useTutorial hook
 
-- [ ] 2.0 Build Core Tutorial Modal Components
+- [x] 2.0 Build Core Tutorial Modal Components
   - [x] 2.1 Create main TutorialModal component with full-screen overlay
   - [x] 2.2 Implement TutorialStep component for individual step display
   - [x] 2.3 Create TutorialProgress component with progress bar and dots indicator
@@ -48,15 +48,15 @@
   - [x] 2.8 Add keyboard navigation and accessibility features
   - [x] 2.9 Write unit tests for all tutorial components
 
-- [ ] 3.0 Implement Tutorial Content and Assets
-  - [ ] 3.1 Create tutorial assets directory structure in `src/assets/tutorial/`
-  - [ ] 3.2 Capture and optimize screenshots for Step 1 (Booking Properties)
-  - [ ] 3.3 Capture and optimize screenshots for Step 2 (Property Creation)
-  - [ ] 3.4 Capture and optimize screenshots for Step 3 (Managing Self Bookings)
-  - [ ] 3.5 Capture and optimize screenshots for Step 4 (Booking Requests)
-  - [ ] 3.6 Add visual highlights and arrows to tutorial images
-  - [ ] 3.7 Create tutorial content configuration with step data
-  - [ ] 3.8 Implement image loading and optimization utilities
+- [x] 3.0 Implement Tutorial Content and Assets
+  - [x] 3.1 Create tutorial assets directory structure in `src/assets/tutorial/`
+  - [x] 3.2 Capture and optimize screenshots for Step 1 (Booking Properties)
+  - [x] 3.3 Capture and optimize screenshots for Step 2 (Property Creation)
+  - [x] 3.4 Capture and optimize screenshots for Step 3 (Managing Self Bookings)
+  - [x] 3.5 Capture and optimize screenshots for Step 4 (Booking Requests)
+  - [x] 3.6 Add visual highlights and arrows to tutorial images
+  - [x] 3.7 Create tutorial content configuration with step data
+  - [x] 3.8 Implement image loading and optimization utilities
 
 - [ ] 4.0 Integrate Tutorial with Homepage and User Flow
   - [ ] 4.1 Modify HomePage component to check for first-time user visit
