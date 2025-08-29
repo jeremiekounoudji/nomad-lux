@@ -67,13 +67,13 @@
   - [x] 4.6 Test tutorial integration with different user scenarios
   - [x] 4.7 Write unit tests for HomePage tutorial integration
 
-- [ ] 5.0 Add Translation Support and Analytics Integration
-  - [ ] 5.1 Create English translation file `src/locales/en/tutorial.json`
-  - [ ] 5.2 Create French translation file `src/locales/fr/tutorial.json`
-  - [ ] 5.3 Integrate translation system with tutorial components using DOT format
-  - [ ] 5.4 Add translation keys for all tutorial content (titles, descriptions, buttons)
-  - [ ] 5.5 Implement analytics tracking for tutorial events (start, step completion, skip, finish)
-  - [ ] 5.6 Create tutorial analytics utility functions
-  - [ ] 5.7 Add analytics events for tutorial completion rates and user engagement
+- [x] 5.0 Add Translation Support and Analytics Integration
+  - [x] 5.1 Create English translation file `src/locales/en/tutorial.json`
+  - [x] 5.2 Create French translation file `src/locales/fr/tutorial.json`
+  - [x] 5.3 Integrate translation system with tutorial components using DOT format
+  - [x] 5.4 Add translation keys for all tutorial content (titles, descriptions, buttons)
+  - [x] 5.5 Implement analytics tracking for tutorial events (start, step completion, skip, finish)
+  - [x] 5.6 Create tutorial analytics utility functions
+  - [x] 5.7 Add analytics events for tutorial completion rates and user engagement
   - [ ] 5.8 Test translation functionality in both English and French
   - [ ] 5.9 Write unit tests for translation integration and analytics tracking

@@ -63,10 +63,10 @@ export const TutorialStep: React.FC<TutorialStepProps> = ({
           </span>
         </div>
         <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-          {step.title}
+          {t(step.title)}
         </h3>
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
-          {step.description}
+          {t(step.description)}
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export const TutorialStep: React.FC<TutorialStepProps> = ({
             ) : (
               <Image
                 src={step.imageUrl}
-                alt={step.imageAlt}
+                alt={t(step.imageAlt)}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${
                   imageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}

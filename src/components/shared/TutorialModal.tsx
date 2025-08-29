@@ -12,6 +12,7 @@ import {
 import { X, ChevronLeft, ChevronRight, SkipForward } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import { useTutorial } from '../../hooks/useTutorial'
+import { useTutorialAnalytics } from '../../utils/tutorialAnalytics'
 import { TutorialStep } from '../../interfaces/Tutorial'
 import { TutorialStep as TutorialStepComponent } from './TutorialStep'
 import { TutorialProgress } from './TutorialProgress'
@@ -43,6 +44,14 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
     isFirstStep,
     getProgressPercentage
   } = useTutorial()
+  
+  const {
+    trackTutorialStarted,
+    trackStepCompleted,
+    trackTutorialSkipped,
+    trackTutorialFinished,
+    trackNeverShowAgain
+  } = useTutorialAnalytics()
 
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -58,8 +67,9 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
     if (isOpen && !tutorialState.isVisible) {
       console.log('🎓 TutorialModal: Auto-starting tutorial')
       startTutorial()
+      trackTutorialStarted(steps.length)
     }
-  }, [isOpen, tutorialState.isVisible, startTutorial])
+  }, [isOpen, tutorialState.isVisible, startTutorial, trackTutorialStarted, steps.length])
 
   // Focus management for accessibility
   useEffect(() => {
@@ -82,7 +92,15 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
     console.log('🎓 TutorialModal: Next button clicked')
     if (isLast) {
       completeTutorial()
+      trackTutorialFinished(steps.length)
     } else {
+      const currentStep = getCurrentStep(steps)
+      trackStepCompleted(
+        tutorialState.currentStep,
+        currentStep?.title || '',
+        tutorialState.currentStep + 1,
+        steps.length
+      )
       nextStep()
     }
   }
@@ -94,6 +112,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
 
   const handleSkip = () => {
     console.log('🎓 TutorialModal: Skip button clicked')
+    trackTutorialSkipped(tutorialState.currentStep + 1, steps.length)
     skipTutorial()
   }
 
@@ -106,6 +125,9 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
   const handleNeverShowAgainChange = (checked: boolean) => {
     console.log('🎓 TutorialModal: Never show again changed:', checked)
     setNeverShowAgain(checked)
+    if (checked) {
+      trackNeverShowAgain()
+    }
   }
 
   // Don't render if not open

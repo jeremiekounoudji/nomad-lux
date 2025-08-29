@@ -5,43 +5,43 @@ import { TutorialStep, TutorialContent } from '../interfaces/Tutorial'
  * Contains all tutorial steps with their content, images, and instructions
  */
 export const tutorialContent: TutorialContent = {
-  title: 'Welcome to Nomad Lux',
-  description: 'Learn how to use our platform to book properties, create listings, and manage your bookings.',
+  title: 'tutorial.title',
+  description: 'tutorial.description',
   totalSteps: 4,
   steps: [
     {
       id: 0,
-      title: 'Booking Properties',
-      description: 'Discover how to browse and book amazing properties on our platform. Learn the booking process from start to finish.',
+      title: 'tutorial.steps.bookingProperties.title',
+      description: 'tutorial.steps.bookingProperties.description',
       imageUrl: '/src/assets/tutorial/steps/step1-booking-properties.svg',
-      imageAlt: 'Tutorial showing how to book properties with property cards and booking buttons',
+      imageAlt: 'tutorial.steps.bookingProperties.imageAlt',
       highlightElement: '.property-card .book-now-button',
       position: 'center'
     },
     {
       id: 1,
-      title: 'Property Creation',
-      description: 'Learn how to create and list your own properties. Understand the submission process and requirements.',
+      title: 'tutorial.steps.propertyCreation.title',
+      description: 'tutorial.steps.propertyCreation.description',
       imageUrl: '/src/assets/tutorial/steps/step2-property-creation.svg',
-      imageAlt: 'Tutorial showing property creation form with fields for property details',
+      imageAlt: 'tutorial.steps.propertyCreation.imageAlt',
       highlightElement: '.property-form .submit-button',
       position: 'center'
     },
     {
       id: 2,
-      title: 'Managing Self Bookings',
-      description: 'Master the art of managing your own bookings. Learn how to view, modify, and cancel reservations.',
+      title: 'tutorial.steps.managingSelfBookings.title',
+      description: 'tutorial.steps.managingSelfBookings.description',
       imageUrl: '/src/assets/tutorial/steps/step3-managing-self-bookings.svg',
-      imageAlt: 'Tutorial showing booking dashboard with confirmed and pending bookings',
+      imageAlt: 'tutorial.steps.managingSelfBookings.imageAlt',
       highlightElement: '.booking-dashboard .manage-buttons',
       position: 'center'
     },
     {
       id: 3,
-      title: 'Booking Requests',
-      description: 'Understand how to handle booking requests from guests. Learn the approval process and communication.',
+      title: 'tutorial.steps.bookingRequests.title',
+      description: 'tutorial.steps.bookingRequests.description',
       imageUrl: '/src/assets/tutorial/steps/step4-booking-requests.svg',
-      imageAlt: 'Tutorial showing booking requests panel with accept/decline options',
+      imageAlt: 'tutorial.steps.bookingRequests.imageAlt',
       highlightElement: '.booking-requests .action-buttons',
       position: 'center'
     }
