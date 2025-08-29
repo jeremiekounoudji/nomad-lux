@@ -75,5 +75,5 @@
   - [x] 5.5 Implement analytics tracking for tutorial events (start, step completion, skip, finish)
   - [x] 5.6 Create tutorial analytics utility functions
   - [x] 5.7 Add analytics events for tutorial completion rates and user engagement
-  - [ ] 5.8 Test translation functionality in both English and French
-  - [ ] 5.9 Write unit tests for translation integration and analytics tracking
+  - [x] 5.8 Test translation functionality in both English and French
+  - [x] 5.9 Write unit tests for translation integration and analytics tracking
