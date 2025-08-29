@@ -40,32 +40,32 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
 
   return (
     <div 
-      className={`bg-white rounded-xl border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden ${className}`}
+      className={`cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:border-gray-300 hover:shadow-lg ${className}`}
       onClick={handleCardClick}
     >
       <div className="flex h-32">
         {/* Left side - Image */}
-        <div className="relative w-40 flex-shrink-0 m-2">
+        <div className="relative m-2 w-40 shrink-0">
           <img
             src={firstImage}
             alt={property.title}
-            className="w-full h-full object-cover rounded-lg border-2 border-primary/20"
+            className="border-primary/20 size-full rounded-lg border-2 object-cover"
           />
           
           {/* Action buttons */}
-          <div className="absolute top-2 right-2 flex gap-1">
+          <div className="absolute right-2 top-2 flex gap-1">
             <button
               onClick={handleShare}
-              className="p-1.5 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
+              className="rounded-full bg-black/20 p-1.5 transition-colors hover:bg-black/30"
             >
-              <Share2 className="w-4 h-4 text-white" />
+              <Share2 className="size-4 text-white" />
             </button>
             <button
               onClick={handleLike}
-              className="p-1.5 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
+              className="rounded-full bg-black/20 p-1.5 transition-colors hover:bg-black/30"
             >
               <Heart
-                className={`w-4 h-4 ${
+                className={`size-4 ${
                   property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
                 }`}
               />
@@ -74,23 +74,23 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
 
           {/* Property type badge */}
           <div className="absolute bottom-2 left-2">
-            <span className="bg-black/60 text-white text-xs px-2 py-0.5 rounded-full backdrop-blur-sm">
+            <span className="rounded-full bg-black/60 px-2 py-0.5 text-xs text-white backdrop-blur-sm">
               {property.property_type}
             </span>
           </div>
         </div>
 
         {/* Right side - Details */}
-        <div className="flex-1 p-4 flex flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between p-4">
           {/* Top section */}
           <div className="space-y-2">
             {/* Title and location */}
             <div className="text-left">
-              <h3 className="font-semibold text-base text-gray-900 line-clamp-1">
+              <h3 className="line-clamp-1 text-base font-semibold text-gray-900">
                 {property.title}
               </h3>
               <div className="flex items-center gap-1 text-gray-600">
-                <MapPin className="w-3 h-3" />
+                <MapPin className="size-3" />
                 <span className="text-xs">{property.location.city}, {property.location.country}</span>
               </div>
             </div>
@@ -98,22 +98,22 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
             {/* Property specs */}
             <div className="flex items-center gap-3 text-xs text-gray-600">
               <div className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
+                <Users className="size-3" />
                 <span>{property.max_guests} {t('labels.guests')}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Bed className="w-3 h-3" />
+                <Bed className="size-3" />
                 <span>{property.bedrooms} {t('labels.beds')}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Bath className="w-3 h-3" />
+                <Bath className="size-3" />
                 <span>{property.bathrooms} {t('labels.baths')}</span>
               </div>
             </div>
           </div>
 
           {/* Bottom section - Price and actions */}
-          <div className="flex items-center justify-between mt-2">
+          <div className="mt-2 flex items-center justify-between">
             <div className="text-left">
               <div className="flex items-baseline gap-1">
                 <span className="text-lg font-bold text-gray-900">
@@ -128,7 +128,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
               color="primary"
               variant="solid"
               onPress={handleCardClick}
-              className="text-xs px-3 py-1 bg-main hover:bg-primary-600"
+              className="bg-main px-3 py-1 text-xs hover:bg-primary-600"
             >
               {t('actions.viewDetails')}
             </Button>

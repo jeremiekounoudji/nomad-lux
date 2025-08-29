@@ -64,7 +64,8 @@
     "phone": "Téléphone",
     "bio": "Bio",
     "location": "Emplacement",
-    "dateOfBirth": "Date de Naissance"
+    "dateOfBirth": "Date de Naissance",
+    "status": "Statut"
   },
   "placeholders": {
     "firstName": "Entrez votre prénom",

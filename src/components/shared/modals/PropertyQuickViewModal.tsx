@@ -44,11 +44,11 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
   }
 
   const amenityIcons: Record<string, React.ReactNode> = {
-    'WiFi': <Wifi className="w-4 h-4" />,
-    'Kitchen': <Coffee className="w-4 h-4" />,
-    'Parking': <Car className="w-4 h-4" />,
-    'Pool': <Users className="w-4 h-4" />,
-    'Air conditioning': <Users className="w-4 h-4" />
+    'WiFi': <Wifi className="size-4" />,
+    'Kitchen': <Coffee className="size-4" />,
+    'Parking': <Car className="size-4" />,
+    'Pool': <Users className="size-4" />,
+    'Air conditioning': <Users className="size-4" />
   }
 
   return (
@@ -62,18 +62,18 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
-              <div className="flex items-center justify-between w-full">
+              <div className="flex w-full items-center justify-between">
                 <div>
                   <h2 className="text-xl font-bold">{property.title}</h2>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <Star className="size-4 fill-current text-yellow-500" />
                       <span className="text-sm font-medium">{property.rating}</span>
                       <span className="text-sm text-gray-500">({t('booking.reviews.count', { count: property.review_count })})</span>
                     </div>
                     <span className="text-sm text-gray-500">•</span>
                     <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4 text-gray-500" />
+                      <MapPin className="size-4 text-gray-500" />
                       <span className="text-sm text-gray-600">{`${property.location.city}, ${property.location.country}`}</span>
                     </div>
                   </div>
@@ -86,8 +86,8 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     className={isLiked ? 'text-red-500' : 'text-gray-500'}
                   >
                     <div className="flex items-center gap-1">
-                      <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-                      <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+                      <Heart className={`size-5 ${isLiked ? 'fill-current' : ''}`} />
+                      <span className="text-xs font-semibold text-gray-700">{property.like_count ?? 0}</span>
                     </div>
                   </Button>
                   <Button
@@ -95,7 +95,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                     variant="light"
                     color="default"
                   >
-                    <Share2 className="w-5 h-5" />
+                    <Share2 className="size-5" />
                   </Button>
                 </div>
               </div>
@@ -107,18 +107,18 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   <img
                     src={property.images[currentImageIndex]}
                     alt={property.title}
-                    className="w-full h-64 object-cover rounded-lg"
+                    className="h-64 w-full rounded-lg object-cover"
                   />
                   
                   {/* Image Navigation */}
                   {property.images.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                       <div className="flex gap-2">
                         {property.images.map((_, index) => (
                           <button
                             key={index}
                             onClick={() => setCurrentImageIndex(index)}
-                            className={`w-2 h-2 rounded-full transition-colors ${
+                            className={`size-2 rounded-full transition-colors ${
                               index === currentImageIndex ? 'bg-white' : 'bg-white/60'
                             }`}
                           />
@@ -128,7 +128,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   )}
 
                   {/* Image Counter */}
-                  <div className="absolute top-4 right-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                  <div className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1 text-sm text-white">
                     {currentImageIndex + 1} / {property.images.length}
                   </div>
                 </div>
@@ -148,9 +148,9 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                 <Divider />
 
                 {/* Property Details */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                   <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-gray-500" />
+                    <Users className="size-5 text-gray-500" />
                     <div>
                       <p className="text-sm font-medium">{property.max_guests} {t('property.labels.guests')}</p>
                       <p className="text-xs text-gray-500">{t('property.labels.max', 'Maximum')}</p>
@@ -158,7 +158,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Bed className="w-5 h-5 text-gray-500" />
+                    <Bed className="size-5 text-gray-500" />
                     <div>
                       <p className="text-sm font-medium">{property.bedrooms} {t('property.labels.bedrooms')}</p>
                       <p className="text-xs text-gray-500">{t('property.labels.private', 'Private')}</p>
@@ -166,7 +166,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Bath className="w-5 h-5 text-gray-500" />
+                    <Bath className="size-5 text-gray-500" />
                     <div>
                       <p className="text-sm font-medium">{property.bathrooms} {t('property.labels.bathrooms')}</p>
                       <p className="text-xs text-gray-500">{t('property.labels.full', 'Full')}</p>
@@ -174,7 +174,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
+                    <Star className="size-5 text-yellow-500" />
                     <div>
                       <p className="text-sm font-medium">{property.rating} {t('property.labels.rating', 'rating')}</p>
                       <p className="text-xs text-gray-500">{t('booking.reviews.count', { count: property.review_count })}</p>
@@ -186,17 +186,17 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
 
                 {/* Description */}
                 <div>
-                  <h4 className="font-semibold mb-2">{t('property.labels.aboutThisPlace', 'About this place')}</h4>
-                  <p className="text-sm text-gray-700 line-clamp-4">{property.description}</p>
+                  <h4 className="mb-2 font-semibold">{t('property.labels.aboutThisPlace', 'About this place')}</h4>
+                  <p className="line-clamp-4 text-sm text-gray-700">{property.description}</p>
                 </div>
 
                 {/* Amenities */}
                 <div>
-                  <h4 className="font-semibold mb-3">{t('property.labels.amenities')}</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <h4 className="mb-3 font-semibold">{t('property.labels.amenities')}</h4>
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                     {property.amenities.slice(0, 6).map((amenity) => (
                       <div key={amenity} className="flex items-center gap-2">
-                        {amenityIcons[amenity] || <Users className="w-4 h-4" />}
+                        {amenityIcons[amenity] || <Users className="size-4" />}
                         <span className="text-sm">{amenity}</span>
                       </div>
                     ))}
@@ -209,13 +209,13 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                 </div>
 
                 {/* Pricing */}
-                <div className="p-4 bg-gray-50 rounded-lg">
+                <div className="rounded-lg bg-gray-50 p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-2xl font-bold text-primary-600">
                         ${property.price}
                       </span>
-                      <span className="text-gray-600 ml-1">{t('property.labels.perNight')}</span>
+                      <span className="ml-1 text-gray-600">{t('property.labels.perNight')}</span>
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-600">{t('property.labels.freeCancellation', 'Free cancellation')}</p>
@@ -232,7 +232,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
               <Button 
                 color="secondary" 
                 variant="flat"
-                startContent={<MessageCircle className="w-4 h-4" />}
+                startContent={<MessageCircle className="size-4" />}
               >
                 {t('property.actions.contactHost')}
               </Button>
@@ -242,7 +242,7 @@ export const PropertyQuickViewModal: React.FC<PropertyQuickViewModalProps> = ({
                   onBookNow?.()
                   onClose()
                 }}
-                startContent={<Calendar className="w-4 h-4" />}
+                startContent={<Calendar className="size-4" />}
               >
                 {t('booking.actions.bookNow')}
               </Button>

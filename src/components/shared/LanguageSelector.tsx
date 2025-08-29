@@ -48,7 +48,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         className={`min-w-unit-16 ${className}`}
         onPress={() => handleLanguageChange(currentLanguage === 'en' ? 'fr' : 'en')}
         isLoading={isLoading}
-        startContent={showFlags ? currentLang?.flag : <Languages className="w-4 h-4" />}
+        startContent={showFlags ? currentLang?.flag : <Languages className="size-4" />}
       >
         {currentLang?.code.toUpperCase()}
       </Button>
@@ -84,13 +84,13 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           size={size}
           className="min-w-unit-20"
           isLoading={isLoading}
-          startContent={showFlags ? currentLang?.flag : <Languages className="w-4 h-4" />}
-          endContent={<ChevronDown className="w-3 h-3" />}
+          startContent={showFlags ? currentLang?.flag : <Languages className="size-4" />}
+          endContent={<ChevronDown className="size-3" />}
         >
           {t(currentLang?.name || 'languages.en')}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-2 min-w-[160px]">
+      <PopoverContent className="min-w-[160px] p-2">
         <div className="space-y-1">
           {languages.map((language) => (
             <button
@@ -98,12 +98,12 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               onClick={() => handleLanguageChange(language.code)}
               disabled={isLoading}
               className={`
-                w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors
+                flex w-full items-center justify-between rounded-lg p-2 text-left transition-colors
                 ${currentLanguage === language.code
                   ? 'bg-primary-50 text-primary-700'
-                  : 'hover:bg-gray-50 text-gray-700'
+                  : 'text-gray-700 hover:bg-gray-50'
                 }
-                ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
               `}
             >
               <div className="flex items-center gap-2">
@@ -111,7 +111,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
                 <span className="font-medium">{t(language.name)}</span>
               </div>
               {currentLanguage === language.code && (
-                <Check className="w-4 h-4 text-primary-600" />
+                <Check className="size-4 text-primary-600" />
               )}
             </button>
           ))}
@@ -142,12 +142,12 @@ export const CompactLanguageSelector: React.FC<{ className?: string }> = ({ clas
           className="min-w-unit-12 px-2"
           isLoading={isLoading}
           startContent={<span className="text-base">{currentLang?.flag}</span>}
-          endContent={<ChevronDown className="w-3 h-3" />}
+          endContent={<ChevronDown className="size-3" />}
         >
           <span className="text-xs font-medium">{currentLang?.code.toUpperCase()}</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-2 min-w-[140px]">
+      <PopoverContent className="min-w-[140px] p-2">
         <div className="space-y-1">
           {languages.map((language) => (
             <button
@@ -155,12 +155,12 @@ export const CompactLanguageSelector: React.FC<{ className?: string }> = ({ clas
               onClick={() => handleLanguageChange(language.code)}
               disabled={isLoading}
               className={`
-                w-full flex items-center justify-between p-2 rounded-lg text-left transition-colors
+                flex w-full items-center justify-between rounded-lg p-2 text-left transition-colors
                 ${currentLanguage === language.code
                   ? 'bg-primary-50 text-primary-700'
-                  : 'hover:bg-gray-50 text-gray-700'
+                  : 'text-gray-700 hover:bg-gray-50'
                 }
-                ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+                ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
               `}
             >
               <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ export const CompactLanguageSelector: React.FC<{ className?: string }> = ({ clas
                 <span className="text-sm font-medium">{t(language.name)}</span>
               </div>
               {currentLanguage === language.code && (
-                <Check className="w-3 h-3 text-primary-600" />
+                <Check className="size-3 text-primary-600" />
               )}
             </button>
           ))}
@@ -195,12 +195,12 @@ export const FullLanguageSelector: React.FC<{ className?: string }> = ({ classNa
             onClick={() => changeLanguage(language.code)}
             disabled={isLoading}
             className={`
-              w-full flex items-center justify-between p-3 rounded-lg border transition-colors
+              flex w-full items-center justify-between rounded-lg border p-3 transition-colors
               ${currentLanguage === language.code
                 ? 'border-primary bg-primary/10 text-primary'
                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600'
               }
-              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+              ${isLoading ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
             `}
           >
             <div className="flex items-center gap-3">
@@ -208,7 +208,7 @@ export const FullLanguageSelector: React.FC<{ className?: string }> = ({ classNa
               <span className="font-medium">{t(language.name)}</span>
             </div>
             {currentLanguage === language.code && (
-              <Check className="w-5 h-5 text-primary" />
+              <Check className="text-primary size-5" />
             )}
           </button>
         ))}

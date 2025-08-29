@@ -82,7 +82,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
     // Generate availability data for the calendar range
     const availability: AvailabilityData[] = []
-    let currentDate = new Date(today)
+    const currentDate = new Date(today)
     
     while (currentDate <= endDate) {
       const dateString = currentDate.toISOString().split('T')[0]
@@ -164,7 +164,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
   // Check if a date range has any unavailable dates
   const isDateRangeAvailable = (startDate: Date, endDate: Date): { isAvailable: boolean; conflictDate: string } => {
-    let currentDate = new Date(startDate)
+    const currentDate = new Date(startDate)
     while (currentDate <= endDate) {
       const dateString = currentDate.toISOString().split('T')[0]
       const availability = availabilityMap.get(dateString)
@@ -275,9 +275,9 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     <div className={`space-y-4 ${className}`}>
       {/* Timezone Information */}
       {(city || country) && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
           <div className="flex items-center gap-2 text-blue-800">
-            <MapPin className="w-4 h-4" />
+            <MapPin className="size-4" />
             <div className="text-sm">
               {(city || country) && (
                 <>
@@ -294,7 +294,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
               <span>{t('booking.calendar.localTimeLabel')} {timezoneInfo.currentTime}</span>
             </div>
           </div>
-          <p className="text-xs text-blue-600 mt-1">
+          <p className="mt-1 text-xs text-blue-600">
             {t('booking.calendar.timezoneNotice')}
           </p>
         </div>
@@ -302,24 +302,24 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
 
       {/* Primary Date Inputs */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-          <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkIn')}</label>
+        <div className="rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+          <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.checkIn')}</label>
           <input
             type="date"
             value={selectedCheckIn || ''}
             onChange={(e) => handleInputChange('checkin', e.target.value)}
             min={today(getLocalTimeZone()).toString()}
-            className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
+            className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
           />
         </div>
-        <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-          <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkOut')}</label>
+        <div className="rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+          <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.checkOut')}</label>
           <input
             type="date"
             value={selectedCheckOut || ''}
             onChange={(e) => handleInputChange('checkout', e.target.value)}
             min={selectedCheckIn ? new Date(new Date(selectedCheckIn).getTime() + 24*60*60*1000).toISOString().split('T')[0] : today(getLocalTimeZone()).toString()}
-            className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
+            className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
           />
         </div>
       </div>
@@ -327,15 +327,15 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
       {/* Calendar Toggle Button */}
       <button
         onClick={() => setShowCalendar(!showCalendar)}
-        className="w-full flex items-center justify-center gap-2 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+        className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-50 p-3 transition-colors hover:bg-gray-100"
       >
-        <CalendarIcon className="w-5 h-5" />
+        <CalendarIcon className="size-5" />
         <span className="font-medium">{showCalendar ? t('booking.calendar.hide') : t('booking.calendar.show')}</span>
       </button>
 
       {/* Calendar Component */}
       {showCalendar && (
-        <div className="border border-gray-200 rounded-lg p-4 bg-white w-full booking-calendar-unavailable-dates">
+        <div className="booking-calendar-unavailable-dates w-full rounded-lg border border-gray-200 bg-white p-4">
           <Calendar
             value={selectedDate}
             onChange={handleCalendarDateSelect}
@@ -371,7 +371,7 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
       )}
 
       {/* Helper Text */}
-      <p className="text-xs text-gray-500 text-center">
+      <p className="text-center text-xs text-gray-500">
         {t('booking.calendar.helperText')}
       </p>
     </div>

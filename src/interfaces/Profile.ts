@@ -73,7 +73,7 @@ export interface PasswordChangeData {
 }
 
 export interface ProfileImageData {
-  file: File
+  file: File | null
   previewUrl: string
   croppedData?: string
 }

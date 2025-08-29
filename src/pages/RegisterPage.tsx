@@ -128,7 +128,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative"
+      className="relative flex min-h-screen items-center justify-center p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -143,22 +143,22 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
+        className="absolute left-6 top-6 z-20 border border-white/30 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
         onPress={handleBackToHome}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Register Form */}
-      <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-md border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">NL</span>
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500">
+              <span className="text-xl font-bold text-white">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('auth.signup.title')}</h1>
-            <p className="text-white/80 text-sm">{t('auth.signup.subtitle')}</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('auth.signup.title')}</h1>
+            <p className="text-sm text-white/80">{t('auth.signup.subtitle')}</p>
           </div>
 
 
@@ -172,7 +172,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
                 placeholder={t('auth.signup.firstNamePlaceholder')}
                 value={firstName}
                 onValueChange={setFirstName}
-                startContent={<User className="w-4 h-4 text-white/60" />}
+                startContent={<User className="size-4 text-white/60" />}
                 classNames={{
                   base: "max-w-full",
                   mainWrapper: "h-full",
@@ -205,7 +205,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               placeholder={t('auth.signup.emailPlaceholder')}
               value={email}
               onValueChange={setEmail}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              startContent={<Mail className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -221,13 +221,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               placeholder={t('auth.signup.passwordPlaceholder')}
               value={password}
               onValueChange={setPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -247,13 +247,13 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               placeholder={t('auth.signup.confirmPasswordPlaceholder')}
               value={confirmPassword}
               onValueChange={setConfirmPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleConfirmVisibility}>
                   {isConfirmVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -278,11 +278,11 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               }}
             >
               {t('auth.signup.agreePrefix')}{' '}
-              <Link className="text-white font-semibold hover:text-white/80" href="#">
+              <Link className="font-semibold text-white hover:text-white/80" href="#">
                 {t('auth.signup.terms')}
               </Link>
               {' '}{t('auth.signup.and')}{' '}
-              <Link className="text-white font-semibold hover:text-white/80" href="#">
+              <Link className="font-semibold text-white hover:text-white/80" href="#">
                 {t('auth.signup.privacy')}
               </Link>
             </Checkbox>
@@ -290,7 +290,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleRegister}
               isLoading={isLoading}
               isDisabled={!firstName || !lastName || !email || !password || !confirmPassword || !agreeToTerms}
@@ -299,10 +299,10 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             </Button>
 
             <div className="text-center">
-              <span className="text-white/80 text-sm">
+              <span className="text-sm text-white/80">
                 {t('auth.signup.hasAccount')}{' '}
                 <Link 
-                  className="text-white font-semibold hover:text-white/80 cursor-pointer"
+                  className="cursor-pointer font-semibold text-white hover:text-white/80"
                   onPress={() => {
                     if (onPageChange) {
                       onPageChange('login')

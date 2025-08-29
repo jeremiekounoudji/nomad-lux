@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Avatar } from '@heroui/react';
 import { Calendar, Star, Clock, CreditCard, Phone, Mail, User, MapPin, Home, DollarSign, X, Check } from 'lucide-react';
-import { BookingRequest, BookingStatus } from '../../../interfaces';
+import { BookingRequest } from '../../../interfaces';
 import { useTranslation } from '../../../lib/stores/translationStore';
 import { formatPrice } from '../../../utils/currencyUtils';
 
@@ -42,29 +42,29 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex flex-col gap-1 p-4 sm:p-6 pb-2 sm:pb-4">
-              <h2 className="text-lg sm:text-xl font-bold">{t('booking.bookingRequests.details.title')}</h2>
-              <p className="text-xs sm:text-sm text-gray-600">{t('booking.bookingRequests.details.subtitle')}</p>
+            <ModalHeader className="flex flex-col gap-1 p-4 pb-2 sm:p-6 sm:pb-4">
+              <h2 className="text-lg font-bold sm:text-xl">{t('booking.bookingRequests.details.title')}</h2>
+              <p className="text-xs text-gray-600 sm:text-sm">{t('booking.bookingRequests.details.subtitle')}</p>
             </ModalHeader>
-            <ModalBody className="px-4 sm:px-6 py-2 sm:py-4">
+            <ModalBody className="px-4 py-2 sm:px-6 sm:py-4">
               <div className="space-y-4 sm:space-y-8">
                 {/* Property Details */}
                 <div>
-                  <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.propertyInformation')}</h4>
-                  <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                  <h4 className="mb-3 font-semibold">{t('booking.bookingRequests.details.propertyInformation')}</h4>
+                  <div className="flex gap-4 rounded-lg bg-gray-50 p-4">
                     <img
                       src={selectedRequest.property_images[0]}
                       alt={selectedRequest.property_title}
-                      className="w-24 h-24 object-cover rounded-lg"
+                      className="size-24 rounded-lg object-cover"
                     />
                     <div>
                       <h3 className="font-semibold">{selectedRequest.property_title}</h3>
-                      <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                        <MapPin className="w-4 h-4" />
+                      <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+                        <MapPin className="size-4" />
                         <span>{t('booking.bookingRequests.details.locationPlaceholder')}</span>
                       </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Home className="w-4 h-4 text-gray-600" />
+                      <div className="mt-1 flex items-center gap-1">
+                        <Home className="size-4 text-gray-600" />
                         <span className="text-sm text-gray-600">{t('booking.bookingRequests.details.propertyTypePlaceholder')}</span>
                       </div>
                     </div>
@@ -73,32 +73,32 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
 
                 {/* Guest Information */}
                 <div>
-                  <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.guestInformation')}</h4>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <div className="flex items-center gap-3 mb-3">
+                  <h4 className="mb-3 font-semibold">{t('booking.bookingRequests.details.guestInformation')}</h4>
+                  <div className="rounded-lg bg-gray-50 p-4">
+                    <div className="mb-3 flex items-center gap-3">
                       <Avatar
                         src={selectedRequest.guest_avatar_url}
                         name={selectedRequest.guest_display_name}
                         size="lg"
                       />
                       <div>
-                        <p className="font-medium text-lg">
+                        <p className="text-lg font-medium">
                           {selectedRequest.guest_display_name}
                         </p>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                          <Star className="size-4 fill-current text-yellow-500" />
                           <span>
                             {selectedRequest.guest_rating} ({t('booking.reviews.count', { count: selectedRequest.total_guest_reviews })})
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <Button
                         size="sm"
                         variant="light"
                         color="primary"
-                        startContent={<Mail className="w-4 h-4" />}
+                        startContent={<Mail className="size-4" />}
                         className="justify-start"
                       >
                         {selectedRequest.guest_email}
@@ -108,7 +108,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                           size="sm"
                           variant="light"
                           color="primary"
-                          startContent={<Phone className="w-4 h-4" />}
+                          startContent={<Phone className="size-4" />}
                           className="justify-start"
                         >
                           {selectedRequest.guest_phone}
@@ -120,12 +120,12 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
 
                 {/* Booking Details */}
                 <div>
-                  <h4 className="font-semibold mb-3">{t('booking.bookingRequests.details.bookingDetails')}</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 bg-gray-50 rounded-lg">
+                  <h4 className="mb-3 font-semibold">{t('booking.bookingRequests.details.bookingDetails')}</h4>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg bg-gray-50 p-4">
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-5 h-5 text-gray-600" />
+                          <Calendar className="size-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.labels.checkIn')}</p>
                             <p className="text-gray-600">
@@ -135,7 +135,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-5 h-5 text-gray-600" />
+                          <Calendar className="size-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.labels.checkOut')}</p>
                             <p className="text-gray-600">
@@ -145,7 +145,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <User className="w-5 h-5 text-gray-600" />
+                          <User className="size-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.labels.guests')}</p>
                             <p className="text-gray-600">{selectedRequest.guest_count} {t('booking.labels.guests')}</p>
@@ -153,17 +153,17 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                         </div>
                       </div>
                     </div>
-                    <div className="p-4 bg-gray-50 rounded-lg">
+                    <div className="rounded-lg bg-gray-50 p-4">
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <DollarSign className="w-5 h-5 text-gray-600" />
+                          <DollarSign className="size-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.bookingRequests.details.totalAmount')}</p>
                             <p className="text-gray-600">{formatPrice(selectedRequest.total_amount, selectedRequest.currency || 'USD')}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CreditCard className="w-5 h-5 text-gray-600" />
+                          <CreditCard className="size-5 text-gray-600" />
                           <div>
                             <p className="text-sm font-medium">{t('booking.bookingRequests.details.paymentStatus')}</p>
                             <p className="text-gray-600">{t('booking.payment.pending')}</p>
@@ -177,9 +177,9 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                 {/* Special Requests */}
                 {selectedRequest.special_requests && (
                   <div>
-                    <h4 className="font-semibold mb-3">{t('booking.labels.specialRequests')}</h4>
-                    <div className="p-3 sm:p-4 bg-gray-50 rounded-lg">
-                      <p className="text-gray-600 break-words whitespace-pre-wrap text-sm sm:text-base leading-relaxed">
+                    <h4 className="mb-3 font-semibold">{t('booking.labels.specialRequests')}</h4>
+                    <div className="rounded-lg bg-gray-50 p-3 sm:p-4">
+                      <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-gray-600 sm:text-base">
                         {selectedRequest.special_requests}
                       </p>
                     </div>
@@ -188,15 +188,15 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
 
                 {/* Status Timeline */}
                 <div>
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <Clock className="w-5 h-5" />
+                  <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                    <Clock className="size-5" />
                     {t('booking.bookingRequests.details.timeline')}
                   </h4>
                   <div className="space-y-3">
                     <div className="flex gap-3">
-                      <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="mt-2 size-2 shrink-0 rounded-full bg-primary-500"></div>
                       <div>
-                        <p className="font-medium text-sm">{t('booking.bookingRequests.details.requestCreated')}</p>
+                        <p className="text-sm font-medium">{t('booking.bookingRequests.details.requestCreated')}</p>
                         <p className="text-sm text-gray-600">
                           {new Date(selectedRequest.created_at).toLocaleString()}
                         </p>
@@ -207,7 +207,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                 </div>
               </div>
             </ModalBody>
-            <ModalFooter className="p-4 sm:p-6 pt-2 sm:pt-4">
+            <ModalFooter className="p-4 pt-2 sm:p-6 sm:pt-4">
               <Button color="default" variant="light" onPress={onClose}>
                 {t('common.buttons.close')}
               </Button>
@@ -216,7 +216,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                   <Button
                     color="danger"
                     variant="flat"
-                    startContent={<X className="w-4 h-4" />}
+                    startContent={<X className="size-4" />}
                     onPress={() => {
                       onClose();
                       onDeclineModalOpen();
@@ -228,7 +228,7 @@ const BookingRequestDetailsModal: React.FC<BookingRequestDetailsModalProps> = ({
                   </Button>
                   <Button
                     color="success"
-                    startContent={<Check className="w-4 h-4" />}
+                    startContent={<Check className="size-4" />}
                     onPress={() => {
                       onClose();
                       onConfirmModalOpen();

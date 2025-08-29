@@ -77,7 +77,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
   }, [markers]);
 
   return (
-    <div className={`relative rounded-xl overflow-hidden border border-gray-200 ${className}`} style={{ height }}>
+    <div className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`} style={{ height }}>
       <MapContainer
         center={center as [number, number]}
         zoom={13}
@@ -102,22 +102,22 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
           >
             <Popup minWidth={260} maxWidth={320}>
               <div className="p-2">
-                <div className="flex items-center gap-3 mb-2">
-                  <img src={property.host.avatar_url} alt={property.host.display_name} className="w-10 h-10 rounded-full border-2 border-primary-200" />
+                <div className="mb-2 flex items-center gap-3">
+                  <img src={property.host.avatar_url} alt={property.host.display_name} className="size-10 rounded-full border-2 border-primary-200" />
                   <div>
-                    <h3 className="font-semibold text-base mb-0.5">{property.title}</h3>
+                    <h3 className="mb-0.5 text-base font-semibold">{property.title}</h3>
                     <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <Star className="w-4 h-4 text-yellow-400" />
+                      <Star className="size-4 text-yellow-400" />
                       <span>{property.rating.toFixed(1)}</span>
                       <span>({property.review_count})</span>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-gray-500">
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="size-4" />
                       <span>{property.location.city}, {property.location.country}</span>
                     </div>
                   </div>
                 </div>
-                <img src={property.images[0]} alt={property.title} className="w-full h-24 object-cover rounded-lg mb-2" />
+                <img src={property.images[0]} alt={property.title} className="mb-2 h-24 w-full rounded-lg object-cover" />
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-primary-700">{property.currency} {property.price}</span>
                   <Button

@@ -117,23 +117,23 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
       {/* Map Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-gray-600" />
+          <MapPin className="size-5 text-gray-600" />
           <h3 className="font-semibold text-gray-900">{t('admin.properties.distribution.title', { defaultValue: 'Property Distribution' })}</h3>
         </div>
         <div className="flex items-center gap-2">
           <Chip size="sm" variant="flat" color="default">
-            <Building className="w-3 h-3 mr-1" />
+            <Building className="mr-1 size-3" />
             {t('admin.properties.distribution.propertiesCount', { count: properties.length, defaultValue: '{{count}} Properties' })}
           </Chip>
           <Chip size="sm" variant="flat" color="default">
-            <MapPin className="w-3 h-3 mr-1" />
+            <MapPin className="mr-1 size-3" />
             {t('admin.properties.distribution.locationsCount', { count: locationStats.length, defaultValue: '{{count}} Locations' })}
           </Chip>
         </div>
       </div>
 
       {/* Map */}
-      <div className="relative rounded-xl overflow-hidden border border-gray-200">
+      <div className="relative overflow-hidden rounded-xl border border-gray-200">
         <LazyMapWrapper
           type="properties"
           properties={properties}
@@ -150,19 +150,19 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
       </div>
 
       {/* Location Statistics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Top Locations */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-5 h-5 text-primary-600" />
+            <div className="mb-4 flex items-center gap-2">
+              <TrendingUp className="size-5 text-primary-600" />
               <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.topLocations', { defaultValue: 'Top Locations' })}</h4>
             </div>
             <div className="space-y-3">
               {locationStats.slice(0, 5).map((location, index) => (
-                <div key={`${location.city}-${location.country}`} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={`${location.city}-${location.country}`} className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                    <div className="flex size-8 items-center justify-center rounded-full bg-primary-100">
                       <span className="text-sm font-bold text-primary-600">#{index + 1}</span>
                     </div>
                     <div>
@@ -181,10 +181,10 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
         </Card>
 
         {/* Status Distribution */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Users className="w-5 h-5 text-primary-600" />
+            <div className="mb-4 flex items-center gap-2">
+              <Users className="size-5 text-primary-600" />
               <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.statusDistribution', { defaultValue: 'Status Distribution' })}</h4>
             </div>
             <div className="space-y-3">
@@ -214,7 +214,7 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
                   color: 'secondary' as const
                 }
               ].map((item) => (
-                <div key={item.status} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={item.status} className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="flex items-center gap-3">
                     <Chip size="sm" color={item.color} variant="flat">
                       {item.status}
@@ -235,14 +235,14 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
       </div>
 
       {/* Detailed Location Breakdown */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary-600" />
+              <MapPin className="size-5 text-primary-600" />
               <h4 className="font-semibold text-gray-900">{t('admin.properties.distribution.locationBreakdown', { defaultValue: 'Location Breakdown' })}</h4>
             </div>
-            <Button size="sm" variant="flat" color="primary" startContent={<Eye className="w-4 h-4" />}>
+            <Button size="sm" variant="flat" color="primary" startContent={<Eye className="size-4" />}>
               {t('admin.properties.distribution.viewDetails', { defaultValue: 'View Details' })}
             </Button>
           </div>
@@ -250,42 +250,42 @@ export const PropertyDistributionMap: React.FC<PropertyDistributionMapProps> = (
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.location', { defaultValue: 'Location' })}</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.total', { defaultValue: 'Total' })}</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.approved', { defaultValue: 'Approved' })}</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.pending', { defaultValue: 'Pending' })}</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.rejected', { defaultValue: 'Rejected' })}</th>
-                  <th className="text-center py-3 px-2 font-medium text-gray-700">{t('admin.properties.distribution.table.suspended', { defaultValue: 'Suspended' })}</th>
+                  <th className="px-2 py-3 text-left font-medium text-gray-700">{t('admin.properties.distribution.table.location', { defaultValue: 'Location' })}</th>
+                  <th className="px-2 py-3 text-center font-medium text-gray-700">{t('admin.properties.distribution.table.total', { defaultValue: 'Total' })}</th>
+                  <th className="px-2 py-3 text-center font-medium text-gray-700">{t('admin.properties.distribution.table.approved', { defaultValue: 'Approved' })}</th>
+                  <th className="px-2 py-3 text-center font-medium text-gray-700">{t('admin.properties.distribution.table.pending', { defaultValue: 'Pending' })}</th>
+                  <th className="px-2 py-3 text-center font-medium text-gray-700">{t('admin.properties.distribution.table.rejected', { defaultValue: 'Rejected' })}</th>
+                  <th className="px-2 py-3 text-center font-medium text-gray-700">{t('admin.properties.distribution.table.suspended', { defaultValue: 'Suspended' })}</th>
                 </tr>
               </thead>
               <tbody>
                 {locationStats.map((location) => (
                   <tr key={`${location.city}-${location.country}`} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-2">
+                    <td className="px-2 py-3">
                       <div>
                         <p className="font-medium text-gray-900">{location.city}</p>
                         <p className="text-sm text-gray-600">{location.country}</p>
                       </div>
                     </td>
-                    <td className="text-center py-3 px-2">
+                    <td className="px-2 py-3 text-center">
                       <span className="font-bold text-gray-900">{location.count}</span>
                     </td>
-                    <td className="text-center py-3 px-2">
+                    <td className="px-2 py-3 text-center">
                       <Chip size="sm" color="success" variant="flat">
                         {location.approved}
                       </Chip>
                     </td>
-                    <td className="text-center py-3 px-2">
+                    <td className="px-2 py-3 text-center">
                       <Chip size="sm" color="warning" variant="flat">
                         {location.pending}
                       </Chip>
                     </td>
-                    <td className="text-center py-3 px-2">
+                    <td className="px-2 py-3 text-center">
                       <Chip size="sm" color="danger" variant="flat">
                         {location.rejected}
                       </Chip>
                     </td>
-                    <td className="text-center py-3 px-2">
+                    <td className="px-2 py-3 text-center">
                       <Chip size="sm" color="secondary" variant="flat">
                         {location.suspended}
                       </Chip>

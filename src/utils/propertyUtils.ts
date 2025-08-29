@@ -353,7 +353,7 @@ export const generateDateRange = (
   const start = new Date(startDate)
   const end = new Date(endDate)
   
-  let currentDate = new Date(start)
+  const currentDate = new Date(start)
   
   while (currentDate < end) {
     const dateString = currentDate.toISOString().split('T')[0]

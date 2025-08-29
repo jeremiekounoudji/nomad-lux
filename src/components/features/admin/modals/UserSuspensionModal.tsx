@@ -47,9 +47,9 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="lg">
       <ModalContent>
-        <ModalHeader className="flex items-center gap-3 bg-orange-50 text-orange-900 rounded-t-lg">
-          <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
-            <Ban className="w-5 h-5 text-white" />
+        <ModalHeader className="flex items-center gap-3 rounded-t-lg bg-orange-50 text-orange-900">
+          <div className="flex size-10 items-center justify-center rounded-full bg-orange-500">
+            <Ban className="size-5 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-bold">{t('admin.users.suspension.title', { defaultValue: 'Suspend User Account' })}</h3>
@@ -61,12 +61,12 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
           {user && (
             <>
               {/* Warning Notice */}
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
                 <div className="flex items-start gap-3">
-                  <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+                  <AlertTriangle className="mt-0.5 size-5 text-amber-600" />
                   <div>
                     <h4 className="font-medium text-amber-800">{t('admin.users.suspension.notice.title', { defaultValue: 'Important Notice' })}</h4>
-                    <p className="text-sm text-amber-700 mt-1">
+                    <p className="mt-1 text-sm text-amber-700">
                       {t('admin.users.suspension.notice.description', { defaultValue: 'Suspending this user will immediately restrict their access to the platform. They will not be able to make new bookings or list properties.' })}
                     </p>
                   </div>
@@ -74,14 +74,14 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
               </div>
 
               {/* User Information */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">{t('admin.users.suspension.userDetails', { defaultValue: 'User Details' })}</h4>
-                <div className="flex items-center gap-3 mb-4">
+              <div className="rounded-lg bg-gray-50 p-4">
+                <h4 className="mb-3 font-semibold text-gray-900">{t('admin.users.suspension.userDetails', { defaultValue: 'User Details' })}</h4>
+                <div className="mb-4 flex items-center gap-3">
                   <Avatar src={user.avatar} name={user.name} size="md" />
                   <div>
                     <h3 className="font-semibold text-gray-900">{user.name}</h3>
                     <p className="text-sm text-gray-600">{user.email}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="mt-1 flex items-center gap-2">
                       <Chip
                         color="success"
                         size="sm"
@@ -114,7 +114,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
 
               {/* Suspension Reason */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   {t('admin.users.suspension.reason.label', { defaultValue: 'Reason for Suspension' })} <span className="text-red-500">*</span>
                 </label>
                 <Textarea
@@ -124,7 +124,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
                   minRows={4}
                   className="w-full"
                 />
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="mt-2 text-xs text-gray-500">
                   {t('admin.users.suspension.reason.help', { defaultValue: 'This reason will be logged and may be shared with the user upon request.' })}
                 </p>
               </div>
@@ -132,7 +132,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
           )}
         </ModalBody>
         
-        <ModalFooter className="bg-gray-50 rounded-b-lg">
+        <ModalFooter className="rounded-b-lg bg-gray-50">
           <Button variant="flat" onPress={handleClose}>
             {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
@@ -140,7 +140,7 @@ export const UserSuspensionModal: React.FC<UserSuspensionModalProps> = ({
             color="warning"
             onPress={handleSubmit}
             isDisabled={!reason.trim()}
-            className="bg-orange-600 hover:bg-orange-700 text-white"
+            className="bg-orange-600 text-white hover:bg-orange-700"
           >
             {t('admin.users.suspension.confirmButton', { defaultValue: 'Suspend User Account' })}
           </Button>

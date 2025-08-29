@@ -9,10 +9,10 @@ export const AuthTest: React.FC = () => {
   const { t } = useTranslation(['auth', 'common'])
 
   return (
-    <div className="fixed top-4 right-4 bg-white p-4 rounded shadow-lg border max-w-sm">
-      <h3 className="font-bold mb-2">🔐 {t('auth.test.title', 'Auth Test')}</h3>
+    <div className="fixed right-4 top-4 max-w-sm rounded border bg-white p-4 shadow-lg">
+      <h3 className="mb-2 font-bold">🔐 {t('auth.test.title', 'Auth Test')}</h3>
       
-      <div className="text-sm space-y-1 mb-3">
+      <div className="mb-3 space-y-1 text-sm">
         <div>{t('auth.test.user', 'User')}: {authStore.user?.email || t('common.notProvided', 'Not provided')}</div>
         <div>{t('auth.test.authenticated', 'Authenticated')}: {authStore.isAuthenticated ? '✅' : '❌'}</div>
         <div>{t('auth.test.admin', 'Admin')}: {authStore.isAdmin ? '✅' : '❌'}</div>
@@ -22,13 +22,13 @@ export const AuthTest: React.FC = () => {
       <div className="space-y-2">
         <button
           onClick={() => signIn(t('auth.test.testEmail'), t('auth.test.testPassword'))}
-          className="w-full bg-blue-500 text-white px-3 py-1 rounded text-sm"
+          className="w-full rounded bg-blue-500 px-3 py-1 text-sm text-white"
         >
           {t('auth.test.signIn', 'Test Sign In')}
         </button>
         <button
           onClick={() => signOut()}
-          className="w-full bg-red-500 text-white px-3 py-1 rounded text-sm"
+          className="w-full rounded bg-red-500 px-3 py-1 text-sm text-white"
         >
           {t('auth.actions.logout', 'Sign Out')}
         </button>

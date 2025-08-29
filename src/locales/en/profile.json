@@ -64,7 +64,8 @@
     "phone": "Phone",
     "bio": "Bio",
     "location": "Location",
-    "dateOfBirth": "Date of Birth"
+    "dateOfBirth": "Date of Birth",
+    "status": "Status"
   },
   "placeholders": {
     "firstName": "Enter your first name",

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { 
   Button, 
   ButtonGroup, 
@@ -17,14 +17,9 @@ import {
   Search, 
   MapPin, 
   Square, 
-  Ruler, 
-  Settings,
-  Eye,
-  EyeOff,
+  Ruler,
   RefreshCw,
-  MoreVertical,
   CheckCircle,
-  Clock,
   XCircle,
   Pause
 } from 'lucide-react';
@@ -119,11 +114,11 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
   };
 
   return (
-    <div className={`bg-white border-b border-gray-200 p-4 space-y-4 ${className}`}>
+    <div className={`space-y-4 border-b border-gray-200 bg-white p-4 ${className}`}>
       {/* Main Toolbar */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         {/* Left Section - Search and Filters */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1">
+        <div className="flex flex-1 flex-col items-start gap-3 sm:flex-row sm:items-center">
           <div className="flex items-center gap-2">
             <Input
               placeholder={t('admin.mapToolbar.searchPlaceholder', { defaultValue: 'Search by location, property name...' })}
@@ -132,7 +127,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 setSearchQuery(e.target.value);
                 handleLocationSearch(e.target.value);
               }}
-              startContent={<Search className="w-4 h-4 text-gray-400" />}
+              startContent={<Search className="size-4 text-gray-400" />}
               className="w-full sm:w-80"
               size="sm"
             />
@@ -142,7 +137,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
               onClick={() => setShowFilters(!showFilters)}
               className={showFilters ? 'bg-primary-100 text-primary-700' : ''}
             >
-              <Filter className="w-4 h-4" />
+              <Filter className="size-4" />
               {t('admin.mapToolbar.filters', { defaultValue: 'Filters' })}
             </Button>
           </div>
@@ -161,7 +156,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 color={color as any}
                 size="sm"
                 onClick={() => handleStatusFilter(key)}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
+                className="cursor-pointer transition-opacity hover:opacity-80"
               >
                 {label} ({count})
               </Chip>
@@ -179,7 +174,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 onClick={() => onToolToggle('selection', !activeTools.selection)}
                 className={activeTools.selection ? 'bg-primary-100 text-primary-700' : ''}
               >
-                <Square className="w-4 h-4" />
+                <Square className="size-4" />
               </Button>
             </Tooltip>
             <Tooltip content={t('admin.mapToolbar.tools.measurement', { defaultValue: 'Distance measurement' })}>
@@ -188,7 +183,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 onClick={() => onToolToggle('measurement', !activeTools.measurement)}
                 className={activeTools.measurement ? 'bg-primary-100 text-primary-700' : ''}
               >
-                <Ruler className="w-4 h-4" />
+                <Ruler className="size-4" />
               </Button>
             </Tooltip>
             <Tooltip content={t('admin.mapToolbar.tools.areaSelection', { defaultValue: 'Area selection' })}>
@@ -197,7 +192,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                 onClick={() => onToolToggle('areaSelection', !activeTools.areaSelection)}
                 className={activeTools.areaSelection ? 'bg-primary-100 text-primary-700' : ''}
               >
-                <MapPin className="w-4 h-4" />
+                <MapPin className="size-4" />
               </Button>
             </Tooltip>
           </ButtonGroup>
@@ -206,7 +201,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             variant="light"
             size="sm"
             onClick={onRefresh}
-            startContent={<RefreshCw className="w-4 h-4" />}
+            startContent={<RefreshCw className="size-4" />}
           >
             {t('admin.mapToolbar.refresh', { defaultValue: 'Refresh' })}
           </Button>
@@ -217,7 +212,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
               <Button
                 variant="light"
                 size="sm"
-                startContent={<Download className="w-4 h-4" />}
+                startContent={<Download className="size-4" />}
               >
                 {t('admin.mapToolbar.export', { defaultValue: 'Export' })}
               </Button>
@@ -239,10 +234,10 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
 
       {/* Bulk Actions Bar (shown when properties are selected) */}
       {selectedProperties.length > 0 && (
-        <div className="flex items-center justify-between p-3 bg-primary-50 border border-primary-200 rounded-lg">
+        <div className="flex items-center justify-between rounded-lg border border-primary-200 bg-primary-50 p-3">
           <div className="flex items-center gap-3">
             <Badge content={stats.selected} color="primary">
-              <CheckCircle className="w-5 h-5 text-primary-600" />
+              <CheckCircle className="size-5 text-primary-600" />
             </Badge>
             <span className="text-sm font-medium text-primary-700">
               {t('admin.mapToolbar.selectedCount', { count: stats.selected, defaultValue: '{{count}} propert{{count === 1 ? "y" : "ies"}} selected' })}
@@ -256,7 +251,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                   color="success"
                   variant="light"
                   onClick={() => handleBulkActionClick('approve')}
-                  startContent={<CheckCircle className="w-4 h-4" />}
+                  startContent={<CheckCircle className="size-4" />}
                 >
                   {t('admin.mapToolbar.bulkActions.approveButton', { defaultValue: 'Approve' })}
                 </Button>
@@ -266,7 +261,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                   color="danger"
                   variant="light"
                   onClick={() => handleBulkActionClick('reject')}
-                  startContent={<XCircle className="w-4 h-4" />}
+                  startContent={<XCircle className="size-4" />}
                 >
                   {t('admin.mapToolbar.bulkActions.rejectButton', { defaultValue: 'Reject' })}
                 </Button>
@@ -276,7 +271,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
                   color="warning"
                   variant="light"
                   onClick={() => handleBulkActionClick('suspend')}
-                  startContent={<Pause className="w-4 h-4" />}
+                  startContent={<Pause className="size-4" />}
                 >
                   {t('admin.mapToolbar.bulkActions.suspendButton', { defaultValue: 'Suspend' })}
                 </Button>
@@ -288,7 +283,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
 
       {/* Advanced Filters (collapsible) */}
       {showFilters && (
-        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+        <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-gray-700">{t('admin.mapToolbar.advancedFilters.title', { defaultValue: 'Advanced Filters' })}</h3>
             <Button
@@ -301,10 +296,10 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Price Range */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-600">
                 {t('admin.mapToolbar.advancedFilters.priceRange', { defaultValue: 'Price Range (per night)' })}
               </label>
               <div className="flex items-center gap-2">
@@ -334,7 +329,7 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
 
             {/* Date Range */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-600">
                 {t('admin.mapToolbar.advancedFilters.dateRange', { defaultValue: 'Created Date Range' })}
               </label>
               <div className="flex items-center gap-2">
@@ -366,10 +361,10 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
 
             {/* Quick Stats */}
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">
+              <label className="text-xs font-semibold uppercase tracking-wide text-gray-600">
                 {t('admin.mapToolbar.advancedFilters.quickStats', { defaultValue: 'Quick Stats' })}
               </label>
-              <div className="text-sm text-gray-600 space-y-1">
+              <div className="space-y-1 text-sm text-gray-600">
                 <div>{t('admin.mapToolbar.advancedFilters.totalProperties', { defaultValue: 'Total Properties' })}: {stats.total}</div>
                 <div>{t('admin.mapToolbar.advancedFilters.visible', { defaultValue: 'Visible' })}: {properties.length}</div>
                 <div>{t('admin.mapToolbar.advancedFilters.selected', { defaultValue: 'Selected' })}: {stats.selected}</div>

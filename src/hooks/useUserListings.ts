@@ -163,7 +163,7 @@ export const useUserListings = () => {
 
     try {
       // Handle file uploads for images and videos
-      let processedUpdates = { ...updates }
+      const processedUpdates = { ...updates }
       
       // Process images: separate existing URLs from new File objects
       if (updates.images && Array.isArray(updates.images)) {

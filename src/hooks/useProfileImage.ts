@@ -22,17 +22,27 @@ export const useProfileImage = (): UseProfileImageReturn => {
 
   // Process image for upload
   const processImage = useCallback(async (file: File): Promise<ProfileImageData> => {
+    console.log('🔧 Processing file:', {
+      name: file.name,
+      type: file.type,
+      size: file.size
+    })
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.onload = (e) => {
         const previewUrl = e.target?.result as string
+        console.log('✅ File processed successfully')
         resolve({
           file,
           previewUrl,
           croppedData: undefined
         })
       }
-      reader.onerror = () => reject(new Error('Failed to read image file'))
+      reader.onerror = (error) => {
+        console.error('❌ FileReader error:', error)
+        reject(new Error('Failed to read image file'))
+      }
       reader.readAsDataURL(file)
     })
   }, [])
@@ -49,10 +59,29 @@ export const useProfileImage = (): UseProfileImageReturn => {
       setUploadProgress(0)
 
       console.log('🔄 Starting image upload for user:', user.id)
+      console.log('📁 File details:', {
+        name: imageData.file.name,
+        type: imageData.file.type,
+        size: imageData.file.size
+      })
+
+      // Validate file type
+      if (!imageData.file.type.startsWith('image/')) {
+        console.error('❌ Invalid file type detected:', imageData.file.type)
+        throw new Error('Invalid file type. Please select an image file.')
+      }
+
+      // Additional validation
+      if (!(imageData.file instanceof File)) {
+        console.error('❌ File is not a valid File object')
+        throw new Error('Invalid file object')
+      }
 
       // Generate unique filename with user folder structure
-      const fileExt = imageData.file.name.split('.').pop()
+      const fileExt = imageData.file.name.split('.').pop()?.toLowerCase()
       const fileName = `${user.id}/${user.id}-${Date.now()}.${fileExt}`
+
+      console.log('📤 Uploading file:', fileName)
 
       // Upload to Supabase Storage
       const { data, error: uploadError } = await supabase.storage

@@ -40,7 +40,7 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
   };
   return (
     <div className="h-full">
-      <Card className="h-full bg-white rounded-xl shadow hover:shadow-lg transition-shadow duration-200">
+      <Card className="h-full rounded-xl bg-white shadow transition-shadow duration-200 hover:shadow-lg">
         {/* Property Image with Status */}
         <div
           className="relative cursor-pointer"
@@ -49,45 +49,45 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
           <img
             src={booking.properties?.images?.[0] || ''}
             alt={booking.properties?.title || ''}
-            className="w-full h-40 object-cover rounded-t-xl"
+            className="h-40 w-full rounded-t-xl object-cover"
           />
-          <div className="absolute top-3 left-3">
+          <div className="absolute left-3 top-3">
             <Chip
               color={getStatusColor(booking.status)}
               variant="solid"
               size="sm"
-              className="text-white font-medium"
+              className="font-medium text-white"
             >
               {getStatusLabel(booking.status)}
             </Chip>
           </div>
         </div>
-        <CardBody className="p-4 flex-1 flex flex-col">
+        <CardBody className="flex flex-1 flex-col p-4">
           {/* Property Info */}
-          <div className="space-y-2 flex-1">
+          <div className="flex-1 space-y-2">
             <div
               className="cursor-pointer"
               onClick={() => onClick(booking)}
             >
-              <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 min-h-[2.25rem] leading-tight">
+              <h3 className="line-clamp-2 min-h-9 text-sm font-semibold leading-tight text-gray-900">
                 {booking.properties?.title || t('booking.labels.property')}
               </h3>
-              <div className="flex items-start gap-1 text-xs text-gray-600 mt-1">
-                <MapPin className="w-3 h-3 mt-0.5 flex-shrink-0" />
+              <div className="mt-1 flex items-start gap-1 text-xs text-gray-600">
+                <MapPin className="mt-0.5 size-3 shrink-0" />
                 <span className="line-clamp-1 break-words">
                   {booking.properties?.location?.city && booking.properties?.location?.country
                     ? `${booking.properties.location.city}, ${booking.properties.location.country}`
                     : t('booking.labels.locationNotAvailable')}
                 </span>
               </div>
-              <div className="flex items-center gap-1 mt-1">
-                <Star className="w-3 h-3 text-yellow-500 fill-current flex-shrink-0" />
+              <div className="mt-1 flex items-center gap-1">
+                <Star className="size-3 shrink-0 fill-current text-yellow-500" />
                 <span className="text-xs font-medium">{booking.properties?.rating}</span>
               </div>
             </div>
             {/* Dates */}
             <div className="flex items-start gap-1 text-xs text-gray-600">
-              <Calendar className="w-3 h-3 mt-0.5 flex-shrink-0" />
+              <Calendar className="mt-0.5 size-3 shrink-0" />
               <span className="break-words leading-tight">
                 {new Date(booking.check_in_date).toLocaleDateString()} - {new Date(booking.check_out_date).toLocaleDateString()}
               </span>
@@ -103,18 +103,18 @@ const MyBookingCard: React.FC<MyBookingCardProps> = ({ booking, onClick, getStat
             </div>
             {/* Reject Reason */}
             {booking.status === 'rejected' && booking.reject_reason && (
-              <div className="mt-2 p-2 bg-red-50 rounded-lg">
+              <div className="mt-2 rounded-lg bg-red-50 p-2">
                 <div className="flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-500" />
                   <div>
                     <p className="text-xs font-medium text-red-700">{t('booking.labels.rejectionReason')}</p>
-                    <p className="text-xs text-red-600 mt-0.5">{booking.reject_reason}</p>
+                    <p className="mt-0.5 text-xs text-red-600">{booking.reject_reason}</p>
                   </div>
                 </div>
               </div>
             )}
             {/* Actions */}
-            <div className="pt-2 space-y-2">
+            <div className="space-y-2 pt-2">
               {/* Status-specific actions */}
               {booking.status === 'accepted-and-waiting-for-payment' && (
                 <>

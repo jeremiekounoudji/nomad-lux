@@ -67,7 +67,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             onClick={() => handleStarClick(star)}
             onKeyDown={(e) => handleKeyDown(e, star)}
             disabled={readonly}
-            className={`transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded ${
+            className={`rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
               readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'
             }`}
             aria-label={`${star} ${t('review.rating.stars', { count: star })}`}
@@ -76,7 +76,7 @@ const StarRating: React.FC<StarRatingProps> = ({
             <Star
               className={`${sizeClasses[size]} ${
                 rating >= star
-                  ? 'text-yellow-400 fill-current'
+                  ? 'fill-current text-yellow-400'
                   : 'text-gray-300'
               }`}
             />
@@ -85,7 +85,7 @@ const StarRating: React.FC<StarRatingProps> = ({
       </div>
       
       {showLabel && rating > 0 && (
-        <span className="text-sm text-gray-600 font-medium">
+        <span className="text-sm font-medium text-gray-600">
           {getRatingLabel(rating)}
         </span>
       )}

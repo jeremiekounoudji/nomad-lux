@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { ReviewStoreState, ReviewWithUser, Review, ReviewStats, ReviewFilters, CreateReviewData, UpdateReviewData, ReviewResponse, ReviewFormState, ReviewModalState } from '../../interfaces/Review'
+import { ReviewStoreState, Review, ReviewFilters, CreateReviewData, UpdateReviewData, ReviewResponse, ReviewFormState, ReviewModalState } from '../../interfaces/Review'
 
 // Utility function to check if a review is within the 30-day editing window
 const canEditReview = (review: Review): boolean => {

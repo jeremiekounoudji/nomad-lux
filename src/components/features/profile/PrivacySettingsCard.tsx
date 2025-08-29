@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Card, CardBody, Button, Switch, Select, SelectItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Chip } from '@heroui/react'
-import { Settings, Bell, Globe, Eye, EyeOff, Save, RotateCcw, AlertTriangle } from 'lucide-react'
+import { Card, CardBody, Button, Switch, Select, SelectItem, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react'
+import { Settings, Bell, Globe, Save, RotateCcw, AlertTriangle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { PrivacySettings, NotificationSettings, ProfilePreferences } from '../../../interfaces/Profile'
 import toast from 'react-hot-toast'
@@ -163,14 +163,14 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
 
   return (
     <>
-      <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+      <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
         <CardBody className="p-6 sm:p-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+          <div className="mb-6 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-                <Settings className="w-5 h-5 text-purple-600" aria-hidden="true" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-purple-100">
+                <Settings className="size-5 text-purple-600" aria-hidden="true" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+              <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
                 {t('profile.sections.privacy')}
               </h3>
             </div>
@@ -179,7 +179,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                 size="sm" 
                 color="secondary" 
                 variant="flat"
-                startContent={<RotateCcw className="w-4 h-4" />}
+                startContent={<RotateCcw className="size-4" />}
                 onPress={() => setShowResetModal(true)}
                 className="font-semibold"
                 aria-label={t('profile.settings.actions.reset')}
@@ -190,12 +190,12 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                 size="sm" 
                 color="primary" 
                 variant="flat"
-                startContent={<Save className="w-4 h-4" />}
+                startContent={<Save className="size-4" />}
                 onPress={saveChanges}
                 isLoading={isSaving}
                 disabled={isSaving}
                 data-focus-after-save
-                className="font-semibold min-h-[44px] touch-manipulation"
+                className="min-h-[44px] touch-manipulation font-semibold"
                 aria-label={t('profile.settings.actions.save')}
               >
                 {t('profile.settings.actions.save')}
@@ -207,14 +207,14 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
             {/* Privacy Settings */}
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <Globe className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <Globe className="size-5 text-gray-600" aria-hidden="true" />
                 <h4 className="text-base font-semibold text-gray-900">
                   {t('profile.privacy.title')}
                 </h4>
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.privacy.profileVisibility')}
@@ -245,7 +245,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                   </Select>
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.privacy.showEmail')}
@@ -261,7 +261,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.privacy.showPhone')}
@@ -277,7 +277,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.privacy.showLocation')}
@@ -298,14 +298,14 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
             {/* Notification Settings */}
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <Bell className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <Bell className="size-5 text-gray-600" aria-hidden="true" />
                 <h4 className="text-base font-semibold text-gray-900">
                   {t('profile.notifications.title')}
                 </h4>
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.notifications.email')}
@@ -321,7 +321,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.notifications.push')}
@@ -337,7 +337,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                   <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">
                       {t('profile.notifications.sms')}
@@ -358,13 +358,13 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
             {/* Preferences */}
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <Settings className="w-5 h-5 text-gray-600" aria-hidden="true" />
+                <Settings className="size-5 text-gray-600" aria-hidden="true" />
                 <h4 className="text-base font-semibold text-gray-900">
                   {t('profile.preferences.title')}
                 </h4>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
                     {t('profile.preferences.language')}
@@ -457,7 +457,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
         <ModalContent>
           <ModalHeader>
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-orange-600" aria-hidden="true" />
+              <AlertTriangle className="size-5 text-orange-600" aria-hidden="true" />
               <h3 className="text-lg font-semibold">{t('profile.settings.resetTitle')}</h3>
             </div>
           </ModalHeader>

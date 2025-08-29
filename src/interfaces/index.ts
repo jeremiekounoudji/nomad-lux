@@ -19,6 +19,7 @@ export * from './Settings'
 export * from './PayoutRequest'
 export * from './Map'
 export * from './Profile'
+export * from './Tutorial'
 
 // Pagination interfaces
 export interface PaginationParams {

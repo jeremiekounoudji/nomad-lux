@@ -43,9 +43,9 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
           {dispute && (
             <div className="space-y-6">
               {/* Dispute Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">{t('disputes.management.disputeInformation')}</h4>
+                  <h4 className="mb-3 font-semibold text-gray-900">{t('disputes.management.disputeInformation')}</h4>
                   <div className="space-y-2 text-sm">
                     <div><strong>{t('disputes.management.labels.type')}</strong> {dispute.type.replace('_', ' ')}</div>
                     <div><strong>{t('disputes.management.labels.priority')}</strong> 
@@ -65,7 +65,7 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
                 </div>
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">{t('disputes.management.assignment')}</h4>
+                  <h4 className="mb-3 font-semibold text-gray-900">{t('disputes.management.assignment')}</h4>
                   <div className="space-y-2 text-sm">
                     <div><strong>{t('disputes.management.labels.assignedTo')}</strong> {dispute.assignedTo || t('disputes.management.unassigned')}</div>
                     <div><strong>{t('disputes.management.labels.bookingId')}</strong> {dispute.bookingId}</div>
@@ -75,20 +75,20 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
 
               {/* Description */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">{t('disputes.management.description')}</h4>
-                <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="mb-3 font-semibold text-gray-900">{t('disputes.management.description')}</h4>
+                <div className="rounded-lg bg-gray-50 p-4">
                   <p className="text-sm text-gray-700">{dispute.description}</p>
                 </div>
               </div>
 
               {/* Messages Thread */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">{t('disputes.management.communicationThread')}</h4>
-                <div className="max-h-64 overflow-y-auto space-y-3 border border-gray-200 rounded-lg p-4">
+                <h4 className="mb-3 font-semibold text-gray-900">{t('disputes.management.communicationThread')}</h4>
+                <div className="max-h-64 space-y-3 overflow-y-auto rounded-lg border border-gray-200 p-4">
                   {dispute.messages.map((message) => (
-                    <div key={message.id} className={`p-3 rounded-lg ${message.isAdmin ? 'bg-blue-50 ml-8' : 'bg-gray-50 mr-8'}`}>
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="font-medium text-sm">{message.sender}</span>
+                    <div key={message.id} className={`rounded-lg p-3 ${message.isAdmin ? 'ml-8 bg-blue-50' : 'mr-8 bg-gray-50'}`}>
+                      <div className="mb-1 flex items-start justify-between">
+                        <span className="text-sm font-medium">{message.sender}</span>
                         <span className="text-xs text-gray-500">{message.timestamp}</span>
                       </div>
                       <p className="text-sm text-gray-700">{message.message}</p>
@@ -99,7 +99,7 @@ export const DisputeManagementModal: React.FC<DisputeManagementModalProps> = ({
 
               {/* Response Input */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3">{t('disputes.management.addResponse')}</h4>
+                <h4 className="mb-3 font-semibold text-gray-900">{t('disputes.management.addResponse')}</h4>
                 <Textarea
                   value={disputeMessage}
                   onChange={(e) => onDisputeMessageChange(e.target.value)}

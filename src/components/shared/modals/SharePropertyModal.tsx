@@ -62,7 +62,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
   const shareOptions = [
     {
       name: t('property.share.copyLink'),
-      icon: <Copy className="w-5 h-5" />,
+      icon: <Copy className="size-5" />,
       color: 'default',
       bgColor: 'bg-gray-100 hover:bg-gray-200',
       textColor: 'text-gray-700',
@@ -70,7 +70,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     },
     {
       name: t('property.actions.whatsapp'),
-      icon: <MessageCircle className="w-5 h-5" />,
+      icon: <MessageCircle className="size-5" />,
       color: 'success',
       bgColor: 'bg-green-100 hover:bg-green-200',
       textColor: 'text-green-700',
@@ -78,7 +78,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     },
     {
       name: t('property.share.facebook'),
-      icon: <Facebook className="w-5 h-5" />,
+      icon: <Facebook className="size-5" />,
       color: 'primary',
       bgColor: 'bg-blue-100 hover:bg-blue-200',
       textColor: 'text-blue-700',
@@ -86,7 +86,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     },
     {
       name: t('property.share.twitter'),
-      icon: <Twitter className="w-5 h-5" />,
+      icon: <Twitter className="size-5" />,
       color: 'secondary',
       bgColor: 'bg-sky-100 hover:bg-sky-200',
       textColor: 'text-sky-700',
@@ -94,7 +94,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     },
     {
       name: t('property.share.email'),
-      icon: <Mail className="w-5 h-5" />,
+      icon: <Mail className="size-5" />,
       color: 'warning',
       bgColor: 'bg-orange-100 hover:bg-orange-200',
       textColor: 'text-orange-700',
@@ -102,7 +102,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
     },
     {
       name: t('property.share.instagram'),
-      icon: <Instagram className="w-5 h-5" />,
+      icon: <Instagram className="size-5" />,
       color: 'danger',
       bgColor: 'bg-pink-100 hover:bg-pink-200',
       textColor: 'text-pink-700',
@@ -156,7 +156,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <Share2 className="w-6 h-6 text-primary-500" />
+                <Share2 className="size-6 text-primary-500" />
                 <h2 className="text-xl font-bold">{t('property.share.title')}</h2>
               </div>
               <p className="text-sm text-gray-600">{t('property.share.subtitle')}</p>
@@ -170,17 +170,17 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       <img
                         src={property.images[0]}
                         alt={property.title}
-                        className="w-20 h-20 object-cover rounded-lg"
+                        className="size-20 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
+                        <h3 className="line-clamp-1 text-lg font-semibold">{property.title}</h3>
+                        <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+                          <MapPin className="size-4" />
                           <span className="line-clamp-1">{`${property.location.city}, ${property.location.country}`}</span>
                         </div>
-                        <div className="flex items-center gap-4 mt-2">
+                        <div className="mt-2 flex items-center gap-4">
                           <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <Star className="size-4 fill-current text-yellow-500" />
                             <span className="text-sm font-medium">{property.rating}</span>
                           </div>
                           <span className="text-lg font-bold text-primary-600">
@@ -200,7 +200,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       size="lg"
                       fullWidth
                       onPress={handleNativeShare}
-                      startContent={<Send className="w-5 h-5" />}
+                      startContent={<Send className="size-5" />}
                       className="font-semibold"
                     >
                       {t('property.share.quickShare')}
@@ -231,7 +231,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                     <Input
                       value={shareData.url}
                       readOnly
-                      startContent={<Link className="w-4 h-4 text-gray-400" />}
+                      startContent={<Link className="size-4 text-gray-400" />}
                       className="flex-1"
                       variant="bordered"
                     />
@@ -241,7 +241,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       variant="flat"
                       onPress={handleCopyLink}
                     >
-                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
                     </Button>
                   </div>
                   {copied && (
@@ -259,9 +259,9 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       <button
                         key={option.name}
                         onClick={option.action}
-                        className={`flex flex-col items-center gap-3 p-4 rounded-xl transition-all duration-200 ${option.bgColor} ${option.textColor} hover:scale-105 hover:shadow-md`}
+                        className={`flex flex-col items-center gap-3 rounded-xl p-4 transition-all duration-200 ${option.bgColor} ${option.textColor} hover:scale-105 hover:shadow-md`}
                       >
-                        <div className="p-2 bg-white rounded-full shadow-sm">
+                        <div className="rounded-full bg-white p-2 shadow-sm">
                           {option.icon}
                         </div>
                         <span className="text-sm font-medium">{option.name}</span>
@@ -271,9 +271,9 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                 </div>
 
                 {/* Sharing Tips */}
-                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-2">💡 {t('property.share.tipsTitle')}</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                  <h4 className="mb-2 font-semibold text-blue-800">💡 {t('property.share.tipsTitle')}</h4>
+                  <ul className="space-y-1 text-sm text-blue-700">
                     <li>• {t('property.share.tipAddMessage')}</li>
                     <li>• {t('property.share.tipShareGroups')}</li>
                     <li>• {t('property.share.tipTagFriends')}</li>
@@ -288,7 +288,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
               <Button 
                 color="primary" 
                 onPress={handleCopyLink}
-                startContent={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                startContent={copied ? <Check className="size-4" /> : <Copy className="size-4" />}
               >
                 {copied ? t('property.share.copied') : t('property.share.copyLink')}
               </Button>

@@ -26,8 +26,8 @@ const HostDetailsStep: React.FC<HostDetailsStepProps> = ({ formData, setFormData
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">{t('property.hostDetails.title')}</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="mb-4 text-2xl font-semibold">{t('property.hostDetails.title')}</h2>
+        <p className="mb-6 text-gray-600">
           {t('property.hostDetails.description')}
         </p>
       </div>

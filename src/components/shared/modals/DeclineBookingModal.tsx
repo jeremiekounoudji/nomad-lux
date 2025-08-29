@@ -45,7 +45,7 @@ const DeclineBookingModal: React.FC<DeclineBookingModalProps> = ({
                   value={rejectReason}
                   onChange={(e) => setRejectReason(e.target.value)}
                   placeholder={t('booking.bookingRequests.decline.placeholder')}
-                  className="w-full h-32 p-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className="h-32 w-full rounded-lg border p-2 focus:border-transparent focus:ring-2 focus:ring-primary-500"
                   maxLength={500}
                 />
               </div>

@@ -16,26 +16,26 @@ interface PropertyDetailsStepProps {
 
 // Amenity icon mapping
 const AMENITY_ICONS: Record<string, React.ReactNode> = {
-  wifi: <Wifi className="w-5 h-5" />,
-  ac: <Wind className="w-5 h-5" />,
-  kitchen: <Utensils className="w-5 h-5" />,
-  parking: <Car className="w-5 h-5" />,
-  tv: <Tv className="w-5 h-5" />,
-  washer: <WashingMachine className="w-5 h-5" />,
-  pool: <Waves className="w-5 h-5" />,
-  gym: <Dumbbell className="w-5 h-5" />,
-  garden: <TreePine className="w-5 h-5" />,
-  balcony: <Home className="w-5 h-5" />,
-  bbq: <Flame className="w-5 h-5" />,
-  hot_tub: <Heart className="w-5 h-5" />,
-  security: <Shield className="w-5 h-5" />,
-  cctv: <Shield className="w-5 h-5" />,
-  fire_alarm: <Shield className="w-5 h-5" />,
-  first_aid: <Heart className="w-5 h-5" />,
-  safe: <Shield className="w-5 h-5" />,
-  gaming: <Gamepad2 className="w-5 h-5" />,
-  coffee_machine: <Coffee className="w-5 h-5" />,
-  cleaning_service: <Sparkles className="w-5 h-5" />,
+  wifi: <Wifi className="size-5" />,
+  ac: <Wind className="size-5" />,
+  kitchen: <Utensils className="size-5" />,
+  parking: <Car className="size-5" />,
+  tv: <Tv className="size-5" />,
+  washer: <WashingMachine className="size-5" />,
+  pool: <Waves className="size-5" />,
+  gym: <Dumbbell className="size-5" />,
+  garden: <TreePine className="size-5" />,
+  balcony: <Home className="size-5" />,
+  bbq: <Flame className="size-5" />,
+  hot_tub: <Heart className="size-5" />,
+  security: <Shield className="size-5" />,
+  cctv: <Shield className="size-5" />,
+  fire_alarm: <Shield className="size-5" />,
+  first_aid: <Heart className="size-5" />,
+  safe: <Shield className="size-5" />,
+  gaming: <Gamepad2 className="size-5" />,
+  coffee_machine: <Coffee className="size-5" />,
+  cleaning_service: <Sparkles className="size-5" />,
 };
 
 // Amenity descriptions
@@ -185,8 +185,8 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">{t('property.details.title')}</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="mb-4 text-2xl font-semibold">{t('property.details.title')}</h2>
+        <p className="mb-6 text-gray-600">
           {t('property.details.description')}
         </p>
       </div>
@@ -262,7 +262,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Input
             type="number"
             label="Bedrooms"
@@ -291,7 +291,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
 
         <div className="space-y-4">
           <h3 className="text-lg font-medium">Location</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Input
               label="City"
               placeholder="Enter city"
@@ -313,7 +313,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
             value={formData.location.address || ''}
             onChange={handleLocationChange('address')}
           />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Input
               type="number"
               label="Latitude"
@@ -354,20 +354,20 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
             <h3 className="text-xl font-semibold text-gray-900">Amenities</h3>
             <span className="text-sm text-gray-500">({formData.amenities.length} selected)</span>
           </div>
-          <p className="text-gray-600 text-sm">Select all amenities available at your property</p>
+          <p className="text-sm text-gray-600">Select all amenities available at your property</p>
           
           <div className="space-y-6">
             {amenitiesLoading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500 mx-auto"></div>
-                <p className="text-gray-600 mt-2">Loading amenities...</p>
+              <div className="py-8 text-center">
+                <div className="mx-auto size-8 animate-spin rounded-full border-b-2 border-primary-500"></div>
+                <p className="mt-2 text-gray-600">Loading amenities...</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {translatedAmenities.map((amenity) => (
                   <Card
                     key={amenity.value}
-                    className={`cursor-pointer transition-all duration-200 border-2 hover:shadow-md ${
+                    className={`cursor-pointer border-2 transition-all duration-200 hover:shadow-md ${
                       formData.amenities.includes(amenity.value)
                         ? 'border-primary-500 bg-primary-50 shadow-sm'
                         : 'border-gray-200 hover:border-gray-300'
@@ -389,25 +389,25 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
                   >
                     <CardBody className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${
+                        <div className={`rounded-lg p-2 ${
                           formData.amenities.includes(amenity.value)
                             ? 'bg-primary-100 text-primary-600'
                             : 'bg-gray-100 text-gray-600'
                         }`}>
-                          {AMENITY_ICONS[amenity.value] || <Home className="w-5 h-5" />}
+                          {AMENITY_ICONS[amenity.value] || <Home className="size-5" />}
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between">
-                            <h5 className="font-medium text-gray-900 truncate">{amenity.label}</h5>
+                            <h5 className="truncate font-medium text-gray-900">{amenity.label}</h5>
                             {formData.amenities.includes(amenity.value) && (
-                              <div className="w-5 h-5 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0 ml-2">
-                                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                              <div className="ml-2 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-500">
+                                <svg className="size-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                 </svg>
                               </div>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600 mt-1">{AMENITY_DESCRIPTIONS[amenity.value] || 'Amenity available'}</p>
+                          <p className="mt-1 text-sm text-gray-600">{AMENITY_DESCRIPTIONS[amenity.value] || 'Amenity available'}</p>
                         </div>
                       </div>
                     </CardBody>

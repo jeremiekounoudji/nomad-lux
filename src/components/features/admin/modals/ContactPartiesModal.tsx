@@ -30,18 +30,18 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose} size="2xl">
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
-          <Phone className="w-5 h-5 text-primary-500" />
+          <Phone className="size-5 text-primary-500" />
           {t('contactPartiesModal.title', { id: booking?.id })}
         </ModalHeader>
         <ModalBody>
           {booking && (
             <div className="space-y-6">
               {/* Property Information */}
-              <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-start gap-4 rounded-lg bg-gray-50 p-4">
                 <img
                   src={booking.propertyImage}
                   alt={booking.propertyTitle}
-                  className="w-16 h-16 object-cover rounded-lg"
+                  className="size-16 rounded-lg object-cover"
                 />
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-900">{booking.propertyTitle}</h4>
@@ -55,13 +55,13 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
               </div>
 
               {/* Contact Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {/* Guest Contact */}
                 <Card className="border-2 border-blue-200 bg-blue-50">
                   <CardBody className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-white" />
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-blue-500">
+                        <User className="size-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-bold text-blue-900">{t('contactPartiesModal.guest.title')}</h3>
@@ -71,17 +71,17 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-medium text-blue-600 uppercase tracking-wide">{t('contactPartiesModal.guest.labels.name')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-blue-600">{t('contactPartiesModal.guest.labels.name')}</label>
                         <p className="font-semibold text-blue-900">{booking.guestName}</p>
                       </div>
                       
                       <div>
-                        <label className="text-xs font-medium text-blue-600 uppercase tracking-wide">{t('contactPartiesModal.guest.labels.phone')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-blue-600">{t('contactPartiesModal.guest.labels.phone')}</label>
                         <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-blue-600" />
+                          <Phone className="size-4 text-blue-600" />
                           <a 
                             href={`tel:${booking.guestPhone}`}
-                            className="font-semibold text-blue-900 hover:text-blue-700 transition-colors"
+                            className="font-semibold text-blue-900 transition-colors hover:text-blue-700"
                           >
                             {booking.guestPhone}
                           </a>
@@ -89,12 +89,12 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                       </div>
                       
                       <div>
-                        <label className="text-xs font-medium text-blue-600 uppercase tracking-wide">{t('contactPartiesModal.guest.labels.email')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-blue-600">{t('contactPartiesModal.guest.labels.email')}</label>
                         <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-blue-600" />
+                          <Mail className="size-4 text-blue-600" />
                           <a 
                             href={`mailto:${booking.guestEmail}`}
-                            className="font-semibold text-blue-900 hover:text-blue-700 transition-colors truncate"
+                            className="truncate font-semibold text-blue-900 transition-colors hover:text-blue-700"
                           >
                             {booking.guestEmail}
                           </a>
@@ -107,7 +107,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                         size="sm"
                         color="primary"
                         variant="flat"
-                        startContent={<Phone className="w-4 h-4" />}
+                        startContent={<Phone className="size-4" />}
                         onPress={() => window.open(`tel:${booking.guestPhone}`)}
                         className="flex-1"
                       >
@@ -117,7 +117,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                         size="sm"
                         color="primary"
                         variant="flat"
-                        startContent={<Mail className="w-4 h-4" />}
+                        startContent={<Mail className="size-4" />}
                         onPress={() => window.open(`mailto:${booking.guestEmail}`)}
                         className="flex-1"
                       >
@@ -130,9 +130,9 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                 {/* Host Contact */}
                 <Card className="border-2 border-green-200 bg-green-50">
                   <CardBody className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                        <Home className="w-5 h-5 text-white" />
+                    <div className="mb-4 flex items-center gap-3">
+                      <div className="flex size-10 items-center justify-center rounded-full bg-green-500">
+                        <Home className="size-5 text-white" />
                       </div>
                       <div>
                         <h3 className="font-bold text-green-900">{t('contactPartiesModal.host.title')}</h3>
@@ -142,17 +142,17 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t('contactPartiesModal.host.labels.name')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-green-600">{t('contactPartiesModal.host.labels.name')}</label>
                         <p className="font-semibold text-green-900">{booking.hostName}</p>
                       </div>
                       
                       <div>
-                        <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t('contactPartiesModal.host.labels.phone')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-green-600">{t('contactPartiesModal.host.labels.phone')}</label>
                         <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-green-600" />
+                          <Phone className="size-4 text-green-600" />
                           <a 
                             href={`tel:${booking.hostPhone}`}
-                            className="font-semibold text-green-900 hover:text-green-700 transition-colors"
+                            className="font-semibold text-green-900 transition-colors hover:text-green-700"
                           >
                             {booking.hostPhone}
                           </a>
@@ -160,12 +160,12 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                       </div>
                       
                       <div>
-                        <label className="text-xs font-medium text-green-600 uppercase tracking-wide">{t('contactPartiesModal.host.labels.email')}</label>
+                        <label className="text-xs font-medium uppercase tracking-wide text-green-600">{t('contactPartiesModal.host.labels.email')}</label>
                         <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-green-600" />
+                          <Mail className="size-4 text-green-600" />
                           <a 
                             href={`mailto:${booking.hostEmail}`}
-                            className="font-semibold text-green-900 hover:text-green-700 transition-colors truncate"
+                            className="truncate font-semibold text-green-900 transition-colors hover:text-green-700"
                           >
                             {booking.hostEmail}
                           </a>
@@ -178,7 +178,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                         size="sm"
                         color="success"
                         variant="flat"
-                        startContent={<Phone className="w-4 h-4" />}
+                        startContent={<Phone className="size-4" />}
                         onPress={() => window.open(`tel:${booking.hostPhone}`)}
                         className="flex-1"
                       >
@@ -188,7 +188,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
                         size="sm"
                         color="success"
                         variant="flat"
-                        startContent={<Mail className="w-4 h-4" />}
+                        startContent={<Mail className="size-4" />}
                         onPress={() => window.open(`mailto:${booking.hostEmail}`)}
                         className="flex-1"
                       >
@@ -200,9 +200,9 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
               </div>
 
               {/* Emergency Contact Notice */}
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <Shield className="w-5 h-5 text-amber-600" />
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+                <div className="mb-2 flex items-center gap-2">
+                  <Shield className="size-5 text-amber-600" />
                   <h4 className="font-semibold text-amber-900">{t('contactPartiesModal.guidelines.title')}</h4>
                 </div>
                 <div className="text-sm text-amber-800">
@@ -213,38 +213,38 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-3">{t('contactPartiesModal.quickActions.title')}</h4>
+              <div className="rounded-lg bg-gray-50 p-4">
+                <h4 className="mb-3 font-semibold text-gray-900">{t('contactPartiesModal.quickActions.title')}</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     size="sm"
                     variant="flat"
-                    startContent={<MessageSquare className="w-4 h-4" />}
-                    className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                    startContent={<MessageSquare className="size-4" />}
+                    className="border-blue-200 text-blue-600 hover:bg-blue-50"
                   >
                     {t('contactPartiesModal.quickActions.buttons.sendEmailTemplate')}
                   </Button>
                   <Button
                     size="sm"
                     variant="flat"
-                    startContent={<Phone className="w-4 h-4" />}
-                    className="text-green-600 border-green-200 hover:bg-green-50"
+                    startContent={<Phone className="size-4" />}
+                    className="border-green-200 text-green-600 hover:bg-green-50"
                   >
                     {t('contactPartiesModal.quickActions.buttons.scheduleCall')}
                   </Button>
                   <Button
                     size="sm"
                     variant="flat"
-                    startContent={<Shield className="w-4 h-4" />}
-                    className="text-purple-600 border-purple-200 hover:bg-purple-50"
+                    startContent={<Shield className="size-4" />}
+                    className="border-purple-200 text-purple-600 hover:bg-purple-50"
                   >
                     {t('contactPartiesModal.quickActions.buttons.emergencyContact')}
                   </Button>
                   <Button
                     size="sm"
                     variant="flat"
-                    startContent={<MessageSquare className="w-4 h-4" />}
-                    className="text-amber-600 border-amber-200 hover:bg-amber-50"
+                    startContent={<MessageSquare className="size-4" />}
+                    className="border-amber-200 text-amber-600 hover:bg-amber-50"
                   >
                     {t('contactPartiesModal.quickActions.buttons.documentCall')}
                   </Button>
@@ -257,7 +257,7 @@ export const ContactPartiesModal: React.FC<ContactPartiesModalProps> = ({
           <Button variant="flat" onPress={onClose}>
             {t('contactPartiesModal.buttons.close')}
           </Button>
-          <Button color="primary" startContent={<MessageSquare className="w-4 h-4" />}>
+          <Button color="primary" startContent={<MessageSquare className="size-4" />}>
             {t('contactPartiesModal.buttons.openMessageCenter')}
           </Button>
         </ModalFooter>

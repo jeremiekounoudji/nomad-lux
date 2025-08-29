@@ -3,7 +3,6 @@ import {
   Card, 
   CardBody, 
   Button, 
-  Chip, 
   Select,
   SelectItem,
   Tabs,
@@ -13,19 +12,16 @@ import {
 } from '@heroui/react'
 import { 
   TrendingUp,
-  TrendingDown,
   DollarSign,
   Users,
   Home,
   Calendar,
   Download,
   Filter,
-  Eye,
   ArrowUp,
   ArrowDown,
   MapPin,
   Star,
-  Clock,
   BarChart3,
   PieChart,
   LineChart
@@ -85,7 +81,7 @@ export const AnalyticsDashboard: React.FC = () => {
       value: formatPrice(248750, 'USD'),
       change: 12.5,
       period: t('admin.analytics.vsLastMonth', { defaultValue: 'vs last month' }),
-      icon: <DollarSign className="w-6 h-6" />,
+      icon: <DollarSign className="size-6" />,
       color: 'success'
     },
     {
@@ -93,7 +89,7 @@ export const AnalyticsDashboard: React.FC = () => {
       value: '2,847',
       change: 8.2,
       period: t('admin.analytics.vsLastMonth', { defaultValue: 'vs last month' }),
-      icon: <Users className="w-6 h-6" />,
+      icon: <Users className="size-6" />,
       color: 'primary'
     },
     {
@@ -101,7 +97,7 @@ export const AnalyticsDashboard: React.FC = () => {
       value: '456',
       change: 5.7,
       period: t('admin.analytics.vsLastMonth', { defaultValue: 'vs last month' }),
-      icon: <Home className="w-6 h-6" />,
+      icon: <Home className="size-6" />,
       color: 'warning'
     },
     {
@@ -109,7 +105,7 @@ export const AnalyticsDashboard: React.FC = () => {
       value: '1,234',
       change: -2.3,
       period: t('admin.analytics.vsLastMonth', { defaultValue: 'vs last month' }),
-      icon: <Calendar className="w-6 h-6" />,
+      icon: <Calendar className="size-6" />,
       color: 'danger'
     }
   ]
@@ -243,12 +239,12 @@ export const AnalyticsDashboard: React.FC = () => {
     return (
       <div className="flex items-end justify-between gap-2 px-4" style={{ height }}>
         {data.map((item, index) => (
-          <div key={index} className="flex flex-col items-center gap-2 flex-1">
+          <div key={index} className="flex flex-1 flex-col items-center gap-2">
             <div className="text-xs font-medium text-gray-900">
               ${typeof item.value === 'number' ? (item.value / 1000).toFixed(0) : item.value}k
             </div>
             <div 
-              className="w-full bg-primary-500 rounded-t-sm transition-all duration-300 hover:bg-primary-600"
+              className="w-full rounded-t-sm bg-primary-500 transition-all duration-300 hover:bg-primary-600"
               style={{ 
                 height: `${(item.value / maxValue) * (height - 60)}px`,
                 minHeight: '4px'
@@ -326,14 +322,14 @@ export const AnalyticsDashboard: React.FC = () => {
                 fill="#3B82F6"
                 stroke="white"
                 strokeWidth="2"
-                className="hover:r-6 transition-all cursor-pointer"
+                className="hover:r-6 cursor-pointer transition-all"
               />
             )
           })}
         </svg>
         
         {/* X-axis labels */}
-        <div className="flex justify-between text-xs text-gray-600 mt-2">
+        <div className="mt-2 flex justify-between text-xs text-gray-600">
           {data.map((item, index) => (
             <span key={index}>{item.name}</span>
           ))}
@@ -349,7 +345,7 @@ export const AnalyticsDashboard: React.FC = () => {
     return (
       <div className="flex items-center gap-6">
         <div className="relative" style={{ width: size, height: size }}>
-          <svg width={size} height={size} className="transform -rotate-90">
+          <svg width={size} height={size} className="-rotate-90">
             {data.map((item, index) => {
               const percentage = item.value / total
               const angle = percentage * 360
@@ -383,7 +379,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   fill={item.color || '#3B82F6'}
                   stroke="white"
                   strokeWidth="2"
-                  className="hover:opacity-80 transition-opacity cursor-pointer"
+                  className="cursor-pointer transition-opacity hover:opacity-80"
                 />
               )
             })}
@@ -394,7 +390,7 @@ export const AnalyticsDashboard: React.FC = () => {
           {data.map((item, index) => (
             <div key={index} className="flex items-center gap-2">
               <div 
-                className="w-3 h-3 rounded-full"
+                className="size-3 rounded-full"
                 style={{ backgroundColor: item.color || '#3B82F6' }}
               />
               <span className="text-sm text-gray-700">{item.name}</span>
@@ -410,14 +406,14 @@ export const AnalyticsDashboard: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{t('admin.analytics.title', { defaultValue: 'Analytics Dashboard' })}</h1>
-        <p className="text-gray-600 mt-1">{t('admin.analytics.subtitle', { defaultValue: 'Detailed insights and platform performance metrics' })}</p>
+        <p className="mt-1 text-gray-600">{t('admin.analytics.subtitle', { defaultValue: 'Detailed insights and platform performance metrics' })}</p>
       </div>
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">{t('admin.analytics.title', { defaultValue: 'Analytics Dashboard' })}</h1>
-          <p className="text-gray-600 mt-1">{t('admin.analytics.subtitleShort', { defaultValue: 'Platform insights and performance metrics' })}</p>
+          <p className="mt-1 text-gray-600">{t('admin.analytics.subtitleShort', { defaultValue: 'Platform insights and performance metrics' })}</p>
         </div>
         <div className="flex gap-3">
           <Select
@@ -433,13 +429,13 @@ export const AnalyticsDashboard: React.FC = () => {
           </Select>
           <Button 
             variant="flat"
-            startContent={<Download className="w-4 h-4" />}
+            startContent={<Download className="size-4" />}
           >
             {t('admin.reports.exportReport', { defaultValue: 'Export Report' })}
           </Button>
           <Button 
             variant="flat"
-            startContent={<Filter className="w-4 h-4" />}
+            startContent={<Filter className="size-4" />}
           >
             {t('admin.analytics.customRange', { defaultValue: 'Custom Range' })}
           </Button>
@@ -447,13 +443,13 @@ export const AnalyticsDashboard: React.FC = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric, index) => (
-          <Card key={index} className="shadow-sm border border-gray-200">
+          <Card key={index} className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg bg-${metric.color}-100`}>
+                  <div className={`bg- rounded-lg p-2${metric.color}-100`}>
                     <div className={`text-${metric.color}-600`}>
                       {metric.icon}
                     </div>
@@ -466,9 +462,9 @@ export const AnalyticsDashboard: React.FC = () => {
               </div>
               <div className="mt-4 flex items-center gap-2">
                 {metric.change > 0 ? (
-                  <ArrowUp className="w-4 h-4 text-green-500" />
+                  <ArrowUp className="size-4 text-green-500" />
                 ) : (
-                  <ArrowDown className="w-4 h-4 text-red-500" />
+                  <ArrowDown className="size-4 text-red-500" />
                 )}
                 <span className={`text-sm font-medium ${
                   metric.change > 0 ? 'text-green-600' : 'text-red-600'
@@ -505,44 +501,44 @@ export const AnalyticsDashboard: React.FC = () => {
 
       {/* Overview Tab */}
       {selectedTab === 'overview' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Revenue Chart */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">{t('admin.analytics.sections.revenueTrend', { defaultValue: 'Revenue Trend' })}</h3>
-                <BarChart3 className="w-5 h-5 text-gray-400" />
+                <BarChart3 className="size-5 text-gray-400" />
               </div>
               <SimpleBarChart data={revenueData} height={250} />
             </CardBody>
           </Card>
 
           {/* Booking Status */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">{t('admin.analytics.sections.bookingStatus', { defaultValue: 'Booking Status' })}</h3>
-                <PieChart className="w-5 h-5 text-gray-400" />
+                <PieChart className="size-5 text-gray-400" />
               </div>
               <SimplePieChart data={bookingStatusData} />
             </CardBody>
           </Card>
 
           {/* User Growth */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">{t('admin.analytics.sections.userGrowth', { defaultValue: 'User Growth' })}</h3>
-                <LineChart className="w-5 h-5 text-gray-400" />
+                <LineChart className="size-5 text-gray-400" />
               </div>
               <SimpleLineChart data={userGrowthData} height={250} />
             </CardBody>
           </Card>
 
           {/* Quick Stats */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.sections.platformHealth', { defaultValue: 'Platform Health' })}</h3>
+              <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.sections.platformHealth', { defaultValue: 'Platform Health' })}</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">{t('admin.analytics.stats.avgResponseTime', { defaultValue: 'Average Response Time' })}</span>
@@ -576,27 +572,27 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Revenue Tab */}
       {selectedTab === 'revenue' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <Card className="lg:col-span-2 shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <Card className="border border-gray-200 shadow-sm lg:col-span-2">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.revenue.monthlyRevenue', { defaultValue: 'Monthly Revenue' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.revenue.monthlyRevenue', { defaultValue: 'Monthly Revenue' })}</h3>
                 <SimpleBarChart data={revenueData} height={300} />
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.revenue.breakdown', { defaultValue: 'Revenue Breakdown' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.revenue.breakdown', { defaultValue: 'Revenue Breakdown' })}</h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-green-50 p-3">
                     <span className="text-sm font-medium text-green-800">{t('admin.analytics.revenue.commission', { defaultValue: 'Commission' })}</span>
                     <span className="text-lg font-bold text-green-600">{formatPrice(198250, 'USD')}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3">
                     <span className="text-sm font-medium text-blue-800">{t('admin.analytics.revenue.serviceFees', { defaultValue: 'Service Fees' })}</span>
                     <span className="text-lg font-bold text-blue-600">{formatPrice(42150, 'USD')}</span>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                  <div className="flex items-center justify-between rounded-lg bg-purple-50 p-3">
                     <span className="text-sm font-medium text-purple-800">{t('admin.analytics.revenue.premiumFeatures', { defaultValue: 'Premium Features' })}</span>
                     <span className="text-lg font-bold text-purple-600">{formatPrice(8350, 'USD')}</span>
                   </div>
@@ -606,27 +602,27 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
 
           {/* Top Performing Properties */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.topPerformingProperties', { defaultValue: 'Top Performing Properties' })}</h3>
+              <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.topPerformingProperties', { defaultValue: 'Top Performing Properties' })}</h3>
               <div className="space-y-4">
                 {topProperties.map((property, index) => (
-                  <div key={property.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div key={property.id} className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
                     <div className="text-2xl font-bold text-gray-400">#{index + 1}</div>
                     <img
                       src={property.image}
                       alt={property.title}
-                      className="w-16 h-16 object-cover rounded-lg"
+                      className="size-16 rounded-lg object-cover"
                     />
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                      <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
                         <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
+                          <MapPin className="size-3" />
                           {property.location}
                         </span>
                         <span className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <Star className="size-3 fill-yellow-400 text-yellow-400" />
                           {property.rating}
                         </span>
                         <span>{t('admin.analytics.labels.bookings', { count: property.bookings, defaultValue: '{{count}} bookings' })}</span>
@@ -647,17 +643,17 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Users Tab */}
       {selectedTab === 'users' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.sections.userGrowth', { defaultValue: 'User Growth' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.sections.userGrowth', { defaultValue: 'User Growth' })}</h3>
                 <SimpleLineChart data={userGrowthData} height={300} />
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.users.statistics', { defaultValue: 'User Statistics' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.users.statistics', { defaultValue: 'User Statistics' })}</h3>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">{t('admin.analytics.users.totalRegistered', { defaultValue: 'Total Registered Users' })}</span>
@@ -681,20 +677,20 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
 
           {/* Top Hosts */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.topPerformingHosts', { defaultValue: 'Top Performing Hosts' })}</h3>
+              <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.topPerformingHosts', { defaultValue: 'Top Performing Hosts' })}</h3>
               <div className="space-y-4">
                 {topHosts.map((host, index) => (
-                  <div key={host.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                  <div key={host.id} className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
                     <div className="text-2xl font-bold text-gray-400">#{index + 1}</div>
                     <Avatar src={host.avatar} name={host.name} size="lg" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">{host.name}</h4>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                      <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
                         <span>{t('admin.analytics.labels.properties', { count: host.properties, defaultValue: '{{count}} properties' })}</span>
                         <span className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                          <Star className="size-3 fill-yellow-400 text-yellow-400" />
                           {host.rating}
                         </span>
                         <span>{t('admin.analytics.labels.responseRate', { value: host.responseRate, defaultValue: '{{value}}% response rate' })}</span>
@@ -715,51 +711,51 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Properties Tab */}
       {selectedTab === 'properties' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6 text-center">
                 <div className="text-3xl font-bold text-blue-600">456</div>
-                <div className="text-sm text-gray-600 mt-1">{t('admin.dashboard.totalProperties', { defaultValue: 'Total Properties' })}</div>
-                <div className="flex items-center justify-center gap-1 mt-2">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                <div className="mt-1 text-sm text-gray-600">{t('admin.dashboard.totalProperties', { defaultValue: 'Total Properties' })}</div>
+                <div className="mt-2 flex items-center justify-center gap-1">
+                  <TrendingUp className="size-4 text-green-500" />
                   <span className="text-sm text-green-600">+5.7% this month</span>
                 </div>
               </CardBody>
             </Card>
 
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6 text-center">
                 <div className="text-3xl font-bold text-green-600">398</div>
-                <div className="text-sm text-gray-600 mt-1">{t('admin.dashboard.activeProperties', { defaultValue: 'Active Properties' })}</div>
-                <div className="text-sm text-gray-500 mt-2">87% of total</div>
+                <div className="mt-1 text-sm text-gray-600">{t('admin.dashboard.activeProperties', { defaultValue: 'Active Properties' })}</div>
+                <div className="mt-2 text-sm text-gray-500">87% of total</div>
               </CardBody>
             </Card>
 
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6 text-center">
                 <div className="text-3xl font-bold text-yellow-600">23</div>
-                <div className="text-sm text-gray-600 mt-1">{t('admin.properties.pendingApproval', { defaultValue: 'Pending Approval' })}</div>
-                <div className="text-sm text-gray-500 mt-2">{t('admin.analytics.labels.avgDays', { value: '2.3', defaultValue: 'Avg. {{value}} days' })}</div>
+                <div className="mt-1 text-sm text-gray-600">{t('admin.properties.pendingApproval', { defaultValue: 'Pending Approval' })}</div>
+                <div className="mt-2 text-sm text-gray-500">{t('admin.analytics.labels.avgDays', { value: '2.3', defaultValue: 'Avg. {{value}} days' })}</div>
               </CardBody>
             </Card>
           </div>
 
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.properties.performance', { defaultValue: 'Property Performance' })}</h3>
+              <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.properties.performance', { defaultValue: 'Property Performance' })}</h3>
               <div className="space-y-4">
                 {topProperties.map((property, index) => (
-                  <div key={property.id} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
+                  <div key={property.id} className="flex items-center gap-4 rounded-lg border border-gray-200 p-4">
                     <img
                       src={property.image}
                       alt={property.title}
-                      className="w-20 h-20 object-cover rounded-lg"
+                      className="size-20 rounded-lg object-cover"
                     />
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                      <div className="text-sm text-gray-600 mt-1">
-                        <div className="flex items-center gap-1 mb-1">
-                          <MapPin className="w-3 h-3" />
+                      <div className="mt-1 text-sm text-gray-600">
+                        <div className="mb-1 flex items-center gap-1">
+                          <MapPin className="size-3" />
                           {property.location}
                         </div>
                         <div>{t('admin.analytics.labels.host', { defaultValue: 'Host' })}: {property.host}</div>
@@ -790,20 +786,20 @@ export const AnalyticsDashboard: React.FC = () => {
       {/* Bookings Tab */}
       {selectedTab === 'bookings' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="shadow-sm border border-gray-200">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.bookings.statusDistribution', { defaultValue: 'Booking Status Distribution' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.bookings.statusDistribution', { defaultValue: 'Booking Status Distribution' })}</h3>
                 <SimplePieChart data={bookingStatusData} size={200} />
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('admin.analytics.bookings.metrics', { defaultValue: 'Booking Metrics' })}</h3>
+                <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.bookings.metrics', { defaultValue: 'Booking Metrics' })}</h3>
                 <div className="space-y-6">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm text-gray-600">{t('admin.analytics.bookings.avgValue', { defaultValue: 'Average Booking Value' })}</span>
                       <span className="text-lg font-bold text-gray-900">{formatPrice(485, 'USD')}</span>
                     </div>
@@ -811,7 +807,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   </div>
                   
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm text-gray-600">{t('admin.analytics.bookings.successRate', { defaultValue: 'Booking Success Rate' })}</span>
                       <span className="text-lg font-bold text-green-600">89%</span>
                     </div>
@@ -819,7 +815,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   </div>
                   
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm text-gray-600">{t('admin.analytics.bookings.avgStay', { defaultValue: 'Average Stay Duration' })}</span>
                       <span className="text-lg font-bold text-purple-600">3.2 nights</span>
                     </div>
@@ -827,7 +823,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   </div>
                   
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm text-gray-600">{t('admin.analytics.bookings.repeatRate', { defaultValue: 'Repeat Booking Rate' })}</span>
                       <span className="text-lg font-bold text-orange-600">32%</span>
                     </div>

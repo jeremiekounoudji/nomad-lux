@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
 import { Icon, LatLngBounds } from 'leaflet';
-import { MapPin, Star, Users, Navigation, Phone, MessageCircle, Heart } from 'lucide-react';
+import { MapPin, Star, Users, Navigation, MessageCircle } from 'lucide-react';
 import { Button } from '@heroui/react';
 import type { Property } from '../../interfaces/Property';
 import type { PropertyMapProps, MapCoordinates } from '../../interfaces/Map';
@@ -192,11 +192,11 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   if (coordinatesError || mapState.error) {
     const errorMessage = coordinatesError || getPropertyMapErrorMessage(PropertyMapError.MAP_LOAD_FAILED);
     return (
-      <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${className}`} style={{ height }}>
-        <div className="text-center p-6">
-          <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('messages.mapUnavailable')}</h3>
-          <p className="text-gray-500 mb-4">{errorMessage}</p>
+      <div className={`flex items-center justify-center rounded-lg bg-gray-100 ${className}`} style={{ height }}>
+        <div className="p-6 text-center">
+          <MapPin className="mx-auto mb-4 size-12 text-gray-400" />
+          <h3 className="mb-2 text-lg font-semibold text-gray-700">{t('messages.mapUnavailable')}</h3>
+          <p className="mb-4 text-gray-500">{errorMessage}</p>
           {!coordinatesError && (
             <Button size="sm" variant="light" onClick={() => window.location.reload()}>
               {t('common.retry')}
@@ -214,10 +214,10 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
 
   if (!propertyCoords) {
     return (
-      <div className={`bg-gray-100 rounded-lg flex items-center justify-center ${className}`} style={{ height }}>
-        <div className="text-center p-6">
-          <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('messages.locationNotAvailable')}</h3>
+      <div className={`flex items-center justify-center rounded-lg bg-gray-100 ${className}`} style={{ height }}>
+        <div className="p-6 text-center">
+          <MapPin className="mx-auto mb-4 size-12 text-gray-400" />
+          <h3 className="mb-2 text-lg font-semibold text-gray-700">{t('messages.locationNotAvailable')}</h3>
           <p className="text-gray-500">{t('messages.propertyCoordinatesNotAvailable')}</p>
         </div>
       </div>
@@ -225,12 +225,12 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   }
 
   return (
-    <div className={`relative rounded-lg overflow-hidden ${className}`} style={{ height: height || getResponsiveHeight() }}>
+    <div className={`relative overflow-hidden rounded-lg ${className}`} style={{ height: height || getResponsiveHeight() }}>
       <MapContainer
         ref={mapRef}
         center={[propertyCoords.lat, propertyCoords.lng]}
         zoom={15}
-        className="w-full h-full"
+        className="size-full"
         zoomControl={!responsiveMapState.isMobile}
         scrollWheelZoom={!responsiveMapState.isMobile}
         {...mapProps}
@@ -246,30 +246,30 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
           icon={createPropertyIcon(property, true)}
         >
           <Popup className="custom-popup" minWidth={280}>
-            <div className="p-2 max-w-xs">
+            <div className="max-w-xs p-2">
               {/* Property Image */}
               <div className="mb-3">
                 <img
                   src={property.images[0]}
                   alt={property.title}
-                  className="w-full h-32 object-cover rounded-lg"
+                  className="h-32 w-full rounded-lg object-cover"
                 />
               </div>
               
               {/* Property Info */}
               <div className="mb-3">
-                <h3 className="font-bold text-lg mb-1 line-clamp-2">{property.title}</h3>
-                <div className="flex items-center gap-1 mb-2">
-                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                <h3 className="mb-1 line-clamp-2 text-lg font-bold">{property.title}</h3>
+                <div className="mb-2 flex items-center gap-1">
+                  <Star className="size-4 fill-current text-yellow-500" />
                   <span className="text-sm font-medium">{property.rating}</span>
                   <span className="text-sm text-gray-500">({property.review_count})</span>
                 </div>
-                <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
-                  <MapPin className="w-4 h-4" />
+                <div className="mb-2 flex items-center gap-1 text-sm text-gray-600">
+                  <MapPin className="size-4" />
                   <span>{property.location.city}, {property.location.country}</span>
                 </div>
-                <div className="flex items-center gap-1 text-sm text-gray-600 mb-3">
-                  <Users className="w-4 h-4" />
+                <div className="mb-3 flex items-center gap-1 text-sm text-gray-600">
+                  <Users className="size-4" />
                   <span>{property.max_guests} guests • {property.bedrooms} bedrooms</span>
                 </div>
                 <div className="text-xl font-bold text-primary-600">
@@ -283,7 +283,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                   <Button
                     size="sm"
                     variant="light"
-                    startContent={<Navigation className="w-4 h-4" />}
+                    startContent={<Navigation className="size-4" />}
                     onClick={handleDirections}
                     className="flex-1"
                   >
@@ -293,7 +293,7 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
                 <Button
                   size="sm"
                   variant="light"
-                  startContent={<MessageCircle className="w-4 h-4" />}
+                  startContent={<MessageCircle className="size-4" />}
                   onClick={handleContactHost}
                   className="flex-1"
                 >
@@ -335,9 +335,9 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
             })}
           >
             <Popup>
-              <div className="text-center p-2">
+              <div className="p-2 text-center">
                 <h4 className="font-semibold">{amenity.name}</h4>
-                <p className="text-sm text-gray-600 capitalize">{amenity.type}</p>
+                <p className="text-sm capitalize text-gray-600">{amenity.type}</p>
                 <p className="text-xs text-gray-500">{amenity.distance} away</p>
               </div>
             </Popup>
@@ -347,9 +347,9 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
 
       {/* Loading Overlay */}
       {(mapState.isLoading || isLoadingAmenities) && (
-        <div className="absolute inset-0 bg-white/80 flex items-center justify-center z-[1000]">
+        <div className="absolute inset-0 z-[1000] flex items-center justify-center bg-white/80">
           <div className="text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+            <div className="mx-auto mb-2 size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
             <p className="text-sm text-gray-600">
               {mapState.isLoading ? t('messages.loadingMap') : t('messages.findingNearbyAmenities')}
             </p>
@@ -358,24 +358,24 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
       )}
 
       {/* Map Controls */}
-      <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-2">
+      <div className="absolute right-4 top-4 z-[1000] flex flex-col gap-2">
         {showDirections && (
           <Button
             isIconOnly
             size="sm"
             color="primary"
             variant="solid"
-            className="shadow-lg text-white"
+            className="text-white shadow-lg"
             onClick={handleDirections}
           >
-            <Navigation className="w-4 h-4" />
+            <Navigation className="size-4" />
           </Button>
         )}
       </div>
 
       {/* Info Panel */}
-      <div className="absolute bottom-4 left-4 right-4 z-[1000]">
-        <div className="bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+      <div className="absolute inset-x-4 bottom-4 z-[1000]">
+        <div className="rounded-lg bg-white/95 p-3 shadow-lg backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-900">{property.location.city}</h4>

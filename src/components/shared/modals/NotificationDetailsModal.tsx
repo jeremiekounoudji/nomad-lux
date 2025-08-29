@@ -24,17 +24,17 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'booking':
-        return <Calendar className="w-5 h-5 text-primary-500" />
+        return <Calendar className="size-5 text-primary-500" />
       case 'message':
-        return <MessageCircle className="w-5 h-5 text-secondary-500" />
+        return <MessageCircle className="size-5 text-secondary-500" />
       case 'property':
-        return <Home className="w-5 h-5 text-success-500" />
+        return <Home className="size-5 text-success-500" />
       case 'payment':
-        return <CreditCard className="w-5 h-5 text-warning-500" />
+        return <CreditCard className="size-5 text-warning-500" />
       case 'alert':
-        return <AlertTriangle className="w-5 h-5 text-danger-500" />
+        return <AlertTriangle className="size-5 text-danger-500" />
       default:
-        return <Bell className="w-5 h-5 text-gray-500" />
+        return <Bell className="size-5 text-gray-500" />
     }
   }
 
@@ -77,7 +77,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                 {getNotificationIcon(notification.type)}
                 <div className="flex-1">
                   <h2 className="text-xl font-bold">{notification.title}</h2>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="mt-1 flex items-center gap-2">
                     <Chip 
                       size="sm" 
                       color={getTypeColor(notification.type) as any}
@@ -106,20 +106,20 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
 
                 {/* Notification Content */}
                 <div className="space-y-4">
-                  <p className="text-gray-700 whitespace-pre-line">
+                  <p className="whitespace-pre-line text-gray-700">
                     {notification.message}
                   </p>
 
                   {/* Additional Details */}
                   {notification.propertyName && (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">{t('notifications.details.relatedProperty')}</h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold">{t('notifications.details.relatedProperty')}</h4>
                       <div className="flex items-center gap-3">
                         {notification.propertyImage && (
                           <img
                             src={notification.propertyImage}
                             alt={notification.propertyName}
-                            className="w-12 h-12 object-cover rounded-lg"
+                            className="size-12 rounded-lg object-cover"
                           />
                         )}
                         <div>
@@ -134,8 +134,8 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
 
                   {/* Guest/Host Information */}
                   {notification.guestName && (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">{t('notifications.details.guestInformation')}</h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold">{t('notifications.details.guestInformation')}</h4>
                       <div className="flex items-center gap-3">
                         <Avatar src={notification.guestAvatar} size="md" />
                         <div>
@@ -148,8 +148,8 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
 
                   {/* Booking Details */}
                   {notification.bookingDetails && (
-                    <div className="p-4 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold mb-2">{t('notifications.details.bookingDetails')}</h4>
+                    <div className="rounded-lg bg-gray-50 p-4">
+                      <h4 className="mb-2 font-semibold">{t('notifications.details.bookingDetails')}</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         {notification.bookingDetails.checkIn && (
                           <div>
@@ -185,8 +185,8 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
 
                   {/* Payment Information */}
                   {notification.paymentAmount && (
-                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                      <h4 className="font-semibold text-green-800 mb-2">{t('notifications.details.paymentInformation')}</h4>
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                      <h4 className="mb-2 font-semibold text-green-800">{t('notifications.details.paymentInformation')}</h4>
                       <div className="text-sm text-green-700">
                         <p>{t('notifications.details.amount', { amount: notification.paymentAmount })}</p>
                         {notification.paymentMethod && (
@@ -201,12 +201,12 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
 
                   {/* Action Items */}
                   {notification.actionRequired && (
-                    <div className="p-4 bg-warning-50 border border-warning-200 rounded-lg">
+                    <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
                       <div className="flex items-start gap-2">
-                        <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5" />
+                        <AlertTriangle className="mt-0.5 size-5 text-warning-600" />
                         <div>
                           <h4 className="font-semibold text-warning-800">{t('notifications.details.actionRequired')}</h4>
-                          <p className="text-sm text-warning-700 mt-1">
+                          <p className="mt-1 text-sm text-warning-700">
                             {notification.actionDescription || t('notifications.details.defaultActionDescription')}
                           </p>
                         </div>

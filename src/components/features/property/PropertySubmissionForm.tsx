@@ -64,7 +64,7 @@ const CustomStepper: React.FC<{
     <div className="mb-6 sm:mb-8">
       {/* Mobile: Vertical stepper for small screens */}
       <div className="block sm:hidden">
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">
             {t('property.submission.progress.mobileTitle', { current: currentStep + 1, total: steps.length })}
           </h3>
@@ -73,15 +73,15 @@ const CustomStepper: React.FC<{
           </div>
         </div>
         
-        <div className="bg-gray-200 rounded-full h-2 mb-4">
+        <div className="mb-4 h-2 rounded-full bg-gray-200">
           <div 
-            className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+            className="h-2 rounded-full bg-primary-600 transition-all duration-300"
             style={{ width: `${progressValue}%` }}
           />
         </div>
 
-        <div className="bg-primary-50 rounded-lg p-4 border-l-4 border-primary-500">
-          <h4 className="font-semibold text-primary-900 mb-1">
+        <div className="rounded-lg border-l-4 border-primary-500 bg-primary-50 p-4">
+          <h4 className="mb-1 font-semibold text-primary-900">
             {steps[currentStep].title}
           </h4>
           <p className="text-sm text-primary-700">
@@ -92,38 +92,38 @@ const CustomStepper: React.FC<{
 
       {/* Desktop: Horizontal stepper for larger screens */}
       <div className="hidden sm:block">
-        <div className="flex justify-between items-center mb-6">
+        <div className="mb-6 flex items-center justify-between">
           {steps.map((step, index) => (
             <div
               key={index}
-              className={`flex flex-col items-center flex-1 ${
+              className={`flex flex-1 flex-col items-center ${
                 index < steps.length - 1 ? 'relative' : ''
               }`}
             >
               <div
-                className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center text-sm lg:text-base font-medium mb-3 transition-all duration-300 ${
+                className={`mb-3 flex size-10 items-center justify-center rounded-full text-sm font-medium transition-all duration-300 lg:size-12 lg:text-base ${
                   index <= currentStep
-                    ? 'bg-primary-600 text-white shadow-lg scale-110'
+                    ? 'scale-110 bg-primary-600 text-white shadow-lg'
                     : 'bg-gray-200 text-gray-500'
                 } ${index === currentStep ? 'ring-4 ring-primary-200' : ''}`}
               >
                 {index + 1}
               </div>
-              <div className="text-center max-w-[120px]">
+              <div className="max-w-[120px] text-center">
                 <div
-                  className={`text-sm lg:text-base font-medium mb-1 ${
+                  className={`mb-1 text-sm font-medium lg:text-base ${
                     index <= currentStep ? 'text-primary-600' : 'text-gray-500'
                   }`}
                 >
                   {step.title}
                 </div>
-                <div className="text-xs lg:text-sm text-gray-400 leading-tight">
+                <div className="text-xs leading-tight text-gray-400 lg:text-sm">
                   {step.description}
                 </div>
               </div>
               {index < steps.length - 1 && (
                 <div
-                  className={`absolute top-5 lg:top-6 left-1/2 w-full h-0.5 -z-10 transition-all duration-300 ${
+                  className={`absolute left-1/2 top-5 -z-10 h-0.5 w-full transition-all duration-300 lg:top-6 ${
                     index < currentStep ? 'bg-primary-600' : 'bg-gray-200'
                   }`}
                   style={{ transform: 'translateX(50%)' }}
@@ -412,22 +412,22 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
         <CustomStepper currentStep={currentStep} steps={steps} />
 
         {/* Form content with responsive min-height */}
-        <div className="mb-6 sm:mb-8 min-h-[300px] sm:min-h-[400px] lg:min-h-[500px]">
-          <div className="bg-gray-50 sm:bg-transparent rounded-lg sm:rounded-none p-4 sm:p-0">
+        <div className="mb-6 min-h-[300px] sm:mb-8 sm:min-h-[400px] lg:min-h-[500px]">
+          <div className="rounded-lg bg-gray-50 p-4 sm:rounded-none sm:bg-transparent sm:p-0">
             {steps[currentStep].component}
           </div>
         </div>
 
         {/* Navigation buttons - Responsive layout */}
-        <div className="border-t border-gray-200 pt-4 sm:pt-6 bg-white sticky bottom-0 sm:relative z-10">
+        <div className="sticky bottom-0 z-10 border-t border-gray-200 bg-white pt-4 sm:relative sm:pt-6">
           {/* Mobile: Stack buttons vertically */}
-          <div className="flex flex-col sm:hidden gap-3">
+          <div className="flex flex-col gap-3 sm:hidden">
             {currentStep === steps.length - 1 ? (
               <Button 
                 color="primary" 
                 onClick={handleSubmit} 
                 size="lg"
-                className="w-full bg-primary-600 hover:bg-primary-700 font-semibold"
+                className="w-full bg-primary-600 font-semibold hover:bg-primary-700"
                 isLoading={isEditMode ? externalLoading : isLoading}
                 disabled={isEditMode ? externalLoading : isLoading}
               >
@@ -438,7 +438,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
                 color="primary" 
                 onClick={handleNext} 
                 size="lg"
-                className="w-full bg-primary-600 hover:bg-primary-700 font-semibold"
+                className="w-full bg-primary-600 font-semibold hover:bg-primary-700"
                 disabled={isEditMode ? externalLoading : isLoading}
               >
                 {t('property.submission.buttons.continue')}
@@ -458,7 +458,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
           </div>
 
           {/* Desktop: Horizontal layout */}
-          <div className="hidden sm:flex justify-between items-center">
+          <div className="hidden items-center justify-between sm:flex">
             <Button
               variant="bordered"
               onClick={handlePrevious}
@@ -474,7 +474,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
                 color="primary" 
                 onClick={handleSubmit} 
                 size="lg"
-                className="min-w-[160px] bg-primary-600 hover:bg-primary-700 font-semibold shadow-lg hover:shadow-xl transition-all"
+                className="min-w-[160px] bg-primary-600 font-semibold shadow-lg transition-all hover:bg-primary-700 hover:shadow-xl"
                 isLoading={isEditMode ? externalLoading : isLoading}
                 disabled={isEditMode ? externalLoading : isLoading}
               >
@@ -485,7 +485,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
                 color="primary" 
                 onClick={handleNext} 
                 size="lg"
-                className="min-w-[120px] bg-primary-600 hover:bg-primary-700 font-semibold shadow-lg hover:shadow-xl transition-all"
+                className="min-w-[120px] bg-primary-600 font-semibold shadow-lg transition-all hover:bg-primary-700 hover:shadow-xl"
                 disabled={isEditMode ? externalLoading : isLoading}
               >
                 {t('property.submission.buttons.nextStep')}
@@ -494,11 +494,11 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
           </div>
 
           {/* Step indicator for mobile */}
-          <div className="flex sm:hidden justify-center mt-4 space-x-2">
+          <div className="mt-4 flex justify-center space-x-2 sm:hidden">
             {steps.map((_, index) => (
               <div
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`size-2 rounded-full transition-all duration-300 ${
                   index <= currentStep ? 'bg-primary-600' : 'bg-gray-300'
                 }`}
               />

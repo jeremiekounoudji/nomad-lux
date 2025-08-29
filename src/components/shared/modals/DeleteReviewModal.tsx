@@ -55,24 +55,24 @@ const DeleteReviewModal: React.FC<DeleteReviewModalProps> = ({
 
         <ModalBody>
           <div className="flex items-start gap-4">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+            <div className="shrink-0">
+              <div className="flex size-10 items-center justify-center rounded-full bg-red-100">
+                <AlertTriangle className="size-5 text-red-600" />
               </div>
             </div>
             
             <div className="flex-1">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="mb-2 text-lg font-medium text-gray-900">
                 {t('review.modals.deleteTitle')}
               </h3>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="mb-4 text-sm text-gray-600">
                 {t('review.modals.deleteMessage')} This action cannot be undone.
               </p>
               
               {/* Review Preview */}
               {currentReview && (
-                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                  <div className="flex items-center gap-2 mb-2">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <div className="mb-2 flex items-center gap-2">
                     <StarRating
                       rating={currentReview.rating}
                       size="sm"
@@ -83,10 +83,10 @@ const DeleteReviewModal: React.FC<DeleteReviewModalProps> = ({
                       {currentReview.rating}/5 stars
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 line-clamp-3">
+                  <p className="line-clamp-3 text-sm text-gray-700">
                     "{currentReview.review_text}"
                   </p>
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="mt-2 text-xs text-gray-500">
                     {new Date(currentReview.created_at).toLocaleDateString()}
                   </p>
                 </div>
@@ -110,7 +110,7 @@ const DeleteReviewModal: React.FC<DeleteReviewModalProps> = ({
             onPress={handleDelete}
             className="flex-1"
             isLoading={loading}
-            startContent={!loading && <Trash2 className="w-4 h-4" />}
+            startContent={!loading && <Trash2 className="size-4" />}
           >
             {loading ? t('common.buttons.deleting') : t('common.buttons.delete')}
           </Button>

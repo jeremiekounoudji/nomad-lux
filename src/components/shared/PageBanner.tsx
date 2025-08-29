@@ -60,7 +60,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
         <img
           src={backgroundImage}
           alt={imageAlt || t('common.pageBanner.alt')}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+          className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
           onLoad={handleImageLoad}
@@ -71,35 +71,35 @@ const PageBanner: React.FC<PageBannerProps> = ({
 
       {/* Fallback Background (when image fails to load) */}
       {imageError && (
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-gray-600 to-gray-700" />
+        <div className="absolute inset-0 size-full bg-gradient-to-r from-gray-600 to-gray-700" />
       )}
 
       {/* Loading Skeleton */}
       {!imageLoaded && !imageError && (
-        <div className="absolute inset-0 w-full h-full bg-gray-300 animate-pulse" />
+        <div className="absolute inset-0 size-full animate-pulse bg-gray-300" />
       )}
 
       {/* Black Transparent Overlay */}
       <div className={`absolute inset-0 ${overlayClasses[overlayOpacity]}`} />
 
       {/* Content Layer */}
-      <div className="relative z-10 h-full flex items-center justify-center text-center p-4 sm:p-6 lg:p-8 text-white">
-        <div className="max-w-4xl w-full">
+      <div className="relative z-10 flex h-full items-center justify-center p-4 text-center text-white sm:p-6 lg:p-8">
+        <div className="w-full max-w-4xl">
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 leading-tight">
+          <h1 className="mb-2 text-2xl font-bold leading-tight sm:mb-3 sm:text-3xl lg:text-4xl">
             {title}
           </h1>
 
           {/* Subtitle */}
           {subtitle && (
-            <div className="text-white/90 text-sm sm:text-base lg:text-lg leading-relaxed mb-4 max-w-2xl mx-auto">
+            <div className="mx-auto mb-4 max-w-2xl text-sm leading-relaxed text-white/90 sm:text-base lg:text-lg">
               {subtitle}
             </div>
           )}
 
           {/* Additional Content */}
           {children && (
-            <div className="mt-4 sm:mt-6 flex justify-center">
+            <div className="mt-4 flex justify-center sm:mt-6">
               {children}
             </div>
           )}

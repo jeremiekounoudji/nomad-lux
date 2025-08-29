@@ -193,15 +193,15 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+    <div className="space-y-6 rounded-xl border border-gray-200 bg-white p-6">
       {/* Location */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Input
           label={t('search.filters.city', { defaultValue: 'City' })}
           placeholder={t('search.filters.cityPlaceholder', { defaultValue: 'Enter city, neighborhood, or address' })}
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          startContent={<MapPin className="w-4 h-4 text-gray-400" />}
+          startContent={<MapPin className="size-4 text-gray-400" />}
           className="w-full"
         />
         <Input
@@ -209,7 +209,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
           placeholder={t('search.filters.countryPlaceholder', { defaultValue: 'Enter country' })}
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          startContent={<MapPin className="w-4 h-4 text-gray-400" />}
+          startContent={<MapPin className="size-4 text-gray-400" />}
           className="w-full"
         />
       </div>
@@ -218,8 +218,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Price Range */}
       <div className="space-y-4">
-        <h3 className="font-semibold flex items-center gap-2">
-          <DollarSign className="w-5 h-5" />
+        <h3 className="flex items-center gap-2 font-semibold">
+          <DollarSign className="size-5" />
           {t('search.filters.priceRange', { defaultValue: 'Price Range (per night)' })}
         </h3>
         <Slider
@@ -248,8 +248,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Property Type */}
       <div>
-        <h3 className="font-semibold flex items-center gap-2 mb-3">
-          <Home className="w-5 h-5" />
+        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+          <Home className="size-5" />
           {t('search.filters.propertyType', { defaultValue: 'Property Type' })}
         </h3>
         <CheckboxGroup
@@ -280,11 +280,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Rooms & Guests */}
       <div>
-        <h3 className="font-semibold flex items-center gap-2 mb-3">
-          <Users className="w-5 h-5" />
+        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+          <Users className="size-5" />
           {t('search.filters.roomsAndGuests', { defaultValue: 'Rooms & Guests' })}
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Input
             type="number"
             label={t('search.filters.guests', { defaultValue: 'Guests' })}
@@ -299,7 +299,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             variant="bordered"
             size="md"
             className="w-full"
-            startContent={<Users className="w-4 h-4 text-gray-400" />}
+            startContent={<Users className="size-4 text-gray-400" />}
           />
 
           <Input
@@ -316,7 +316,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             variant="bordered"
             size="md"
             className="w-full"
-            startContent={<Home className="w-4 h-4 text-gray-400" />}
+            startContent={<Home className="size-4 text-gray-400" />}
           />
 
           <Input
@@ -333,7 +333,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             variant="bordered"
             size="md"
             className="w-full"
-            startContent={<Home className="w-4 h-4 text-gray-400" />}
+            startContent={<Home className="size-4 text-gray-400" />}
           />
         </div>
       </div>
@@ -342,8 +342,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Amenities */}
       <div>
-        <h3 className="font-semibold flex items-center gap-2 mb-3">
-          <Settings className="w-5 h-5" />
+        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+          <Settings className="size-5" />
           {t('search.filters.amenities', { defaultValue: 'Amenities' })}
         </h3>
         <CheckboxGroup
@@ -374,8 +374,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Rating Filter */}
       <div className="flex flex-col items-start">
-        <h3 className="font-semibold flex items-center gap-2 mb-3">
-          <Star className="w-5 h-5" />
+        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+          <Star className="size-5" />
           {t('search.filters.minimumRating', { defaultValue: 'Minimum Rating' })}
         </h3>
         <Select
@@ -392,7 +392,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
           }}
           variant="bordered"
           size="md"
-          className="max-w-xs w-full sm:w-64"
+          className="w-full max-w-xs sm:w-64"
           classNames={{
             trigger: "bg-white",
             base: "min-w-[200px]"
@@ -406,7 +406,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
               <span>3+</span>
               <div className="flex">
                 {[1, 2, 3].map((star) => (
-                  <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={star} className="size-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
             </div>
@@ -416,7 +416,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
               <span>4+</span>
               <div className="flex">
                 {[1, 2, 3, 4].map((star) => (
-                  <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={star} className="size-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
             </div>
@@ -426,9 +426,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
               <span>4.5+</span>
               <div className="flex">
                 {[1, 2, 3, 4].map((star) => (
-                  <Star key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <Star key={star} className="size-4 fill-yellow-400 text-yellow-400" />
                 ))}
-                <Star className="w-4 h-4 fill-yellow-400/50 text-yellow-400" />
+                <Star className="size-4 fill-yellow-400/50 text-yellow-400" />
               </div>
             </div>
           </SelectItem>
@@ -439,8 +439,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
 
       {/* Sort Options */}
       <div className="flex flex-col items-start">
-        <h3 className="font-semibold flex items-center gap-2 mb-3">
-          <Filter className="w-5 h-5" />
+        <h3 className="mb-3 flex items-center gap-2 font-semibold">
+          <Filter className="size-5" />
           {t('search.filters.sortBy', { defaultValue: 'Sort by' })}
         </h3>
         <Select
@@ -453,7 +453,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
           }}
           variant="bordered"
           size="md"
-          className="max-w-xs w-full sm:w-64"
+          className="w-full max-w-xs sm:w-64"
           classNames={{
             trigger: "bg-white",
             base: "min-w-[200px]"
@@ -504,7 +504,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
             variant="solid"
             onPress={handleApply}
             isLoading={isApplying}
-            className="bg-primary-500 hover:bg-primary-600 text-white"
+            className="bg-primary-500 text-white hover:bg-primary-600"
           >
             {t('search.filters.applyFilters', { defaultValue: 'Apply Filters' })}
           </Button>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Button, useDisclosure, Tabs, Tab } from '@heroui/react'
+import { useDisclosure, Tabs, Tab } from '@heroui/react'
 import { ClipboardList } from 'lucide-react'
 
 import { PageBanner, BookingRequestCard, BookingRequestDetailsModal, DeclineBookingModal, ConfirmApprovalModal } from '../components/shared'
@@ -280,7 +280,7 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
 
         {/* Tabs */}
         <div className="w-full overflow-hidden">
-          <div className="overflow-x-auto scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="scrollbar-none overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={selectedTab}
               onSelectionChange={handleTabChange}
@@ -306,18 +306,18 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
 
       {/* Loading State */}
       {isLoadingHostRequests ? (
-        <div className="col-span-full text-center py-12">
+        <div className="col-span-full py-12 text-center">
           <span className="text-lg text-gray-500">{t('booking.bookingRequests.loading')}</span>
         </div>
       ) : error ? (
-        <div className="col-span-full text-center py-12 text-red-600">
+        <div className="col-span-full py-12 text-center text-red-600">
           {error}
         </div>
       ) : requests.length > 0 ? (
         <>
           {/* Requests Grid */}
           <div className="col-span-full">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {requests.map((request) => (
                 <BookingRequestCard
                   key={request.id}
@@ -344,13 +344,13 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
           
           {/* Pagination - Full Width */}
           {currentPagination && currentPagination.totalPages > 1 && (
-            <div className="col-span-full flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+            <div className="col-span-full mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
               <button
                 onClick={() => handlePageChange(currentPagination.currentPage - 1)}
                 disabled={currentPagination.currentPage === 1 || isLoadingHostRequests}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${currentPagination.currentPage === 1 || isLoadingHostRequests
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('booking.pagination.previous', { defaultValue: 'Previous' })}
@@ -363,9 +363,9 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
               <button
                 onClick={() => handlePageChange(currentPagination.currentPage + 1)}
                 disabled={isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('booking.pagination.next', { defaultValue: 'Next' })}
@@ -374,9 +374,9 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
           )}
         </>
       ) : (
-        <div className="col-span-full text-center py-12">
-          <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="col-span-full py-12 text-center">
+          <ClipboardList className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
             {t('booking.bookingRequests.emptyTitle', { status: emptyStatusLabel })}
           </h3>
           <p className="text-gray-500">

@@ -1,11 +1,11 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Card, Chip } from '@heroui/react';
 import { useTranslation } from '../../../../lib/stores/translationStore';
 import type { PropertySubmissionData } from '../../../../interfaces';
 import { useAdminSettingsStore } from '../../../../lib/stores/adminSettingsStore';
 import { useProperty } from '../../../../hooks/useProperty';
 import FileProgressCard from '../../../shared/FileProgressCard';
-import { Upload, Image, Video, X } from 'lucide-react';
+import { Video, X } from 'lucide-react';
 
 interface MediaUploadStepProps {
   formData: PropertySubmissionData;
@@ -128,16 +128,16 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-semibold mb-4">{t('property.mediaUpload.title')}</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="mb-4 text-2xl font-semibold">{t('property.mediaUpload.title')}</h2>
+        <p className="mb-6 text-gray-600">
           {t('property.mediaUpload.description', { minImages: MIN_IMAGES, maxSize: (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0) })}
         </p>
       </div>
 
       <div className="space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-4">{t('property.mediaUpload.propertyImages')}</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-6">
+          <label className="mb-4 block text-sm font-medium">{t('property.mediaUpload.propertyImages')}</label>
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {formData.images.map((image: File | string, index: number) => {
               const fileName = typeof image === 'string' ? image.split('/').pop() || 'Unknown' : image.name;
               const progress = uploadProgress.find(p => p.fileName === fileName);
@@ -161,11 +161,11 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
             })}
           </div>
           
-          <Card className="border-2 border-dashed border-gray-300 hover:border-primary-400 transition-colors duration-200">
-            <label className="w-full flex flex-col items-center justify-center px-6 py-8 cursor-pointer group">
-              <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-secondary-200 transition-colors duration-200">
+          <Card className="border-2 border-dashed border-gray-300 transition-colors duration-200 hover:border-primary-400">
+            <label className="group flex w-full cursor-pointer flex-col items-center justify-center px-6 py-8">
+              <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-secondary-100 transition-colors duration-200 group-hover:bg-secondary-200">
                 <svg
-                  className="w-8 h-8 text-secondary-600"
+                  className="size-8 text-secondary-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -179,11 +179,11 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('property.mediaUpload.uploadImages')}</h3>
-              <p className="text-sm text-gray-500 text-center">
+              <h3 className="mb-2 text-lg font-medium text-gray-900">{t('property.mediaUpload.uploadImages')}</h3>
+              <p className="text-center text-sm text-gray-500">
                 {t('property.mediaUpload.uploadImagesDescription')}
               </p>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="mt-2 text-xs text-gray-400">
                 {t('property.mediaUpload.imageFormats', { formats: allowedImageFormats.map(f => f.toUpperCase()).join(', '), maxSize: (MAX_FILE_SIZE / (1024 * 1024)).toFixed(0) })}
               </p>
               <input
@@ -196,7 +196,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
             </label>
           </Card>
           
-          <div className="flex items-center justify-between mt-3">
+          <div className="mt-3 flex items-center justify-between">
             <p className="text-sm text-gray-500">
               {t('property.mediaUpload.imagesUploaded', { count: formData.images.length, min: MIN_IMAGES })}
             </p>
@@ -206,7 +206,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                 variant="flat" 
                 size="sm"
                 startContent={
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
                 }
@@ -218,13 +218,13 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-4">{t('property.mediaUpload.propertyVideo')}</label>
+          <label className="mb-4 block text-sm font-medium">{t('property.mediaUpload.propertyVideo')}</label>
           {shouldShowVideoUploadCard() ? (
-            <Card className="border-2 border-dashed border-gray-300 hover:border-secondary-400 transition-colors duration-200">
-              <label className="w-full flex flex-col items-center justify-center px-6 py-8 cursor-pointer group">
-                <div className="w-16 h-16 bg-secondary-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-secondary-200 transition-colors duration-200">
+            <Card className="border-2 border-dashed border-gray-300 transition-colors duration-200 hover:border-secondary-400">
+              <label className="group flex w-full cursor-pointer flex-col items-center justify-center px-6 py-8">
+                <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-secondary-100 transition-colors duration-200 group-hover:bg-secondary-200">
                   <svg
-                    className="w-8 h-8 text-secondary-600"
+                    className="size-8 text-secondary-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -238,11 +238,11 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                     />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Video</h3>
-                <p className="text-sm text-gray-500 text-center">
+                <h3 className="mb-2 text-lg font-medium text-gray-900">Upload Video</h3>
+                <p className="text-center text-sm text-gray-500">
                   Click to browse or drag and drop your video here
                 </p>
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="mt-2 text-xs text-gray-400">
                   {allowedVideoFormats.map(f => f.toUpperCase()).join(', ')} up to {MAX_FILE_SIZE / (1024 * 1024)}MB
                 </p>
                 <input
@@ -254,7 +254,7 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
               </label>
             </Card>
           ) : (
-            <div className="flex justify-start mb-4">
+            <div className="mb-4 flex justify-start">
               {formData.videos && formData.videos.length > 0 && (() => {
                 const video = formData.videos[0];
                 const fileName = typeof video === 'string' ? video.split('/').pop() || 'Unknown' : video.name;
@@ -262,11 +262,11 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                 
                 return (
                   <div key={fileName} className="relative">
-                    <Card className="p-4 bg-gray-50">
+                    <Card className="bg-gray-50 p-4">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Video className="w-5 h-5 text-blue-500" />
-                          <span className="text-sm text-gray-700 truncate max-w-[150px]">
+                          <Video className="size-5 text-blue-500" />
+                          <span className="max-w-[150px] truncate text-sm text-gray-700">
                             {fileName}
                           </span>
                         </div>
@@ -276,18 +276,18 @@ const MediaUploadStep: React.FC<MediaUploadStepProps> = ({ formData, setFormData
                           variant="light"
                           onClick={removeVideo}
                         >
-                          <X className="w-4 h-4" />
+                          <X className="size-4" />
                         </Button>
                       </div>
                       {progress && (
                         <div className="mt-2">
-                          <div className="flex justify-between text-xs text-gray-600 mb-1">
+                          <div className="mb-1 flex justify-between text-xs text-gray-600">
                             <span>{progress.status}</span>
                             <span>{progress.progress}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-1.5">
+                          <div className="h-1.5 w-full rounded-full bg-gray-200">
                             <div 
-                              className="bg-blue-500 h-1.5 rounded-full transition-all duration-300" 
+                              className="h-1.5 rounded-full bg-blue-500 transition-all duration-300" 
                               style={{ width: `${progress.progress}%` }}
                             />
                           </div>

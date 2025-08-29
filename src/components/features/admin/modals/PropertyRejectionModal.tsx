@@ -35,7 +35,7 @@ export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
-          <XCircle className="w-5 h-5 text-danger-500" />
+          <XCircle className="size-5 text-danger-500" />
           {t('propertyRejectionModal.title')}
         </ModalHeader>
         <ModalBody>
@@ -59,7 +59,7 @@ export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
             color="danger"
             onPress={onReject}
             isDisabled={!rejectionReason.trim()}
-            startContent={<XCircle className="w-4 h-4" />}
+            startContent={<XCircle className="size-4" />}
           >
             {t('propertyRejectionModal.buttons.rejectProperty')}
           </Button>

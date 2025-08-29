@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Textarea } from '@heroui/react'
-import { User, Mail, Phone, MapPin, Calendar, FileText } from 'lucide-react'
+import { User, Phone, MapPin, Calendar, FileText } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { Profile, ProfileUpdateData } from '../../../interfaces/Profile'
 import toast from 'react-hot-toast'
@@ -50,12 +50,24 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   const handleSave = async () => {
     try {
       setIsLoading(true)
-      await onSave(formData)
-      toast.success(t('profile:messages.updateSuccess'))
+      
+      // Clean up form data before sending
+      const cleanedFormData = {
+        ...formData,
+        // Convert empty date strings to undefined
+        dateOfBirth: formData.dateOfBirth && formData.dateOfBirth.trim() !== '' 
+          ? formData.dateOfBirth 
+          : undefined
+      }
+      
+      console.log('🧹 Cleaned form data before save:', cleanedFormData)
+      
+      await onSave(cleanedFormData)
+      toast.success(t('profile.messages.updateSuccess'))
       onClose()
     } catch (error: any) {
       console.error('❌ Error updating profile:', error)
-      toast.error(error.message || t('profile:errors.updateFailed'))
+      toast.error(error.message || t('profile.errors.updateFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -71,52 +83,52 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-primary-600" />
-            <span>{t('profile:actions.editPersonalInfo')}</span>
+            <User className="size-5 text-primary-600" />
+            <span>{t('profile.actions.editPersonalInfo')}</span>
           </div>
         </ModalHeader>
         
         <ModalBody>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Input
-              label={t('profile:fields.firstName')}
+              label={t('profile.fields.firstName')}
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
-              startContent={<User className="w-4 h-4 text-gray-400" />}
+              startContent={<User className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile:fields.lastName')}
+              label={t('profile.fields.lastName')}
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
-              startContent={<User className="w-4 h-4 text-gray-400" />}
+              startContent={<User className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile:fields.phone')}
+              label={t('profile.fields.phone')}
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
-              startContent={<Phone className="w-4 h-4 text-gray-400" />}
+              startContent={<Phone className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile:fields.location')}
+              label={t('profile.fields.location')}
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
-              startContent={<MapPin className="w-4 h-4 text-gray-400" />}
+              startContent={<MapPin className="size-4 text-gray-400" />}
             />
             <Input
               type="date"
-              label={t('profile:fields.dateOfBirth')}
+              label={t('profile.fields.dateOfBirth')}
               value={formData.dateOfBirth}
               onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-              startContent={<Calendar className="w-4 h-4 text-gray-400" />}
+              startContent={<Calendar className="size-4 text-gray-400" />}
             />
             <div className="md:col-span-2">
               <Textarea
-                label={t('profile:fields.bio')}
+                label={t('profile.fields.bio')}
                 value={formData.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value)}
                 maxLength={500}
                 minRows={3}
-                startContent={<FileText className="w-4 h-4 text-gray-400 mt-2" />}
+                startContent={<FileText className="mt-2 size-4 text-gray-400" />}
               />
             </div>
           </div>
@@ -124,14 +136,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
         <ModalFooter>
           <Button variant="flat" onPress={onClose} disabled={isLoading}>
-            {t('common:buttons.cancel')}
+            {t('common.buttons.cancel')}
           </Button>
           <Button 
             className="bg-main text-white hover:bg-main/90"
             onPress={handleSave} 
             isLoading={isLoading}
           >
-            {t('common:buttons.save')}
+            {t('common.buttons.save')}
           </Button>
         </ModalFooter>
       </ModalContent>

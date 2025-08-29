@@ -56,8 +56,8 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
   if (error) {
     return (
-      <div className={`text-center py-8 ${className}`}>
-        <div className="text-red-600 mb-4">
+      <div className={`py-8 text-center ${className}`}>
+        <div className="mb-4 text-red-600">
           <p className="text-lg font-semibold">Error loading reviews</p>
           <p className="text-sm">{error}</p>
         </div>
@@ -75,7 +75,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header with Stats and Filters */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-semibold text-gray-900">
             {t('review.reviews.title')}
@@ -133,19 +133,19 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
       {/* Loading State */}
       {loading && reviews.length === 0 && (
-        <div className="text-center py-8">
+        <div className="py-8 text-center">
           <Spinner size="lg" />
-          <p className="text-gray-600 mt-2">Loading reviews...</p>
+          <p className="mt-2 text-gray-600">Loading reviews...</p>
         </div>
       )}
 
       {/* No Reviews State */}
       {!loading && reviews.length === 0 && (
-        <div className="text-center py-8">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-gray-400 text-2xl">⭐</span>
+        <div className="py-8 text-center">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gray-100">
+            <span className="text-2xl text-gray-400">⭐</span>
           </div>
-          <h4 className="text-lg font-semibold text-gray-900 mb-2">
+          <h4 className="mb-2 text-lg font-semibold text-gray-900">
             {t('review.reviews.noReviews')}
           </h4>
           <p className="text-gray-600">
@@ -172,7 +172,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+        <div className="flex items-center justify-between border-t border-gray-200 pt-6">
           <div className="text-sm text-gray-600">
             {t('common.pagination.showing')} {(currentPage - 1) * (filters.limit || 10) + 1} {t('common.pagination.to')} {Math.min(currentPage * (filters.limit || 10), totalCount)} {t('common.pagination.of')} {totalCount} {t('common.pagination.results')}
           </div>
@@ -185,7 +185,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
               onPress={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="size-4" />
             </Button>
 
             <div className="flex items-center gap-1">
@@ -198,7 +198,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
                     variant={currentPage === page ? 'solid' : 'bordered'}
                     color={currentPage === page ? 'primary' : 'default'}
                     onPress={() => onPageChange(page)}
-                    className="w-8 h-8 min-w-0"
+                    className="size-8 min-w-0"
                   >
                     {page}
                   </Button>
@@ -213,7 +213,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
               onPress={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="size-4" />
             </Button>
           </div>
         </div>
@@ -221,7 +221,7 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
       {/* Load More Button */}
       {hasMore && !loading && (
-        <div className="text-center pt-4">
+        <div className="pt-4 text-center">
           <Button
             color="primary"
             variant="bordered"
@@ -235,9 +235,9 @@ const ReviewList: React.FC<ReviewListProps> = ({
 
       {/* Loading More State */}
       {loading && reviews.length > 0 && (
-        <div className="text-center py-4">
+        <div className="py-4 text-center">
           <Spinner size="sm" />
-          <p className="text-gray-600 mt-2">Loading more reviews...</p>
+          <p className="mt-2 text-gray-600">Loading more reviews...</p>
         </div>
       )}
     </div>

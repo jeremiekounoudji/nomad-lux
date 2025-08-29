@@ -270,13 +270,13 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
   // Show error state
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] w-full">
-        <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('admin.navigation.bookings')}</h1>
-        <p className="text-gray-600 mb-4">{t('admin.dashboard.overview', { defaultValue: 'Monitor and manage all platform bookings' })}</p>
-        <Card className="border-l-4 border-l-red-500 bg-red-50 w-full max-w-md">
-          <CardBody className="p-6 flex flex-col items-center">
-            <h4 className="font-semibold text-red-900 mb-2">{t('admin.bookings.errorLoading', { defaultValue: 'Error Loading Bookings' })}</h4>
+      <div className="flex min-h-[60vh] w-full flex-col items-center justify-center">
+        <AlertTriangle className="mb-4 size-12 text-red-500" />
+        <h1 className="mb-2 text-2xl font-bold text-gray-900">{t('admin.navigation.bookings')}</h1>
+        <p className="mb-4 text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Monitor and manage all platform bookings' })}</p>
+        <Card className="w-full max-w-md border-l-4 border-l-red-500 bg-red-50">
+          <CardBody className="flex flex-col items-center p-6">
+            <h4 className="mb-2 font-semibold text-red-900">{t('admin.bookings.errorLoading', { defaultValue: 'Error Loading Bookings' })}</h4>
             <Button 
               size="md" 
               color="danger" 
@@ -298,52 +298,52 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{t('admin.navigation.bookings')}</h1>
-        <p className="text-gray-600 mt-1">{t('admin.dashboard.overview', { defaultValue: 'Monitor and manage all platform bookings' })}</p>
+        <p className="mt-1 text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Monitor and manage all platform bookings' })}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-indigo-500 text-white">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="border border-gray-200 bg-gradient-to-br from-blue-500 to-indigo-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{bookingStats.total}</h3>
-            <p className="text-white/90 font-medium">{t('admin.dashboard.totalBookings')}</p>
+            <p className="font-medium text-white/90">{t('admin.dashboard.totalBookings')}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-teal-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-green-500 to-teal-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{bookingStats.confirmed}</h3>
-            <p className="text-white/90 font-medium">{t('admin.bookings.confirmedBookings')}</p>
-            <p className="text-white/70 text-sm">{t('admin.bookings.currentlyConfirmed', { defaultValue: 'Currently confirmed' })}</p>
+            <p className="font-medium text-white/90">{t('admin.bookings.confirmedBookings')}</p>
+            <p className="text-sm text-white/70">{t('admin.bookings.currentlyConfirmed', { defaultValue: 'Currently confirmed' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-orange-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-red-500 to-orange-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{bookingStats.disputes}</h3>
-            <p className="text-white/90 font-medium">{t('admin.bookings.activeDisputes', { defaultValue: 'Active Disputes' })}</p>
-            <p className="text-white/70 text-sm">{t('admin.bookings.requireAttention', { defaultValue: 'Require attention' })}</p>
+            <p className="font-medium text-white/90">{t('admin.bookings.activeDisputes', { defaultValue: 'Active Disputes' })}</p>
+            <p className="text-sm text-white/70">{t('admin.bookings.requireAttention', { defaultValue: 'Require attention' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-purple-500 to-pink-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{formatPrice(bookingStats.revenue, 'USD')}</h3>
-            <p className="text-white/90 font-medium">{t('admin.bookings.revenueCompleted', { defaultValue: 'Revenue (Completed)' })}</p>
+            <p className="font-medium text-white/90">{t('admin.bookings.revenueCompleted', { defaultValue: 'Revenue (Completed)' })}</p>
           </CardBody>
         </Card>
       </div>
 
       {/* Search and Filters */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex flex-col gap-4 lg:flex-row">
             <div className="flex-1">
               <Input
                 placeholder={t('admin.bookings.searchPlaceholder', { defaultValue: 'Search by booking ID, guest name, or property...' })}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                startContent={<Search className="w-4 h-4 text-gray-400" />}
+                startContent={<Search className="size-4 text-gray-400" />}
               />
             </div>
             <div className="flex gap-3">
@@ -389,7 +389,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex flex-col items-center justify-center min-h-[40vh] w-full">
+        <div className="flex min-h-[40vh] w-full flex-col items-center justify-center">
           <Spinner size="lg" className="mb-4" />
           <span className="text-lg text-gray-600">{t('admin.bookings.loading', { defaultValue: 'Loading bookings...' })}</span>
         </div>
@@ -398,17 +398,17 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
       {/* Bookings List */}
       {selectedTab === 'all' && !isLoading && (
         <>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {filteredBookings.map((booking: AdminBooking) => (
-              <Card key={booking.id} className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+              <Card key={booking.id} className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
                 <CardBody className="p-6">
-                  <div className="flex flex-col lg:flex-row gap-6">
+                  <div className="flex flex-col gap-6 lg:flex-row">
                     {/* Property Image */}
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <img
                         src={booking.propertyImage}
                         alt={booking.propertyTitle}
-                        className="w-24 h-24 object-cover rounded-lg"
+                        className="size-24 rounded-lg object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
                           target.src = 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400'
@@ -418,10 +418,10 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
 
                     {/* Booking Details */}
                     <div className="flex-1 space-y-3">
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                         <div>
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-lg text-gray-900">{booking.propertyTitle}</h3>
+                          <div className="mb-2 flex items-center gap-3">
+                            <h3 className="text-lg font-semibold text-gray-900">{booking.propertyTitle}</h3>
                             <Chip
                               color={getStatusColor(booking.status)}
                               variant="flat"
@@ -437,7 +437,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                               {t(`admin.payments.status.${booking.paymentStatus}`, { defaultValue: booking.paymentStatus.replace('_', ' ').charAt(0).toUpperCase() + booking.paymentStatus.replace('_', ' ').slice(1) })}
                             </Chip>
                           </div>
-                          <div className="text-sm text-gray-600 space-y-1">
+                          <div className="space-y-1 text-sm text-gray-600">
                             <div className="flex items-center gap-4">
                               <span className="font-medium">{t('admin.bookings.labels.id', { defaultValue: 'ID:' })}</span>
                               <span className="font-mono">{booking.id}</span>
@@ -456,23 +456,23 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                         <div className="text-right">
                           <div className="text-2xl font-bold text-gray-900">{formatPrice(booking.totalAmount, booking.currency || 'USD')}</div>
                           <div className="text-sm text-gray-600">{booking.nights} {t('booking.labels.nights')} • {booking.guests} {t('booking.labels.guests')}</div>
-                          <div className="text-xs text-gray-500 mt-1">Last activity: {booking.lastActivity}</div>
+                          <div className="mt-1 text-xs text-gray-500">Last activity: {booking.lastActivity}</div>
                         </div>
                       </div>
 
                       {/* Dates and Status */}
                       <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="size-4" />
                           <span>{booking.checkIn} → {booking.checkOut}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <CreditCard className="w-4 h-4" />
+                          <CreditCard className="size-4" />
                           <span>{t('admin.bookings.bookedOn', { defaultValue: 'Booked on {{date}}', date: booking.bookingDate })}</span>
                         </div>
                         {booking.status === 'dispute' && booking.disputeDate && (
                           <div className="flex items-center gap-2 text-red-600">
-                            <AlertTriangle className="w-4 h-4" />
+                            <AlertTriangle className="size-4" />
                             <span>{t('admin.bookings.disputeFiledOn', { defaultValue: 'Dispute filed on {{date}}', date: booking.disputeDate })}</span>
                           </div>
                         )}
@@ -484,7 +484,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                           size="sm"
                           variant="flat"
                           onPress={() => handleViewBooking(booking)}
-                          startContent={<Eye className="w-4 h-4" />}
+                          startContent={<Eye className="size-4" />}
                         >
                           {t('admin.actions.view')}
                         </Button>
@@ -494,7 +494,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                             size="sm"
                             color="danger"
                             variant="flat"
-                            startContent={<Flag className="w-4 h-4" />}
+                            startContent={<Flag className="size-4" />}
                           >
                             {t('admin.bookings.manageDispute', { defaultValue: 'Manage Dispute' })}
                           </Button>
@@ -509,7 +509,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                               setSelectedBooking(booking)
                               onRefundOpen()
                             }}
-                            startContent={<RefreshCw className="w-4 h-4" />}
+                            startContent={<RefreshCw className="size-4" />}
                           >
                             {t('admin.payments.refundPayment')}
                           </Button>
@@ -518,7 +518,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                         <Button
                           size="sm"
                           variant="flat"
-                          startContent={<MessageSquare className="w-4 h-4" />}
+                          startContent={<MessageSquare className="size-4" />}
                           onPress={() => handleContactParties(booking)}
                         >
                           {t('admin.bookings.contactParties', { defaultValue: 'Contact Parties' })}
@@ -533,7 +533,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="flex justify-center mt-8">
+            <div className="mt-8 flex justify-center">
               <Pagination
                 total={pagination.totalPages}
                 page={pagination.currentPage}
@@ -547,11 +547,11 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
 
           {/* No bookings message */}
           {!isLoading && filteredBookings.length === 0 && (
-            <Card className="shadow-sm border border-gray-200">
+            <Card className="border border-gray-200 shadow-sm">
               <CardBody className="p-12 text-center">
-                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No bookings found</h3>
-                <p className="text-gray-600 mb-4">
+                <Calendar className="mx-auto mb-4 size-16 text-gray-300" />
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">No bookings found</h3>
+                <p className="mb-4 text-gray-600">
                   {searchQuery || filterStatus !== 'all' 
                     ? 'Try adjusting your search or filters.'
                     : 'No bookings have been made yet.'}
@@ -577,7 +577,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
       {selectedTab === 'disputes' && (
         <div className="space-y-4">
           {/* Dispute Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
             <Card className="border-l-4 border-l-red-500">
               <CardBody className="p-4">
                 <div className="text-2xl font-bold text-red-600">{disputeStats.open}</div>
@@ -600,12 +600,12 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
 
           {/* Disputes List */}
           {mockDisputes.map((dispute) => (
-            <Card key={dispute.id} className="shadow-sm border border-gray-200">
+            <Card key={dispute.id} className="border border-gray-200 shadow-sm">
               <CardBody className="p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h3 className="font-semibold text-lg text-gray-900">
+                    <div className="mb-3 flex items-center gap-3">
+                      <h3 className="text-lg font-semibold text-gray-900">
                         {t('admin.bookings.disputeNumber', { defaultValue: 'Dispute #{{id}}', id: dispute.id })}
                       </h3>
                       <Chip
@@ -624,7 +624,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                       </Chip>
                     </div>
                     
-                    <div className="space-y-2 text-sm text-gray-600 mb-4">
+                    <div className="mb-4 space-y-2 text-sm text-gray-600">
                       <div><strong>{t('admin.bookings.labels.bookingId', { defaultValue: 'Booking ID:' })}</strong> {dispute.bookingId}</div>
                       <div><strong>{t('admin.bookings.labels.type', { defaultValue: 'Type:' })}</strong> {dispute.type.replace('_', ' ')}</div>
                       <div><strong>{t('admin.bookings.labels.reporter', { defaultValue: 'Reporter:' })}</strong> {dispute.reporter}</div>
@@ -632,10 +632,10 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                       {dispute.assignedTo && <div><strong>{t('admin.bookings.labels.assignedTo', { defaultValue: 'Assigned to:' })}</strong> {dispute.assignedTo}</div>}
                     </div>
                     
-                    <p className="text-gray-700 mb-4">{dispute.description}</p>
+                    <p className="mb-4 text-gray-700">{dispute.description}</p>
                     
                     <div className="flex items-center gap-2">
-                      <MessageSquare className="w-4 h-4 text-gray-400" />
+                      <MessageSquare className="size-4 text-gray-400" />
                       <span className="text-sm text-gray-600">
                         {t('admin.bookings.messagesCount', { count: dispute.messages.length, defaultValue: '{{count}} message' })}{dispute.messages.length !== 1 ? 's' : ''}
                       </span>
@@ -662,13 +662,13 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
       {selectedTab === 'payments' && (
         <div className="space-y-6">
           {/* Payment Records Table */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <h3 className="text-lg font-semibold mb-4">{t('admin.payments.paymentRecords', { defaultValue: 'Payment Records' })}</h3>
+              <h3 className="mb-4 text-lg font-semibold">{t('admin.payments.paymentRecords', { defaultValue: 'Payment Records' })}</h3>
               {paymentError && (
                 <div className="flex flex-col items-center justify-center py-8">
-                  <AlertTriangle className="w-8 h-8 text-red-500 mb-2" />
-                  <span className="text-red-600 font-medium mb-2">{paymentError}</span>
+                  <AlertTriangle className="mb-2 size-8 text-red-500" />
+                  <span className="mb-2 font-medium text-red-600">{paymentError}</span>
                   <Button size="sm" color="danger" variant="flat" onPress={clearPaymentError}>{t('common.actions.clear', { defaultValue: 'Clear' })}</Button>
                 </div>
               )}
@@ -682,18 +682,18 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead>
                       <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.bookings.labels.id', { defaultValue: 'ID' })}</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.bookings.bookingDetails')}</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.payments.paymentAmount')}</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.bookings.paymentStatus')}</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.payments.paymentMethod')}</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">{t('notifications.details.date', { defaultValue: 'Date' })}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('admin.bookings.labels.id', { defaultValue: 'ID' })}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('admin.bookings.bookingDetails')}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('admin.payments.paymentAmount')}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('admin.bookings.paymentStatus')}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('admin.payments.paymentMethod')}</th>
+                        <th className="px-4 py-2 text-left text-xs font-medium uppercase text-gray-500">{t('notifications.details.date', { defaultValue: 'Date' })}</th>
                         <th className="px-4 py-2"></th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-100">
+                    <tbody className="divide-y divide-gray-100 bg-white">
                       {paymentRecords.map((record) => (
-                        <tr key={record.id} className="hover:bg-gray-50 transition cursor-pointer">
+                        <tr key={record.id} className="cursor-pointer transition hover:bg-gray-50">
                           <td className="px-4 py-2 font-mono text-xs">{record.id}</td>
                           <td className="px-4 py-2 font-mono text-xs">{record.booking_id}</td>
                           <td className="px-4 py-2 font-semibold text-green-700">{record.amount} {record.currency}</td>
@@ -713,7 +713,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                   </table>
                   {/* Pagination */}
                   {paymentPagination.totalPages > 1 && (
-                    <div className="flex justify-center mt-6">
+                    <div className="mt-6 flex justify-center">
                       <Pagination
                         total={paymentPagination.totalPages}
                         page={paymentPagination.currentPage}
@@ -726,7 +726,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                   )}
                   {/* No payment records message */}
                   {!paymentLoading && paymentRecords.length === 0 && (
-                    <div className="text-center text-gray-500 py-8">{t('admin.payments.noRecords', { defaultValue: 'No payment records found.' })}</div>
+                    <div className="py-8 text-center text-gray-500">{t('admin.payments.noRecords', { defaultValue: 'No payment records found.' })}</div>
                   )}
                 </div>
               )}

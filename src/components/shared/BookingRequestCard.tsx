@@ -32,61 +32,61 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
   const { t } = useTranslation(['booking']);
 
   return (
-    <Card className="overflow-hidden w-full min-w-0">
+    <Card className="w-full min-w-0 overflow-hidden">
       <CardBody className="p-3 sm:p-4">
         {/* Property Image */}
-        <div className="relative w-full h-32 sm:h-40 rounded-lg overflow-hidden mb-3">
+        <div className="relative mb-3 h-32 w-full overflow-hidden rounded-lg sm:h-40">
           <img
             src={request.property_images[0]}
             alt={request.property_title}
-            className="w-full h-full object-cover"
+            className="size-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-2 left-2 right-2">
-            <h4 className="text-white text-sm font-medium line-clamp-1">
+          <div className="absolute inset-x-2 bottom-2">
+            <h4 className="line-clamp-1 text-sm font-medium text-white">
               {request.property_title}
             </h4>
           </div>
         </div>
 
         {/* Guest Info */}
-        <div className="flex items-center gap-2 sm:gap-3 mb-3">
+        <div className="mb-3 flex items-center gap-2 sm:gap-3">
           <Avatar
             src={request.guest_avatar_url}
             name={request.guest_display_name}
             size="sm"
           />
           <div className="min-w-0 flex-1">
-            <p className="font-medium text-gray-900 text-sm truncate">
+            <p className="truncate text-sm font-medium text-gray-900">
               {request.guest_display_name}
             </p>
             <div className="flex items-center gap-1 text-xs text-gray-600">
-              <Star className="w-3 h-3 text-yellow-500 fill-current" />
+              <Star className="size-3 fill-current text-yellow-500" />
               <span>{request.guest_rating} ({t('booking.reviews.count', { count: request.total_guest_reviews })})</span>
             </div>
           </div>
         </div>
 
         {/* Booking Details */}
-        <div className="space-y-2 text-xs sm:text-sm mb-3">
+        <div className="mb-3 space-y-2 text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-gray-600">
-            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <Calendar className="size-3 shrink-0 sm:size-4" />
             <span className="truncate">
               {new Date(request.check_in_date).toLocaleDateString()} - {new Date(request.check_out_date).toLocaleDateString()}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-gray-600">
-              <User className="w-3 h-3 sm:w-4 sm:h-4" />
+              <User className="size-3 sm:size-4" />
               <span>{t('booking.labels.guests')}: {request.guest_count}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-600">
-              <CreditCard className="w-3 h-3 sm:w-4 sm:h-4" />
+              <CreditCard className="size-3 sm:size-4" />
               <span className="font-medium">{request.currency} {request.total_amount}</span>
             </div>
           </div>
           <div className="flex items-center gap-2 text-gray-600">
-            <Clock className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+            <Clock className="size-3 shrink-0 sm:size-4" />
             <span className="truncate">
               {request.check_in_time} - {request.check_out_time}
             </span>
@@ -94,14 +94,14 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
         </div>
 
         {/* Contact Info - Mobile Optimized */}
-        <div className="flex flex-col sm:flex-row gap-2 mb-3">
+        <div className="mb-3 flex flex-col gap-2 sm:flex-row">
           <Button
             size="sm"
             variant="light"
             color="primary"
-            startContent={<Mail className="w-3 h-3 sm:w-4 sm:h-4" />}
+            startContent={<Mail className="size-3 sm:size-4" />}
             onClick={() => window.location.href = `mailto:${request.guest_email}`}
-            className="text-xs sm:text-sm justify-start min-w-0"
+            className="min-w-0 justify-start text-xs sm:text-sm"
           >
             <span className="truncate">{request.guest_email}</span>
           </Button>
@@ -110,9 +110,9 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
               size="sm"
               variant="light"
               color="primary"
-              startContent={<Phone className="w-3 h-3 sm:w-4 sm:h-4" />}
+              startContent={<Phone className="size-3 sm:size-4" />}
               onClick={() => window.location.href = `tel:${request.guest_phone}`}
-              className="text-xs sm:text-sm justify-start"
+              className="justify-start text-xs sm:text-sm"
             >
               {request.guest_phone}
             </Button>
@@ -140,7 +140,7 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
                 size="sm"
                 color="danger"
                 variant="flat"
-                startContent={<X className="w-4 h-4" />}
+                startContent={<X className="size-4" />}
                 onPress={() => {
                   onDeclineModalOpen();
                 }}
@@ -153,7 +153,7 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
               <Button
                 size="sm"
                 color="success"
-                startContent={<Check className="w-4 h-4" />}
+                startContent={<Check className="size-4" />}
                 onPress={() => {
                   onConfirmModalOpen();
                 }}
@@ -169,7 +169,7 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
               size="sm"
               variant="bordered"
               color="default"
-              startContent={<Eye className="w-4 h-4" />}
+              startContent={<Eye className="size-4" />}
               onPress={() => onRequestClick(request)}
               disabled={updatingBookingId === request.id}
               className="w-full font-medium"
@@ -185,7 +185,7 @@ const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
             size="sm"
             variant="bordered"
             color="default"
-            startContent={<Eye className="w-4 h-4" />}
+            startContent={<Eye className="size-4" />}
             onPress={() => onRequestClick(request)}
             className="w-full font-medium"
           >

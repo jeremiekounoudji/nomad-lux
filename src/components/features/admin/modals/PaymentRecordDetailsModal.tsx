@@ -20,13 +20,13 @@ const PaymentRecordDetailsModal: React.FC<PaymentRecordDetailsModalProps> = ({ i
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="relative bg-white rounded-xl shadow-xl max-w-lg w-full p-6 mx-auto">
-        <button className="absolute top-3 right-3 text-gray-400 hover:text-gray-700" onClick={onClose} aria-label={t('common.actions.close', { defaultValue: 'Close' })}>
-          <XCircle className="w-6 h-6" />
+      <div className="relative mx-auto w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
+        <button className="absolute right-3 top-3 text-gray-400 hover:text-gray-700" onClick={onClose} aria-label={t('common.actions.close', { defaultValue: 'Close' })}>
+          <XCircle className="size-6" />
         </button>
-        <div className="text-2xl font-bold mb-2 text-center">{t('admin.payments.recordDetails', { defaultValue: 'Payment Record Details' })}</div>
+        <div className="mb-2 text-center text-2xl font-bold">{t('admin.payments.recordDetails', { defaultValue: 'Payment Record Details' })}</div>
         <Divider className="mb-4" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 mb-4">
+        <div className="mb-4 grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2">
           <div><span className={labelClass}>{t('admin.payments.labels.id', { defaultValue: 'ID' })}:</span> <span className={valueClass}>{paymentRecord.id}</span></div>
           <div><span className={labelClass}>{t('admin.payments.labels.bookingId', { defaultValue: 'Booking ID' })}:</span> <span className={valueClass}>{paymentRecord.booking_id}</span></div>
           <div><span className={labelClass}>{t('admin.payments.labels.amount', { defaultValue: 'Amount' })}:</span> <span className="font-semibold text-green-700">{paymentRecord.amount} {paymentRecord.currency}</span></div>
@@ -52,9 +52,9 @@ const PaymentRecordDetailsModal: React.FC<PaymentRecordDetailsModalProps> = ({ i
         <Divider className="my-4" />
         <div>
           <span className={labelClass}>{t('admin.payments.labels.metadata', { defaultValue: 'Metadata' })}:</span>
-          <pre className="bg-gray-100 rounded p-2 overflow-x-auto text-xs mt-2 whitespace-pre-wrap">{JSON.stringify(paymentRecord.payment_metadata, null, 2)}</pre>
+          <pre className="mt-2 overflow-x-auto whitespace-pre-wrap rounded bg-gray-100 p-2 text-xs">{JSON.stringify(paymentRecord.payment_metadata, null, 2)}</pre>
         </div>
-        <div className="flex justify-end mt-6">
+        <div className="mt-6 flex justify-end">
           <Button color="primary" onPress={onClose}>{t('common.actions.close', { defaultValue: 'Close' })}</Button>
         </div>
       </div>

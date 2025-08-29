@@ -6,12 +6,8 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Avatar,
-  Card,
-  CardBody,
-  Chip,
 } from '@heroui/react'
-import { MessageCircle, Star, MapPin, Phone, Mail, MessageSquare, AlertCircle } from 'lucide-react'
+import { MessageCircle, Phone, Mail, MessageSquare, AlertCircle } from 'lucide-react'
 import { ContactHostModalProps } from '../../../interfaces/Component'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import toast from 'react-hot-toast'
@@ -32,7 +28,7 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
             <>
               <ModalHeader>
                 <div className="flex items-center gap-2">
-                  <AlertCircle className="w-6 h-6 text-red-500" />
+                  <AlertCircle className="size-6 text-red-500" />
                   <h2 className="text-xl font-bold">{t('property.modal.contactHost.error')}</h2>
                 </div>
               </ModalHeader>
@@ -112,7 +108,7 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-6 h-6 text-primary-500" />
+                <MessageCircle className="size-6 text-primary-500" />
                 <h2 className="text-xl font-bold">{t('property.modal.contactHost.title')}</h2>
               </div>
               <p className="text-sm text-gray-600">{t('property.modal.contactHost.subtitle')}</p>
@@ -129,9 +125,9 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                     {hasPhone && (
                       <Button
                         size="lg"
-                        className="w-full bg-green-500 hover:bg-green-600 text-white"
+                        className="w-full bg-green-500 text-white hover:bg-green-600"
                         onClick={handleCall}
-                        startContent={<Phone className="w-5 h-5" />}
+                        startContent={<Phone className="size-5" />}
                       >
                         {t('property.actions.callHost')}
                         <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
@@ -141,9 +137,9 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                     {hasEmail && (
                       <Button
                         size="lg"
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                        className="w-full bg-blue-500 text-white hover:bg-blue-600"
                         onClick={handleEmail}
-                        startContent={<Mail className="w-5 h-5" />}
+                        startContent={<Mail className="size-5" />}
                       >
                         {t('property.actions.emailHost')}
                         <span className="ml-2 text-sm opacity-90">{property.host.email}</span>
@@ -153,9 +149,9 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                     {hasPhone && (
                       <Button
                         size="lg"
-                        className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white"
+                        className="w-full bg-[#25D366] text-white hover:bg-[#128C7E]"
                         onClick={handleWhatsApp}
-                        startContent={<MessageSquare className="w-5 h-5" />}
+                        startContent={<MessageSquare className="size-5" />}
                       >
                         {t('property.actions.whatsapp')}
                         <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
@@ -164,8 +160,8 @@ export const ContactHostModal: React.FC<ContactHostModalProps> = ({
                   </div>
 
                   {availableMethods === 0 && (
-                    <div className="text-center py-4">
-                      <AlertCircle className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <div className="py-4 text-center">
+                      <AlertCircle className="mx-auto mb-2 size-8 text-gray-400" />
                       <p className="text-gray-600">{t('property.modal.contactHost.noContactMethods')}</p>
                     </div>
                   )}

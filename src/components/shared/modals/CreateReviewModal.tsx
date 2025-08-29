@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Alert } from '@heroui/react'
+import { Modal, ModalContent, ModalHeader, ModalBody, Alert } from '@heroui/react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import ReviewForm from '../ReviewForm'
 import { useReview } from '../../../hooks/useReview'
@@ -91,7 +91,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
             <div className="mb-4">
               <Alert color="primary" className="mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                  <div className="size-4 animate-spin rounded-full border-b-2 border-current"></div>
                   <span>{t('review.verification.checking')}</span>
                 </div>
               </Alert>

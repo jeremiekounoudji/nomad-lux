@@ -38,12 +38,12 @@ const BookingSuccessModal: React.FC<BookingSuccessModalProps> = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalBody className="text-center py-8">
-              <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-success-600" />
+            <ModalBody className="py-8 text-center">
+              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-success-100">
+                <CheckCircle className="size-8 text-success-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-              <p className="text-gray-600 mb-6">
+              <h2 className="mb-2 text-2xl font-bold text-gray-900">Booking Confirmed!</h2>
+              <p className="mb-6 text-gray-600">
                 {t('booking.messages.reservationSubmitted')}
               </p>
               <div className="space-y-2 text-sm text-gray-600">

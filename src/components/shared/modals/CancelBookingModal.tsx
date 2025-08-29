@@ -112,7 +112,7 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <XCircle className="w-6 h-6 text-danger-500" />
+                <XCircle className="size-6 text-danger-500" />
                 <h2 className="text-xl font-bold">{t('booking.cancel.title')}</h2>
               </div>
               <p className="text-sm text-gray-600">{t('booking.cancel.subtitle')}</p>
@@ -126,14 +126,14 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                       <img
                         src={booking.propertyImage}
                         alt={booking.propertyName}
-                        className="w-20 h-20 object-cover rounded-lg"
+                        className="size-20 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{booking.propertyName}</h3>
+                        <h3 className="text-lg font-semibold">{booking.propertyName}</h3>
                         <p className="text-sm text-gray-600">{booking.location}</p>
-                        <div className="flex items-center gap-4 mt-2 text-sm">
+                        <div className="mt-2 flex items-center gap-4 text-sm">
                           <div className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
+                            <Calendar className="size-4" />
                             <span>{new Date(booking.checkIn).toLocaleDateString()} - {new Date(booking.checkOut).toLocaleDateString()}</span>
                           </div>
                           <Chip size="sm" color="primary" variant="flat">{t('booking.labels.guestsCount', { count: booking.guests })}</Chip>
@@ -144,26 +144,26 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                 </Card>
 
                 {/* Cancellation Policy - Updated for booking-based logic */}
-                <div className="p-4 bg-warning-50 border border-warning-200 rounded-lg">
+                <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
                   <div className="flex items-start gap-2">
-                    <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5" />
+                    <AlertTriangle className="mt-0.5 size-5 text-warning-600" />
                     <div className="flex-1">
                       <h4 className="font-semibold text-warning-800">{t('booking.cancel.policy.title')}</h4>
-                      <p className="text-sm text-warning-700 mt-1">{t('booking.cancel.policy.description')}</p>
+                      <p className="mt-1 text-sm text-warning-700">{t('booking.cancel.policy.description')}</p>
                       
                       {isLoadingSettings ? (
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="mt-2 flex items-center gap-2">
                           <Spinner size="sm" />
                           <span className="text-sm text-warning-700">{t('common.messages.loading')}</span>
                         </div>
                       ) : cancellationSettings ? (
-                        <ul className="text-sm text-warning-700 mt-2 space-y-1">
+                        <ul className="mt-2 space-y-1 text-sm text-warning-700">
                           <li>• {t('booking.cancel.policy.rule24h')}</li>
                           <li>• {t('booking.cancel.policy.rule7d')}</li>
                           <li>• {t('booking.cancel.policy.rule14d')}</li>
                         </ul>
                       ) : (
-                        <ul className="text-sm text-warning-700 mt-2 space-y-1">
+                        <ul className="mt-2 space-y-1 text-sm text-warning-700">
                           <li>• {t('booking.cancel.policy.rule24h')}</li>
                           <li>• {t('booking.cancel.policy.rule7d')}</li>
                           <li>• {t('booking.cancel.policy.rule14d')}</li>
@@ -175,20 +175,20 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
 
                 {/* Refund Breakdown - Now Dynamic */}
                 <div className="space-y-3">
-                  <h4 className="font-semibold flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
+                  <h4 className="flex items-center gap-2 font-semibold">
+                    <DollarSign className="size-5" />
                     {t('booking.cancel.refund.title')}
                   </h4>
                   
                   {isCalculatingRefund ? (
-                    <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-2 rounded-lg bg-gray-50 p-4">
                       <Spinner size="sm" />
                       <span className="text-sm text-gray-600">{t('booking.messages.cancelling')}</span>
                     </div>
                   ) : refundError ? (
-                    <div className="p-4 bg-danger-50 border border-danger-200 rounded-lg">
+                    <div className="rounded-lg border border-danger-200 bg-danger-50 p-4">
                       <p className="text-sm text-danger-700">{refundError}</p>
-                      <p className="text-xs text-danger-600 mt-1">{t('common.messages.error')}</p>
+                      <p className="mt-1 text-xs text-danger-600">{t('common.messages.error')}</p>
                     </div>
                   ) : refundData ? (
                     <div className="space-y-2 text-sm">
@@ -203,21 +203,21 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                         </div>
                       )}
                       <Divider />
-                      <div className="flex justify-between font-semibold text-lg">
+                      <div className="flex justify-between text-lg font-semibold">
                         <span>{t('booking.cancel.refund.refundAmount')}</span>
                         <span className={refundAmount > 0 ? 'text-success-600' : 'text-danger-600'}>
                           {formatPrice(refundAmount, booking.currency)}
                         </span>
                       </div>
                       {refundData.policy_applied && (
-                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
-                          <Clock className="w-3 h-3" />
+                        <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+                          <Clock className="size-3" />
                           <span>{t('booking.labels.cancellationPolicy')}: {refundData.policy_applied}</span>
                         </div>
                       )}
                     </div>
                   ) : (
-                    <div className="p-4 bg-gray-50 rounded-lg">
+                    <div className="rounded-lg bg-gray-50 p-4">
                       <p className="text-sm text-gray-600">{t('common.messages.error')}</p>
                     </div>
                   )}
@@ -250,12 +250,12 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
                 </div>
 
                 {/* Warning */}
-                <div className="p-4 bg-danger-50 border border-danger-200 rounded-lg">
+                <div className="rounded-lg border border-danger-200 bg-danger-50 p-4">
                   <div className="flex items-start gap-2">
-                    <AlertTriangle className="w-5 h-5 text-danger-600 mt-0.5" />
+                    <AlertTriangle className="mt-0.5 size-5 text-danger-600" />
                     <div>
                       <h5 className="font-semibold text-danger-800">{t('booking.cancel.warning.title')}</h5>
-                      <p className="text-sm text-danger-700 mt-1">{t('booking.cancel.warning.message')}</p>
+                      <p className="mt-1 text-sm text-danger-700">{t('booking.cancel.warning.message')}</p>
                     </div>
                   </div>
                 </div>

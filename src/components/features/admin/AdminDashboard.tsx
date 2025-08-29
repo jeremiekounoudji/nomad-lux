@@ -184,10 +184,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'user': return <Users className="w-4 h-4 text-blue-500" />
-      case 'property': return <Building className="w-4 h-4 text-green-500" />
-      case 'booking': return <Calendar className="w-4 h-4 text-orange-500" />
-      default: return <Clock className="w-4 h-4 text-gray-500" />
+      case 'user': return <Users className="size-4 text-blue-500" />
+      case 'property': return <Building className="size-4 text-green-500" />
+      case 'booking': return <Calendar className="size-4 text-orange-500" />
+      default: return <Clock className="size-4 text-gray-500" />
     }
   }
 
@@ -233,12 +233,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
         overlayOpacity={getBannerConfig('admin').overlayOpacity}
         height={getBannerConfig('admin').height}
       >
-        <div className="flex gap-3 mt-4">
+        <div className="mt-4 flex gap-3">
           <Button 
             color="secondary" 
             variant="flat"
             onPress={() => onSectionChange?.('analytics')}
-            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
+            className="border-white/20 bg-white/20 text-white hover:bg-white/30"
           >
             {t('admin.reports.generateReport', { defaultValue: 'View Analytics' })}
           </Button>
@@ -246,7 +246,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
             color="secondary"
             variant="flat"
             onPress={() => onSectionChange?.('properties')}
-            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
+            className="border-white/20 bg-white/20 text-white hover:bg-white/30"
           >
             {t('admin.properties.pendingApproval')}
           </Button>
@@ -256,80 +256,80 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
 
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {/* Total Users */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">{t('admin.dashboard.totalUsers')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalUsers.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                <div className="mt-2 flex items-center gap-1">
+                  <TrendingUp className="size-4 text-green-500" />
                   <span className="text-sm text-green-600">+{mockStats.userGrowth}%</span>
                   <span className="text-sm text-gray-500">{t('common.time.thisMonth')}</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-100">
+                <Users className="size-6 text-blue-600" />
               </div>
             </div>
           </CardBody>
         </Card>
 
         {/* Total Properties */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">{t('admin.navigation.properties')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalProperties}</p>
-                <div className="flex items-center gap-1 mt-2">
-                  <AlertTriangle className="w-4 h-4 text-orange-500" />
+                <div className="mt-2 flex items-center gap-1">
+                  <AlertTriangle className="size-4 text-orange-500" />
                   <span className="text-sm text-orange-600">{mockStats.pendingProperties} {t('admin.properties.pendingApproval')}</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <Building className="w-6 h-6 text-green-600" />
+              <div className="flex size-12 items-center justify-center rounded-xl bg-green-100">
+                <Building className="size-6 text-green-600" />
               </div>
             </div>
           </CardBody>
         </Card>
 
         {/* Total Bookings */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">{t('admin.navigation.bookings')}</p>
                 <p className="text-3xl font-bold text-gray-900">{mockStats.totalBookings.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-2">
-                  <Clock className="w-4 h-4 text-blue-500" />
+                <div className="mt-2 flex items-center gap-1">
+                  <Clock className="size-4 text-blue-500" />
                   <span className="text-sm text-blue-600">{mockStats.activeBookings} {t('common.status.active')}</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-orange-600" />
+              <div className="flex size-12 items-center justify-center rounded-xl bg-orange-100">
+                <Calendar className="size-6 text-orange-600" />
               </div>
             </div>
           </CardBody>
         </Card>
 
         {/* Revenue */}
-        <Card className="shadow-sm border border-gray-200">
+        <Card className="border border-gray-200 shadow-sm">
           <CardBody className="p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">{t('admin.dashboard.totalRevenue')}</p>
                 <p className="text-3xl font-bold text-gray-900">${mockStats.totalRevenue.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                <div className="mt-2 flex items-center gap-1">
+                  <TrendingUp className="size-4 text-green-500" />
                   <span className="text-sm text-green-600">+{mockStats.revenueGrowth}%</span>
                   <span className="text-sm text-gray-500">{t('common.time.thisMonth')}</span>
                 </div>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-purple-600" />
+              <div className="flex size-12 items-center justify-center rounded-xl bg-purple-100">
+                <DollarSign className="size-6 text-purple-600" />
               </div>
             </div>
           </CardBody>
@@ -337,11 +337,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       </div>
 
       {/* Property Distribution Map Section */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="mb-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Map className="w-5 h-5 text-primary-600" />
+              <Map className="size-5 text-primary-600" />
               <h3 className="text-lg font-semibold text-gray-900">{t('admin.dashboard.popularProperties', { defaultValue: 'Property Distribution' })}</h3>
             </div>
             <Button
@@ -349,7 +349,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
               color="primary"
               variant={showPropertyMap ? "solid" : "flat"}
               onPress={() => setShowPropertyMap(!showPropertyMap)}
-              startContent={<Map className="w-4 h-4" />}
+              startContent={<Map className="size-4" />}
             >
               {showPropertyMap ? t('common.buttons.close', { defaultValue: 'Hide Map' }) : t('common.buttons.view', { defaultValue: 'Show Map' })}
             </Button>
@@ -362,20 +362,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
               height="400px"
             />
           ) : showPropertyMap ? (
-            <div className="text-center py-12">
-              <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.properties.allProperties', { defaultValue: 'No Properties Available' })}</h3>
+            <div className="py-12 text-center">
+              <Map className="mx-auto mb-4 size-16 text-gray-300" />
+              <h3 className="mb-2 text-lg font-medium text-gray-900">{t('admin.properties.allProperties', { defaultValue: 'No Properties Available' })}</h3>
               <p className="text-gray-500">{t('admin.messages.noProperties', { defaultValue: 'There are no properties to display on the map.' })}</p>
             </div>
           ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.dashboard.overview', { defaultValue: 'Property Distribution Map' })}</h3>
-              <p className="text-gray-500 mb-4">{t('admin.messages.propertyMapDescription', { defaultValue: 'View all properties distributed across locations on an interactive map.' })}</p>
+            <div className="rounded-lg bg-gray-50 py-12 text-center">
+              <Map className="mx-auto mb-4 size-16 text-gray-300" />
+              <h3 className="mb-2 text-lg font-medium text-gray-900">{t('admin.dashboard.overview', { defaultValue: 'Property Distribution Map' })}</h3>
+              <p className="mb-4 text-gray-500">{t('admin.messages.propertyMapDescription', { defaultValue: 'View all properties distributed across locations on an interactive map.' })}</p>
               <Button
                 color="primary"
                 onPress={() => setShowPropertyMap(true)}
-                startContent={<Map className="w-4 h-4" />}
+                startContent={<Map className="size-4" />}
               >
                 {t('common.buttons.view', { defaultValue: 'Show Distribution Map' })}
               </Button>
@@ -385,12 +385,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       </Card>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Pending Property Approvals */}
         <div className="lg:col-span-2">
-          <Card className="shadow-sm border border-gray-200 h-full">
+          <Card className="h-full border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">{t('admin.properties.pendingApproval')}</h3>
                 <Button 
                   size="sm" 
@@ -404,11 +404,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
               
               <div className="space-y-4">
                 {mockPendingApprovals.map((property) => (
-                  <div key={property.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div key={property.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50">
                     <div className="flex-1">
                       <h4 className="font-medium text-gray-900">{property.title}</h4>
                       <p className="text-sm text-gray-600">{property.location}</p>
-                      <div className="flex items-center gap-4 mt-2">
+                      <div className="mt-2 flex items-center gap-4">
                         <span className="text-xs text-gray-500">{t('admin.dashboard.submitted', { defaultValue: 'Submitted' })} {property.submitted}</span>
                         <span className="text-xs text-gray-500">
                           {Array.isArray(property.images) ? property.images.length : property.images} {t('property.labels.images')}
@@ -423,7 +423,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                         onPress={() => handleQuickReject(property)}
                         isIconOnly
                       >
-                        <XCircle className="w-4 h-4" />
+                        <XCircle className="size-4" />
                       </Button>
                       <Button 
                         size="sm" 
@@ -431,7 +431,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
                         onPress={() => handleQuickApprove(property)}
                         isIconOnly
                       >
-                        <CheckCircle className="w-4 h-4" />
+                        <CheckCircle className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -443,9 +443,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
 
         {/* Recent Activity */}
         <div className="lg:col-span-1">
-          <Card className="shadow-sm border border-gray-200 h-full">
+          <Card className="h-full border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">{t('admin.dashboard.recentActivity')}</h3>
                 <Button 
                   size="sm" 
@@ -460,15 +460,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
               <div className="space-y-4">
                 {mockRecentActivity.map((activity, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-1">
+                    <div className="mt-1 shrink-0">
                       {getActivityIcon(activity.type)}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-sm text-gray-900">{activity.action}</p>
                       <p className="text-sm font-medium text-gray-700">
                         {activity.user || activity.property || activity.booking}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                      <p className="mt-1 text-xs text-gray-500">{activity.time}</p>
                     </div>
                   </div>
                 ))}
@@ -479,57 +479,57 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       </div>
 
       {/* Quick Actions */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.actions.bulkAction', { defaultValue: 'Quick Actions' })}</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+          <h3 className="mb-4 text-lg font-semibold text-gray-900">{t('admin.actions.bulkAction', { defaultValue: 'Quick Actions' })}</h3>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <Card className="border border-gray-200 bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
               <CardBody className="p-6 text-center">
                 <Button 
-                  className="h-16 flex-col bg-white/20 hover:bg-white/30 text-white border-0"
+                  className="h-16 flex-col border-0 bg-white/20 text-white hover:bg-white/30"
                   variant="flat"
                   onPress={() => onSectionChange?.('users')}
                 >
-                  <Users className="w-5 h-5 mb-1" />
+                  <Users className="mb-1 size-5" />
                   <span className="text-sm">{t('admin.users.allUsers')}</span>
                 </Button>
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-green-600 text-white">
+            <Card className="border border-gray-200 bg-gradient-to-br from-green-500 to-green-600 text-white shadow-sm">
               <CardBody className="p-6 text-center">
                 <Button 
-                  className="h-16 flex-col bg-white/20 hover:bg-white/30 text-white border-0"
+                  className="h-16 flex-col border-0 bg-white/20 text-white hover:bg-white/30"
                   variant="flat"
                   onPress={() => onSectionChange?.('properties')}
                 >
-                  <Building className="w-5 h-5 mb-1" />
+                  <Building className="mb-1 size-5" />
                   <span className="text-sm">{t('admin.properties.pendingApproval')}</span>
                 </Button>
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-orange-600 text-white">
+            <Card className="border border-gray-200 bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-sm">
               <CardBody className="p-6 text-center">
                 <Button 
-                  className="h-16 flex-col bg-white/20 hover:bg-white/30 text-white border-0"
+                  className="h-16 flex-col border-0 bg-white/20 text-white hover:bg-white/30"
                   variant="flat"
                   onPress={() => onSectionChange?.('bookings')}
                 >
-                  <Calendar className="w-5 h-5 mb-1" />
+                  <Calendar className="mb-1 size-5" />
                   <span className="text-sm">{t('admin.bookings.allBookings')}</span>
                 </Button>
               </CardBody>
             </Card>
             
-            <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-purple-600 text-white">
+            <Card className="border border-gray-200 bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-sm">
               <CardBody className="p-6 text-center">
                 <Button 
-                  className="h-16 flex-col bg-white/20 hover:bg-white/30 text-white border-0"
+                  className="h-16 flex-col border-0 bg-white/20 text-white hover:bg-white/30"
                   variant="flat"
                   onPress={() => onSectionChange?.('analytics')}
                 >
-                  <TrendingUp className="w-5 h-5 mb-1" />
+                  <TrendingUp className="mb-1 size-5" />
                   <span className="text-sm">{t('admin.reports.bookingReports', { defaultValue: 'View Analytics' })}</span>
                 </Button>
               </CardBody>
@@ -556,7 +556,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onSectionChange 
       />
 
       <section className="space-y-6">
-        <h2 className="text-xl font-bold mb-4">{t('admin.payments.payoutRequests')}</h2>
+        <h2 className="mb-4 text-xl font-bold">{t('admin.payments.payoutRequests')}</h2>
         <PayoutRequestsTable
           requests={requests}
           isLoading={isLoading}

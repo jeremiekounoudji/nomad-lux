@@ -3,7 +3,6 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Progr
 import { Camera, X, Check, RotateCw } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { ProfileImageData } from '../../../interfaces/Profile'
-import toast from 'react-hot-toast'
 
 interface ImagePreviewModalProps {
   isOpen: boolean
@@ -29,10 +28,17 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
     setRotation((prev) => (prev + 90) % 360)
   }
 
-  const handleConfirm = async () => {
+       const handleConfirm = async () => {
     if (!imageData) return
     
     try {
+      console.log('🔄 Confirming upload with imageData:', {
+        fileName: imageData.file?.name || 'No file name',
+        fileType: imageData.file?.type || 'No file type',
+        fileSize: imageData.file?.size || 'No file size',
+        isFile: imageData.file instanceof File
+      })
+      
       await onConfirm(imageData)
       onClose()
       setRotation(0)
@@ -48,7 +54,10 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
     }
   }
 
-  if (!imageData) return null
+       if (!imageData) {
+    console.error('❌ No imageData provided to ImagePreviewModal')
+    return null
+  }
 
   return (
     <Modal 
@@ -61,11 +70,11 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Camera className="w-5 h-5 text-primary-600" />
-            <span>{t('profile:image.preview')}</span>
+            <Camera className="size-5 text-primary-600" />
+            <span>{t('profile.image.preview')}</span>
           </div>
-          <p className="text-sm text-gray-600 font-normal">
-            {t('profile:image.cropDescription')}
+          <p className="text-sm font-normal text-gray-600">
+            {t('profile.image.cropDescription')}
           </p>
         </ModalHeader>
         
@@ -73,11 +82,11 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
           <div className="space-y-4">
             {/* Image Preview */}
             <div className="flex justify-center">
-              <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-gray-200 bg-gray-100">
+              <div className="relative size-64 overflow-hidden rounded-full border-4 border-gray-200 bg-gray-100">
                 <img
                   src={imageData.previewUrl}
                   alt="Profile preview"
-                  className="w-full h-full object-cover"
+                  className="size-full object-cover"
                   style={{
                     transform: `rotate(${rotation}deg)`,
                     transition: 'transform 0.3s ease'
@@ -90,7 +99,7 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
             {isUploading && (
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>{t('profile:image.uploading')}</span>
+                  <span>{t('profile.image.uploading')}</span>
                   <span>{uploadProgress}%</span>
                 </div>
                 <Progress 
@@ -101,11 +110,16 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
               </div>
             )}
 
-            {/* Image Info */}
-            <div className="text-center text-sm text-gray-600">
-              <p>{imageData.file.name}</p>
-              <p>{(imageData.file.size / 1024 / 1024).toFixed(2)} MB</p>
-            </div>
+                         {/* Image Info */}
+             <div className="text-center text-sm text-gray-600">
+               <p>{imageData.file?.name || 'Unknown file'}</p>
+               <p>
+                 {imageData.file?.size 
+                   ? `${(imageData.file.size / 1024 / 1024).toFixed(2)} MB`
+                   : 'Size unavailable'
+                 }
+               </p>
+             </div>
           </div>
         </ModalBody>
 
@@ -114,18 +128,18 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
             variant="flat" 
             onPress={handleClose}
             disabled={isUploading}
-            startContent={<X className="w-4 h-4" />}
+            startContent={<X className="size-4" />}
           >
-            {t('common:buttons.cancel')}
+                         {t('common.buttons.cancel')}
           </Button>
           
           <Button 
             variant="flat"
             onPress={handleRotate}
             disabled={isUploading}
-            startContent={<RotateCw className="w-4 h-4" />}
+            startContent={<RotateCw className="size-4" />}
           >
-            {t('profile:image.actions.rotate')}
+            {t('profile.image.actions.rotate')}
           </Button>
           
           <Button 
@@ -133,9 +147,9 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
             onPress={handleConfirm}
             isLoading={isUploading}
             disabled={isUploading}
-            startContent={<Check className="w-4 h-4" />}
+            startContent={<Check className="size-4" />}
           >
-            {t('profile:image.actions.upload')}
+            {t('profile.image.actions.upload')}
           </Button>
         </ModalFooter>
       </ModalContent>

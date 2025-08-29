@@ -93,7 +93,7 @@ const calculateOptimizationStrategy = (
   const isRecentUser = timeSinceLastUse < 24 * 60 * 60 * 1000; // 24 hours
   
   // Base strategy
-  let strategy: MapOptimizationStrategy = {
+  const strategy: MapOptimizationStrategy = {
     shouldPreload: false,
     shouldUseSimplifiedMarkers: false,
     maxMarkers: 100,

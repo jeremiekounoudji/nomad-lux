@@ -1,10 +1,9 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useHomeFeedStore } from '../lib/stores/homeFeedStore'
 import { useAuthStore } from '../lib/stores/authStore'
 import { Property } from '../interfaces'
 import toast from 'react-hot-toast'
-import { usePropertyStore } from '../lib/stores/propertyStore'
 import { usePropertyLike } from './usePropertyLike'
 
 interface PopularPlace {

@@ -21,24 +21,24 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({
   // Placeholder implementation - will be implemented in task 3.2
   return (
     <div 
-      className={`cursor-pointer transform transition-transform hover:scale-110 ${
+      className={`cursor-pointer transition-transform hover:scale-110${
         isSelected ? 'scale-110' : ''
       }`}
       onClick={() => onClick?.(property)}
     >
-      <div className="bg-white rounded-lg shadow-lg p-2 border-2 border-primary-500">
+      <div className="rounded-lg border-2 border-primary-500 bg-white p-2 shadow-lg">
         {showImage && (
-          <div className="w-12 h-8 bg-gray-300 rounded mb-1 flex items-center justify-center">
+          <div className="mb-1 flex h-8 w-12 items-center justify-center rounded bg-gray-300">
             🏠
           </div>
         )}
         <div className="text-center">
           {showPrice && (
-            <p className="font-bold text-sm text-primary-600">
+            <p className="text-sm font-bold text-primary-600">
               ${property.currency} ${property.price}
             </p>
           )}
-          <p className="text-xs text-gray-600 truncate max-w-20">
+          <p className="max-w-20 truncate text-xs text-gray-600">
             {property.title}
           </p>
         </div>

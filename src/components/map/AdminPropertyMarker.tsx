@@ -3,8 +3,7 @@ import {
   Card, 
   CardBody, 
   CardHeader,
-  Button, 
-  ButtonGroup,
+  Button,
   Chip, 
   Avatar,
   Divider,
@@ -24,8 +23,7 @@ import {
   Star, 
   Users, 
   Bed, 
-  Bath, 
-  DollarSign,
+  Bath,
   CheckCircle,
   XCircle,
   Clock,
@@ -75,28 +73,28 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
       color: 'success' as const, 
       description: t('marker.statusChange.descriptions.approve'),
       requiresReason: false,
-      icon: <CheckCircle className="w-5 h-5" />
+      icon: <CheckCircle className="size-5" />
     },
     rejected: { 
       title: t('marker.statusChange.rejectProperty'), 
       color: 'danger' as const, 
       description: t('marker.statusChange.descriptions.reject'),
       requiresReason: true,
-      icon: <XCircle className="w-5 h-5" />
+      icon: <XCircle className="size-5" />
     },
     suspended: { 
       title: t('marker.statusChange.suspendProperty'), 
       color: 'warning' as const, 
       description: t('marker.statusChange.descriptions.suspend'),
       requiresReason: true,
-      icon: <Pause className="w-5 h-5" />
+      icon: <Pause className="size-5" />
     },
     pending: { 
       title: t('marker.statusChange.setToPending'), 
       color: 'warning' as const, 
       description: t('marker.statusChange.descriptions.pending'),
       requiresReason: false,
-      icon: <Clock className="w-5 h-5" />
+      icon: <Clock className="size-5" />
     }
   };
 
@@ -125,7 +123,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
       <ModalContent>
         <ModalHeader>
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg bg-${config.color}-100`}>
+            <div className={`bg- rounded-lg p-2${config.color}-100`}>
               {config.icon}
             </div>
             <div>
@@ -139,12 +137,12 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
             <p className="text-gray-700">{config.description}</p>
             
             {/* Property Info */}
-            <div className="p-3 bg-gray-50 rounded-lg">
+            <div className="rounded-lg bg-gray-50 p-3">
               <div className="flex items-center gap-3">
                 <img 
                   src={property.images[0]} 
                   alt={property.title}
-                  className="w-12 h-12 object-cover rounded-lg"
+                  className="size-12 rounded-lg object-cover"
                 />
                 <div className="flex-1">
                   <h4 className="font-medium">{property.title}</h4>
@@ -180,7 +178,7 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
                   onChange={(e) => setReason(e.target.value)}
                   placeholder={t('marker.statusChange.reasonPlaceholder', { action: newStatus })}
                   rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full resize-none rounded-lg border border-gray-300 p-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>
@@ -240,11 +238,11 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'approved': return <CheckCircle className="w-4 h-4" />;
-      case 'pending': return <Clock className="w-4 h-4" />;
-      case 'rejected': return <XCircle className="w-4 h-4" />;
-      case 'suspended': return <Pause className="w-4 h-4" />;
-      default: return <AlertTriangle className="w-4 h-4" />;
+      case 'approved': return <CheckCircle className="size-4" />;
+      case 'pending': return <Clock className="size-4" />;
+      case 'rejected': return <XCircle className="size-4" />;
+      case 'suspended': return <Pause className="size-4" />;
+      default: return <AlertTriangle className="size-4" />;
     }
   };
 
@@ -252,21 +250,21 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
     <>
       <Card className={`w-80 shadow-lg ${selected ? 'ring-2 ring-primary-500 ring-offset-2' : ''}`}>
         <CardHeader className="pb-2">
-          <div className="flex items-start justify-between w-full">
+          <div className="flex w-full items-start justify-between">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
+              <div className="mb-1 flex items-center gap-2">
+                <h3 className="line-clamp-1 text-lg font-semibold">{property.title}</h3>
                 {onSelectionChange && (
                   <input
                     type="checkbox"
                     checked={selected}
                     onChange={(e) => onSelectionChange(e.target.checked)}
-                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500"
+                    className="size-4 rounded text-primary-600 focus:ring-primary-500"
                   />
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
-                <MapPin className="w-4 h-4" />
+                <MapPin className="size-4" />
                 <span>{property.location.city}, {property.location.country}</span>
               </div>
             </div>
@@ -287,9 +285,9 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
             <img 
               src={property.images[0]} 
               alt={property.title}
-              className="w-full h-32 object-cover rounded-lg"
+              className="h-32 w-full rounded-lg object-cover"
             />
-            <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+            <div className="absolute right-2 top-2 rounded bg-black/70 px-2 py-1 text-xs text-white">
               {property.images.length} {t('marker.photos')}
             </div>
           </div>
@@ -299,20 +297,20 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
+                  <Users className="size-4" />
                   <span>{property.max_guests}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Bed className="w-4 h-4" />
+                  <Bed className="size-4" />
                   <span>{property.bedrooms}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Bath className="w-4 h-4" />
+                  <Bath className="size-4" />
                   <span>{property.bathrooms}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                <Star className="size-4 fill-current text-yellow-400" />
                 <span className="text-sm font-medium">{property.rating}</span>
               </div>
             </div>
@@ -328,7 +326,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
             </div>
 
             {/* Host Info */}
-            <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-2 rounded-lg bg-gray-50 p-2">
               <Avatar 
                 src={property.host.avatar_url} 
                 name={property.host.display_name}
@@ -351,17 +349,17 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                     <Dropdown>
                       <DropdownTrigger>
                         <Button size="sm" variant="light" isIconOnly>
-                          <MoreVertical className="w-4 h-4" />
+                          <MoreVertical className="size-4" />
                         </Button>
                       </DropdownTrigger>
                       <DropdownMenu aria-label="Property actions">
-                        <DropdownItem key="view" startContent={<Eye className="w-4 h-4" />} onPress={() => onPropertyView(property)}>
+                        <DropdownItem key="view" startContent={<Eye className="size-4" />} onPress={() => onPropertyView(property)}>
                           {t('marker.viewDetails')}
                         </DropdownItem>
-                        <DropdownItem key="edit" startContent={<Edit className="w-4 h-4" />} onPress={() => onPropertyEdit(property)}>
+                        <DropdownItem key="edit" startContent={<Edit className="size-4" />} onPress={() => onPropertyEdit(property)}>
                           {t('marker.editProperty')}
                         </DropdownItem>
-                        <DropdownItem key="contact" startContent={<MessageSquare className="w-4 h-4" />}>
+                        <DropdownItem key="contact" startContent={<MessageSquare className="size-4" />}>
                           {t('marker.contactHost')}
                         </DropdownItem>
                       </DropdownMenu>
@@ -375,7 +373,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         size="sm"
                         color="success"
                         variant="flat"
-                        startContent={<CheckCircle className="w-4 h-4" />}
+                        startContent={<CheckCircle className="size-4" />}
                         onPress={() => handleStatusChange('approved')}
                       >
                         {t('marker.statusChange.actions.approve')}
@@ -386,7 +384,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         size="sm"
                         color="danger"
                         variant="flat"
-                        startContent={<XCircle className="w-4 h-4" />}
+                        startContent={<XCircle className="size-4" />}
                         onPress={() => handleStatusChange('rejected')}
                       >
                         {t('marker.statusChange.actions.reject')}
@@ -397,7 +395,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         size="sm"
                         color="warning"
                         variant="flat"
-                        startContent={<Pause className="w-4 h-4" />}
+                        startContent={<Pause className="size-4" />}
                         onPress={() => handleStatusChange('suspended')}
                       >
                         {t('marker.statusChange.actions.suspend')}
@@ -408,7 +406,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         size="sm"
                         color="default"
                         variant="flat"
-                        startContent={<Clock className="w-4 h-4" />}
+                        startContent={<Clock className="size-4" />}
                         onPress={() => handleStatusChange('pending')}
                       >
                         {t('marker.statusChange.actions.pending')}

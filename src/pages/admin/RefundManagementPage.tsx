@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react'
 import {
   Card,
   CardBody,
-  CardHeader,
   Button,
   Tabs,
   Tab,
   Chip,
-  Avatar,
   Modal,
   ModalContent,
   ModalHeader,
@@ -23,12 +21,10 @@ import {
   DollarSign,
   Calendar,
   User,
-  Home,
   CheckCircle,
   XCircle,
   Clock,
-  AlertTriangle,
-  Eye
+  AlertTriangle
 } from 'lucide-react'
 import { useAdminBookings } from '../../hooks/useAdminBookings'
 import { AdminRefundRequest } from '../../interfaces/PaymentRecord'
@@ -58,11 +54,11 @@ const RefundManagementPage: React.FC = () => {
   const [action, setAction] = useState<'approve' | 'reject'>('approve')
 
   const statusTabs: { key: RefundStatus; label: string; color: string; icon: React.ReactNode }[] = [
-    { key: 'pending', label: 'Pending', color: 'warning', icon: <Clock className="w-4 h-4" /> },
-    { key: 'approved', label: 'Approved', color: 'success', icon: <CheckCircle className="w-4 h-4" /> },
-    { key: 'processed', label: 'Processed', color: 'primary', icon: <DollarSign className="w-4 h-4" /> },
-    { key: 'rejected', label: 'Rejected', color: 'danger', icon: <XCircle className="w-4 h-4" /> },
-    { key: 'failed', label: 'Failed', color: 'danger', icon: <AlertTriangle className="w-4 h-4" /> }
+    { key: 'pending', label: 'Pending', color: 'warning', icon: <Clock className="size-4" /> },
+    { key: 'approved', label: 'Approved', color: 'success', icon: <CheckCircle className="size-4" /> },
+    { key: 'processed', label: 'Processed', color: 'primary', icon: <DollarSign className="size-4" /> },
+    { key: 'rejected', label: 'Rejected', color: 'danger', icon: <XCircle className="size-4" /> },
+    { key: 'failed', label: 'Failed', color: 'danger', icon: <AlertTriangle className="size-4" /> }
   ]
 
   const loadRefunds = async (status: RefundStatus, page: number = 1) => {
@@ -148,10 +144,10 @@ const RefundManagementPage: React.FC = () => {
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Refund Management</h1>
-        <p className="text-gray-600 mt-1">Manage and process refund requests from users</p>
+        <p className="mt-1 text-gray-600">Manage and process refund requests from users</p>
       </div>
 
       {/* Status Tabs */}
@@ -185,9 +181,9 @@ const RefundManagementPage: React.FC = () => {
       {/* Refund Requests List */}
       <div className="mt-6">
         {isLoading ? (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <Spinner size="lg" />
-            <p className="text-gray-500 mt-2">Loading refund requests...</p>
+            <p className="mt-2 text-gray-500">Loading refund requests...</p>
           </div>
         ) : refundRequests.length > 0 ? (
           <div className="space-y-4">
@@ -201,21 +197,21 @@ const RefundManagementPage: React.FC = () => {
                         <img
                           src={refund.booking.properties.images[0] || ''}
                           alt={refund.booking.properties.title}
-                          className="w-16 h-16 object-cover rounded-lg"
+                          className="size-16 rounded-lg object-cover"
                         />
                         <div className="flex-1">
-                          <h3 className="font-semibold text-lg">{refund.booking.properties.title}</h3>
-                          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                          <h3 className="text-lg font-semibold">{refund.booking.properties.title}</h3>
+                          <div className="mt-2 flex items-center gap-4 text-sm text-gray-600">
                             <div className="flex items-center gap-1">
-                              <User className="w-4 h-4" />
+                              <User className="size-4" />
                               <span>{refund.booking.guest_user.display_name}</span>
                             </div>
                             <div className="flex items-center gap-1">
-                              <Calendar className="w-4 h-4" />
+                              <Calendar className="size-4" />
                               <span>{formatDate(refund.booking.cancelled_at)}</span>
                             </div>
                           </div>
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p className="mt-1 text-sm text-gray-500">
                             Reason: {refund.refund_reason}
                           </p>
                         </div>
@@ -231,7 +227,7 @@ const RefundManagementPage: React.FC = () => {
                         </p>
                         {refund.approved_amount && (
                           <>
-                            <p className="text-sm text-gray-600 mt-1">Approved Amount</p>
+                            <p className="mt-1 text-sm text-gray-600">Approved Amount</p>
                             <p className="text-lg font-semibold text-success-600">
                               {formatPrice(refund.approved_amount, refund.currency || 'USD')}
                             </p>
@@ -254,7 +250,7 @@ const RefundManagementPage: React.FC = () => {
                             color="success"
                             variant="flat"
                             onPress={() => handleProcessRefund(refund, 'approve')}
-                            startContent={<CheckCircle className="w-4 h-4" />}
+                            startContent={<CheckCircle className="size-4" />}
                           >
                             Approve
                           </Button>
@@ -263,7 +259,7 @@ const RefundManagementPage: React.FC = () => {
                             color="danger"
                             variant="flat"
                             onPress={() => handleProcessRefund(refund, 'reject')}
-                            startContent={<XCircle className="w-4 h-4" />}
+                            startContent={<XCircle className="size-4" />}
                           >
                             Reject
                           </Button>
@@ -271,7 +267,7 @@ const RefundManagementPage: React.FC = () => {
                       )}
 
                       {refund.admin_notes && (
-                        <div className="text-xs text-gray-500 max-w-xs text-right">
+                        <div className="max-w-xs text-right text-xs text-gray-500">
                           <p className="font-medium">Admin Notes:</p>
                           <p>{refund.admin_notes}</p>
                         </div>
@@ -283,9 +279,9 @@ const RefundManagementPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="py-12 text-center">
+            <DollarSign className="mx-auto mb-4 size-16 text-gray-300" />
+            <h3 className="mb-2 text-lg font-medium text-gray-900">
               No {selectedTab} refund requests
             </h3>
             <p className="text-gray-500">
@@ -296,13 +292,13 @@ const RefundManagementPage: React.FC = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+          <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
             <button
               onClick={() => loadRefunds(selectedTab, currentPage - 1)}
               disabled={currentPage === 1 || isLoading}
-              className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+              className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                 ${currentPage === 1 || isLoading
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                   : 'bg-primary-600 text-white hover:bg-primary-700'}`}
             >
               Previous
@@ -315,9 +311,9 @@ const RefundManagementPage: React.FC = () => {
             <button
               onClick={() => loadRefunds(selectedTab, currentPage + 1)}
               disabled={isLoading || currentPage >= totalPages}
-              className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+              className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                 ${isLoading || currentPage >= totalPages
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? 'cursor-not-allowed bg-gray-100 text-gray-400'
                   : 'bg-primary-600 text-white hover:bg-primary-700'}`}
             >
               Next
@@ -334,9 +330,9 @@ const RefundManagementPage: React.FC = () => {
               <ModalHeader className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   {action === 'approve' ? (
-                    <CheckCircle className="w-6 h-6 text-success-500" />
+                    <CheckCircle className="size-6 text-success-500" />
                   ) : (
-                    <XCircle className="w-6 h-6 text-danger-500" />
+                    <XCircle className="size-6 text-danger-500" />
                   )}
                   <h2 className="text-xl font-bold">
                     {action === 'approve' ? 'Approve' : 'Reject'} Refund
@@ -353,10 +349,10 @@ const RefundManagementPage: React.FC = () => {
                           <img
                             src={selectedRefund.booking.properties.images[0] || ''}
                             alt={selectedRefund.booking.properties.title}
-                            className="w-20 h-20 object-cover rounded-lg"
+                            className="size-20 rounded-lg object-cover"
                           />
                           <div className="flex-1">
-                            <h3 className="font-semibold text-lg">{selectedRefund.booking.properties.title}</h3>
+                            <h3 className="text-lg font-semibold">{selectedRefund.booking.properties.title}</h3>
                             <p className="text-sm text-gray-600">{selectedRefund.booking.guest_user.display_name}</p>
                             <p className="text-sm text-gray-500">Requested: {formatPrice(selectedRefund.requested_amount, selectedRefund.currency || 'USD')}</p>
                           </div>
@@ -368,7 +364,7 @@ const RefundManagementPage: React.FC = () => {
 
                     {/* Amount Input */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="mb-2 block text-sm font-medium text-gray-700">
                         {action === 'approve' ? 'Approved' : 'Rejected'} Amount
                       </label>
                       <Input
@@ -376,19 +372,19 @@ const RefundManagementPage: React.FC = () => {
                         value={approvedAmount}
                         onChange={(e) => setApprovedAmount(e.target.value)}
                         placeholder="Enter amount"
-                        startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+                        startContent={<DollarSign className="size-4 text-gray-400" />}
                         min="0"
                         max={selectedRefund.requested_amount}
                         step="0.01"
                       />
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="mt-1 text-xs text-gray-500">
                         Maximum: {formatPrice(selectedRefund.requested_amount, selectedRefund.currency || 'USD')}
                       </p>
                     </div>
 
                     {/* Admin Notes */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="mb-2 block text-sm font-medium text-gray-700">
                         Admin Notes
                       </label>
                       <Textarea
@@ -409,7 +405,7 @@ const RefundManagementPage: React.FC = () => {
                   color={action === 'approve' ? 'success' : 'danger'}
                   onPress={handleConfirmProcess}
                   isLoading={isProcessing}
-                  startContent={action === 'approve' ? <CheckCircle className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
+                  startContent={action === 'approve' ? <CheckCircle className="size-4" /> : <XCircle className="size-4" />}
                 >
                   {isProcessing ? 'Processing...' : action === 'approve' ? 'Approve Refund' : 'Reject Refund'}
                 </Button>

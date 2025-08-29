@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Button, Card, CardBody } from '@heroui/react'
-import { ArrowLeft, Home, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
-import MainLayout from '../components/layout/MainLayout'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import PropertySubmissionForm from '../components/features/property/PropertySubmissionForm'
@@ -11,7 +10,7 @@ import { PropertyEditConfirmationModal } from '../components/shared'
 import { useUserListings } from '../hooks/useUserListings'
 import { useTranslation } from '../lib/stores/translationStore'
 import { convertDatabasePropertyToSubmissionData } from '../utils/propertyUtils'
-import { DatabaseProperty, PropertyEditConfirmation } from '../interfaces'
+import { PropertyEditConfirmation } from '../interfaces'
 import { ROUTES } from '../router/types'
 import { useAuthStore } from '../lib/stores/authStore'
 import { usePropertyEditStore } from '../lib/stores/propertyEditStore'
@@ -143,16 +142,16 @@ const EditPropertyPage: React.FC = () => {
   // Show loading if property is not yet available
   if (!property) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mx-auto max-w-7xl">
         <div className="animate-pulse">
-          <div className="h-48 bg-gray-200 rounded-lg mb-6"></div>
+          <div className="mb-6 h-48 rounded-lg bg-gray-200"></div>
           <div className="space-y-4">
-            <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-32 bg-gray-200 rounded"></div>
+            <div className="h-4 w-1/4 rounded bg-gray-200"></div>
+            <div className="h-4 w-1/2 rounded bg-gray-200"></div>
+            <div className="h-32 rounded bg-gray-200"></div>
           </div>
         </div>
-        {isFetching && <Loader2 className="w-6 h-6 text-gray-400 animate-spin mx-auto mt-6" />}
+        {isFetching && <Loader2 className="mx-auto mt-6 size-6 animate-spin text-gray-400" />}
       </div>
     )
   }
@@ -160,12 +159,12 @@ const EditPropertyPage: React.FC = () => {
 
 
   return (
-    <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 min-h-screen">
+            <div className="mx-auto min-h-screen w-full">
         {/* Header */}
         <div className="mb-6">
           <Button
             variant="light"
-            startContent={<ArrowLeft className="w-4 h-4" />}
+            startContent={<ArrowLeft className="size-4" />}
             onPress={handleBackToListings}
             className="mb-4"
           >
@@ -184,10 +183,10 @@ const EditPropertyPage: React.FC = () => {
         </div>
 
         {/* Edit Form */}
-        <Card className="shadow-sm overflow-visible">
-          <CardBody className="p-6 overflow-visible">
+        <Card className="overflow-visible shadow-sm">
+          <CardBody className="overflow-visible p-6">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              <h1 className="mb-2 text-2xl font-bold text-gray-900">
                 {t('property.editProperty.title')}
               </h1>
               <p className="text-gray-600">

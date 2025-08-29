@@ -68,20 +68,20 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
             <ModalBody>
               <div className="space-y-4">
                 {/* Property Info */}
-                <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
+                <div className="flex gap-4 rounded-lg bg-gray-50 p-4">
                   <img
                     src={property.images[0]}
                     alt={property.title}
-                    className="w-20 h-20 object-cover rounded-lg"
+                    className="size-20 rounded-lg object-cover"
                   />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-lg">{property.title}</h3>
+                    <h3 className="text-lg font-semibold">{property.title}</h3>
                     <div className="flex items-center gap-1 text-sm text-gray-600">
-                      <MapPin className="w-4 h-4" />
+                      <MapPin className="size-4" />
                       <span>{`${property.location.city}, ${property.location.country}`}</span>
                     </div>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                    <div className="mt-1 flex items-center gap-1">
+                      <Star className="size-4 fill-current text-yellow-500" />
                       <span className="text-sm font-medium">{property.rating}</span>
                       <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
                     </div>
@@ -115,7 +115,7 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
                   {specialRequests && (
                     <div>
                       <p className="text-sm font-semibold text-gray-700">Special Requests</p>
-                      <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{specialRequests}</p>
+                      <p className="rounded-lg bg-gray-50 p-3 text-sm text-gray-600">{specialRequests}</p>
                     </div>
                   )}
                 </div>
@@ -137,7 +137,7 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
                     <span>${serviceFee}</span>
                   </div>
                   <Divider className="my-2" />
-                  <div className="flex justify-between font-bold text-lg">
+                  <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
                     <span>${totalAmount}</span>
                   </div>
@@ -149,9 +149,9 @@ const BookingConfirmationModal: React.FC<BookingConfirmationModalProps> = ({
                 Cancel
               </Button>
               <Button 
-                className="bg-primary-600 hover:bg-primary-700 text-white font-semibold"
+                className="bg-primary-600 font-semibold text-white hover:bg-primary-700"
                 onPress={onConfirmBooking}
-                startContent={!isCreatingBooking && <CheckCircle className="w-4 h-4" />}
+                startContent={!isCreatingBooking && <CheckCircle className="size-4" />}
                 isLoading={isCreatingBooking}
                 disabled={isCreatingBooking}
               >

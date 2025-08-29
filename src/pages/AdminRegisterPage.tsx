@@ -89,7 +89,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
 
   return (
     <div 
-      className="fixed inset-0 w-screen h-screen flex items-center justify-center p-4 overflow-y-auto"
+      className="fixed inset-0 flex h-screen w-screen items-center justify-center overflow-y-auto p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -104,35 +104,35 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-primary-500/20 backdrop-blur-md border border-primary-400/30 text-white hover:bg-primary-500/30"
+        className="absolute left-6 top-6 z-20 border border-primary-400/30 bg-primary-500/20 text-white backdrop-blur-md hover:bg-primary-500/30"
         onPress={handleBackToLogin}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Admin Register Form */}
-      <Card className="w-full max-w-2xl z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-2xl border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-600/80 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-              <Crown className="w-8 h-8 text-white" />
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl border border-white/20 bg-primary-600/80 backdrop-blur-md">
+              <Crown className="size-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('admin.register.title', 'Create Admin Account')}</h1>
-            <p className="text-white/80 text-sm font-script">{t('admin.login.subtitle')}</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('admin.register.title', 'Create Admin Account')}</h1>
+            <p className="font-script text-sm text-white/80">{t('admin.login.subtitle')}</p>
           </div>
 
           {/* Registration Form */}
           <div className="space-y-6">
             {/* Personal Information */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input
                 type="text"
                 label={t('admin.register.fullName', 'Full Name')}
                 placeholder={t('admin.register.fullNamePlaceholder', 'Your full name')}
                 value={formData.name}
                 onValueChange={(value) => handleInputChange('name', value)}
-                startContent={<User className="w-4 h-4 text-white/60" />}
+                startContent={<User className="size-4 text-white/60" />}
                 classNames={{
                   base: "max-w-full",
                   mainWrapper: "h-full",
@@ -149,7 +149,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
                 placeholder="admin@nomadlux.com"
                 value={formData.email}
                 onValueChange={(value) => handleInputChange('email', value)}
-                startContent={<Mail className="w-4 h-4 text-white/60" />}
+                startContent={<Mail className="size-4 text-white/60" />}
                 classNames={{
                   base: "max-w-full",
                   mainWrapper: "h-full",
@@ -167,7 +167,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
               placeholder="+1 (555) 123-4567"
               value={formData.phone}
               onValueChange={(value) => handleInputChange('phone', value)}
-              startContent={<Phone className="w-4 h-4 text-white/60" />}
+              startContent={<Phone className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -178,13 +178,13 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
             />
 
             {/* Password Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Input
                 label={t('auth.signup.password')}
                 placeholder={t('auth.signup.passwordPlaceholder')}
                 value={formData.password}
                 onValueChange={(value) => handleInputChange('password', value)}
-                startContent={<Lock className="w-4 h-4 text-white/60" />}
+                startContent={<Lock className="size-4 text-white/60" />}
                 endContent={
                   <button 
                     className="focus:outline-none" 
@@ -192,9 +192,9 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
                     onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                   >
                     {isPasswordVisible ? (
-                      <EyeOff className="w-4 h-4 text-white/60" />
+                      <EyeOff className="size-4 text-white/60" />
                     ) : (
-                      <Eye className="w-4 h-4 text-white/60" />
+                      <Eye className="size-4 text-white/60" />
                     )}
                   </button>
                 }
@@ -214,7 +214,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
                 placeholder={t('auth.signup.confirmPasswordPlaceholder')}
                 value={formData.confirmPassword}
                 onValueChange={(value) => handleInputChange('confirmPassword', value)}
-                startContent={<Lock className="w-4 h-4 text-white/60" />}
+                startContent={<Lock className="size-4 text-white/60" />}
                 endContent={
                   <button 
                     className="focus:outline-none" 
@@ -222,9 +222,9 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
                     onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
                   >
                     {isConfirmPasswordVisible ? (
-                      <EyeOff className="w-4 h-4 text-white/60" />
+                      <EyeOff className="size-4 text-white/60" />
                     ) : (
-                      <Eye className="w-4 h-4 text-white/60" />
+                      <Eye className="size-4 text-white/60" />
                     )}
                   </button>
                 }
@@ -258,7 +258,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
 
             {/* Error Message */}
             {error && (
-              <div className="text-red-300 text-sm text-center bg-red-500/20 backdrop-blur-md p-3 rounded-lg border border-red-400/30">
+              <div className="rounded-lg border border-red-400/30 bg-red-500/20 p-3 text-center text-sm text-red-300 backdrop-blur-md">
                 {error}
               </div>
             )}
@@ -267,7 +267,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleSubmit}
               isLoading={isLoading}
               isDisabled={!formData.name || !formData.email || !formData.password || !formData.confirmPassword || !formData.reason}
@@ -277,7 +277,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
           </div>
 
           {/* Additional Info */}
-          <div className="mt-6 p-4 bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-lg">
+          <div className="mt-6 rounded-lg border border-blue-400/30 bg-blue-500/20 p-4 backdrop-blur-md">
             <p className="text-sm text-blue-100">
               <strong>{t('admin.register.infoTitle', 'Admin Registration:')}</strong><br />
               {t('admin.register.info', 'Your account will be created with full administrative privileges and immediate access to the admin panel.')}
@@ -285,13 +285,13 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
           </div>
 
           {/* Back to Login Link */}
-          <div className="text-center mt-6">
-            <p className="text-white/60 text-sm">
+          <div className="mt-6 text-center">
+            <p className="text-sm text-white/60">
               {t('admin.register.hasAccount', 'Already have an admin account?')}{' '}
               <Button
                 variant="light"
                 size="sm"
-                className="text-primary-300 hover:text-primary-200 p-0 h-auto min-w-0"
+                className="h-auto min-w-0 p-0 text-primary-300 hover:text-primary-200"
                 onPress={handleBackToLogin}
               >
                 {t('admin.register.signInHere', 'Sign in here')}

@@ -1,12 +1,8 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { LazyMapWrapper } from '../../map';
 import { DatabaseProperty } from '../../../interfaces/DatabaseProperty';
-import { MapCoordinates } from '../../../interfaces/Map';
-import AdminMapToolbar, { MapFilter, AdminMapToolbarProps } from './AdminMapToolbar';
+import AdminMapToolbar, { MapFilter } from './AdminMapToolbar';
 import { 
-  Card, 
-  CardBody, 
-  Badge, 
   Button, 
   Chip,
   Modal,
@@ -16,15 +12,9 @@ import {
   ModalFooter,
   useDisclosure
 } from '@heroui/react';
-import { 
-  MapPin, 
-  Building, 
-  Users, 
-  DollarSign, 
-  Calendar,
+import {
   CheckCircle,
   XCircle,
-  Clock,
   Pause,
   AlertTriangle
 } from 'lucide-react';
@@ -110,11 +100,11 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
       <ModalContent>
         <ModalHeader>
           <div className="flex items-center gap-3">
-            <div className={`p-2 rounded-lg bg-${config.color}-100`}>
-              {action === 'approve' && <CheckCircle className={`w-5 h-5 text-${config.color}-600`} />}
-              {action === 'reject' && <XCircle className={`w-5 h-5 text-${config.color}-600`} />}
-              {action === 'suspend' && <Pause className={`w-5 h-5 text-${config.color}-600`} />}
-              {action === 'delete' && <AlertTriangle className={`w-5 h-5 text-${config.color}-600`} />}
+            <div className={`bg- rounded-lg p-2${config.color}-100`}>
+              {action === 'approve' && <CheckCircle className={`text- size-5${config.color}-600`} />}
+              {action === 'reject' && <XCircle className={`text- size-5${config.color}-600`} />}
+              {action === 'suspend' && <Pause className={`text- size-5${config.color}-600`} />}
+              {action === 'delete' && <AlertTriangle className={`text- size-5${config.color}-600`} />}
             </div>
             <div>
               <h2 className="text-xl font-semibold">{config.title}</h2>
@@ -127,16 +117,16 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
             <p className="text-gray-700">{config.description}</p>
             
             {/* Property List */}
-            <div className="max-h-48 overflow-y-auto space-y-2">
+            <div className="max-h-48 space-y-2 overflow-y-auto">
               {properties.map(property => (
-                <div key={property.id} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
+                <div key={property.id} className="flex items-center gap-3 rounded-lg bg-gray-50 p-2">
                   <img 
                     src={property.images[0]} 
                     alt={property.title}
-                    className="w-12 h-12 object-cover rounded-lg"
+                    className="size-12 rounded-lg object-cover"
                   />
                   <div className="flex-1">
-                    <h4 className="font-medium text-sm">{property.title}</h4>
+                    <h4 className="text-sm font-medium">{property.title}</h4>
                     <p className="text-xs text-gray-600">
                       {property.location.city}, {property.location.country}
                     </p>
@@ -163,7 +153,7 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
                   onChange={(e) => setReason(e.target.value)}
                   placeholder={t('admin.properties.bulkActions.reason.placeholder', { action: action, defaultValue: 'Please provide a reason for {{action}}ing these properties...' })}
                   rows={3}
-                  className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  className="w-full resize-none rounded-lg border border-gray-300 p-3 focus:border-primary-500 focus:ring-2 focus:ring-primary-500"
                   required
                 />
               </div>

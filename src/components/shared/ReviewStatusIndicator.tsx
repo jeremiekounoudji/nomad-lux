@@ -39,21 +39,21 @@ const ReviewStatusIndicator: React.FC<ReviewStatusIndicatorProps> = ({
     if (hasReview) {
       return {
         color: 'success' as const,
-        icon: <CheckCircle className="w-3 h-3" />,
+        icon: <CheckCircle className="size-3" />,
         label: t('review.status.completed'),
         tooltip: t('review.status.completedTooltip')
       }
     } else if (canReview) {
       return {
         color: 'primary' as const,
-        icon: <Clock className="w-3 h-3" />,
+        icon: <Clock className="size-3" />,
         label: t('review.status.pending'),
         tooltip: t('review.status.pendingTooltip')
       }
     } else {
       return {
         color: 'danger' as const,
-        icon: <AlertCircle className="w-3 h-3" />,
+        icon: <AlertCircle className="size-3" />,
         label: t('review.status.unavailable'),
         tooltip: reason || t('review.status.unavailableTooltip')
       }

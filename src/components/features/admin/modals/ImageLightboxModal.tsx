@@ -23,27 +23,27 @@ export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
             <img
               src={selectedProperty.images[currentImageIndex]}
               alt={t('imageLightboxModal.altText', { index: currentImageIndex + 1 })}
-              className="w-full h-[70vh] object-contain bg-black"
+              className="h-[70vh] w-full bg-black object-contain"
             />
             {selectedProperty.images.length > 1 && (
               <>
                 <button 
                   onClick={prevImage} 
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
                   aria-label={t('imageLightboxModal.navigation.previous')}
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <ChevronLeft className="size-6" />
                 </button>
                 <button 
                   onClick={nextImage} 
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
                   aria-label={t('imageLightboxModal.navigation.next')}
                 >
-                  <ChevronRight className="w-6 h-6" />
+                  <ChevronRight className="size-6" />
                 </button>
               </>
             )}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-sm text-white">
               {t('imageLightboxModal.counter', { current: currentImageIndex + 1, total: selectedProperty.images.length })}
             </div>
           </div>

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../lib/stores/authStore'
 import { useAdminPropertyStore } from '../lib/stores/adminPropertyStore'
-import { DatabaseProperty, Property, PropertyStatus, ListingStats } from '../interfaces'
+import { DatabaseProperty, PropertyStatus, ListingStats } from '../interfaces'
 import toast from 'react-hot-toast'
 
 interface FetchPropertiesOptions {

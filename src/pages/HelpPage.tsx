@@ -96,8 +96,8 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Back Button */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="sticky top-0 z-10 border-b border-gray-200 bg-white shadow-sm">
+        <div className="mx-auto max-w-7xl">
           <div className="flex items-center">
             <Button
               isIconOnly
@@ -105,15 +105,15 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
               onPress={handleBackToHome}
               className="mr-4"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="size-5" />
             </Button>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t('help:header.title')}</h1>
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">{t('help:header.title')}</h1>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <div className="mx-auto max-w-7xl">
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('help').image}
@@ -126,10 +126,10 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         />
 
         {/* Search Section */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="text-center mb-6">
-            <HelpCircle className="w-16 h-16 text-primary-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('help:search.title')}</h2>
+        <div className="mx-auto mb-8 max-w-4xl">
+          <div className="mb-6 text-center">
+            <HelpCircle className="mx-auto mb-4 size-16 text-primary-500" />
+            <h2 className="mb-2 text-2xl font-bold text-gray-900">{t('help:search.title')}</h2>
             <p className="text-gray-600">{t('help:search.description')}</p>
           </div>
           
@@ -137,9 +137,9 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
             placeholder={t('help:search.placeholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            startContent={<Search className="w-5 h-5 text-gray-400" />}
+            startContent={<Search className="size-5 text-gray-400" />}
             size="lg"
-            className="max-w-2xl mx-auto"
+            className="mx-auto max-w-2xl"
             classNames={{
               input: "text-lg",
               inputWrapper: "h-14"
@@ -148,7 +148,7 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="mb-12 grid grid-cols-2 gap-4 md:grid-cols-4">
           <div className="text-center">
             <div className="text-3xl font-bold text-primary-600">24/7</div>
             <div className="text-sm text-gray-600">{t('help:stats.supportAvailable')}</div>
@@ -167,16 +167,16 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+        <div className="grid grid-cols-1 gap-8 pb-12 lg:grid-cols-3">
           {/* FAQ Section */}
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('help:faq.title')}</h2>
+            <h2 className="mb-6 text-2xl font-bold text-gray-900">{t('help:faq.title')}</h2>
             
             {filteredFAQs.length === 0 ? (
               <Card>
-                <CardBody className="text-center py-12">
-                  <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">{t('help:emptyState.title')}</h3>
+                <CardBody className="py-12 text-center">
+                  <Search className="mx-auto mb-4 size-16 text-gray-300" />
+                  <h3 className="mb-2 text-lg font-medium text-gray-900">{t('help:emptyState.title')}</h3>
                   <p className="text-gray-600">{t('help:emptyState.description')}</p>
                 </CardBody>
               </Card>
@@ -187,10 +187,10 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
                   return (
                     <Card key={category.id} className="overflow-hidden">
                       <CardBody className="p-0">
-                        <div className="p-6 border-b border-gray-100">
+                        <div className="border-b border-gray-100 p-6">
                           <div className="flex items-center gap-3">
-                            <div className={`w-10 h-10 rounded-lg bg-${category.color}-100 flex items-center justify-center`}>
-                              <IconComponent className={`w-5 h-5 text-${category.color}-600`} />
+                            <div className={`bg- size-10 rounded-lg${category.color}-100 flex items-center justify-center`}>
+                              <IconComponent className={`text- size-5${category.color}-600`} />
                             </div>
                             <div>
                               <h3 className="text-lg font-semibold text-gray-900">{category.title}</h3>
@@ -226,21 +226,21 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
           <div className="space-y-6">
             <Card>
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help:contact.title')}</h3>
-                <p className="text-gray-600 mb-6">{t('help:contact.description')}</p>
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">{t('help:contact.title')}</h3>
+                <p className="mb-6 text-gray-600">{t('help:contact.description')}</p>
                 
                 <div className="space-y-4">
                   {contactOptions.map((option, index) => {
                     const IconComponent = option.icon
                     return (
-                      <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-primary-300 transition-colors cursor-pointer" onClick={option.action}>
+                      <div key={index} className="cursor-pointer rounded-lg border border-gray-200 p-4 transition-colors hover:border-primary-300" onClick={option.action}>
                         <div className="flex items-start gap-3">
-                          <div className={`w-10 h-10 rounded-lg bg-${option.color}-100 flex items-center justify-center flex-shrink-0`}>
-                            <IconComponent className={`w-5 h-5 text-${option.color}-600`} />
+                          <div className={`bg- size-10 rounded-lg${option.color}-100 flex shrink-0 items-center justify-center`}>
+                            <IconComponent className={`text- size-5${option.color}-600`} />
                           </div>
                           <div className="flex-1">
                             <h4 className="font-medium text-gray-900">{option.title}</h4>
-                            <p className="text-sm text-gray-600 mb-1">{option.description}</p>
+                            <p className="mb-1 text-sm text-gray-600">{option.description}</p>
                             <Chip size="sm" variant="flat" color={option.color as any}>
                               {option.available}
                             </Chip>
@@ -256,13 +256,13 @@ const HelpPage: React.FC<HelpPageProps> = ({ onPageChange }) => {
             {/* Popular Articles */}
             <Card>
               <CardBody className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('help:popularArticles.title')}</h3>
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">{t('help:popularArticles.title')}</h3>
                 <div className="space-y-3">
-                                      <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.cancelOrModifyBooking')}</a>
-                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.understandingServiceFees')}</a>
-                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.guestVerificationProcess')}</a>
-                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.hostPayoutSchedule')}</a>
-                    <a href="#" className="block text-primary-600 hover:text-primary-700 text-sm hover:underline">{t('help:popularArticles.propertySafetyRequirements')}</a>
+                                      <a href="#" className="block text-sm text-primary-600 hover:text-primary-700 hover:underline">{t('help:popularArticles.cancelOrModifyBooking')}</a>
+                    <a href="#" className="block text-sm text-primary-600 hover:text-primary-700 hover:underline">{t('help:popularArticles.understandingServiceFees')}</a>
+                    <a href="#" className="block text-sm text-primary-600 hover:text-primary-700 hover:underline">{t('help:popularArticles.guestVerificationProcess')}</a>
+                    <a href="#" className="block text-sm text-primary-600 hover:text-primary-700 hover:underline">{t('help:popularArticles.hostPayoutSchedule')}</a>
+                    <a href="#" className="block text-sm text-primary-600 hover:text-primary-700 hover:underline">{t('help:popularArticles.propertySafetyRequirements')}</a>
                 </div>
               </CardBody>
             </Card>

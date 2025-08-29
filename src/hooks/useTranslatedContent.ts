@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useTranslationStore, Language } from '../lib/stores/translationStore'
+import { useTranslationStore } from '../lib/stores/translationStore'
 import { translationService } from '../lib/services/translationService'
 
 /**

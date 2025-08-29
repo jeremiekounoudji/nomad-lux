@@ -190,7 +190,13 @@ export const useProfile = (): UseProfileReturn => {
       }
 
       if (updateData.dateOfBirth !== undefined) {
-        updateFields.date_of_birth = updateData.dateOfBirth
+        // Only set date_of_birth if it's not an empty string
+        if (updateData.dateOfBirth && updateData.dateOfBirth.trim() !== '') {
+          updateFields.date_of_birth = updateData.dateOfBirth
+        } else {
+          // Set to null if empty string is provided
+          updateFields.date_of_birth = null
+        }
       }
 
       if (updateData.location !== undefined) {
@@ -200,6 +206,8 @@ export const useProfile = (): UseProfileReturn => {
       if (updateData.avatarUrl !== undefined) {
         updateFields.avatar_url = updateData.avatarUrl
       }
+
+      console.log('📝 Final update fields to be sent to database:', updateFields)
 
       // Check if user exists in the database by auth_id
       const existingUser = await fetchUserByAuthId(user.id)

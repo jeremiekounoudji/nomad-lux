@@ -97,7 +97,7 @@ const WalletPage: FC = () => {
   }
 
   return (
-    <div className="col-span-full h-full w-full pb-20 lg:pb-6">
+    <div className="col-span-full size-full pb-20 lg:pb-6">
       {/* Request Payout Modal */}
       {metrics && (
         <RequestPayoutModal
@@ -114,7 +114,7 @@ const WalletPage: FC = () => {
       )}
 
       {/* Header */}
-      <div className="mx-auto w-full px-4 sm:px-6 lg:px-8 py-6">
+      <div className="mx-auto w-full">
         {/* Wallet Banner */}
         <div className="mb-8">
           <PageBanner
@@ -129,120 +129,120 @@ const WalletPage: FC = () => {
 
         {/* Summary Cards */}
         {isMetricsLoading ? (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {[...Array(6)].map((_, i) => (
               <Skeleton key={i} className="h-24 w-full rounded-xl" />
             ))}
           </div>
         ) : metrics ? (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+          <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
             {/* Total Balance Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary-600">
+                  <DollarSign className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.totalBalance')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.totalBalance')}</p>
                 <h3 className="text-xl font-bold text-primary-600">{formatPrice(metrics.totalBalance, 'USD')}</h3>
               </div>
             </div>
 
             {/* Pending Amount & Count Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-yellow-600 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-yellow-600">
+                  <Clock className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.pending')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.pending')}</p>
                 <h3 className="text-xl font-bold text-yellow-600">{formatPrice(metrics.pendingAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.pendingCount })}</p>
               </div>
             </div>
 
             {/* Failed Amount & Count Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                  <XCircle className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-red-600">
+                  <XCircle className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.failed')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.failed')}</p>
                 <h3 className="text-xl font-bold text-red-600">{formatPrice(metrics.failedAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.failedCount })}</p>
               </div>
             </div>
 
             {/* Successful Amount & Count Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-green-600">
+                  <CheckCircle className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.successful')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.successful')}</p>
                 <h3 className="text-xl font-bold text-green-600">{formatPrice(metrics.successfulAmount, 'USD')}</h3>
                 <p className="text-xs text-gray-400">{t('wallet.cards.transactions', { count: metrics.successfulCount })}</p>
               </div>
             </div>
 
             {/* Payout Balance Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <CreditCard className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-blue-600">
+                  <CreditCard className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.payoutBalance')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.payoutBalance')}</p>
                 <h3 className="text-xl font-bold text-blue-600">{formatPrice(metrics.payoutBalance, 'USD')}</h3>
               </div>
             </div>
 
             {/* Last Payout Date Card */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 relative">
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-10 h-10 bg-gray-600 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-white" />
+            <div className="relative rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-gray-600">
+                  <TrendingUp className="size-5 text-white" />
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                   </svg>
                 </button>
               </div>
               <div className="space-y-1">
-                <p className="text-xs text-gray-500 font-medium">{t('wallet.cards.lastPayout')}</p>
+                <p className="text-xs font-medium text-gray-500">{t('wallet.cards.lastPayout')}</p>
                 <h3 className="text-sm font-bold text-gray-600">
                   {metrics.lastPayoutDate ? new Date(metrics.lastPayoutDate).toLocaleDateString() : t('wallet.cards.never')}
                 </h3>
@@ -253,30 +253,30 @@ const WalletPage: FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className=" mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="mx-auto">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Recent Activities */}
-          <div className="col-span-1 lg:col-span-2 space-y-6">
+          <div className="col-span-1 space-y-6 lg:col-span-2">
             {/* Payout Button Section */}
             {metrics && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+              <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-2">{t('wallet.payout.available')}</h2>
-                    <div className="text-3xl font-bold text-primary-600 mb-1">
+                    <h2 className="mb-2 text-lg font-semibold text-gray-900">{t('wallet.payout.available')}</h2>
+                    <div className="mb-1 text-3xl font-bold text-primary-600">
                       {/* Assuming formatCurrency is defined elsewhere or will be added */}
                       {formatPrice(metrics.payoutBalance, 'USD')}
                     </div>
                     {metrics.nextPayoutAllowedAt && new Date(metrics.nextPayoutAllowedAt) > new Date() ? (
-                      <p className="text-sm text-gray-500 mt-1">
+                      <p className="mt-1 text-sm text-gray-500">
                         {t('wallet.payout.nextPayout')} {new Date(metrics.nextPayoutAllowedAt).toLocaleDateString()}
                       </p>
                     ) : (
-                      <p className="text-sm text-gray-500 mt-1">{t('wallet.payout.ready')}</p>
+                      <p className="mt-1 text-sm text-gray-500">{t('wallet.payout.ready')}</p>
                     )}
                   </div>
                   <button
-                    className="px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors disabled:bg-gray-300 disabled:text-gray-500"
+                    className="rounded-lg bg-primary-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-primary-700 disabled:bg-gray-300 disabled:text-gray-500"
                     onClick={() => setPayoutModalOpen(true)}
                   >
                     {t('wallet.actions.payout')}
@@ -286,16 +286,16 @@ const WalletPage: FC = () => {
             )}
 
             {/* Recent Activities */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('wallet.transactions.title')}</h2>
+            <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+              <h2 className="mb-4 text-lg font-semibold text-gray-900">{t('wallet.transactions.title')}</h2>
             
               <div className="space-y-4">
                 {isLoading && !payments.length ? (
                   <div className="space-y-4">
                     {[...Array(5)].map((_, i) => (
                       <div key={i} className="flex items-center space-x-4">
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                        <div className="space-y-2 flex-1">
+                        <Skeleton className="size-10 rounded-full" />
+                        <div className="flex-1 space-y-2">
                           <Skeleton className="h-4 w-3/4" />
                           <Skeleton className="h-3 w-1/2" />
                         </div>
@@ -306,33 +306,33 @@ const WalletPage: FC = () => {
                 ) : (
                   <>
                     {payments.length === 0 ? (
-                      <div className="text-center py-8">
+                      <div className="py-8 text-center">
                         <p className="text-gray-500">{t('wallet.transactions.empty')}</p>
                       </div>
                     ) : (
                       <div className="space-y-4">
                         {payments.map((payment: PaymentRecord) => (
-                          <div key={payment.id} className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0">
-                            <div className="flex items-start space-x-3 flex-1 min-w-0">
-                              <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <div key={payment.id} className="flex items-start justify-between border-b border-gray-50 py-3 last:border-0">
+                            <div className="flex min-w-0 flex-1 items-start space-x-3">
+                              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100">
                                 {payment.payment_status === 'completed' ? (
-                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                  <CheckCircle className="size-5 text-green-600" />
                                 ) : payment.payment_status === 'pending' ? (
-                                  <Clock className="w-5 h-5 text-yellow-600" />
+                                  <Clock className="size-5 text-yellow-600" />
                                 ) : (
-                                  <XCircle className="w-5 h-5 text-red-600" />
+                                  <XCircle className="size-5 text-red-600" />
                                 )}
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-gray-900 truncate">
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate font-medium text-gray-900">
                                   {(payment as any)?.bookings?.properties?.title || t('wallet.transactions.payment')}
                                 </p>
                                 <p className="text-sm text-gray-500">
                                   {new Date(payment.created_at).toLocaleDateString()} • {new Date(payment.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>
                                 {/* Mobile: Show amount and status on new row */}
-                                <div className="flex items-center justify-between mt-2 sm:hidden">
-                                  <p className="font-semibold text-gray-900 text-sm">+{payment.currency} {payment.amount.toFixed(2)}</p>
+                                <div className="mt-2 flex items-center justify-between sm:hidden">
+                                  <p className="text-sm font-semibold text-gray-900">+{payment.currency} {payment.amount.toFixed(2)}</p>
                                   <p className={`text-xs capitalize ${
                                     payment.payment_status === 'completed' ? 'text-green-600' : 
                                     payment.payment_status === 'pending' ? 'text-yellow-600' : 'text-red-600'
@@ -343,7 +343,7 @@ const WalletPage: FC = () => {
                               </div>
                             </div>
                             {/* Desktop: Show amount and status on the right */}
-                            <div className="text-right hidden sm:block">
+                            <div className="hidden text-right sm:block">
                               <p className="font-semibold text-gray-900">+{payment.currency} {payment.amount.toFixed(2)}</p>
                               <p className={`text-xs capitalize ${
                                 payment.payment_status === 'completed' ? 'text-green-600' : 
@@ -358,16 +358,16 @@ const WalletPage: FC = () => {
                     )}
                     
                     {/* Pagination Controls */}
-                    <div className="mt-1 pt-4 border-t border-gray-100">
+                    <div className="mt-1 border-t border-gray-100 pt-4">
                       {/* Mobile: Stacked layout */}
                       <div className="flex flex-col space-y-3 sm:hidden">
                         <div className="flex items-center justify-between">
                           <button
                             onClick={() => void loadWalletPayments(pagination.pageSize)}
                             disabled={pagination.currentPage === 1 || isLoading}
-                            className={`relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                            className={`relative inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors
                               ${pagination.currentPage === 1 || isLoading
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                                 : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                           >
                             {t('wallet.pagination.previous')}
@@ -375,9 +375,9 @@ const WalletPage: FC = () => {
                           <button
                             onClick={() => void loadMoreWalletPayments()}
                             disabled={isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)}
-                            className={`relative inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
+                            className={`relative inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors
                               ${isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                                 : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                           >
                             {t('wallet.pagination.next')}
@@ -390,8 +390,8 @@ const WalletPage: FC = () => {
                           <button
                             onClick={() => void refreshWalletPayments()}
                             disabled={isRefreshing}
-                            className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors
-                              bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            className="inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-medium
+                              text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                           >
                             {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
                           </button>
@@ -399,13 +399,13 @@ const WalletPage: FC = () => {
                       </div>
                       
                       {/* Desktop: Horizontal layout */}
-                      <div className="hidden sm:flex items-center justify-between">
+                      <div className="hidden items-center justify-between sm:flex">
                         <button
                           onClick={() => void loadWalletPayments(pagination.pageSize)}
                           disabled={pagination.currentPage === 1 || isLoading}
-                          className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                          className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                             ${pagination.currentPage === 1 || isLoading
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                              ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                               : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                         >
                           {t('wallet.pagination.previous')}
@@ -417,8 +417,8 @@ const WalletPage: FC = () => {
                           <button
                             onClick={() => void refreshWalletPayments()}
                             disabled={isRefreshing}
-                            className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
-                              bg-primary-600 text-white hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            className="inline-flex items-center rounded-md bg-primary-600 px-4 py-2 text-sm font-medium
+                              text-white transition-colors hover:bg-primary-700 disabled:cursor-not-allowed disabled:bg-gray-300"
                           >
                             {isRefreshing ? t('wallet.pagination.refreshing') : t('wallet.pagination.refresh')}
                           </button>
@@ -426,9 +426,9 @@ const WalletPage: FC = () => {
                         <button
                           onClick={() => void loadMoreWalletPayments()}
                           disabled={isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)}
-                          className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                          className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                             ${isLoading || (pagination.totalPages !== 1 && pagination.currentPage >= pagination.totalPages)
-                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                              ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                               : 'bg-primary-600 text-white hover:bg-primary-700'}`}
                         >
                           {t('wallet.pagination.next')}
@@ -443,8 +443,8 @@ const WalletPage: FC = () => {
 
           {/* Payout Requests Panel */}
           <div className="col-span-1">
-            <div className="bg-gray-900 text-white rounded-xl shadow-lg">
-              <div className="px-6 py-4 border-b border-gray-700">
+            <div className="rounded-xl bg-gray-900 text-white shadow-lg">
+              <div className="border-b border-gray-700 px-6 py-4">
                 <h2 className="text-lg font-semibold">{t('wallet.requests.title')}</h2>
                 <div className="mt-2 grid grid-cols-3 gap-4 text-xs text-gray-400">
                   <span>{t('wallet.requests.date')}</span>
@@ -460,7 +460,7 @@ const WalletPage: FC = () => {
                     ))}
                   </div>
                 ) : payoutRequests.length === 0 ? (
-                  <div className="text-center py-8">
+                  <div className="py-8 text-center">
                     <p className="text-gray-400">{t('wallet.requests.empty')}</p>
                   </div>
                 ) : (
@@ -481,10 +481,10 @@ const WalletPage: FC = () => {
 
                 {/* Footer with current total if needed */}
                 {payoutRequests.length > 0 && (
-                  <div className="mt-6 pt-4 border-t border-gray-700">
+                  <div className="mt-6 border-t border-gray-700 pt-4">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-400">{t('wallet.requests.totalRequested')}</span>
-                      <span className="text-white font-semibold">
+                      <span className="font-semibold text-white">
                         {formatPrice(payoutRequests.reduce((sum, req) => sum + req.amount, 0), 'USD')}
                       </span>
                     </div>

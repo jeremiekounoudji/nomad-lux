@@ -1,10 +1,8 @@
 import { useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { 
-  DatabaseBooking, 
   BookingRequest,
   BookingStatus,
-  PaymentRecord,
   PaginationParams,
   PaginatedResponse
 } from '../interfaces'

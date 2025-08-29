@@ -146,7 +146,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
   return (
     <>
-      <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-6 p-5">
+      <div className="col-span-1 space-y-6 p-2 md:col-span-2 lg:col-span-4">
         {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('myListings').image}
@@ -159,8 +159,8 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
         >
           <Button
             color="secondary"
-            startContent={<Plus className="w-4 h-4" />}
-            className="bg-white/20 border-white/20 text-white hover:bg-white/30"
+            startContent={<Plus className="size-4" />}
+            className="border-white/20 bg-white/20 text-white hover:bg-white/30"
             onPress={handleAddListing}
           >
             {t('property.addListing')}
@@ -169,7 +169,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
         {/* Tabs */}
         <div className="w-full">
-          <div className="overflow-x-auto scrollbar-none -mx-5 px-5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="scrollbar-none -mx-5 overflow-x-auto px-5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={statusFilter}
               onSelectionChange={handleTabSelectionChange}
@@ -198,9 +198,9 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
 
       {/* Error State */}
       {error && (
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.listings.errors.loadingListings')}</h3>
+        <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+            <h3 className="mb-2 text-lg font-medium text-red-800">{t('property.listings.errors.loadingListings')}</h3>
             <Button color="primary" onPress={() => fetchUserListings({ force: true })}>
               {t('property.listings.errors.tryAgain')}
             </Button>
@@ -212,8 +212,8 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
       {!isLoading && !error && filteredListings.length > 0 && (
         <>
           {/* Listings Container */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 p-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="col-span-1 p-2 md:col-span-2 lg:col-span-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
                 {filteredListings.map((listing) => {
                   const stats = listingStats[listing.id]
                   const isActionLoading = actionLoading === `toggle-${listing.id}`
@@ -229,31 +229,31 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                   
                   return (
                     <div key={listing.id} className="w-full">
-                      <Card className="hover:shadow-lg transition-shadow duration-200">
+                      <Card className="transition-shadow duration-200 hover:shadow-lg">
                         {/* Property Image */}
                         <div className="relative">
                           <img
                             src={listing.images[0]}
                             alt={listing.title}
-                            className="w-full h-48 object-cover"
+                            className="h-48 w-full object-cover"
                           />
-                          <div className="absolute top-3 left-3">
+                          <div className="absolute left-3 top-3">
                             <Chip 
                               color={getStatusColor(listing.status)}
                               variant="solid"
                               size="sm"
-                              className="text-white font-medium"
+                              className="font-medium text-white"
                             >
                               {getStatusDisplayName(listing.status)}
                             </Chip>
                           </div>
                           {listing.status === 'approved' && (
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute right-3 top-3">
                               <Button
                                 size="sm"
                                 variant="flat"
                                 color="secondary"
-                                startContent={isActionLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Pause className="w-3 h-3" />}
+                                startContent={isActionLoading ? <Loader2 className="size-3 animate-spin" /> : <Pause className="size-3" />}
                                 onPress={() => handleToggleStatus(listing)}
                                 isDisabled={isActionLoading}
                                 className="min-w-0 px-2"
@@ -263,12 +263,12 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                             </div>
                           )}
                           {listing.status === 'paused' && (
-                            <div className="absolute top-3 right-3">
+                            <div className="absolute right-3 top-3">
                               <Button
                                 size="sm"
                                 variant="flat"
                                 color="success"
-                                startContent={isActionLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
+                                startContent={isActionLoading ? <Loader2 className="size-3 animate-spin" /> : <Play className="size-3" />}
                                 onPress={() => handleToggleStatus(listing)}
                                 isDisabled={isActionLoading}
                                 className="min-w-0 px-2"
@@ -283,14 +283,14 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                           {/* Property Info */}
                           <div className="space-y-3">
                             <div>
-                              <h3 className="font-semibold text-lg text-gray-900 line-clamp-1">
+                              <h3 className="line-clamp-1 text-lg font-semibold text-gray-900">
                                 {listing.title}
                               </h3>
-                              <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                              <p className="mt-1 line-clamp-2 text-sm text-gray-600">
                                 {listing.description}
                               </p>
-                              <div className="flex items-center gap-1 mt-2">
-                                <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                              <div className="mt-2 flex items-center gap-1">
+                                <Star className="size-4 fill-current text-yellow-500" />
                                 <span className="text-sm font-medium">{stats?.rating || 0}</span>
                                 <span className="text-sm text-gray-500">
                                   ({formatPrice(listing.price_per_night, listing.currency || 'USD')}/night)
@@ -322,7 +322,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 size="sm"
                                 variant="flat"
                                 color="secondary"
-                                startContent={<Eye className="w-4 h-4" />}
+                                startContent={<Eye className="size-4" />}
                                 onPress={() => handleViewStats(listing)}
                                 className="flex-1"
                               >
@@ -332,7 +332,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 size="sm"
                                 variant="flat"
                                 color="primary"
-                                startContent={<Edit className="w-4 h-4" />}
+                                startContent={<Edit className="size-4" />}
                                 onPress={() => handleEdit(listing)}
                                 isDisabled={!canEdit}
                                 className="flex-1"
@@ -343,7 +343,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                                 size="sm"
                                 variant="flat"
                                 color="danger"
-                                startContent={<Trash2 className="w-4 h-4" />}
+                                startContent={<Trash2 className="size-4" />}
                                 onPress={() => handleDelete(listing)}
                                 className="flex-1"
                               >
@@ -361,13 +361,13 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           
           {/* Pagination */}
           {pagination && pagination.totalPages > 1 && (
-            <div className="col-span-1 md:col-span-2 lg:col-span-4 flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+            <div className="col-span-1 mt-6 flex items-center justify-between border-t border-gray-100 pt-4 md:col-span-2 lg:col-span-4">
               <button
                 onClick={() => handlePageChange(pagination.currentPage - 1)}
                 disabled={pagination.currentPage === 1 || isLoading}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${pagination.currentPage === 1 || isLoading
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('property.listings.pagination.previous')}
@@ -380,9 +380,9 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
               <button
                 onClick={() => handlePageChange(pagination.currentPage + 1)}
                 disabled={isLoading || pagination.currentPage >= pagination.totalPages}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${isLoading || pagination.currentPage >= pagination.totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('property.listings.pagination.next')}
@@ -394,12 +394,12 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
       
       {/* Empty State */}
       {!isLoading && !error && filteredListings.length === 0 && (
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
-          <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <Home className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
             {statusFilter === 'all' ? t('property.listings.empty.noListingsDescription') : t('property.listings.empty.noListings', { status: statusFilter })}
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="mb-4 text-gray-500">
             {statusFilter === 'all' && t('property.listings.empty.noListingsDescription')}
             {statusFilter === 'approved' && t('property.listings.empty.noApproved')}
             {statusFilter === 'pending' && t('property.listings.empty.noPending')}
@@ -408,7 +408,7 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
           </p>
           <Button
             color="primary"
-            startContent={<Plus className="w-4 h-4" />}
+            startContent={<Plus className="size-4" />}
             onPress={handleAddListing}
           >
             {t('property.listings.empty.createFirst')}
@@ -432,11 +432,11 @@ const MyListingsPage: React.FC<MyListingsPageProps> = ({ onPageChange }) => {
                       <img
                         src={propertyToDelete.images[0]}
                         alt={propertyToDelete.title}
-                        className="w-16 h-16 object-cover rounded-lg"
+                        className="size-16 rounded-lg object-cover"
                       />
                       <div>
                         <h3 className="font-semibold">{propertyToDelete.title}</h3>
-                        <p className="text-sm text-gray-600 line-clamp-2">
+                        <p className="line-clamp-2 text-sm text-gray-600">
                           {propertyToDelete.description}
                         </p>
                       </div>

@@ -87,7 +87,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative"
+      className="relative flex min-h-screen items-center justify-center p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -102,22 +102,22 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
+        className="absolute left-6 top-6 z-20 border border-white/30 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
         onPress={handleBackToHome}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Login Form */}
-      <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-md border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">NL</span>
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500">
+              <span className="text-xl font-bold text-white">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('auth.login.title')}</h1>
-            <p className="text-white/80 text-sm">{t('auth.login.subtitle')}</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('auth.login.title')}</h1>
+            <p className="text-sm text-white/80">{t('auth.login.subtitle')}</p>
           </div>
 
 
@@ -130,7 +130,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
               placeholder={t('auth.login.email')}
               value={email}
               onValueChange={setEmail}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              startContent={<Mail className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -146,13 +146,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
               placeholder={t('auth.login.password')}
               value={password}
               onValueChange={setPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -169,7 +169,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
             <div className="flex items-center justify-between">
               <Link 
-                className="text-sm text-white/80 hover:text-white cursor-pointer"
+                className="cursor-pointer text-sm text-white/80 hover:text-white"
                 onPress={handleForgotPassword}
               >
                 {t('auth.login.forgotPassword')}
@@ -179,7 +179,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleLogin}
               isLoading={isLoading}
               isDisabled={!email || !password}
@@ -188,10 +188,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             </Button>
 
             <div className="text-center">
-              <span className="text-white/80 text-sm">
+              <span className="text-sm text-white/80">
                 {t('auth.login.noAccount')}{' '}
                 <Link 
-                  className="text-white font-semibold hover:text-white/80 cursor-pointer"
+                  className="cursor-pointer font-semibold text-white hover:text-white/80"
                   onPress={() => {
                     if (onPageChange) {
                       onPageChange('register')

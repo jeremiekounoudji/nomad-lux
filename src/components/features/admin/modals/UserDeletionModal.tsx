@@ -12,7 +12,7 @@ import {
   Divider,
   Checkbox
 } from '@heroui/react'
-import { Trash2, AlertTriangle, XCircle } from 'lucide-react'
+import { Trash2, XCircle } from 'lucide-react'
 import { AdminUser } from '../../../../interfaces'
 import { useTranslation } from '../../../../lib/stores/translationStore'
 
@@ -51,9 +51,9 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={handleClose} size="lg" scrollBehavior="inside">
       <ModalContent className="max-h-[80vh]">
-        <ModalHeader className="flex items-center gap-3 bg-red-50 text-red-900 rounded-t-lg">
-          <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
-            <Trash2 className="w-5 h-5 text-white" />
+        <ModalHeader className="flex items-center gap-3 rounded-t-lg bg-red-50 text-red-900">
+          <div className="flex size-10 items-center justify-center rounded-full bg-red-500">
+            <Trash2 className="size-5 text-white" />
           </div>
           <div>
             <h3 className="text-lg font-bold">{t('admin.users.deletion.title', { defaultValue: 'Delete User Account' })}</h3>
@@ -65,12 +65,12 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
           {user && (
             <>
               {/* Danger Notice */}
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                 <div className="flex items-start gap-3">
-                  <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                  <XCircle className="mt-0.5 size-5 text-red-600" />
                   <div>
                     <h4 className="font-medium text-red-800">{t('admin.users.deletion.notice.title', { defaultValue: 'Permanent Account Deletion' })}</h4>
-                    <p className="text-sm text-red-700 mt-1">
+                    <p className="mt-1 text-sm text-red-700">
                       {t('admin.users.deletion.notice.description', { defaultValue: 'This will permanently delete the user\'s account, all their data, bookings, and properties. This action cannot be reversed.' })}
                     </p>
                   </div>
@@ -78,14 +78,14 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
               </div>
 
               {/* User Information */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-900 mb-3">{t('admin.users.deletion.userDetails', { defaultValue: 'User Details' })}</h4>
-                <div className="flex items-center gap-3 mb-4">
+              <div className="rounded-lg bg-gray-50 p-4">
+                <h4 className="mb-3 font-semibold text-gray-900">{t('admin.users.deletion.userDetails', { defaultValue: 'User Details' })}</h4>
+                <div className="mb-4 flex items-center gap-3">
                   <Avatar src={user.avatar} name={user.name} size="md" />
                   <div>
                     <h3 className="font-semibold text-gray-900">{user.name}</h3>
                     <p className="text-sm text-gray-600">{user.email}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="mt-1 flex items-center gap-2">
                       <Chip
                         color={user.status === 'active' ? 'success' : user.status === 'suspended' ? 'danger' : 'warning'}
                         size="sm"
@@ -119,26 +119,26 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
 
               {/* Data Impact Warning */}
               <div>
-                <h4 className="font-semibold text-gray-900 mb-3 text-red-700">{t('admin.users.deletion.dataImpact.title', { defaultValue: 'Data That Will Be Permanently Deleted:' })}</h4>
+                <h4 className="mb-3 font-semibold text-gray-900 text-red-700">{t('admin.users.deletion.dataImpact.title', { defaultValue: 'Data That Will Be Permanently Deleted:' })}</h4>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="size-4 text-red-500" />
                     {t('admin.users.deletion.dataImpact.profile', { defaultValue: 'User profile and personal information' })}
                   </li>
                   <li className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="size-4 text-red-500" />
                     {t('admin.users.deletion.dataImpact.bookings', { defaultValue: 'All booking history and records' })}
                   </li>
                   <li className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="size-4 text-red-500" />
                     {t('admin.users.deletion.dataImpact.properties', { defaultValue: 'Property listings and related data' })}
                   </li>
                   <li className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="size-4 text-red-500" />
                     {t('admin.users.deletion.dataImpact.payments', { defaultValue: 'Payment history and financial records' })}
                   </li>
                   <li className="flex items-center gap-2">
-                    <XCircle className="w-4 h-4 text-red-500" />
+                    <XCircle className="size-4 text-red-500" />
                     {t('admin.users.deletion.dataImpact.reviews', { defaultValue: 'Reviews and ratings given/received' })}
                   </li>
                 </ul>
@@ -146,7 +146,7 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
 
               {/* Deletion Reason */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   {t('admin.users.deletion.reason.label', { defaultValue: 'Reason for Deletion' })} <span className="text-red-500">*</span>
                 </label>
                 <Textarea
@@ -156,13 +156,13 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
                   minRows={4}
                   className="w-full"
                 />
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="mt-2 text-xs text-gray-500">
                   {t('admin.users.deletion.reason.help', { defaultValue: 'This reason will be logged for audit purposes and legal compliance.' })}
                 </p>
               </div>
 
               {/* Confirmation Checkbox */}
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
                 <Checkbox
                   isSelected={confirmDelete}
                   onValueChange={setConfirmDelete}
@@ -178,7 +178,7 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
           )}
         </ModalBody>
         
-        <ModalFooter className="bg-gray-50 rounded-b-lg">
+        <ModalFooter className="rounded-b-lg bg-gray-50">
           <Button variant="flat" onPress={handleClose}>
             {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
@@ -186,7 +186,7 @@ export const UserDeletionModal: React.FC<UserDeletionModalProps> = ({
             color="danger"
             onPress={handleSubmit}
             isDisabled={!reason.trim() || !confirmDelete}
-            className="bg-red-600 hover:bg-red-700 text-white"
+            className="bg-red-600 text-white hover:bg-red-700"
           >
             {t('admin.users.deletion.confirmButton', { defaultValue: 'Permanently Delete Account' })}
           </Button>

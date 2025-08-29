@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Button, Textarea } from '@heroui/react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import StarRating from './StarRating'
@@ -62,7 +62,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
     <form onSubmit={handleSubmit} className={`space-y-6 ${className}`}>
       {/* Review Type Display */}
       {reviewType && (
-        <div className="bg-gray-50 rounded-lg p-3">
+        <div className="rounded-lg bg-gray-50 p-3">
           <span className="text-sm font-medium text-gray-700">
             {getReviewTypeLabel()}
           </span>
@@ -108,7 +108,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
       </div>
 
       {/* Character Count and Validation */}
-      <div className="flex justify-between items-center text-sm text-gray-500">
+      <div className="flex items-center justify-between text-sm text-gray-500">
         <span>
           {formState.review_text.length < 10 && (
             <span className="text-red-600">
@@ -148,7 +148,7 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
 
       {/* General Error Display */}
       {formState.errors.general && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
           <p className="text-sm text-red-600">{formState.errors.general}</p>
         </div>
       )}

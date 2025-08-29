@@ -20,7 +20,7 @@ export { default as BookingLoadingOverlay } from './BookingLoadingOverlay'
 export { default as PaymentButton } from './PaymentButton'
 
 // UI components
-export { default as ProfileModal } from './ProfileModal'
+
 export { default as PropertyListingSkeleton, PropertyCardSkeleton, HeaderSkeleton, TabsSkeleton } from './LoadingSkeleton'
 
 // Notification components

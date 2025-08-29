@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import L from 'leaflet'
 import { MapContainer as LeafletMapContainer, TileLayer, useMap as useLeafletMap } from 'react-leaflet'
 import MapLoadingState from './MapLoadingState'

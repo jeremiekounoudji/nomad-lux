@@ -86,14 +86,14 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
       case 'booking_cancelled':
       case 'booking_checked_in':
       case 'booking_checked_out':
-        return <Calendar className="w-4 h-4" />
+        return <Calendar className="size-4" />
       case 'property_liked':
-        return <Heart className="w-4 h-4" />
+        return <Heart className="size-4" />
       case 'property_approved':
       case 'property_rejected':
       case 'property_suspended':
       case 'property_submitted':
-        return <Home className="w-4 h-4" />
+        return <Home className="size-4" />
       case 'payment_success':
       case 'payment_failed':
       case 'booking_refunded':
@@ -101,17 +101,17 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
       case 'payout_rejected':
       case 'payout_paid':
       case 'payout_requested':
-        return <Star className="w-4 h-4" />
+        return <Star className="size-4" />
       case 'account_suspended':
       case 'profile_updated':
       case 'account_flagged':
       case 'bulk_action':
-        return <MessageCircle className="w-4 h-4" />
+        return <MessageCircle className="size-4" />
       case 'dispute_raised':
       case 'system_error':
-        return <Bell className="w-4 h-4" />
+        return <Bell className="size-4" />
       default:
-        return <Bell className="w-4 h-4" />
+        return <Bell className="size-4" />
     }
   }
 
@@ -290,11 +290,11 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-            <div className="bg-red-50 border border-red-200 text-red-700 p-6 rounded-lg">
-              <h2 className="text-lg font-semibold mb-2">{t('notifications.errors.loadingError')}</h2>
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="col-span-1 space-y-6 md:col-span-2 lg:col-span-3">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-6 text-red-700">
+              <h2 className="mb-2 text-lg font-semibold">{t('notifications.errors.loadingError')}</h2>
               <p>{error}</p>
               <Button 
                 color="primary" 
@@ -312,9 +312,9 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
+            <div className="mx-auto max-w-7xl">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="col-span-1 space-y-6 md:col-span-2 lg:col-span-3">
           {/* Header Banner */}
           <PageBanner
           backgroundImage={getBannerConfig('notifications').image}
@@ -329,9 +329,9 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
             <Button
               color="secondary"
               variant="flat"
-              startContent={<CheckCheck className="w-4 h-4" />}
+              startContent={<CheckCheck className="size-4" />}
               onClick={handleMarkAllAsRead}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+              className="border-white/30 bg-white/20 text-white hover:bg-white/30"
             >
               {t('notifications.actions.markAllAsRead')}
             </Button>
@@ -392,55 +392,55 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
         {/* Loading State */}
         {isLoading && notifications.length === 0 && (
-          <div className="flex justify-center items-center py-12">
+          <div className="flex items-center justify-center py-12">
             <Spinner size="lg" color="primary" />
           </div>
         )}
 
         {/* Empty State */}
         {!isLoading && notifications.length === 0 && (
-          <div className="text-center py-12">
-            <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">{t('notifications.labels.noNotifications')}</h3>
+          <div className="py-12 text-center">
+            <Bell className="mx-auto mb-4 size-16 text-gray-300" />
+            <h3 className="mb-2 text-xl font-semibold text-gray-600">{t('notifications.labels.noNotifications')}</h3>
             <p className="text-gray-500">{t('notifications.banner.emptyDescription')}</p>
           </div>
         )}
 
         {/* Notifications Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {notifications.map((notification) => (
             <Card 
               key={notification.id} 
-              className={`group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer border-0 overflow-hidden ${
+              className={`group cursor-pointer overflow-hidden border-0 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
                 !notification.is_read 
                   ? 'bg-gradient-to-br from-white to-primary-50 shadow-lg ring-2 ring-primary-200' 
                   : 'bg-white shadow-md hover:shadow-xl'
               } ${
                 navigatingNotification === notification.id 
-                  ? 'opacity-75 scale-95' 
+                  ? 'scale-95 opacity-75' 
                   : ''
               }`}
               onClick={() => handleNotificationClick(notification)}
             >
-              <CardBody className="p-0 relative">
+              <CardBody className="relative p-0">
                 {/* Unread indicator */}
                 {!notification.is_read && (
-                  <div className="absolute top-3 right-3 w-3 h-3 bg-primary-500 rounded-full animate-pulse z-10 shadow-lg"></div>
+                  <div className="absolute right-3 top-3 z-10 size-3 animate-pulse rounded-full bg-primary-500 shadow-lg"></div>
                 )}
 
                 {/* Header with Avatar and Type */}
                 <div className="relative p-4 pb-3">
-                  <div className="flex items-center gap-3 mb-3">
+                  <div className="mb-3 flex items-center gap-3">
                     {/* Avatar */}
                     <div className="relative">
                       {notification.avatar ? (
                         <Avatar
                           src={notification.avatar}
                           size="md"
-                          className="ring-2 ring-white shadow-md"
+                          className="shadow-md ring-2 ring-white"
                         />
                       ) : (
-                        <div className={`w-12 h-12 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-lg`}>
+                        <div className={`size-12 ${getTypeColor(notification.type)} flex items-center justify-center rounded-full shadow-lg`}>
                           <div className="text-white">
                             {getNotificationIcon(notification.type)}
                           </div>
@@ -448,8 +448,8 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                       )}
                       
                       {/* Type badge */}
-                      <div className={`absolute -bottom-1 -right-1 w-5 h-5 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-md border-2 border-white`}>
-                        <div className="text-white text-xs">
+                      <div className={`absolute -bottom-1 -right-1 size-5 ${getTypeColor(notification.type)} flex items-center justify-center rounded-full border-2 border-white shadow-md`}>
+                        <div className="text-xs text-white">
                           {getNotificationIcon(notification.type)}
                         </div>
                       </div>
@@ -470,20 +470,20 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className={`font-bold text-base leading-tight mb-2 ${
+                  <h3 className={`mb-2 text-base font-bold leading-tight ${
                     !notification.is_read ? 'text-gray-900' : 'text-gray-700'
                   }`}>
                     {notification.title}
                   </h3>
 
                   {/* Message */}
-                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-3">
+                  <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-gray-600">
                     {notification.message}
                   </p>
 
                   {/* Time */}
                   <div className="flex items-center gap-1 text-gray-400">
-                    <Clock className="w-3 h-3" />
+                    <Clock className="size-3" />
                     <span className="text-xs font-medium">
                       {formatTime(notification.created_at)}
                     </span>
@@ -494,12 +494,12 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                 {(notification.type === 'booking_request_created' || notification.type === 'new_booking_request') && 
                  notification.related_id && notification.related_type === 'booking' && (
                   <div className="px-4 pb-4">
-                    <div className="flex gap-2 pt-3 border-t border-gray-100">
+                    <div className="flex gap-2 border-t border-gray-100 pt-3">
                       <Button 
                         size="sm" 
                         color="primary" 
                         variant="solid" 
-                        className="flex-1 font-semibold text-xs shadow-md hover:shadow-lg transition-all"
+                        className="flex-1 text-xs font-semibold shadow-md transition-all hover:shadow-lg"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleAcceptBooking(notification.related_id!, notification.id)
@@ -513,7 +513,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                         size="sm" 
                         color="secondary" 
                         variant="bordered" 
-                        className="flex-1 font-semibold text-xs border-2 hover:bg-secondary-50 transition-all"
+                        className="flex-1 border-2 text-xs font-semibold transition-all hover:bg-secondary-50"
                         onClick={(e) => {
                           e.stopPropagation()
                           handleDeclineBooking(notification.related_id!, notification.id)
@@ -528,7 +528,7 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                 )}
 
                 {/* Hover effect overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
               </CardBody>
             </Card>
           ))}
@@ -536,21 +536,21 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
         {/* Load More */}
         {notifications.length > 0 && hasMore && (
-          <div className="flex justify-center pt-12 pb-8">
-            <div className="relative group">
+          <div className="flex justify-center pb-8 pt-12">
+            <div className="group relative">
               {/* Animated background gradient */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 rounded-full opacity-75 group-hover:opacity-100 blur-sm group-hover:blur transition-all duration-300 animate-pulse"></div>
+              <div className="absolute -inset-1 animate-pulse rounded-full bg-gradient-to-r from-primary-500 via-secondary-500 to-primary-500 opacity-75 blur-sm transition-all duration-300 group-hover:opacity-100 group-hover:blur"></div>
               
               <Button 
                 variant="solid" 
                 color="primary" 
                 size="lg"
-                className="relative font-bold px-16 py-4 text-white bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-xl hover:shadow-2xl transition-all duration-300 rounded-full transform hover:scale-105 active:scale-95"
+                className="relative rounded-full bg-gradient-to-r from-primary-500 to-primary-600 px-16 py-4 font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:from-primary-600 hover:to-primary-700 hover:shadow-2xl active:scale-95"
                 onClick={handleLoadMore}
                 isLoading={loadingMore}
                 disabled={loadingMore}
                 startContent={!loadingMore && (
-                  <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                  <div className="size-2 animate-bounce rounded-full bg-white"></div>
                 )}
               >
                 <span className="relative z-10">
@@ -563,13 +563,13 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
         {/* End of notifications indicator */}
         {notifications.length > 0 && !hasMore && (
-          <div className="flex justify-center pt-12 pb-8">
+          <div className="flex justify-center pb-8 pt-12">
             <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                <Bell className="w-6 h-6 text-gray-400" />
+              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner">
+                <Bell className="size-6 text-gray-400" />
               </div>
-              <p className="text-gray-500 font-medium text-lg mb-2">{t('notifications.banner.allCaughtUp')}</p>
-              <p className="text-gray-400 text-sm">{t('notifications.banner.noMore')}</p>
+              <p className="mb-2 text-lg font-medium text-gray-500">{t('notifications.banner.allCaughtUp')}</p>
+              <p className="text-sm text-gray-400">{t('notifications.banner.noMore')}</p>
             </div>
           </div>
         )}

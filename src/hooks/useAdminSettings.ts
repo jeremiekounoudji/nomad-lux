@@ -3,13 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useAdminSettingsStore, groupSettingsByCategory } from '../lib/stores/adminSettingsStore'
 import { 
   AdminSettings, 
-  AdminSettingRecord,
-  PlatformSettings, 
-  BookingSettings, 
-  NotificationSettings, 
-  SecuritySettings, 
-  PaymentSettings,
-  ContentSettings 
+  AdminSettingRecord 
 } from '../interfaces/Settings'
 
 export const useAdminSettings = () => {

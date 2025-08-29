@@ -249,7 +249,7 @@ export const PaymentButton: React.FC<PaymentButtonProps> = ({
         variant={variant}
         size={size}
         fullWidth
-        className={`font-medium shadow-sm bg-primary-600 hover:bg-primary-700 text-white ${className}`}
+        className={`bg-primary-600 font-medium text-white shadow-sm hover:bg-primary-700 ${className}`}
         onPress={handlePayNowClick}
         isLoading={isCreatingRecord}
         disabled={disabled || isCreatingRecord}

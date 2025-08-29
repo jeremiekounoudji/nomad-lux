@@ -138,7 +138,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <User className="w-6 h-6 text-primary-500" />
+                <User className="size-6 text-primary-500" />
                 <h2 className="text-xl font-bold">{t('profile.edit.title')}</h2>
               </div>
               <p className="text-sm text-gray-600">{t('profile.edit.subtitle')}</p>
@@ -150,12 +150,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   <Avatar src={user.avatar_url} size="lg" />
                   <div>
                     <h4 className="font-semibold">{t('profile.edit.picture.title')}</h4>
-                    <p className="text-sm text-gray-600 mb-2">{t('profile.edit.picture.upload')}</p>
+                    <p className="mb-2 text-sm text-gray-600">{t('profile.edit.picture.upload')}</p>
                     <Button
                       size="sm"
                       variant="flat"
                       color="secondary"
-                      startContent={<Camera className="w-4 h-4" />}
+                      startContent={<Camera className="size-4" />}
                     >
                       {t('profile.edit.picture.changePhoto')}
                     </Button>
@@ -168,12 +168,12 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                 <div className="space-y-4">
                   <h4 className="font-semibold">{t('profile.edit.basic.title')}</h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Input
                       label={t('profile.edit.basic.fullName')}
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
-                      startContent={<User className="w-4 h-4 text-gray-400" />}
+                      startContent={<User className="size-4 text-gray-400" />}
                       isRequired
                     />
                     
@@ -182,7 +182,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      startContent={<Mail className="w-4 h-4 text-gray-400" />}
+                      startContent={<Mail className="size-4 text-gray-400" />}
                       isRequired
                     />
                     
@@ -191,14 +191,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
-                      startContent={<Phone className="w-4 h-4 text-gray-400" />}
+                      startContent={<Phone className="size-4 text-gray-400" />}
                     />
                     
                     <Input
                       label={t('profile.edit.basic.location')}
                       value={formData.location}
                       onChange={(e) => handleInputChange('location', e.target.value)}
-                      startContent={<MapPin className="w-4 h-4 text-gray-400" />}
+                      startContent={<MapPin className="size-4 text-gray-400" />}
                     />
                     
                     <Input
@@ -206,7 +206,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                       type="date"
                       value={formData.dateOfBirth}
                       onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                      startContent={<Calendar className="w-4 h-4 text-gray-400" />}
+                      startContent={<Calendar className="size-4 text-gray-400" />}
                     />
                     
                     <Select
@@ -249,13 +249,13 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                   </div>
                   
                   {showPasswordFields && (
-                    <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                    <div className="space-y-3 rounded-lg bg-gray-50 p-4">
                       <Input
                         label={t('profile.edit.security.currentPassword')}
                         type="password"
                         value={passwords.current}
                         onChange={(e) => handlePasswordChange('current', e.target.value)}
-                        startContent={<Eye className="w-4 h-4 text-gray-400" />}
+                        startContent={<Eye className="size-4 text-gray-400" />}
                         isRequired
                       />
                       <Input
@@ -263,7 +263,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         type="password"
                         value={passwords.new}
                         onChange={(e) => handlePasswordChange('new', e.target.value)}
-                        startContent={<EyeOff className="w-4 h-4 text-gray-400" />}
+                        startContent={<EyeOff className="size-4 text-gray-400" />}
                         isRequired
                       />
                       <Input
@@ -271,7 +271,7 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         type="password"
                         value={passwords.confirm}
                         onChange={(e) => handlePasswordChange('confirm', e.target.value)}
-                        startContent={<EyeOff className="w-4 h-4 text-gray-400" />}
+                        startContent={<EyeOff className="size-4 text-gray-400" />}
                         isRequired
                       />
                     </div>

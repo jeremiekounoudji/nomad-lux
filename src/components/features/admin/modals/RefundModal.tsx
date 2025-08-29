@@ -86,7 +86,7 @@ export const RefundModal: React.FC<RefundModalProps> = ({
       <ModalContent>
         <ModalHeader>
           <div className="flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-primary-500" />
+            <DollarSign className="size-5 text-primary-500" />
             <h2 className="text-xl font-bold">{t('refundModal.title', { id: booking?.id?.slice(0, 8) })}</h2>
           </div>
         </ModalHeader>
@@ -100,12 +100,12 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                     <img
                       src={booking.propertyImage || 'https://via.placeholder.com/80x80?text=Property'}
                       alt={booking.propertyName}
-                      className="w-16 h-16 object-cover rounded-lg"
+                      className="size-16 rounded-lg object-cover"
                     />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{booking.propertyName}</h3>
+                      <h3 className="text-lg font-semibold">{booking.propertyName}</h3>
                       <p className="text-sm text-gray-600">{booking.location}</p>
-                      <div className="flex items-center gap-4 mt-1 text-sm">
+                      <div className="mt-1 flex items-center gap-4 text-sm">
                         <span>Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</span>
                         <span>Total: {formatPrice(booking.totalAmount, booking.currency || 'USD')}</span>
                       </div>
@@ -116,28 +116,28 @@ export const RefundModal: React.FC<RefundModalProps> = ({
 
               {/* Refund Calculation */}
               <div className="space-y-4">
-                <h4 className="font-semibold flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
+                <h4 className="flex items-center gap-2 font-semibold">
+                  <Clock className="size-4" />
                   Refund Calculation
                 </h4>
 
                 {isCalculating ? (
-                  <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-2 rounded-lg bg-gray-50 p-4">
                     <Spinner size="sm" />
                     <span className="text-sm text-gray-600">Calculating refund amount...</span>
                   </div>
                 ) : refundError ? (
-                  <div className="p-4 bg-danger-50 border border-danger-200 rounded-lg">
+                  <div className="rounded-lg border border-danger-200 bg-danger-50 p-4">
                     <div className="flex items-start gap-2">
-                      <AlertTriangle className="w-4 h-4 text-danger-600 mt-0.5" />
+                      <AlertTriangle className="mt-0.5 size-4 text-danger-600" />
                       <div>
                         <p className="text-sm text-danger-700">{refundError}</p>
-                        <p className="text-xs text-danger-600 mt-1">Using manual refund amount</p>
+                        <p className="mt-1 text-xs text-danger-600">Using manual refund amount</p>
                       </div>
                     </div>
                   </div>
                 ) : calculatedRefund ? (
-                  <div className="space-y-3 p-4 bg-gray-50 rounded-lg">
+                  <div className="space-y-3 rounded-lg bg-gray-50 p-4">
                     <div className="flex justify-between text-sm">
                       <span>Original Payment:</span>
                       <span>{formatPrice(calculatedRefund.total_paid, booking.currency || 'USD')}</span>
@@ -152,13 +152,13 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                       <span className="text-success-600">{formatPrice(calculatedRefund.net_refund, booking.currency || 'USD')}</span>
                     </div>
                     {calculatedRefund.policy_applied && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="mt-1 text-xs text-gray-500">
                         Policy: {calculatedRefund.policy_applied} ({calculatedRefund.refund_percentage}%)
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="rounded-lg bg-gray-50 p-4">
                     <p className="text-sm text-gray-600">Unable to calculate refund</p>
                   </div>
                 )}
@@ -171,7 +171,7 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                   placeholder="Enter refund amount"
                   value={refundAmount}
                   onChange={(e) => onRefundAmountChange(e.target.value)}
-                  startContent={<DollarSign className="w-4 h-4" />}
+                  startContent={<DollarSign className="size-4" />}
                   type="number"
                   min="0"
                   max={maxRefundAmount}

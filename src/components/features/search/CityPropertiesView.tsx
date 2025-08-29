@@ -3,7 +3,7 @@ import { ArrowLeft, MapPin, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@heroui/react";
 import toast from 'react-hot-toast';
 import { City, Property } from "../../../interfaces/Property";
-import { PropertyCardSkeleton, CityPropertySkeleton } from "../../shared/LoadingSkeleton";
+import { CityPropertySkeleton } from "../../shared/LoadingSkeleton";
 import CityPropertyCard from "../../shared/CityPropertyCard";
 import { useTranslation } from "../../../lib/stores/translationStore";
 import { formatPrice } from '../../../utils/currencyUtils'
@@ -43,14 +43,14 @@ export const CityPropertiesView = ({
   return (
     <>
       {/* City Header */}
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-3">
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          <div className="mb-4 flex items-center justify-between">
             <button
               onClick={onBackToHome}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center gap-2 text-gray-600 transition-colors hover:text-gray-900"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="size-5" />
               <span>{t('search.backToHome', { defaultValue: 'Back to Home' })}</span>
             </button>
           </div>
@@ -59,15 +59,15 @@ export const CityPropertiesView = ({
             <img
               src={selectedCity.featured_image}
               alt={selectedCity.name}
-              className="w-20 h-20 object-cover rounded-xl"
+              className="size-20 rounded-xl object-cover"
             />
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2 text-start font-script">
+              <h1 className="mb-2 text-start font-script text-3xl font-bold text-gray-900">
                 {selectedCity.name}, {selectedCity.country}
               </h1>
               <div className="flex items-center gap-4 text-gray-600">
                 <div className="flex items-center gap-1">
-                  <MapPin className="w-4 h-4" />
+                  <MapPin className="size-4" />
                   <span>{selectedCity.property_count} {t('search.propertiesAvailable', { defaultValue: 'properties available' })}</span>
                 </div>
                 <div>
@@ -81,10 +81,10 @@ export const CityPropertiesView = ({
 
       {/* City Properties Error State */}
       {cityPropertiesError && !cityPropertiesLoading && (
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
-          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-            <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-red-900 mb-2">
+        <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-3">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+            <AlertCircle className="mx-auto mb-3 size-12 text-red-500" />
+            <h3 className="mb-2 text-lg font-semibold text-red-900">
               {t('search.noPropertiesFound', { defaultValue: 'No Properties Found' })}
             </h3>
 
@@ -92,7 +92,7 @@ export const CityPropertiesView = ({
               variant="flat"
               color="primary"
               onPress={() => onRefetch(selectedCity)}
-              startContent={<RefreshCw className="w-4 h-4" />}
+              startContent={<RefreshCw className="size-4" />}
             >
               {t('search.tryAgain', { defaultValue: 'Try Again' })}
             </Button>
@@ -103,7 +103,7 @@ export const CityPropertiesView = ({
       {/* City Properties Grid */}
       {!cityPropertiesError && (
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
             {cityPropertiesLoading ? (
               // Loading skeletons
               Array(6).fill(null).map((_, index) => (

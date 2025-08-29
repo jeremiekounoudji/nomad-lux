@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MainLayout from '../components/layout/MainLayout';
 import PopularPlaces from '../components/shared/PopularPlaces'
-import { HomePagePropertyCard, PropertyCardSkeleton, CityPropertyCard, PageBanner } from '../components/shared'
+import { HomePagePropertyCard, PropertyCardSkeleton, PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
 import { CityPropertiesView } from '../components/features/search/CityPropertiesView'
-import ProfileModal from '../components/shared/ProfileModal'
-import PropertyDetailPage from './PropertyDetailPage'
+
 import CreatePropertyPage from './CreatePropertyPage'
 import LikedPropertiesPage from './LikedPropertiesPage'
 import MyBookingsPage from './MyBookingsPage'
@@ -28,10 +26,8 @@ import { usePropertyShare } from '../hooks/usePropertyShare'
 import { usePropertyStore } from '../lib/stores/propertyStore';
 import { Property } from '../interfaces'
 import { Button } from '@heroui/react'
-import { RefreshCw, AlertCircle, ArrowLeft, MapPin } from 'lucide-react'
-import { SharePropertyModal } from '../components/shared/modals'
+import { RefreshCw, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { supabase } from '../lib/supabase'
 import WalletPage from './WalletPage'
 import { useTranslation } from '../lib/stores/translationStore'
 
@@ -59,7 +55,7 @@ const HomePage: React.FC = () => {
   const [cityPropertiesLoading, setCityPropertiesLoading] = useState(false)
   const [cityPropertiesError, setCityPropertiesError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState('home')
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false)
+
 
   // Infinite scroll ref
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -268,14 +264,15 @@ const HomePage: React.FC = () => {
   const handlePageChange = (page: string) => {
     console.log('🔄 Page change requested:', page)
 
-    // Handle profile modal
+    // Handle profile page - redirect to profile route
     if (page === 'profile') {
       if (!isAuthenticated) {
         toast.error(t('common.messages.signInToAccessProfile'))
         setCurrentPage('login')
         return
       }
-      setIsProfileModalOpen(true)
+      // Navigate to profile page instead of opening modal
+      navigate('/profile')
       return
     }
 
@@ -289,7 +286,6 @@ const HomePage: React.FC = () => {
     
     setCurrentPage(page);
     setSelectedProperty(null);
-    setIsProfileModalOpen(false);
   }
 
   const handleLogin = () => {
@@ -302,9 +298,7 @@ const HomePage: React.FC = () => {
     setCurrentPage('home')
   }
 
-  const handleProfileModalClose = () => {
-    setIsProfileModalOpen(false)
-  }
+
 
   const handleRefresh = useCallback(() => {
     console.log('🔄 Refreshing home feed')
@@ -325,13 +319,13 @@ const HomePage: React.FC = () => {
   // Show loading state during authentication initialization
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
                   <div className="text-center">
-            <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <span className="text-white font-bold text-xl">NL</span>
+            <div className="mx-auto mb-4 flex size-16 animate-pulse items-center justify-center rounded-full bg-primary-500">
+              <span className="text-xl font-bold text-white">NL</span>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('common.messages.loading')}</h2>
-            <p className="text-gray-600 mb-4">{t('common.messages.settingUp')}</p>
+            <h2 className="mb-2 text-xl font-semibold text-gray-900">{t('common.messages.loading')}</h2>
+            <p className="mb-4 text-gray-600">{t('common.messages.settingUp')}</p>
           
           {/* Emergency override button */}
           <button
@@ -340,7 +334,7 @@ const HomePage: React.FC = () => {
               const { setLoading } = useAuthStore.getState()
               setLoading(false)
             }}
-            className="text-sm text-gray-500 hover:text-primary-600 underline"
+            className="text-sm text-gray-500 underline hover:text-primary-600"
           >
             {t('common.messages.takingTooLong')}
           </button>
@@ -414,10 +408,10 @@ const HomePage: React.FC = () => {
 
   // Default home page view (protected)
   return (
-    <div className=" mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="mx-auto">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Home Banner */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
+        <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
           <PageBanner
             backgroundImage={getBannerConfig('home').image}
             title={t('home.discoverLuxury')}
@@ -429,7 +423,7 @@ const HomePage: React.FC = () => {
         </div>
 
         {/* Popular Places Section - Full width across all columns */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl border border-gray-200 p-4">
+        <div className="col-span-1 rounded-xl border border-gray-200 bg-white p-4 md:col-span-2 lg:col-span-4">
           <PopularPlaces 
             onPlaceClick={handleCityClick}
             onExploreClick={() => {
@@ -441,17 +435,17 @@ const HomePage: React.FC = () => {
 
         {/* Properties Feed Error State */}
         {feedError && !feedLoading && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-              <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-              <h3 className="text-lg font-semibold text-red-900 mb-2">
+          <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
+            <div className="rounded-xl border border-red-200 bg-red-50 p-6 text-center">
+              <AlertCircle className="mx-auto mb-3 size-12 text-red-500" />
+              <h3 className="mb-2 text-lg font-semibold text-red-900">
                 {t('messages.failedToLoad')}
               </h3>
               <Button
                 variant="flat"
                 color="danger"
                 onPress={handleRetry}
-                startContent={<RefreshCw className="w-4 h-4" />}
+                startContent={<RefreshCw className="size-4" />}
               >
                 {t('common.buttons.tryAgain')}
               </Button>
@@ -485,17 +479,17 @@ const HomePage: React.FC = () => {
         {/* No properties state */}
         {!feedLoading && !feedError && properties.length === 0 && (
           <div className="col-span-full">
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-gray-400 text-2xl">🏠</span>
+            <div className="py-12 text-center">
+              <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gray-100">
+                <span className="text-2xl text-gray-400">🏠</span>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">
                 {t('messages.noProperties')}
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="mb-4 text-gray-600">
                 {t('messages.noPropertiesInArea')}
               </p>
-              <div className="flex gap-3 justify-center">
+              <div className="flex justify-center gap-3">
                 <Button
                   variant="flat"
                   color="primary"
@@ -506,7 +500,7 @@ const HomePage: React.FC = () => {
                 <Button
                   variant="flat"
                   onPress={handleRefresh}
-                  startContent={<RefreshCw className="w-4 h-4" />}
+                  startContent={<RefreshCw className="size-4" />}
                 >
                   {t('common.buttons.refreshFeed')}
                 </Button>
@@ -519,10 +513,10 @@ const HomePage: React.FC = () => {
         {hasNextPage && (
           <div 
             ref={loadMoreRef}
-            className="col-span-1 md:col-span-2 lg:col-span-4 py-8"
+            className="col-span-1 py-8 md:col-span-2 lg:col-span-4"
           >
             {isLoadingMore ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <PropertyCardSkeleton key={`loading-more-${index}`} />
                 ))}
@@ -544,7 +538,7 @@ const HomePage: React.FC = () => {
 
         {/* End of feed indicator */}
         {!hasNextPage && properties.length > 0 && (
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-8">
+          <div className="col-span-1 py-8 text-center md:col-span-2 lg:col-span-4">
             <p className="text-gray-500">
               🎉 {t('messages.seenAllProperties')}
             </p>
@@ -553,18 +547,14 @@ const HomePage: React.FC = () => {
               size="sm"
               onPress={handleRefresh}
               className="mt-2"
-              startContent={<RefreshCw className="w-4 h-4" />}
+              startContent={<RefreshCw className="size-4" />}
             >
               {t('common.buttons.refreshForNewListings')}
           </Button>
         </div>
       )}
 
-        {/* Profile Modal */}
-        <ProfileModal 
-          isOpen={isProfileModalOpen}
-          onClose={handleProfileModalClose}
-        />
+
       </div>
     </div>
   )

@@ -78,13 +78,7 @@ export interface PropertyCardProps {
   onClick?: (property: import('./Property').Property) => void
 }
 
-export interface ProfileModalProps {
-  isOpen: boolean
-  onClose: () => void
-  user: import('./User').User
-  onEditProfile?: () => void
-  onLogout?: () => void
-}
+
 
 export interface PopularPlacesProps {
   places?: import('./Property').PopularPlace[]

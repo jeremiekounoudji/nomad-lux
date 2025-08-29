@@ -49,34 +49,34 @@ interface ConnectionStatusProps {
 // Enhanced loading skeleton with animations
 export const MapLoadingSkeleton: React.FC<{ className?: string }> = ({ className = '' }) => {
   return (
-    <div className={`relative w-full h-full bg-gray-100 rounded-lg overflow-hidden ${className}`}>
+    <div className={`relative size-full overflow-hidden rounded-lg bg-gray-100 ${className}`}>
       {/* Animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-pulse" />
+      <div className="absolute inset-0 animate-pulse bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100" />
       
       {/* Map markers simulation */}
       <div className="absolute inset-0 p-4">
-        <div className="flex items-center justify-center h-full">
+        <div className="flex h-full items-center justify-center">
           <div className="space-y-4 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" />
-              <div className="w-3 h-3 bg-green-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-              <div className="w-3 h-3 bg-yellow-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+              <div className="size-3 animate-bounce rounded-full bg-blue-400" />
+              <div className="size-3 animate-bounce rounded-full bg-green-400" style={{ animationDelay: '0.1s' }} />
+              <div className="size-3 animate-bounce rounded-full bg-yellow-400" style={{ animationDelay: '0.2s' }} />
             </div>
-            <div className="w-32 h-4 bg-gray-300 rounded animate-pulse mx-auto" />
-            <div className="w-24 h-3 bg-gray-300 rounded animate-pulse mx-auto" />
+            <div className="mx-auto h-4 w-32 animate-pulse rounded bg-gray-300" />
+            <div className="mx-auto h-3 w-24 animate-pulse rounded bg-gray-300" />
           </div>
         </div>
       </div>
       
       {/* Corner indicators */}
-      <div className="absolute top-4 left-4">
-        <div className="w-8 h-8 bg-gray-300 rounded animate-pulse" />
+      <div className="absolute left-4 top-4">
+        <div className="size-8 animate-pulse rounded bg-gray-300" />
       </div>
-      <div className="absolute top-4 right-4">
-        <div className="w-16 h-6 bg-gray-300 rounded animate-pulse" />
+      <div className="absolute right-4 top-4">
+        <div className="h-6 w-16 animate-pulse rounded bg-gray-300" />
       </div>
       <div className="absolute bottom-4 right-4">
-        <div className="w-12 h-8 bg-gray-300 rounded animate-pulse" />
+        <div className="h-8 w-12 animate-pulse rounded bg-gray-300" />
       </div>
     </div>
   );
@@ -89,11 +89,11 @@ const ConnectionStatus: React.FC<ConnectionStatusProps> = ({
   effectiveType 
 }) => {
   const getConnectionIcon = () => {
-    if (!isOnline) return <WifiOff className="w-4 h-4 text-red-500" />;
+    if (!isOnline) return <WifiOff className="size-4 text-red-500" />;
     if (effectiveType && ['slow-2g', '2g'].includes(effectiveType)) {
-      return <Wifi className="w-4 h-4 text-yellow-500" />;
+      return <Wifi className="size-4 text-yellow-500" />;
     }
-    return <Wifi className="w-4 h-4 text-green-500" />;
+    return <Wifi className="size-4 text-green-500" />;
   };
 
   const getConnectionLabel = () => {
@@ -155,18 +155,18 @@ export const MapProgressiveLoading: React.FC<MapLoadingStateProps> = ({
   const progressPercentage = progress ? (progress.loaded.length / progress.total) * 100 : 0;
 
   return (
-    <div className={`relative w-full h-full ${className}`}>
+    <div className={`relative size-full ${className}`}>
       <MapLoadingSkeleton />
       
       {/* Loading overlay */}
-      <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-10">
-        <Card className="w-80 max-w-full mx-4">
-          <CardBody className="text-center p-6">
+      <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/90">
+        <Card className="mx-4 w-80 max-w-full">
+          <CardBody className="p-6 text-center">
             {/* Header */}
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="mb-4 flex items-center justify-center gap-3">
               <div className="relative">
-                <MapPin className="w-8 h-8 text-primary-500" />
-                <div className="absolute -top-1 -right-1">
+                <MapPin className="size-8 text-primary-500" />
+                <div className="absolute -right-1 -top-1">
                   <Spinner size="sm" color="primary" />
                 </div>
               </div>
@@ -174,7 +174,7 @@ export const MapProgressiveLoading: React.FC<MapLoadingStateProps> = ({
                 <h3 className="text-lg font-semibold text-gray-900">
                   {loadingMessage}
                 </h3>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="mt-1 flex items-center gap-2">
                   <ConnectionStatus {...connectionInfo} />
                   <Chip size="sm" variant="dot" color="primary">
                     Loading
@@ -202,14 +202,14 @@ export const MapProgressiveLoading: React.FC<MapLoadingStateProps> = ({
                 </div>
 
                 {/* Loaded components list */}
-                <div className="flex flex-wrap gap-1 justify-center">
+                <div className="flex flex-wrap justify-center gap-1">
                   {progress.loaded.map((item, index) => (
                     <Chip
                       key={index}
                       size="sm"
                       color="success"
                       variant="flat"
-                      startContent={<CheckCircle className="w-3 h-3" />}
+                      startContent={<CheckCircle className="size-3" />}
                     >
                       {item}
                     </Chip>
@@ -220,9 +220,9 @@ export const MapProgressiveLoading: React.FC<MapLoadingStateProps> = ({
 
             {/* Tips for slow connections */}
             {connectionInfo.effectiveType && ['slow-2g', '2g'].includes(connectionInfo.effectiveType) && (
-              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
                 <div className="flex items-center gap-2 text-yellow-800">
-                  <Clock className="w-4 h-4" />
+                  <Clock className="size-4" />
                   <span className="text-sm">
                     Slow connection detected. Map features may be limited.
                   </span>
@@ -232,9 +232,9 @@ export const MapProgressiveLoading: React.FC<MapLoadingStateProps> = ({
 
             {/* Offline indicator */}
             {!connectionInfo.isOnline && (
-              <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3">
                 <div className="flex items-center gap-2 text-red-800">
-                  <WifiOff className="w-4 h-4" />
+                  <WifiOff className="size-4" />
                   <span className="text-sm">
                     You're offline. Map will load when connection is restored.
                   </span>
@@ -278,7 +278,7 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
         return {
           title: 'Network Connection Error',
           description: 'Unable to load map data. Please check your internet connection.',
-          icon: <WifiOff className="w-12 h-12 text-red-500" />,
+          icon: <WifiOff className="size-12 text-red-500" />,
           suggestions: [
             'Check your internet connection',
             'Try refreshing the page',
@@ -289,7 +289,7 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
         return {
           title: 'Map Component Load Error',
           description: 'Failed to load map components. This might be a temporary issue.',
-          icon: <Download className="w-12 h-12 text-red-500" />,
+          icon: <Download className="size-12 text-red-500" />,
           suggestions: [
             'Try reloading the page',
             'Clear your browser cache',
@@ -300,7 +300,7 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
         return {
           title: 'Map Rendering Error',
           description: 'The map component failed to render properly.',
-          icon: <AlertTriangle className="w-12 h-12 text-red-500" />,
+          icon: <AlertTriangle className="size-12 text-red-500" />,
           suggestions: [
             'Your device might not support this map feature',
             'Try using a different browser',
@@ -311,7 +311,7 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
         return {
           title: 'Map Error',
           description: 'An unexpected error occurred while loading the map.',
-          icon: <XCircle className="w-12 h-12 text-red-500" />,
+          icon: <XCircle className="size-12 text-red-500" />,
           suggestions: [
             'Try refreshing the page',
             'Check browser console for more details',
@@ -324,39 +324,39 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
   const errorDetails = getErrorDetails();
 
   return (
-    <div className={`w-full h-full flex items-center justify-center bg-gray-50 ${className}`}>
-      <Card className="w-96 max-w-full mx-4">
-        <CardBody className="text-center p-6">
+    <div className={`flex size-full items-center justify-center bg-gray-50 ${className}`}>
+      <Card className="mx-4 w-96 max-w-full">
+        <CardBody className="p-6 text-center">
           {/* Error icon and title */}
-          <div className="flex flex-col items-center mb-4">
+          <div className="mb-4 flex flex-col items-center">
             {errorDetails.icon}
-            <h3 className="text-xl font-semibold text-gray-900 mt-3">
+            <h3 className="mt-3 text-xl font-semibold text-gray-900">
               {errorDetails.title}
             </h3>
-            <p className="text-gray-600 mt-2">
+            <p className="mt-2 text-gray-600">
               {errorDetails.description}
             </p>
           </div>
 
           {/* Error details */}
-          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 p-3">
             <div className="text-sm text-red-800">
               <strong>Error:</strong> {error.message}
             </div>
             {retryCount > 0 && (
-              <div className="text-xs text-red-600 mt-1">
+              <div className="mt-1 text-xs text-red-600">
                 Retry attempts: {retryCount}
               </div>
             )}
           </div>
 
           {/* Suggestions */}
-          <div className="text-left mb-4">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Try these solutions:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div className="mb-4 text-left">
+            <h4 className="mb-2 text-sm font-semibold text-gray-700">Try these solutions:</h4>
+            <ul className="space-y-1 text-sm text-gray-600">
               {errorDetails.suggestions.map((suggestion, index) => (
                 <li key={index} className="flex items-start gap-2">
-                  <span className="text-primary-500 mt-1">•</span>
+                  <span className="mt-1 text-primary-500">•</span>
                   {suggestion}
                 </li>
               ))}
@@ -364,13 +364,13 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-3 justify-center">
+          <div className="flex justify-center gap-3">
             {canRetry && (
               <Button
                 color="primary"
                 onClick={handleRetry}
                 isLoading={isRetrying}
-                startContent={!isRetrying && <RefreshCw className="w-4 h-4" />}
+                startContent={!isRetrying && <RefreshCw className="size-4" />}
                 disabled={retryCount >= 3} // Limit retry attempts
               >
                 {isRetrying ? 'Retrying...' : 'Try Again'}
@@ -380,14 +380,14 @@ export const MapEnhancedErrorState: React.FC<MapErrorStateProps> = ({
             <Button
               variant="light"
               onClick={() => window.location.reload()}
-              startContent={<RefreshCw className="w-4 h-4" />}
+              startContent={<RefreshCw className="size-4" />}
             >
               Reload Page
             </Button>
           </div>
 
           {retryCount >= 3 && (
-            <div className="mt-4 p-3 bg-gray-100 rounded-lg">
+            <div className="mt-4 rounded-lg bg-gray-100 p-3">
               <p className="text-sm text-gray-600">
                 Multiple retry attempts failed. Please reload the page or contact support.
               </p>

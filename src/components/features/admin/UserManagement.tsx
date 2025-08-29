@@ -230,57 +230,57 @@ export const UserManagement: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{t('admin.users.allUsers')}</h1>
-        <p className="text-gray-600 mt-1">{t('admin.dashboard.overview', { defaultValue: 'Manage platform users and their activities' })}</p>
+        <p className="mt-1 text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Manage platform users and their activities' })}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-slate-500 to-slate-600 text-white">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <Card className="border border-gray-200 bg-gradient-to-br from-slate-500 to-slate-600 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.all}</p>
-            <p className="text-white/90 text-sm">{t('admin.dashboard.totalUsers')}</p>
+            <p className="text-sm text-white/90">{t('admin.dashboard.totalUsers')}</p>
           </CardBody>
         </Card>
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.active}</p>
-            <p className="text-white/90 text-sm">{t('common.status.active')}</p>
+            <p className="text-sm text-white/90">{t('common.status.active')}</p>
           </CardBody>
         </Card>
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-rose-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-red-500 to-rose-500 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.suspended}</p>
-            <p className="text-white/90 text-sm">{t('common.status.suspended')}</p>
+            <p className="text-sm text-white/90">{t('common.status.suspended')}</p>
           </CardBody>
         </Card>
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-amber-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.pending}</p>
-            <p className="text-white/90 text-sm">{t('common.status.pending')}</p>
+            <p className="text-sm text-white/90">{t('common.status.pending')}</p>
           </CardBody>
         </Card>
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.hosts}</p>
-            <p className="text-white/90 text-sm">{t('admin.users.hosts')}</p>
+            <p className="text-sm text-white/90">{t('admin.users.hosts')}</p>
           </CardBody>
         </Card>
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-violet-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-purple-500 to-violet-500 text-white shadow-sm">
           <CardBody className="p-4 text-center">
             <p className="text-2xl font-bold text-white">{stats.guests}</p>
-            <p className="text-white/90 text-sm">{t('admin.users.guests')}</p>
+            <p className="text-sm text-white/90">{t('admin.users.guests')}</p>
           </CardBody>
         </Card>
       </div>
 
       {/* Filters and Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex flex-col sm:flex-row gap-3 flex-1">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="flex flex-1 flex-col gap-3 sm:flex-row">
           <Input
             placeholder={t('common.buttons.search') + ' users...'}
             value={searchQuery}
             onValueChange={setSearchQuery}
-            startContent={<Search className="w-4 h-4 text-gray-400" />}
+            startContent={<Search className="size-4 text-gray-400" />}
             className="sm:max-w-xs"
           />
           <Select
@@ -315,7 +315,7 @@ export const UserManagement: React.FC = () => {
             </Dropdown>
           )}
           <Button
-            startContent={<Download className="w-4 h-4" />}
+            startContent={<Download className="size-4" />}
             variant="flat"
           >
             {t('admin.actions.export')}
@@ -338,13 +338,13 @@ export const UserManagement: React.FC = () => {
       </Tabs>
 
       {/* Users Table */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="border-b border-gray-200 bg-gray-50">
                 <tr>
-                  <th className="text-left p-4">
+                  <th className="p-4 text-left">
                     <Checkbox
                       isSelected={selectedUsers.length === filteredUsers.length && filteredUsers.length > 0}
                       isIndeterminate={selectedUsers.length > 0 && selectedUsers.length < filteredUsers.length}
@@ -352,12 +352,12 @@ export const UserManagement: React.FC = () => {
                       color="primary"
                     />
                   </th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.users.userDetails')}</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('common.labels.status')}</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.users.userRole')}</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.dashboard.recentActivity')}</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Performance' })}</th>
-                  <th className="text-left p-4 text-sm font-medium text-gray-600">{t('admin.actions.view')}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('admin.users.userDetails')}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('common.labels.status')}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('admin.users.userRole')}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('admin.dashboard.recentActivity')}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Performance' })}</th>
+                  <th className="p-4 text-left text-sm font-medium text-gray-600">{t('admin.actions.view')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -376,7 +376,7 @@ export const UserManagement: React.FC = () => {
                           src={user.avatar_url}
                           name={user.display_name ?? user.name}
                           size="sm"
-                          className="flex-shrink-0"
+                          className="shrink-0"
                         />
                         <div>
                           <p className="font-medium text-gray-900">{user.display_name ?? user.name}</p>
@@ -413,23 +413,23 @@ export const UserManagement: React.FC = () => {
                     </td>
                     <td className="p-4">
                       <div className="text-sm">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Calendar className="w-3 h-3 text-gray-400" />
+                        <div className="mb-1 flex items-center gap-2">
+                          <Calendar className="size-3 text-gray-400" />
                         <span>{user.totalBookings} {t('admin.bookings.allBookings')}</span>
                         </div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <Home className="w-3 h-3 text-gray-400" />
+                        <div className="mb-1 flex items-center gap-2">
+                          <Home className="size-3 text-gray-400" />
                         <span>{user.totalProperties} {t('admin.navigation.properties')}</span>
                         </div>
                         {user.revenue > 0 && (
-                          <div className="flex items-center gap-2 mb-1">
-                            <DollarSign className="w-3 h-3 text-gray-400" />
+                          <div className="mb-1 flex items-center gap-2">
+                            <DollarSign className="size-3 text-gray-400" />
                             <span>${user.revenue.toLocaleString()}</span>
                           </div>
                         )}
                         {user.rating > 0 && (
                           <div className="flex items-center gap-2">
-                            <Star className="w-3 h-3 text-yellow-400" />
+                            <Star className="size-3 text-yellow-400" />
                             <span>{user.rating}/5</span>
                           </div>
                         )}
@@ -444,13 +444,13 @@ export const UserManagement: React.FC = () => {
                             variant="light"
                             className="text-gray-400"
                           >
-                            <MoreHorizontal className="w-4 h-4" />
+                            <MoreHorizontal className="size-4" />
                           </Button>
                         </DropdownTrigger>
                         <DropdownMenu>
                           <DropdownItem
                             key="view"
-                            startContent={<Eye className="w-4 h-4" />}
+                            startContent={<Eye className="size-4" />}
                             onClick={() => {
                               setSelectedUser(user)
                               onOpen()
@@ -460,7 +460,7 @@ export const UserManagement: React.FC = () => {
                           </DropdownItem>
                           <DropdownItem
                             key="message"
-                            startContent={<MessageSquare className="w-4 h-4" />}
+                            startContent={<MessageSquare className="size-4" />}
                             onClick={() => handleUserAction(user, 'message')}
                           >
                             {t('admin.actions.message', { defaultValue: 'Send Message' })}
@@ -468,7 +468,7 @@ export const UserManagement: React.FC = () => {
                           {user.status === 'active' ? (
                             <DropdownItem
                               key="suspend"
-                              startContent={<Ban className="w-4 h-4" />}
+                              startContent={<Ban className="size-4" />}
                               onClick={() => handleUserAction(user, 'suspend')}
                               className="text-warning"
                             >
@@ -477,7 +477,7 @@ export const UserManagement: React.FC = () => {
                           ) : (
                             <DropdownItem
                               key="activate"
-                              startContent={<UserCheck className="w-4 h-4" />}
+                              startContent={<UserCheck className="size-4" />}
                               onClick={() => handleUserAction(user, 'activate')}
                               className="text-success"
                             >
@@ -486,7 +486,7 @@ export const UserManagement: React.FC = () => {
                           )}
                           <DropdownItem
                             key="delete"
-                            startContent={<Trash2 className="w-4 h-4" />}
+                            startContent={<Trash2 className="size-4" />}
                             onClick={() => handleUserAction(user, 'delete')}
                             className="text-danger"
                           >
@@ -525,7 +525,7 @@ export const UserManagement: React.FC = () => {
                       color={getStatusColor(selectedUser.status) as any}
                       size="sm"
                       variant="flat"
-                      className="capitalize mt-1"
+                      className="mt-1 capitalize"
                     >
                       {selectedUser.status}
                     </Chip>
@@ -536,31 +536,31 @@ export const UserManagement: React.FC = () => {
                       color={getRoleColor(selectedUser.role) as any}
                       size="sm"
                       variant="flat"
-                      className="capitalize mt-1"
+                      className="mt-1 capitalize"
                     >
                       {selectedUser.role}
                     </Chip>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Phone</p>
-                    <p className="text-sm mt-1">{selectedUser.phone}</p>
+                    <p className="mt-1 text-sm">{selectedUser.phone}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Join Date</p>
-                    <p className="text-sm mt-1">{selectedUser.joinDate}</p>
+                    <p className="mt-1 text-sm">{selectedUser.joinDate}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Last Login</p>
-                    <p className="text-sm mt-1">{selectedUser.lastLogin}</p>
+                    <p className="mt-1 text-sm">{selectedUser.lastLogin}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-600">Rating</p>
-                    <p className="text-sm mt-1">{selectedUser.rating}/5</p>
+                    <p className="mt-1 text-sm">{selectedUser.rating}/5</p>
                   </div>
                 </div>
                 
                 <div className="border-t pt-4">
-                  <h4 className="text-sm font-medium text-gray-600 mb-2">Activity Summary</h4>
+                  <h4 className="mb-2 text-sm font-medium text-gray-600">Activity Summary</h4>
                   <div className="grid grid-cols-3 gap-4">
                     <div className="text-center">
                       <p className="text-lg font-semibold">{selectedUser.totalBookings}</p>

@@ -83,17 +83,17 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
 
   return (
     <div className="lg:sticky lg:top-6 lg:h-fit">
-      <Card className="shadow-lg border border-gray-200">
+      <Card className="border border-gray-200 shadow-lg">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex w-full items-center justify-between">
             <div>
               <span className="text-2xl font-bold text-gray-900">{property.currency} {property.price}</span>
               <span className="ml-1 text-gray-600">{t('booking.labels.night')}</span>
             </div>
-            <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
-              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+            <div className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1">
+              <Star className="size-4 fill-yellow-400 text-yellow-400" />
               <span className="font-medium text-gray-900">{property.rating}</span>
-              <span className="text-gray-600 text-sm">({property.review_count} {t('booking.labels.reviews')})</span>
+              <span className="text-sm text-gray-600">({property.review_count} {t('booking.labels.reviews')})</span>
             </div>
           </div>
         </CardHeader>
@@ -134,9 +134,9 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
           </div>
 
           {/* Time Selection (Manual Override) */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkInTime')}</label>
+          <div className="mb-4 grid grid-cols-2 gap-3">
+            <div className="rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+              <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.checkInTime')}</label>
               <input
                 type="time"
                 value={checkInTime}
@@ -158,12 +158,12 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                 min="06:00"
                 max="22:00"
                 step="1800"
-                className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
+                className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
               />
-              <p className="text-xs text-gray-500 mt-1">{t('booking.policies.checkInAvailable')}</p>
+              <p className="mt-1 text-xs text-gray-500">{t('booking.policies.checkInAvailable')}</p>
             </div>
-            <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-              <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.checkOutTime')}</label>
+            <div className="rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+              <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.checkOutTime')}</label>
               <input
                 type="time"
                 value={checkOutTime}
@@ -185,18 +185,18 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                 min="06:00"
                 max="12:00"
                 step="1800"
-                className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
+                className="w-full bg-transparent text-sm text-gray-900 focus:outline-none"
               />
-              <p className="text-xs text-gray-500 mt-1">{t('booking.policies.checkOutRequired')}</p>
+              <p className="mt-1 text-xs text-gray-500">{t('booking.policies.checkOutRequired')}</p>
             </div>
           </div>
 
           {/* Guests */}
-          <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-            <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.guests').toUpperCase()}</label>
+          <div className="mb-4 rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+            <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.guests').toUpperCase()}</label>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-gray-500" />
+                <Users className="size-5 text-gray-500" />
                 <span className="text-gray-900">{guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}</span>
               </div>
               <div className="flex items-center gap-2">
@@ -230,21 +230,21 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-gray-500 mt-1">{t('booking.labels.maxGuests', { guests: property.max_guests })}</p>
+            <p className="mt-1 text-xs text-gray-500">{t('booking.labels.maxGuests', { guests: property.max_guests })}</p>
           </div>
 
           {/* Special Requests */}
-          <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-            <label className="block text-xs font-semibold text-gray-700 mb-1">{t('booking.labels.specialRequestsOptional')}</label>
+          <div className="mb-4 rounded-lg border-2 border-gray-200 p-3 transition-all focus-within:border-primary-500 hover:border-gray-300">
+            <label className="mb-1 block text-xs font-semibold text-gray-700">{t('booking.labels.specialRequestsOptional')}</label>
             <textarea
               value={specialRequests}
               onChange={(e) => setSpecialRequests(e.target.value)}
               placeholder={t('booking.labels.specialRequestsPlaceholder')}
               rows={3}
               maxLength={500}
-              className="w-full text-sm focus:outline-none bg-transparent text-gray-900 resize-none placeholder-gray-500"
+              className="w-full resize-none bg-transparent text-sm text-gray-900 placeholder:text-gray-500 focus:outline-none"
             />
-            <div className="flex justify-between items-center mt-1">
+            <div className="mt-1 flex items-center justify-between">
               <span className="text-xs text-gray-500">{t('booking.labels.specialRequestsHelper')}</span>
               <span className="text-xs text-gray-400">{specialRequests.length}/500</span>
             </div>
@@ -255,10 +255,10 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
             <Button 
               color="primary" 
               size="lg" 
-              className="w-full font-bold text-lg py-4 bg-primary-600 hover:bg-primary-700"
+              className="w-full bg-primary-600 py-4 text-lg font-bold hover:bg-primary-700"
               radius="lg"
               onPress={onReserveClick}
-              startContent={<Calendar className="w-5 h-5" />}
+              startContent={<Calendar className="size-5" />}
               isLoading={isCheckingAvailability || isCreatingBooking}
               disabled={isCheckingAvailability || isCreatingBooking || !checkIn || !checkOut}
             >
@@ -270,19 +270,19 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
 
           {/* Validation Error Message */}
           {validationError && (
-            <div className="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg">
+            <div className="mb-4 rounded-lg border border-danger-200 bg-danger-50 p-3">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-danger-600" />
-                <p className="text-sm text-danger-700 font-medium">{validationError}</p>
+                <AlertCircle className="size-4 text-danger-600" />
+                <p className="text-sm font-medium text-danger-700">{validationError}</p>
               </div>
             </div>
           )}
 
           {/* Booking Status */}
           {(checkIn && checkOut) && (
-            <div className="mb-4 p-3 bg-primary-50 border border-primary-200 rounded-lg">
+            <div className="mb-4 rounded-lg border border-primary-200 bg-primary-50 p-3">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-primary-600" />
+                <Calendar className="size-4 text-primary-600" />
                 <p className="text-sm text-primary-700">
                   {billingNights} {billingNights > 1 ? t('booking.labels.nights') : t('booking.labels.night')} · {guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}
                 </p>
@@ -290,7 +290,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
             </div>
           )}
 
-          <p className="text-center text-sm text-gray-600 mb-4">
+          <p className="mb-4 text-center text-sm text-gray-600">
             {t('booking.messages.noChargeYet')}
           </p>
 
@@ -311,9 +311,9 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
               <span className="font-medium text-gray-900">{property.currency} {serviceFee}</span>
             </div>
             <Divider className="my-3" />
-            <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex justify-between rounded-lg bg-gray-50 p-3">
               <span className="font-bold text-gray-900">{t('booking.labels.totalBeforeTaxes')}</span>
-              <span className="font-bold text-gray-900 text-lg">{property.currency} {totalAmount}</span>
+              <span className="text-lg font-bold text-gray-900">{property.currency} {totalAmount}</span>
             </div>
           </div>
         </CardBody>

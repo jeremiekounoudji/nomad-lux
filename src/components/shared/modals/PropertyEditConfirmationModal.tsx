@@ -49,10 +49,10 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-warning-500" />
+                <AlertTriangle className="size-5 text-warning-500" />
                 <h2 className="text-xl font-bold">{t('property.editConfirm.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600 font-normal">
+              <p className="text-sm font-normal text-gray-600">
                 {t('property.editConfirm.subtitle')}
               </p>
             </ModalHeader>
@@ -60,20 +60,20 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
             <ModalBody>
               <div className="space-y-4">
                 {/* Property Info */}
-                <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex gap-3 rounded-lg bg-gray-50 p-3">
                   <img
                     src={confirmation.property.images[0]}
                     alt={confirmation.property.title}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    className="size-16 rounded-lg object-cover"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">
                       {confirmation.property.title}
                     </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="line-clamp-2 text-sm text-gray-600">
                       {confirmation.property.description}
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="mt-2 flex items-center gap-2">
                       <span className="text-sm text-gray-500">{t('property.editConfirm.currentStatus')}:</span>
                       <Chip 
                         color={getStatusColor(confirmation.currentStatus)}
@@ -89,28 +89,28 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
 
                 {/* Warning Message */}
                 {confirmation.willResetToPending ? (
-                  <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
+                  <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
                     <div className="flex items-start gap-3">
-                      <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5 flex-shrink-0" />
+                      <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning-600" />
                       <div>
-                        <h4 className="font-semibold text-warning-800 mb-1">
+                        <h4 className="mb-1 font-semibold text-warning-800">
                           {t('property.editConfirm.willChangeTitle')}
                         </h4>
                         <p className="text-sm text-warning-700">
                           {t('property.editConfirm.willChangeBody', { status: getStatusLabel(confirmation.currentStatus) })}
                         </p>
-                        <p className="text-sm text-warning-700 mt-2">
+                        <p className="mt-2 text-sm text-warning-700">
                           {t('property.editConfirm.reapproveNote')}
                         </p>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                     <div className="flex items-start gap-3">
-                      <Edit className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <Edit className="mt-0.5 size-5 shrink-0 text-blue-600" />
                       <div>
-                        <h4 className="font-semibold text-blue-800 mb-1">
+                        <h4 className="mb-1 font-semibold text-blue-800">
                           {t('property.editConfirm.safeTitle')}
                         </h4>
                         <p className="text-sm text-blue-700">
@@ -140,7 +140,7 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
                 color={confirmation.willResetToPending ? "warning" : "primary"}
                 onPress={onConfirm}
                 isLoading={isLoading}
-                startContent={!isLoading && <Edit className="w-4 h-4" />}
+                startContent={!isLoading && <Edit className="size-4" />}
               >
                 {confirmation.willResetToPending ? t('property.editConfirm.editAndReset') : t('property.editConfirm.editProperty')}
               </Button>

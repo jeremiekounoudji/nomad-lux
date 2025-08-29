@@ -227,15 +227,15 @@ const EnhancedLoadingComponent: React.FC<{
   const { t } = useTranslation('common');
   const defaultLoadingMessage = t('map.loading');
   return (
-    <div className="relative w-full h-full">
+    <div className="relative size-full">
       <OriginalComponent />
       
       {/* Loading Progress Overlay */}
       {progress && (
-        <div className="absolute inset-0 bg-white/90 flex items-center justify-center z-50">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/90">
           <div className="text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-3"></div>
-            <p className="text-sm text-gray-600 mb-2">{loadingMessage || defaultLoadingMessage}</p>
+            <div className="mx-auto mb-3 size-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
+            <p className="mb-2 text-sm text-gray-600">{loadingMessage || defaultLoadingMessage}</p>
             <p className="text-xs text-gray-500">
               {t('map.progress.loading', { 
                 current: progress.current, 
@@ -243,9 +243,9 @@ const EnhancedLoadingComponent: React.FC<{
                 total: progress.total 
               })}
             </p>
-            <div className="w-48 bg-gray-200 rounded-full h-2 mt-2">
+            <div className="mt-2 h-2 w-48 rounded-full bg-gray-200">
               <div 
-                className="bg-primary-500 h-2 rounded-full transition-all duration-300"
+                className="h-2 rounded-full bg-primary-500 transition-all duration-300"
                 style={{ width: `${(progress.loaded.length / progress.total) * 100}%` }}
               />
             </div>
@@ -342,7 +342,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
     <div
       onMouseEnter={handlePreload}
       onFocus={handlePreload}
-      className="relative w-full h-full"
+      className="relative size-full"
     >
       <MapErrorBoundary 
         onError={onError}
@@ -357,7 +357,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
                 loadingMessage={t('map.loadingLibraries')}
               />
             ) : (
-              <div className="w-full h-full bg-gray-100 animate-pulse rounded-lg" />
+              <div className="size-full animate-pulse rounded-lg bg-gray-100" />
             )
           }
         >

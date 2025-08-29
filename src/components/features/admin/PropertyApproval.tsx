@@ -9,8 +9,7 @@ import {
   Tab,
   Checkbox,
   Input,
-  Avatar,
-  Pagination
+  Avatar
 } from '@heroui/react'
 import { CheckCircle, XCircle, Eye, MapPin, Image as ImageIcon, Video, Star, Search, Home, Ban, Loader2 } from 'lucide-react'
 import { 
@@ -207,7 +206,7 @@ export const PropertyApproval: React.FC = () => {
         size="sm" 
         color={getStatusColor(status)} 
         variant="solid"
-        className="text-white font-medium"
+        className="font-medium text-white"
       >
         {getStatusDisplayName(status)}
       </Chip>
@@ -226,7 +225,7 @@ export const PropertyApproval: React.FC = () => {
               size="sm"
               color="danger"
               variant="flat"
-              startContent={isPropertyLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
+              startContent={isPropertyLoading ? <Loader2 className="size-4 animate-spin" /> : <XCircle className="size-4" />}
               onPress={() => {
                 setSelectedProperty(property)
                 onRejectOpen()
@@ -238,7 +237,7 @@ export const PropertyApproval: React.FC = () => {
             <Button
               size="sm"
               color="success"
-              startContent={isPropertyLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
+              startContent={isPropertyLoading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4" />}
               onPress={() => handleApproveConfirm(property)}
               isDisabled={isPropertyLoading}
             >
@@ -252,7 +251,7 @@ export const PropertyApproval: React.FC = () => {
             size="sm"
             color="warning"
             variant="flat"
-            startContent={<Ban className="w-4 h-4" />}
+            startContent={<Ban className="size-4" />}
             onPress={() => handleSuspendConfirm(property)}
           >
             Suspend
@@ -332,54 +331,54 @@ export const PropertyApproval: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">{t('admin.properties.pendingApproval')}</h1>
-        <p className="text-gray-600 mt-1">{t('admin.dashboard.overview', { defaultValue: 'Review and approve property listings' })}</p>
+        <p className="mt-1 text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Review and approve property listings' })}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-red-500 text-white">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <Card className="border border-gray-200 bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.pending}</h3>
-            <p className="text-white/90 font-medium">{t('admin.properties.pendingApproval')}</p>
-            <p className="text-white/70 text-sm">{t('admin.bookings.requireAttention', { defaultValue: 'Requires attention' })}</p>
+            <p className="font-medium text-white/90">{t('admin.properties.pendingApproval')}</p>
+            <p className="text-sm text-white/70">{t('admin.bookings.requireAttention', { defaultValue: 'Requires attention' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.approved}</h3>
-            <p className="text-white/90 font-medium">{t('admin.properties.approved')}</p>
-            <p className="text-white/70 text-sm">{t('property.stats.sections.revenue', { defaultValue: 'Live properties' })}</p>
+            <p className="font-medium text-white/90">{t('admin.properties.approved')}</p>
+            <p className="text-sm text-white/70">{t('property.stats.sections.revenue', { defaultValue: 'Live properties' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-pink-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.rejected}</h3>
-            <p className="text-white/90 font-medium">{t('admin.properties.rejected')}</p>
-            <p className="text-white/70 text-sm">{t('admin.messages.actionCannotBeUndone', { defaultValue: 'Not approved' })}</p>
+            <p className="font-medium text-white/90">{t('admin.properties.rejected')}</p>
+            <p className="text-sm text-white/70">{t('admin.messages.actionCannotBeUndone', { defaultValue: 'Not approved' })}</p>
           </CardBody>
         </Card>
 
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-purple-500 to-indigo-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-purple-500 to-indigo-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
             <h3 className="text-4xl font-bold text-white">{statusCounts.suspended || 0}</h3>
-            <p className="text-white/90 font-medium">{t('admin.properties.suspended')}</p>
-            <p className="text-white/70 text-sm">{t('admin.messages.confirmAction', { defaultValue: 'Temporarily disabled' })}</p>
+            <p className="font-medium text-white/90">{t('admin.properties.suspended')}</p>
+            <p className="text-sm text-white/70">{t('admin.messages.confirmAction', { defaultValue: 'Temporarily disabled' })}</p>
           </CardBody>
         </Card>
       </div>
 
       {/* Search and Bulk Actions */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+          <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center">
             <div className="flex-1">
               <Input
                 placeholder={t('admin.actions.search') + '...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                startContent={<Search className="w-4 h-4 text-gray-400" />}
+                startContent={<Search className="size-4 text-gray-400" />}
               />
             </div>
             
@@ -450,9 +449,9 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Loading State */}
       {isLoading && (
-        <div className="flex justify-center items-center py-12">
+        <div className="flex items-center justify-center py-12">
           <div className="flex items-center gap-2">
-            <Loader2 className="w-6 h-6 animate-spin" />
+            <Loader2 className="size-6 animate-spin" />
             <span>{t('property.messages.loadingProperties')}</span>
           </div>
         </div>
@@ -460,9 +459,9 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Error State */}
       {error && (
-        <div className="text-center py-12">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-red-800 mb-2">{t('property.messages.failedToLoad', { defaultValue: 'Error Loading Properties' })}</h3>
+        <div className="py-12 text-center">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+            <h3 className="mb-2 text-lg font-medium text-red-800">{t('property.messages.failedToLoad', { defaultValue: 'Error Loading Properties' })}</h3>
             <Button color="primary" onPress={() => fetchAdminProperties({ force: true })}>
               {t('common.actions.retry', { defaultValue: 'Try Again' })}
             </Button>
@@ -472,12 +471,12 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Empty State */}
       {!isLoading && !error && searchFilteredProperties.length === 0 && (
-        <div className="text-center py-12">
-          <Home className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+        <div className="py-12 text-center">
+          <Home className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
             {t('property.messages.noProperties', { defaultValue: `No ${statusFilter === 'all' ? '' : statusFilter} properties found` })}
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="mb-4 text-gray-500">
             {searchQuery ? t('admin.properties.noMatch', { defaultValue: 'No properties match "{{query}}"', query: searchQuery }) : t('admin.properties.noneAvailable', { defaultValue: `No ${statusFilter} properties available.` })}
           </p>
           {searchQuery && (
@@ -490,12 +489,12 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Properties Grid */}
       {!isLoading && !error && searchFilteredProperties.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
           {searchFilteredProperties.map((property) => (
-            <Card key={property.id} className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+            <Card key={property.id} className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
               <CardBody className="p-0">
                 {/* Selection Checkbox */}
-                <div className="absolute top-4 left-4 z-10">
+                <div className="absolute left-4 top-4 z-10">
                   <Checkbox
                     isSelected={selectedProperties.includes(property.id)}
                     onValueChange={(checked) => handlePropertySelect(property.id, checked)}
@@ -508,40 +507,40 @@ export const PropertyApproval: React.FC = () => {
                 </div>
 
                 {/* Property Image */}
-                <div className="relative h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+                <div className="relative h-48 overflow-hidden rounded-t-lg bg-gray-200">
                   <img
                     src={property.images[0]}
                     alt={property.title}
-                    className="w-full h-full object-cover"
+                    className="size-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                   <div className="absolute bottom-4 left-4 text-white">
                       <div className="flex items-center gap-2 text-sm">
-                      <ImageIcon className="w-4 h-4" />
+                      <ImageIcon className="size-4" />
                         <span>{property.images.length} {t('property.labels.images')}</span>
                       {property.video && (
                         <>
                           <span>•</span>
-                          <Video className="w-4 h-4" />
+                          <Video className="size-4" />
                             <span>1 {t('property.labels.video')}</span>
                         </>
                       )}
                     </div>
                   </div>
-                  <div className="absolute top-4 right-4">
+                  <div className="absolute right-4 top-4">
                     {getStatusChip(property.status)}
                   </div>
                 </div>
 
                 {/* Property Details */}
                 <div className="p-6">
-                  <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="mb-4 flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
+                      <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900">
                         {property.title}
                       </h3>
-                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                        <MapPin className="w-4 h-4" />
+                      <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
+                        <MapPin className="size-4" />
                         <span>{property.location?.city}, {property.location?.country}</span>
                       </div>
                       <div className="flex items-center gap-4 text-xs text-gray-500">
@@ -559,16 +558,16 @@ export const PropertyApproval: React.FC = () => {
                   </div>
 
                   {/* Host Info */}
-                  <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                  <div className="mb-4 flex items-center gap-3 rounded-lg bg-gray-50 p-3">
                     <Avatar
                       name={t('property.modal.contactHost.title', { defaultValue: 'Host' })}
                       size="sm"
-                      className="flex-shrink-0"
+                      className="shrink-0"
                     />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm truncate">{t('admin.properties.hostInformation', { defaultValue: 'Host ID:' })} {property.host_id}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium">{t('admin.properties.hostInformation', { defaultValue: 'Host ID:' })} {property.host_id}</div>
                       <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                        <Star className="size-3 fill-yellow-400 text-yellow-400" />
                         <span className="text-xs text-gray-600">{property.rating || 0}</span>
                         <span className="text-xs text-gray-500">• {t('admin.properties.createdYear', { defaultValue: 'Created {{year}}', year: new Date(property.created_at).getFullYear() })}</span>
                       </div>
@@ -592,12 +591,12 @@ export const PropertyApproval: React.FC = () => {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <Button
                       size="sm"
                       variant="flat"
                       onPress={() => handleViewDetails(property as DatabaseProperty)}
-                      startContent={<Eye className="w-4 h-4" />}
+                      startContent={<Eye className="size-4" />}
                     >
                       {t('property.actions.viewDetails')}
                     </Button>
@@ -612,13 +611,13 @@ export const PropertyApproval: React.FC = () => {
 
       {/* Pagination */}
       {pagination && pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
           <button
             onClick={() => goToPage(pagination.currentPage - 1)}
             disabled={pagination.currentPage === 1 || isLoading}
-            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+            className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
               ${pagination.currentPage === 1 || isLoading
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                 : 'bg-primary-600 text-white hover:bg-primary-700'}`}
           >
             {t('admin.pagination.previous', { defaultValue: 'Previous' })}
@@ -631,9 +630,9 @@ export const PropertyApproval: React.FC = () => {
           <button
             onClick={() => goToPage(pagination.currentPage + 1)}
             disabled={isLoading || pagination.currentPage >= pagination.totalPages}
-            className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+            className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
               ${isLoading || pagination.currentPage >= pagination.totalPages
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                 : 'bg-primary-600 text-white hover:bg-primary-700'}`}
           >
             {t('admin.pagination.next', { defaultValue: 'Next' })}

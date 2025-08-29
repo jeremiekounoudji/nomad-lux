@@ -75,26 +75,26 @@ export const RequestPayoutModal: React.FC<RequestPayoutModalProps> = ({
           <h2 className="text-lg font-bold">{t('wallet.requestPayout.title')}</h2>
         </ModalHeader>
         <ModalBody>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="mb-4 text-sm text-gray-600">
             {t('wallet.requestPayout.subtitle', { balance: payoutBalance.toFixed(2), min: minimumPayoutAmount.toFixed(2) })}
           </p>
           <Input
             type="number"
             label={t('wallet.requestPayout.amountLabel')}
-            startContent={<DollarSign className="w-4 h-4 text-gray-400" />}
+            startContent={<DollarSign className="size-4 text-gray-400" />}
             placeholder={t('wallet.requestPayout.amountPlaceholder')}
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             isRequired
           />
-          {error && <p className="text-sm text-red-600 mt-2">{error}</p>}
+          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" onClick={onClose} disabled={isLoading}>
             {t('common.buttons.cancel')}
           </Button>
           <Button
-            className="bg-primary-600 hover:bg-primary-700 text-white"
+            className="bg-primary-600 text-white hover:bg-primary-700"
             onClick={handleRequest}
             disabled={isLoading}
             startContent={isLoading ? <Spinner size="sm" /> : undefined}

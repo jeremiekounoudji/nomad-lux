@@ -172,7 +172,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 
     return (
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2" htmlFor={field}>
+        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700" htmlFor={field}>
           {icon}
           <span>{label}</span>
         </label>
@@ -199,7 +199,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             isIconOnly
             size="sm"
             variant="light"
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 min-h-[44px] min-w-[44px]"
+            className="absolute right-1 top-1/2 min-h-[44px] min-w-[44px] -translate-y-1/2"
             onPress={() => togglePasswordVisibility(showField)}
             aria-label={showPasswords[showField] ? t('profile.password.hide') : t('profile.password.show')}
             onKeyDown={(e) => {
@@ -210,15 +210,15 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             }}
           >
             {showPasswords[showField] ? (
-              <EyeOff className="w-4 h-4" aria-hidden="true" />
+              <EyeOff className="size-4" aria-hidden="true" />
             ) : (
-              <Eye className="w-4 h-4" aria-hidden="true" />
+              <Eye className="size-4" aria-hidden="true" />
             )}
           </Button>
         </div>
         {hasError && (
-          <p id={`${field}-error`} className="text-sm text-red-600 flex items-center space-x-1" role="alert">
-            <AlertCircle className="w-4 h-4" aria-hidden="true" />
+          <p id={`${field}-error`} className="flex items-center space-x-1 text-sm text-red-600" role="alert">
+            <AlertCircle className="size-4" aria-hidden="true" />
             <span>{hasError}</span>
           </p>
         )}
@@ -227,14 +227,14 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
   }
 
   return (
-    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+    <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
       <CardBody className="p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+        <div className="mb-6 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-green-600" aria-hidden="true" />
+            <div className="flex size-10 items-center justify-center rounded-full bg-green-100">
+              <Shield className="size-5 text-green-600" aria-hidden="true" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
               {t('profile.sections.security')}
             </h3>
           </div>
@@ -244,7 +244,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
           {renderPasswordField(
             'currentPassword',
             t('profile.password.fields.current'),
-            <Lock className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+            <Lock className="size-4 text-gray-500" aria-hidden="true" />,
             t('profile.password.placeholders.current'),
             'current'
           )}
@@ -253,7 +253,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             {renderPasswordField(
               'newPassword',
               t('profile.password.fields.new'),
-              <Key className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              <Key className="size-4 text-gray-500" aria-hidden="true" />,
               t('profile.password.placeholders.new'),
               'new'
             )}
@@ -292,9 +292,9 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                       role="listitem"
                     >
                       {feedback.includes('Missing') ? (
-                        <AlertCircle className="w-4 h-4 text-red-500" aria-hidden="true" />
+                        <AlertCircle className="size-4 text-red-500" aria-hidden="true" />
                       ) : (
-                        <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                        <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                       )}
                       <span className={feedback.includes('Missing') ? 'text-red-600' : 'text-green-600'}>
                         {feedback}
@@ -308,7 +308,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             {renderPasswordField(
               'confirmPassword',
               t('profile.password.fields.confirm'),
-              <Key className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              <Key className="size-4 text-gray-500" aria-hidden="true" />,
               t('profile.password.placeholders.confirm'),
               'confirm'
             )}
@@ -321,7 +321,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
             size="lg"
             isLoading={isChanging}
             disabled={isChanging}
-            className="w-full font-semibold min-h-[44px] touch-manipulation"
+            className="min-h-[44px] w-full touch-manipulation font-semibold"
             aria-label={t('profile.password.actions.change')}
           >
             {t('profile.password.actions.change')}
@@ -329,14 +329,14 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
         </form>
 
         {/* Security Notice */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" role="note" aria-label={t('profile.password.security.title')}>
+        <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4" role="note" aria-label={t('profile.password.security.title')}>
           <div className="flex items-start space-x-3">
-            <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" aria-hidden="true" />
+            <Shield className="mt-0.5 size-5 shrink-0 text-blue-600" aria-hidden="true" />
             <div className="space-y-1">
               <h4 className="text-sm font-semibold text-blue-900">
                 {t('profile.password.security.title')}
               </h4>
-              <p className="text-sm text-blue-700 leading-relaxed">
+              <p className="text-sm leading-relaxed text-blue-700">
                 {t('profile.password.security.description')}
               </p>
             </div>

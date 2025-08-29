@@ -54,7 +54,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
 
   const errorConfigs: Record<string, ErrorTypeConfig> = {
     network: {
-      icon: <Wifi className="w-8 h-8" />,
+      icon: <Wifi className="size-8" />,
       title: t('map.error.network.title'),
       description: t('map.error.network.description'),
       suggestions: [
@@ -65,7 +65,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
       color: 'text-orange-600'
     },
     tiles: {
-      icon: <Globe className="w-8 h-8" />,
+      icon: <Globe className="size-8" />,
       title: t('map.error.tiles.title'),
       description: t('map.error.tiles.description'),
       suggestions: [
@@ -76,7 +76,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
       color: 'text-blue-600'
     },
     initialization: {
-      icon: <AlertTriangle className="w-8 h-8" />,
+      icon: <AlertTriangle className="size-8" />,
       title: t('map.error.initialization.title'),
       description: t('map.error.initialization.description'),
       suggestions: [
@@ -87,7 +87,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
       color: 'text-red-600'
     },
     location: {
-      icon: <MapPin className="w-8 h-8" />,
+      icon: <MapPin className="size-8" />,
       title: t('map.error.location.title'),
       description: t('map.error.location.description'),
       suggestions: [
@@ -98,7 +98,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
       color: 'text-purple-600'
     },
     unknown: {
-      icon: <AlertTriangle className="w-8 h-8" />,
+      icon: <AlertTriangle className="size-8" />,
       title: t('map.error.unknown.title'),
       description: t('map.error.unknown.description'),
       suggestions: [
@@ -115,41 +115,41 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
 
   return (
     <div 
-      className={`bg-red-50 border-2 border-red-200 rounded-xl flex items-center justify-center relative overflow-hidden ${className}`}
+      className={`relative flex items-center justify-center overflow-hidden rounded-xl border-2 border-red-200 bg-red-50 ${className}`}
       style={{ height }}
     >
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-5">
-        <div className="grid grid-cols-6 grid-rows-4 h-full w-full">
+        <div className="grid size-full grid-cols-6 grid-rows-4">
           {Array.from({ length: 24 }).map((_, i) => (
             <div key={i} className="border border-red-300"></div>
           ))}
         </div>
       </div>
 
-      <div className="text-center p-6 relative z-10 max-w-md">
+      <div className="relative z-10 max-w-md p-6 text-center">
         {/* Error Icon */}
-        <div className={`w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 ${config.color}`}>
+        <div className={`mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-red-100 ${config.color}`}>
           {config.icon}
         </div>
 
         {/* Error Title */}
-        <h3 className="text-xl font-bold text-gray-900 mb-2">
+        <h3 className="mb-2 text-xl font-bold text-gray-900">
           {config.title}
         </h3>
 
         {/* Error Description */}
-        <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+        <p className="mb-4 text-sm leading-relaxed text-gray-600">
           {config.description}
         </p>
 
         {/* Detailed Error Message (in development) */}
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mb-4 text-left">
-            <summary className="text-xs text-gray-500 cursor-pointer hover:text-gray-700 mb-2">
+            <summary className="mb-2 cursor-pointer text-xs text-gray-500 hover:text-gray-700">
               {t('map.labels.technicalDetails')}
             </summary>
-            <div className="bg-gray-100 border border-gray-300 rounded p-2 text-xs font-mono text-gray-700 break-all">
+            <div className="break-all rounded border border-gray-300 bg-gray-100 p-2 font-mono text-xs text-gray-700">
               {errorMessage}
             </div>
           </details>
@@ -157,11 +157,11 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
 
         {/* Suggestions */}
         <div className="mb-6 text-left">
-          <p className="text-sm font-medium text-gray-700 mb-2">{t('map.labels.tryFollowing')}</p>
-          <ul className="text-xs text-gray-600 space-y-1">
+          <p className="mb-2 text-sm font-medium text-gray-700">{t('map.labels.tryFollowing')}</p>
+          <ul className="space-y-1 text-xs text-gray-600">
             {config.suggestions.map((suggestion, index) => (
               <li key={index} className="flex items-start gap-2">
-                <span className="text-primary-500 mt-1">•</span>
+                <span className="mt-1 text-primary-500">•</span>
                 <span>{suggestion}</span>
               </li>
             ))}
@@ -175,7 +175,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
               color="primary"
               size="sm"
               onClick={onRetry}
-              startContent={<RefreshCw className="w-4 h-4" />}
+              startContent={<RefreshCw className="size-4" />}
               className="w-full"
             >
               {t('map.actions.tryAgain')}
@@ -193,8 +193,8 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
         </div>
 
         {/* Fallback Map Link */}
-        <div className="mt-4 pt-4 border-t border-red-200">
-          <p className="text-xs text-gray-500 mb-2">
+        <div className="mt-4 border-t border-red-200 pt-4">
+          <p className="mb-2 text-xs text-gray-500">
             {t('map.labels.needToViewLocation')}
           </p>
           <Button
@@ -204,7 +204,7 @@ const MapErrorState: React.FC<MapErrorStateProps> = ({
             href="https://www.openstreetmap.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:text-blue-800 text-xs"
+            className="text-xs text-blue-600 hover:text-blue-800"
           >
             {t('map.actions.openInOpenStreetMap')}
           </Button>

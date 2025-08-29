@@ -93,10 +93,10 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-primary-600" />
+            <Shield className="size-5 text-primary-600" />
             <span>{t('profile:actions.changePassword')}</span>
           </div>
-          <p className="text-sm text-gray-600 font-normal">
+          <p className="text-sm font-normal text-gray-600">
             {t('profile:password.description')}
           </p>
         </ModalHeader>
@@ -109,7 +109,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
               type={showPasswords.new ? 'text' : 'password'}
               value={formData.newPassword}
               onChange={(e) => handleInputChange('newPassword', e.target.value)}
-              startContent={<Lock className="w-4 h-4 text-gray-400" />}
+              startContent={<Lock className="size-4 text-gray-400" />}
               endContent={
                 <button
                   type="button"
@@ -117,9 +117,9 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
                   className="focus:outline-none"
                 >
                   {showPasswords.new ? (
-                    <EyeOff className="w-4 h-4 text-gray-400" />
+                    <EyeOff className="size-4 text-gray-400" />
                   ) : (
-                    <Eye className="w-4 h-4 text-gray-400" />
+                    <Eye className="size-4 text-gray-400" />
                   )}
                 </button>
               }
@@ -131,7 +131,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
               type={showPasswords.confirm ? 'text' : 'password'}
               value={formData.confirmPassword}
               onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-              startContent={<Lock className="w-4 h-4 text-gray-400" />}
+              startContent={<Lock className="size-4 text-gray-400" />}
               endContent={
                 <button
                   type="button"
@@ -139,9 +139,9 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
                   className="focus:outline-none"
                 >
                   {showPasswords.confirm ? (
-                    <EyeOff className="w-4 h-4 text-gray-400" />
+                    <EyeOff className="size-4 text-gray-400" />
                   ) : (
-                    <Eye className="w-4 h-4 text-gray-400" />
+                    <Eye className="size-4 text-gray-400" />
                   )}
                 </button>
               }

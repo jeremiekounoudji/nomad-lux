@@ -58,7 +58,7 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
   }, []);
 
   return (
-    <div className={`relative rounded-xl overflow-hidden border border-gray-200 ${className}`}>
+    <div className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`}>
       <LazyMapWrapper
         type="properties"
         properties={properties}

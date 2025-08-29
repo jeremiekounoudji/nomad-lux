@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider } from '@heroui/react'
+import { Calendar, MapPin, Star, CreditCard, Phone, Mail, MessageCircle, User, X } from 'lucide-react'
 import toast from 'react-hot-toast'
-import MainLayout from '../components/layout/MainLayout'
 import { PageBanner } from '../components/shared'
 import { getBannerConfig } from '../utils/bannerConfig'
-import { MyBookingsPageProps, Booking, DatabaseBooking } from '../interfaces'
+import { MyBookingsPageProps, DatabaseBooking } from '../interfaces'
 import { CancelBookingModal, ContactHostModal } from '../components/shared'
 import { useBookingManagement } from '../hooks/useBookingManagement'
 import { useBookingStore } from '../lib/stores/bookingStore'
@@ -122,7 +121,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               variant="flat" 
               color="danger"
               onPress={() => handleCancelBooking(booking)}
-              startContent={<X className="w-4 h-4" />}
+              startContent={<X className="size-4" />}
             >
               {t('booking.actions.cancelBooking')}
             </Button>
@@ -247,9 +246,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Banner Header - Full Width */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-4 mb-6">
+        <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
         <PageBanner
           backgroundImage={getBannerConfig('myBookings').image}
                       title={t('booking.myBookings.banner.title')}
@@ -263,7 +262,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
         {/* Tabs - Full Width */}
         <div className="col-span-1 md:col-span-2 lg:col-span-4">
-          <div className="overflow-x-auto scrollbar-none -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={selectedTab}
               onSelectionChange={handleTabChange}
@@ -284,7 +283,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
         {/* Loading State - Full Width */}
       {isLoadingGuestBookings ? (
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
+          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
           <span className="text-lg text-gray-500">{t('booking.messages.loading')}</span>
         </div>
       ) : paginatedBookings.length > 0 ? (
@@ -305,13 +304,13 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           
           {/* Pagination - Full Width */}
           {totalPages > 1 && (
-              <div className="col-span-1 md:col-span-2 lg:col-span-4 flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+              <div className="col-span-1 mt-6 flex items-center justify-between border-t border-gray-100 pt-4 md:col-span-2 lg:col-span-4">
               <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1 || isLoadingGuestBookings}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${page === 1 || isLoadingGuestBookings
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('booking.pagination.previous', { defaultValue: 'Previous' })}
@@ -324,9 +323,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               <button
                 onClick={() => handlePageChange(page + 1)}
                 disabled={isLoadingGuestBookings || page >= totalPages}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-md transition-colors
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
                   ${isLoadingGuestBookings || page >= totalPages
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
                     : 'bg-primary-600 text-white hover:bg-primary-700'}`}
               >
                 {t('booking.pagination.next', { defaultValue: 'Next' })}
@@ -335,9 +334,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           )}
         </>
       ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-4 text-center py-12">
-          <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <Calendar className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
             {(() => {
               const message = t('booking.messages.noBookings', { status: t(`booking.status.${selectedTab}`) })
               console.log('🌐 MyBookingsPage: noBookings message:', message, 'for status:', selectedTab)
@@ -386,12 +385,12 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       <img
                         src={selectedBooking.properties?.images?.[0] || ''}
                         alt={selectedBooking.properties?.title || ''}
-                        className="w-24 h-24 object-cover rounded-lg"
+                        className="size-24 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{selectedBooking.properties?.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
+                        <h3 className="text-lg font-semibold">{selectedBooking.properties?.title}</h3>
+                        <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+                          <MapPin className="size-4" />
                           <span>
                             {selectedBooking.properties?.location?.city && selectedBooking.properties?.location?.country 
                               ? `${selectedBooking.properties.location.city}, ${selectedBooking.properties.location.country}`
@@ -399,15 +398,15 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                             }
                           </span>
                         </div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                        <div className="mt-1 flex items-center gap-1">
+                          <Star className="size-4 fill-current text-yellow-500" />
                           <span className="text-sm font-medium">{selectedBooking.properties?.rating}</span>
                         </div>
                         <Chip 
                           color={getStatusColor(selectedBooking.status)}
                           variant="solid"
                           size="sm"
-                          className="text-white font-medium mt-2"
+                          className="mt-2 font-medium text-white"
                         >
                           {t(`booking.status.${selectedBooking.status}`)}
                         </Chip>
@@ -418,8 +417,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Host Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <User className="w-5 h-5" />
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <User className="size-5" />
                         {t('booking.details.hostInformation')}
                       </h4>
                       <div className="flex items-center gap-3">
@@ -430,11 +429,11 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                         />
                         <div className="flex-1">
                           <p className="font-medium">{selectedBooking.hosts?.display_name || t('booking.labels.host')}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                          <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
                             {selectedBooking.hosts ? (
                               <>
                                 <div className="flex items-center gap-1">
-                                  <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                                  <Star className="size-3 fill-current text-yellow-500" />
                                   <span>{selectedBooking.hosts.host_rating?.toFixed(1) || 'N/A'}</span>
                                 </div>
                                 <span>{selectedBooking.hosts.total_host_reviews || 0} reviews</span>
@@ -444,14 +443,14 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                             )}
                           </div>
                           {selectedBooking.hosts?.email && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                              <Mail className="w-3 h-3" />
+                            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                              <Mail className="size-3" />
                               <span>{selectedBooking.hosts.email}</span>
                             </div>
                           )}
                           {selectedBooking.hosts?.phone && (
-                            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                              <Phone className="w-3 h-3" />
+                            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                              <Phone className="size-3" />
                               <span>{selectedBooking.hosts.phone}</span>
                             </div>
                           )}
@@ -460,7 +459,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                           size="sm"
                           color="secondary"
                           variant="flat"
-                          startContent={<MessageCircle className="w-4 h-4" />}
+                          startContent={<MessageCircle className="size-4" />}
                             onPress={() => handleContactHost(selectedBooking)}
                         >
                           {t('booking.actions.contactHost')}
@@ -472,8 +471,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Booking Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <Calendar className="size-5" />
                         {t('booking.details.bookingInformation')}
                       </h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
@@ -500,8 +499,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Payment Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <CreditCard className="w-5 h-5" />
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <CreditCard className="size-5" />
                         {t('booking.details.paymentInformation')}
                       </h4>
                       <div className="space-y-2 text-sm">
@@ -539,7 +538,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                       <>
                         <Divider />
                         <div>
-                          <h4 className="font-semibold mb-3">{t('booking.details.specialRequests')}</h4>
+                          <h4 className="mb-3 font-semibold">{t('booking.details.specialRequests')}</h4>
                           <p className="text-sm text-gray-600">{selectedBooking.special_requests}</p>
                         </div>
                       </>

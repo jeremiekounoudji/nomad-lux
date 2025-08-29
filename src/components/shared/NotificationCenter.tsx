@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Badge, Popover, PopoverTrigger, PopoverContent, Card, CardBody, Divider } from '@heroui/react'
+import { Button, Badge, Popover, PopoverTrigger, PopoverContent, Card, CardBody, Divider, useDisclosure } from '@heroui/react'
 import { Bell, Settings } from 'lucide-react'
 import { useNotifications } from '../../hooks/useNotifications'
 import { useNavigation } from '../../hooks/useNavigation'
@@ -21,6 +21,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
   const { notifications, unreadCount, markNotificationAsRead } = useNotifications()
   const { navigateWithAuth } = useNavigation()
   const { t } = useTranslation(['notifications', 'common'])
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   // Get recent unread notifications for preview
   const recentNotifications = notifications
@@ -31,20 +32,22 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
     if (!notification.is_read) {
       await markNotificationAsRead(notification.id)
     }
+    onClose() // Close the popover
     // Navigate to notifications page
     navigateWithAuth(ROUTES.NOTIFICATIONS)
   }
 
   const handleViewAll = () => {
+    onClose() // Close the popover
     navigateWithAuth(ROUTES.NOTIFICATIONS)
   }
 
   return (
-    <Popover placement="bottom-end" showArrow>
+    <Popover placement="bottom-end" showArrow isOpen={isOpen} onOpenChange={onOpen}>
       <PopoverTrigger>
         <Button
           isIconOnly
-          variant="light"
+          variant={className.includes('bg-primary-600') ? 'solid' : 'light'}
           className={`relative ${className}`}
           aria-label={
             unreadCount > 0
@@ -52,23 +55,23 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
               : t('notifications.aria.noUnread')
           }
         >
-          <Bell className="w-5 h-5" />
+          <Bell className={`size-5 ${className.includes('bg-primary-600') ? 'text-white' : ''}`} />
           {showBadge && unreadCount > 0 && (
             <Badge
               content={unreadCount > 99 ? '99+' : unreadCount.toString()}
               color="danger"
               size="sm"
-              className="absolute -top-1 -right-1"
+              className="absolute -right-1 -top-1"
             />
           )}
         </Button>
       </PopoverTrigger>
       
       <PopoverContent className="w-80 p-0">
-        <Card className="shadow-lg border-0">
+        <Card className="border-0 shadow-lg">
           <CardBody className="p-0">
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-100">
+            <div className="flex items-center justify-between border-b border-gray-100 p-4">
               <div>
                 <h3 className="font-semibold text-gray-900">{t('notifications.banner.title')}</h3>
                 {unreadCount > 0 && (
@@ -82,7 +85,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 onClick={handleViewAll}
                 aria-label={t('notifications.actions.open', 'Open notifications')}
               >
-                <Settings className="w-4 h-4" />
+                <Settings className="size-4" />
               </Button>
             </div>
 
@@ -93,7 +96,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                   {recentNotifications.map((notification, index) => (
                     <div key={notification.id}>
                       <div 
-                        className="p-3 hover:bg-gray-50 cursor-pointer transition-colors"
+                        className="cursor-pointer p-3 transition-colors hover:bg-gray-50"
                         onClick={() => handleNotificationClick(notification)}
                       >
                         <NotificationToast
@@ -120,8 +123,8 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
                 </>
               ) : (
                 <div className="p-6 text-center">
-                  <Bell className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500 text-sm">{t('notifications.emptyState.noNew')}</p>
+                  <Bell className="mx-auto mb-3 size-12 text-gray-300" />
+                  <p className="text-sm text-gray-500">{t('notifications.emptyState.noNew')}</p>
                 </div>
               )}
             </div>

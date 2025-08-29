@@ -55,7 +55,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
 
   return (
     <div 
-      className="fixed inset-0 w-screen h-screen flex items-center justify-center p-4"
+      className="fixed inset-0 flex h-screen w-screen items-center justify-center p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -70,22 +70,22 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-primary-500/20 backdrop-blur-md border border-primary-400/30 text-white hover:bg-primary-500/30"
+        className="absolute left-6 top-6 z-20 border border-primary-400/30 bg-primary-500/20 text-white backdrop-blur-md hover:bg-primary-500/30"
         onPress={handleBackToHome}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Admin Login Form */}
-      <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-md border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-600/80 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-              <Crown className="w-8 h-8 text-white" />
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl border border-white/20 bg-primary-600/80 backdrop-blur-md">
+              <Crown className="size-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">{t('admin.login.title')}</h1>
-            <p className="text-white/80 text-sm font-script">{t('admin.login.subtitle')}</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('admin.login.title')}</h1>
+            <p className="font-script text-sm text-white/80">{t('admin.login.subtitle')}</p>
           </div>
 
           {/* Form */}
@@ -97,7 +97,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
               placeholder={t('admin.login.emailPlaceholder')}
               value={email}
               onValueChange={setEmail}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              startContent={<Mail className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -114,7 +114,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
               placeholder={t('admin.login.passwordPlaceholder')}
               value={password}
               onValueChange={setPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button 
                   className="focus:outline-none" 
@@ -122,9 +122,9 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
                   onClick={toggleVisibility}
                 >
                   {isVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -141,7 +141,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
 
             {/* Error Message */}
             {error && (
-              <div className="text-red-300 text-sm text-center bg-red-500/20 backdrop-blur-md p-3 rounded-lg border border-red-400/30">
+              <div className="rounded-lg border border-red-400/30 bg-red-500/20 p-3 text-center text-sm text-red-300 backdrop-blur-md">
                 {error}
               </div>
             )}
@@ -150,7 +150,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleSubmit}
               isLoading={isLoading}
               isDisabled={!email || !password}
@@ -160,7 +160,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
           </div>
 
           {/* Development Note */}
-          <div className="mt-6 p-4 bg-blue-500/20 backdrop-blur-md border border-blue-400/30 rounded-lg">
+          <div className="mt-6 rounded-lg border border-blue-400/30 bg-blue-500/20 p-4 backdrop-blur-md">
             <p className="text-sm text-blue-100">
               <strong>{t('admin.login.infoTitle')}</strong><br />
               {t('admin.login.info')}
@@ -169,10 +169,10 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onPageChange }) 
 
           {/* Admin Register Link */}
           <div className="mt-6 text-center">
-            <span className="text-white/80 text-sm">
+            <span className="text-sm text-white/80">
               {t('admin.login.needAccess')}{' '}
               <Link 
-                className="text-white font-semibold hover:text-white/80"
+                className="font-semibold text-white hover:text-white/80"
                 onPress={() => onPageChange?.(t('admin.navigation.register'))}
               >
                 {t('admin.login.requestAccess')}

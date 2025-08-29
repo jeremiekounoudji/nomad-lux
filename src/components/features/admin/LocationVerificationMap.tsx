@@ -56,11 +56,11 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
   if (!hasValidCoords || !coords) {
     console.warn('🗺️ Coordinates unavailable for property:', property.id, property.title, property.location);
     return (
-      <div className={`bg-gray-100 rounded-lg flex items-center justify-center h-[300px] ${className}`}>
-        <div className="text-center p-6">
-          <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-700 mb-2">{t('admin.locationVerification.coordsUnavailable.title', { defaultValue: 'Coordinates unavailable' })}</h3>
-          <p className="text-gray-500 mb-4">{t('admin.locationVerification.coordsUnavailable.subtitle', { defaultValue: 'This property does not have valid location coordinates.' })}</p>
+      <div className={`flex h-[300px] items-center justify-center rounded-lg bg-gray-100 ${className}`}>
+        <div className="p-6 text-center">
+          <MapPin className="mx-auto mb-4 size-12 text-gray-400" />
+          <h3 className="mb-2 text-lg font-semibold text-gray-700">{t('admin.locationVerification.coordsUnavailable.title', { defaultValue: 'Coordinates unavailable' })}</h3>
+          <p className="mb-4 text-gray-500">{t('admin.locationVerification.coordsUnavailable.subtitle', { defaultValue: 'This property does not have valid location coordinates.' })}</p>
         </div>
       </div>
     );
@@ -70,14 +70,14 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
     <div className={`space-y-4 ${className}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-gray-600" />
+          <MapPin className="size-5 text-gray-600" />
           <h3 className="font-semibold text-gray-900">{t('admin.locationVerification.title', { defaultValue: 'Location Verification' })}</h3>
         </div>
         {isVerified !== null && (
           <Chip
             color={isVerified ? 'success' : 'danger'}
             variant="flat"
-            startContent={isVerified ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+            startContent={isVerified ? <Check className="size-4" /> : <AlertTriangle className="size-4" />}
           >
             {isVerified
               ? t('admin.locationVerification.verified', { defaultValue: 'Location Verified' })
@@ -86,7 +86,7 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
         )}
       </div>
 
-      <div className="relative rounded-xl overflow-hidden border border-gray-200">
+      <div className="relative overflow-hidden rounded-xl border border-gray-200">
         <LazyMapWrapper
           type="property"
           property={propertyForMap}
@@ -109,7 +109,7 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
         <Button
           color="primary"
           variant="solid"
-          startContent={<Search className="w-4 h-4" />}
+          startContent={<Search className="size-4" />}
           onPress={verifyLocation}
           isLoading={isChecking}
         >
@@ -118,7 +118,7 @@ export const LocationVerificationMap: React.FC<LocationVerificationMapProps> = (
       </div>
 
       {/* Additional location information */}
-      <div className="bg-gray-50 rounded-lg p-4 space-y-2">
+      <div className="space-y-2 rounded-lg bg-gray-50 p-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">{t('admin.locationVerification.city', { defaultValue: 'City' })}</span>
           <span className="text-sm text-gray-600">{property.location.city}</span>

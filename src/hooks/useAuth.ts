@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
-import { User, UserRole } from "../interfaces/User";
+import { User } from "../interfaces/User";
 import { useUser } from "./useUser";
 import { useAuthStore } from "../lib/stores/authStore";
 import { useAuthRedirect } from "./useAuthRedirect";

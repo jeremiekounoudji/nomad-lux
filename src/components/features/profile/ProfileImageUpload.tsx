@@ -225,14 +225,14 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   }
 
   return (
-    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm" role="region" aria-label={t('profile.image.title')}>
+    <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm" role="region" aria-label={t('profile.image.title')}>
       <CardBody className="p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+        <div className="mb-6 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
-              <Camera className="w-5 h-5 text-purple-600" aria-hidden="true" />
+            <div className="flex size-10 items-center justify-center rounded-full bg-purple-100">
+              <Camera className="size-5 text-purple-600" aria-hidden="true" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
               {t('profile.image.title')}
             </h3>
           </div>
@@ -243,11 +243,11 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           {currentImageUrl && !selectedFile && (
             <div className="text-center">
               <div className="relative inline-block">
-                <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
+                <div className="mx-auto flex size-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-purple-100 to-pink-100 shadow-lg sm:size-32">
                   <img 
                     src={currentImageUrl} 
                     alt={t('profile.image.currentImage')}
-                    className="w-full h-full rounded-full object-cover"
+                    className="size-full rounded-full object-cover"
                     loading="lazy"
                   />
                 </div>
@@ -256,14 +256,14 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                   size="sm"
                   color="danger"
                   variant="solid"
-                  className="absolute -top-2 -right-2 shadow-lg"
+                  className="absolute -right-2 -top-2 shadow-lg"
                   onPress={handleRemove}
                   aria-label={t('profile.image.actions.remove')}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               </div>
-              <p className="text-sm text-gray-600 mt-3">
+              <p className="mt-3 text-sm text-gray-600">
                 {t('profile.image.currentImageDescription')}
               </p>
             </div>
@@ -273,20 +273,20 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           {previewUrl && (
             <div className="text-center">
               <div className="relative inline-block">
-                <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden shadow-lg border-4 border-white">
+                <div className="mx-auto flex size-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-blue-100 to-purple-100 shadow-lg sm:size-32">
                   <img 
                     src={cropData || previewUrl} 
                     alt={t('profile.image.preview')}
-                    className="w-full h-full rounded-full object-cover"
+                    className="size-full rounded-full object-cover"
                   />
                 </div>
               </div>
-              <div className="flex items-center justify-center space-x-2 mt-4">
+              <div className="mt-4 flex items-center justify-center space-x-2">
                 <Button
                   size="sm"
                   color="primary"
                   variant="flat"
-                  startContent={<Crop className="w-4 h-4" />}
+                  startContent={<Crop className="size-4" />}
                   onPress={() => setShowCropModal(true)}
                   className="font-semibold"
                   aria-label={t('profile.image.actions.crop')}
@@ -297,7 +297,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                   size="sm"
                   color="secondary"
                   variant="flat"
-                  startContent={<RotateCw className="w-4 h-4" />}
+                  startContent={<RotateCw className="size-4" />}
                   onPress={handleRotate}
                   className="font-semibold"
                   aria-label={t('profile.image.actions.rotate')}
@@ -308,7 +308,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                   size="sm"
                   color="success"
                   variant="flat"
-                  startContent={<Download className="w-4 h-4" />}
+                  startContent={<Download className="size-4" />}
                   onPress={handleDownload}
                   className="font-semibold"
                   aria-label={t('profile.image.actions.download')}
@@ -323,7 +323,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           {uploadProgress > 0 && (
             <div className="space-y-2" role="status" aria-live="polite" aria-label={t('profile.image.uploadProgress')}>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-700 font-medium">
+                <span className="font-medium text-gray-700">
                   {t('profile.image.uploading')}
                 </span>
                 <span className="text-gray-500">{uploadProgress}%</span>
@@ -339,8 +339,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
           {/* Error Display */}
           {error && (
-            <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg" role="alert" aria-live="assertive">
-              <AlertCircle className="w-5 h-5 text-red-600" aria-hidden="true" />
+            <div className="flex items-center space-x-2 rounded-lg border border-red-200 bg-red-50 p-3" role="alert" aria-live="assertive">
+              <AlertCircle className="size-5 text-red-600" aria-hidden="true" />
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
@@ -349,7 +349,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
           {!currentImageUrl && !selectedFile && (
             <div className="space-y-4">
               <div
-                className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
+                className={`rounded-lg border-2 border-dashed p-8 text-center transition-all duration-200 ${
                   isDragOver 
                     ? 'border-blue-400 bg-blue-50' 
                     : 'border-gray-300 hover:border-gray-400 hover:bg-gray-50'
@@ -367,19 +367,19 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                   }
                 }}
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Upload className="w-8 h-8 text-blue-600" aria-hidden="true" />
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-blue-100">
+                  <Upload className="size-8 text-blue-600" aria-hidden="true" />
                 </div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                <h4 className="mb-2 text-lg font-semibold text-gray-900">
                   {t('profile.image.uploadTitle')}
                 </h4>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="mb-4 text-sm text-gray-600">
                   {t('profile.image.uploadDescription')}
                 </p>
                 <Button
                   color="primary"
                   variant="flat"
-                  startContent={<Camera className="w-4 h-4" />}
+                  startContent={<Camera className="size-4" />}
                   onPress={() => fileInputRef.current?.click()}
                   className="font-semibold"
                 >
@@ -412,7 +412,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
               <Button
                 color="success"
                 variant="solid"
-                startContent={<Upload className="w-4 h-4" />}
+                startContent={<Upload className="size-4" />}
                 onPress={handleUpload}
                 className="font-semibold"
                 aria-label={t('profile.image.actions.upload')}
@@ -422,7 +422,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
               <Button
                 color="danger"
                 variant="light"
-                startContent={<X className="w-4 h-4" />}
+                startContent={<X className="size-4" />}
                 onPress={() => {
                   setSelectedFile(null)
                   setPreviewUrl(null)
@@ -452,7 +452,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
                 <div className="flex justify-center">
                   <canvas
                     ref={canvasRef}
-                    className="border border-gray-300 rounded-lg max-w-full"
+                    className="max-w-full rounded-lg border border-gray-300"
                     aria-label={t('profile.image.cropCanvas')}
                   />
                 </div>

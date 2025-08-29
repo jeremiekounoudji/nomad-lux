@@ -1,10 +1,9 @@
-import { useState, useCallback } from 'react'
+import { useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { 
   PropertySettings, 
   PropertySettingsFormData, 
-  PropertySettingsOption,
-  PropertySettingsWithUsage 
+  PropertySettingsOption 
 } from '../interfaces'
 import { usePropertySettingsStore } from '../lib/stores/propertySettingsStore'
 

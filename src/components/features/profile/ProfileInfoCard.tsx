@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Card, CardBody, Button, Input, Textarea, Chip } from '@heroui/react'
+import { Card, CardBody, Button, Input, Textarea } from '@heroui/react'
 import { Edit, Save, X, User, Mail, Phone, MapPin, Calendar, FileText, CheckCircle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { Profile, ProfileUpdateData, ProfileFormErrors } from '../../../interfaces/Profile'
@@ -103,7 +103,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
     return (
       <div className="space-y-2">
-        <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
+        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
           {icon}
           <span>{label}</span>
         </label>
@@ -137,14 +137,14 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
   }
 
   return (
-    <Card className="w-full shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+    <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
       <CardBody className="p-6 sm:p-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-3 sm:space-y-0">
+        <div className="mb-6 flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-              <User className="w-5 h-5 text-blue-600" aria-hidden="true" />
+            <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+              <User className="size-5 text-blue-600" aria-hidden="true" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+            <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
               {t('profile.sections.personalInfo')}
             </h3>
           </div>
@@ -153,9 +153,9 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
               size="sm" 
               color="primary" 
               variant="flat"
-              startContent={<Edit className="w-4 h-4" />}
+              startContent={<Edit className="size-4" />}
               onPress={handleEdit}
-              className="self-start sm:self-auto font-semibold"
+              className="self-start font-semibold sm:self-auto"
               aria-label={t('profile.actions.editPersonalInfo')}
             >
               {t('common.edit')}
@@ -166,7 +166,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 size="sm" 
                 color="success" 
                 variant="flat"
-                startContent={<Save className="w-4 h-4" />}
+                startContent={<Save className="size-4" />}
                 onPress={handleSave}
                 isLoading={isUpdating}
                 className="font-semibold"
@@ -178,7 +178,7 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
                 size="sm" 
                 color="danger" 
                 variant="light"
-                startContent={<X className="w-4 h-4" />}
+                startContent={<X className="size-4" />}
                 onPress={handleCancel}
                 className="font-semibold"
                 aria-label={t('common.cancel')}
@@ -191,32 +191,32 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
         {isEditing ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               {renderField(
                 'firstName',
                 t('profile.fields.firstName'),
-                <User className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                <User className="size-4 text-gray-500" aria-hidden="true" />,
                 'text',
                 t('profile.placeholders.firstName')
               )}
               {renderField(
                 'lastName',
                 t('profile.fields.lastName'),
-                <User className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                <User className="size-4 text-gray-500" aria-hidden="true" />,
                 'text',
                 t('profile.placeholders.lastName')
               )}
               {renderField(
                 'phone',
                 t('profile.fields.phone'),
-                <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                <Phone className="size-4 text-gray-500" aria-hidden="true" />,
                 'text',
                 t('profile.placeholders.phone')
               )}
               {renderField(
                 'location',
                 t('profile.fields.location'),
-                <MapPin className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+                <MapPin className="size-4 text-gray-500" aria-hidden="true" />,
                 'text',
                 t('profile.placeholders.location')
               )}
@@ -224,74 +224,74 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
             {renderField(
               'bio',
               t('profile.fields.bio'),
-              <FileText className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              <FileText className="size-4 text-gray-500" aria-hidden="true" />,
               'textarea',
               t('profile.placeholders.bio')
             )}
             {renderField(
               'dateOfBirth',
               t('profile.fields.dateOfBirth'),
-              <Calendar className="w-4 h-4 text-gray-500" aria-hidden="true" />,
+              <Calendar className="size-4 text-gray-500" aria-hidden="true" />,
               'text',
               t('profile.placeholders.dateOfBirth')
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <User className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                  <User className="size-4 text-gray-500" aria-hidden="true" />
                   <span>{t('profile.fields.firstName')}</span>
                 </label>
                 <div className="flex items-center space-x-2">
-                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                  <p className="flex-1 rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                     {profile.firstName || t('common.notProvided')}
                   </p>
                   {profile.firstName && (
-                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                   )}
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <Mail className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                  <Mail className="size-4 text-gray-500" aria-hidden="true" />
                   <span>{t('profile.fields.email')}</span>
                 </label>
                 <div className="flex items-center space-x-2">
-                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg break-all flex-1">
+                  <p className="flex-1 break-all rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                     {profile.email}
                   </p>
-                  <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                  <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                 </div>
               </div>
             </div>
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <User className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                  <User className="size-4 text-gray-500" aria-hidden="true" />
                   <span>{t('profile.fields.lastName')}</span>
                 </label>
                 <div className="flex items-center space-x-2">
-                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                  <p className="flex-1 rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                     {profile.lastName || t('common.notProvided')}
                   </p>
                   {profile.lastName && (
-                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                   )}
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-                  <Phone className="w-4 h-4 text-gray-500" aria-hidden="true" />
+                <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                  <Phone className="size-4 text-gray-500" aria-hidden="true" />
                   <span>{t('profile.fields.phone')}</span>
                 </label>
                 <div className="flex items-center space-x-2">
-                  <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+                  <p className="flex-1 rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                     {profile.phone || t('common.notProvided')}
                   </p>
                   {profile.phone && (
-                    <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+                    <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
                   )}
                 </div>
               </div>
@@ -301,30 +301,30 @@ const ProfileInfoCard: React.FC<ProfileInfoCardProps> = ({
 
         {!isEditing && profile.bio && (
           <div className="mt-6 space-y-2">
-            <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-              <FileText className="w-4 h-4 text-gray-500" aria-hidden="true" />
+            <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+              <FileText className="size-4 text-gray-500" aria-hidden="true" />
               <span>{t('profile.fields.bio')}</span>
             </label>
             <div className="flex items-start space-x-2">
-              <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+              <p className="flex-1 rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                 {profile.bio}
               </p>
-              <CheckCircle className="w-4 h-4 text-green-500 mt-2" aria-hidden="true" />
+              <CheckCircle className="mt-2 size-4 text-green-500" aria-hidden="true" />
             </div>
           </div>
         )}
 
         {!isEditing && profile.location && (
           <div className="mt-6 space-y-2">
-            <label className="text-sm font-semibold text-gray-700 flex items-center space-x-2">
-              <MapPin className="w-4 h-4 text-gray-500" aria-hidden="true" />
+            <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+              <MapPin className="size-4 text-gray-500" aria-hidden="true" />
               <span>{t('profile.fields.location')}</span>
             </label>
             <div className="flex items-center space-x-2">
-              <p className="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg flex-1">
+              <p className="flex-1 rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
                 {profile.location}
               </p>
-              <CheckCircle className="w-4 h-4 text-green-500" aria-hidden="true" />
+              <CheckCircle className="size-4 text-green-500" aria-hidden="true" />
             </div>
           </div>
         )}

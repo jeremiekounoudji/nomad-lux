@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { 
   Button, 
   ButtonGroup, 
@@ -10,15 +10,11 @@ import {
 } from '@heroui/react';
 import { 
   Ruler, 
-  Square, 
-  Circle,
-  Triangle,
+  Square,
   RotateCcw,
   Trash2,
   Copy,
-  Download,
-  MapPin,
-  Navigation
+  Download
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../../lib/stores/translationStore';
@@ -274,7 +270,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       {/* Tool Selection */}
       <Card className="shadow-sm">
         <CardBody className="p-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold">{t('map.measurement.title')}</h3>
             <div className="flex items-center gap-2">
               <Tooltip content={t('map.measurement.actions.copyData')}>
@@ -285,7 +281,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   onClick={copyMeasurementData}
                   isDisabled={measurements.lines.length === 0 && measurements.areas.length === 0}
                 >
-                  <Copy className="w-4 h-4" />
+                  <Copy className="size-4" />
                 </Button>
               </Tooltip>
               <Tooltip content={t('map.measurement.actions.exportMeasurements')}>
@@ -296,7 +292,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   onClick={exportMeasurements}
                   isDisabled={measurements.lines.length === 0 && measurements.areas.length === 0}
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="size-4" />
                 </Button>
               </Tooltip>
               <Tooltip content={t('map.measurement.actions.clearAll')}>
@@ -307,7 +303,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   onClick={clearAllMeasurements}
                   isDisabled={measurements.lines.length === 0 && measurements.areas.length === 0}
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="size-4" />
                 </Button>
               </Tooltip>
             </div>
@@ -320,7 +316,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                 onClick={() => handleToolActivation('distance')}
                 variant={activeTool === 'distance' ? 'solid' : 'bordered'}
                 color={activeTool === 'distance' ? 'primary' : 'default'}
-                startContent={<Ruler className="w-4 h-4" />}
+                startContent={<Ruler className="size-4" />}
                 className="flex-1"
               >
                 {t('map.measurement.distance')}
@@ -329,7 +325,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                 onClick={() => handleToolActivation('area')}
                 variant={activeTool === 'area' ? 'solid' : 'bordered'}
                 color={activeTool === 'area' ? 'primary' : 'default'}
-                startContent={<Square className="w-4 h-4" />}
+                startContent={<Square className="size-4" />}
                 className="flex-1"
               >
                 {t('map.measurement.area')}
@@ -338,7 +334,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
 
             {/* Active Tool Instructions */}
             {activeTool && (
-              <div className="p-3 bg-primary-50 border border-primary-200 rounded-lg">
+              <div className="rounded-lg border border-primary-200 bg-primary-50 p-3">
                 <div className="flex items-center justify-between">
                                   <div className="text-sm text-primary-700">
                   {activeTool === 'distance' ? (
@@ -351,7 +347,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   size="sm"
                   variant="light"
                   onClick={cancelMeasurement}
-                  startContent={<RotateCcw className="w-4 h-4" />}
+                  startContent={<RotateCcw className="size-4" />}
                 >
                   {t('map.measurement.cancel')}
                 </Button>
@@ -378,14 +374,14 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
       {(measurements.lines.length > 0 || measurements.areas.length > 0) && (
         <Card className="shadow-sm">
           <CardBody className="p-4">
-            <h4 className="font-semibold mb-3">{t('map.measurement.measurements')}</h4>
+            <h4 className="mb-3 font-semibold">{t('map.measurement.measurements')}</h4>
             
-            <div className="space-y-3 max-h-64 overflow-y-auto">
+            <div className="max-h-64 space-y-3 overflow-y-auto">
               {/* Distance Measurements */}
               {measurements.lines.map((line, index) => (
                 <div 
                   key={line.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                  className={`cursor-pointer rounded-lg border p-3 transition-all ${
                     selectedMeasurement === line.id ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => setSelectedMeasurement(selectedMeasurement === line.id ? null : line.id)}
@@ -393,11 +389,11 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-4 h-4 rounded-full border-2"
+                        className="size-4 rounded-full border-2"
                         style={{ backgroundColor: line.color }}
                       />
                       <div>
-                        <div className="font-medium text-sm">{t('map.measurement.items.distance', { index: index + 1 })}</div>
+                        <div className="text-sm font-medium">{t('map.measurement.items.distance', { index: index + 1 })}</div>
                         <div className="text-xs text-gray-600">{formatDistance(line.distance)}</div>
                       </div>
                     </div>
@@ -414,7 +410,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                           deleteMeasurement(line.id, 'line');
                         }}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -425,7 +421,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
               {measurements.areas.map((area, index) => (
                 <div 
                   key={area.id}
-                  className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                  className={`cursor-pointer rounded-lg border p-3 transition-all ${
                     selectedMeasurement === area.id ? 'border-primary-500 bg-primary-50' : 'border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => setSelectedMeasurement(selectedMeasurement === area.id ? null : area.id)}
@@ -433,11 +429,11 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div 
-                        className="w-4 h-4 rounded border-2"
+                        className="size-4 rounded border-2"
                         style={{ backgroundColor: `${area.color}33`, borderColor: area.color }}
                       />
                       <div>
-                        <div className="font-medium text-sm">{t('map.measurement.items.area', { index: index + 1 })}</div>
+                        <div className="text-sm font-medium">{t('map.measurement.items.area', { index: index + 1 })}</div>
                         <div className="text-xs text-gray-600">
                           {formatArea(area.area)} | {t('map.measurement.items.perimeter')}: {formatDistance(area.perimeter)}
                         </div>
@@ -456,7 +452,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
                           deleteMeasurement(area.id, 'area');
                         }}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </div>
                   </div>

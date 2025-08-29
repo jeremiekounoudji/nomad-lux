@@ -16,40 +16,40 @@ const MapLoadingState: React.FC<MapLoadingStateProps> = ({
   const defaultMessage = t('map.loading');
   return (
     <div 
-      className={`bg-gray-100 border border-gray-300 rounded-xl flex items-center justify-center map-loading relative overflow-hidden ${className}`}
+      className={`map-loading relative flex items-center justify-center overflow-hidden rounded-xl border border-gray-300 bg-gray-100 ${className}`}
       style={{ height }}
     >
       {/* Grid pattern background */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="grid grid-cols-8 grid-rows-6 h-full w-full">
+      <div className="pointer-events-none absolute inset-0 opacity-10">
+        <div className="grid size-full grid-cols-8 grid-rows-6">
           {Array.from({ length: 48 }).map((_, i) => (
             <div key={i} className="border border-gray-400"></div>
           ))}
         </div>
       </div>
       
-      <div className="text-center relative z-10">
+      <div className="relative z-10 text-center">
         {/* Animated map icon */}
-        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-200 to-transparent -translate-x-full animate-pulse"></div>
-          <div className="text-2xl relative z-10">🗺️</div>
+        <div className="relative mx-auto mb-4 flex size-16 items-center justify-center overflow-hidden rounded-full bg-blue-100">
+          <div className="absolute inset-0 -translate-x-full animate-pulse bg-gradient-to-r from-transparent via-blue-200 to-transparent"></div>
+          <div className="relative z-10 text-2xl">🗺️</div>
         </div>
         
         {/* Loading skeleton */}
-        <div className="space-y-2 mb-3">
-          <div className="h-4 bg-gray-300 rounded w-32 mx-auto animate-pulse"></div>
-          <div className="h-3 bg-gray-200 rounded w-24 mx-auto animate-pulse delay-75"></div>
-          <div className="h-3 bg-gray-200 rounded w-20 mx-auto animate-pulse delay-150"></div>
+        <div className="mb-3 space-y-2">
+          <div className="mx-auto h-4 w-32 animate-pulse rounded bg-gray-300"></div>
+          <div className="mx-auto h-3 w-24 animate-pulse rounded bg-gray-200 delay-75"></div>
+          <div className="mx-auto h-3 w-20 animate-pulse rounded bg-gray-200 delay-150"></div>
         </div>
         
         {/* Loading message */}
-        <p className="text-sm text-gray-600 font-medium">{message || defaultMessage}</p>
+        <p className="text-sm font-medium text-gray-600">{message || defaultMessage}</p>
         
         {/* Loading dots animation */}
-        <div className="flex justify-center items-center mt-2 space-x-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-200"></div>
+        <div className="mt-2 flex items-center justify-center space-x-1">
+          <div className="size-2 animate-bounce rounded-full bg-blue-500"></div>
+          <div className="size-2 animate-bounce rounded-full bg-blue-500 delay-100"></div>
+          <div className="size-2 animate-bounce rounded-full bg-blue-500 delay-200"></div>
         </div>
       </div>
     </div>

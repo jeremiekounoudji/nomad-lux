@@ -38,9 +38,9 @@ export const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
           {booking && (
             <div className="space-y-6">
               {/* Property and Guest Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                  <div>
-                   <h4 className="font-semibold text-gray-900 mb-3">{t('bookingDetailsModal.propertyInformation')}</h4>
+                   <h4 className="mb-3 font-semibold text-gray-900">{t('bookingDetailsModal.propertyInformation')}</h4>
                    <div className="space-y-2 text-sm">
                      <div><strong>{t('bookingDetailsModal.labels.property')}</strong> {booking.propertyTitle}</div>
                      <div><strong>{t('bookingDetailsModal.labels.propertyId')}</strong> {booking.propertyId}</div>
@@ -50,7 +50,7 @@ export const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
                  </div>
                 
                                  <div>
-                   <h4 className="font-semibold text-gray-900 mb-3">{t('bookingDetailsModal.guestInformation')}</h4>
+                   <h4 className="mb-3 font-semibold text-gray-900">{t('bookingDetailsModal.guestInformation')}</h4>
                    <div className="space-y-2 text-sm">
                      <div><strong>{t('bookingDetailsModal.labels.guest')}</strong> {booking.guestName}</div>
                      <div><strong>{t('bookingDetailsModal.labels.email')}</strong> {booking.guestEmail}</div>
@@ -62,8 +62,8 @@ export const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
               {/* Booking Details */}
                              <div>
-                 <h4 className="font-semibold text-gray-900 mb-3">{t('bookingDetailsModal.bookingDetails')}</h4>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                 <h4 className="mb-3 font-semibold text-gray-900">{t('bookingDetailsModal.bookingDetails')}</h4>
+                 <div className="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
                    <div><strong>{t('bookingDetailsModal.labels.checkIn')}</strong> {booking.checkIn}</div>
                    <div><strong>{t('bookingDetailsModal.labels.checkOut')}</strong> {booking.checkOut}</div>
                    <div><strong>{t('bookingDetailsModal.labels.nights')}</strong> {booking.nights}</div>
@@ -84,8 +84,8 @@ export const BookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
 
               {/* Payment Information */}
                              <div>
-                 <h4 className="font-semibold text-gray-900 mb-3">{t('bookingDetailsModal.paymentInformation')}</h4>
-                 <div className="bg-gray-50 p-4 rounded-lg">
+                 <h4 className="mb-3 font-semibold text-gray-900">{t('bookingDetailsModal.paymentInformation')}</h4>
+                 <div className="rounded-lg bg-gray-50 p-4">
                    <div className="flex items-center justify-between">
                      <span>{t('bookingDetailsModal.labels.paymentStatus')}</span>
                      <Chip 

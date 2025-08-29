@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Package files
+package-lock.json
+yarn.lock
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Supabase
+supabase/
+
+# Documentation
+docs/
+
+# Blueprints
+blueprints/
+
+# Tasks
+tasks/
+
+# Git
+.git/
+
+# IDE
+.vscode/
+.cursor/
+.kiro/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Public assets
+public/
+

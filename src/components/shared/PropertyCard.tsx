@@ -60,7 +60,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           <img
             src={currentImage}
             alt={property.title}
-            className="w-full h-full object-cover"
+            className="size-full object-cover"
             onClick={nextImage}
           />
           {showActions && (
@@ -69,13 +69,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
                 e.stopPropagation()
                 onLike?.(property.id)
               }}
-              className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white"
+              className="absolute right-2 top-2 rounded-full bg-white/80 p-2 hover:bg-white"
             >
               <div className="flex items-center gap-1">
                 <Heart
-                  className={`w-5 h-5 ${property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
+                  className={`size-5 ${property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-600'}`}
                 />
-                <span className="text-xs text-gray-700 font-semibold">{property.like_count ?? 0}</span>
+                <span className="text-xs font-semibold text-gray-700">{property.like_count ?? 0}</span>
               </div>
             </button>
           )}
@@ -83,33 +83,33 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
         <CardBody className="p-4">
           {/* Title and Description */}
-          <h3 className="font-semibold text-gray-900 mb-2 truncate text-left">
+          <h3 className="mb-2 truncate text-left font-semibold text-gray-900">
             {translatedTitle}
           </h3>
 
-          <p className="text-gray-600 text-sm mb-3 line-clamp-1 text-left">
+          <p className="mb-3 line-clamp-1 text-left text-sm text-gray-600">
             {translatedDescription}
           </p>
           
           {/* Property Type */}
-          <p className="text-xs text-gray-500 mb-2">
+          <p className="mb-2 text-xs text-gray-500">
             {propertyTypeTranslation}
           </p>
 
-          <div className="flex items-center gap-4 mb-3 text-sm text-gray-500">
+          <div className="mb-3 flex items-center gap-4 text-sm text-gray-500">
             <div className="flex items-center gap-1">
-              <Star className="w-4 h-4" />
+              <Star className="size-4" />
               <span>{(property.rating || 0).toFixed(1)}</span>
             </div>
             <div className="flex items-center gap-1">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="size-4" />
               <span>{property.location.city}</span>
             </div>
           </div>
 
           {/* Stats if enabled */}
           {showStats && (
-            <div className="grid grid-cols-3 gap-4 mt-4">
+            <div className="mt-4 grid grid-cols-3 gap-4">
               <div className="text-center">
                 <p className="text-sm text-gray-500">{t('views')}</p>
                 <p className="font-semibold">{property.view_count}</p>
@@ -126,7 +126,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           )}
 
           {/* Price and Action Button */}
-          <div className="flex items-center justify-between mt-2">
+          <div className="mt-2 flex items-center justify-between">
             <div className="text-left">
               <p className="font-semibold text-gray-900">{property.currency} {property.price || property.price_per_night}</p>
               <p className="text-sm text-gray-500">{t('perNight')}</p>
@@ -135,7 +135,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               <Button
                 color="primary"
                 onClick={handleViewDetails}
-                className="text-sm bg-primary-600 text-white hover:bg-primary-700"
+                className="bg-primary-600 text-sm text-white hover:bg-primary-700"
               >
                 {t('actions.viewDetails')}
               </Button>

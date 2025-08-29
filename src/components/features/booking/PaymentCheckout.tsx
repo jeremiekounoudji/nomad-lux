@@ -119,12 +119,12 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   // Show loading state
   if (isLoading || isRetrying) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+      <div className="flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
+        <div className="mb-4 size-12 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        <h3 className="mb-2 text-lg font-semibold text-gray-900">
           {isRetrying ? t('booking.payment.retrying', { defaultValue: 'Retrying...' }) : t('booking.payment.initializing', { defaultValue: 'Initializing Payment' })}
         </h3>
-        <p className="text-sm text-gray-600 text-center">
+        <p className="text-center text-sm text-gray-600">
           {isRetrying 
             ? t('booking.payment.settingUpAgain', { defaultValue: 'Setting up payment again...' })
             : t('booking.payment.pleaseWait', { defaultValue: 'Please wait while we prepare your payment...' })
@@ -137,17 +137,17 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   // Show error state with retry option
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md border border-red-200">
-        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-white p-8 shadow-md">
+        <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-red-100">
+          <svg className="size-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('booking.payment.error', { defaultValue: 'Payment Error' })}</h3>
+        <h3 className="mb-2 text-lg font-semibold text-gray-900">{t('booking.payment.error', { defaultValue: 'Payment Error' })}</h3>
 
         <button
           onClick={retryPayment}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           {t('booking.payment.tryAgain', { defaultValue: 'Try Again' })}
         </button>
@@ -158,9 +158,9 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
   // Show FedaPay checkout widget
   if (paymentData) {
     return (
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="overflow-hidden rounded-lg bg-white shadow-md">
         {/* Payment Header */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="border-b border-gray-200 bg-gray-50 px-6 py-4">
           <h3 className="text-lg font-semibold text-gray-900">{t('booking.payment.completePayment', { defaultValue: 'Complete Payment' })}</h3>
           <div className="mt-2 flex items-center justify-between">
             <div>
@@ -177,22 +177,22 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
         </div>
 
         {/* Payment Methods Info */}
-        <div className="px-6 py-3 bg-blue-50 border-b border-blue-200">
+        <div className="border-b border-blue-200 bg-blue-50 px-6 py-3">
           <div className="flex items-center space-x-4 text-sm text-blue-800">
             <div className="flex items-center space-x-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a2 2 0 114 0 2 2 0 01-4 0zm8-2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
               <span>{t('booking.payment.methods.cards', { defaultValue: 'Cards' })}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
               </svg>
               <span>{t('booking.payment.methods.mobileMoney', { defaultValue: 'Mobile Money' })}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="size-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm2 6a2 2 0 114 0 2 2 0 01-4 0zm8-2a2 2 0 100 4 2 2 0 000-4z" />
               </svg>
               <span>{t('booking.payment.methods.bankTransfer', { defaultValue: 'Bank Transfer' })}</span>
@@ -224,9 +224,9 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
         </div>
 
         {/* Security Notice */}
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+        <div className="border-t border-gray-200 bg-gray-50 px-6 py-3">
           <div className="flex items-center space-x-2 text-xs text-gray-600">
-            <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="size-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
             </svg>
             <span>{t('booking.payment.security', { defaultValue: 'Your payment is secured with SSL encryption' })}</span>
@@ -238,7 +238,7 @@ export const PaymentCheckout: React.FC<PaymentCheckoutProps> = ({
 
   // Fallback state
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-white rounded-lg shadow-md">
+    <div className="flex flex-col items-center justify-center rounded-lg bg-white p-8 shadow-md">
       <p className="text-gray-600">{t('booking.payment.preparing', { defaultValue: 'Preparing payment...' })}</p>
     </div>
   )

@@ -5,30 +5,14 @@ import { usePropertyTypeTranslation, useAmenitiesTranslation, useContentTranslat
 import { 
   ArrowLeft, 
   Heart, 
-  Share, 
-  Star, 
-  MapPin, 
-  Award, 
-  MessageCircle, 
-  Eye,
-  DollarSign,
-  AlertCircle,
-  X,
-  Navigation
+  Share,
+  AlertCircle
 } from 'lucide-react'
 import { 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  Chip, 
   Button, 
-  Divider, 
   useDisclosure
 } from '@heroui/react'
-import { PropertyDetailPageProps } from '../interfaces/Component'
-import { Property } from '../interfaces/Property'
 import { 
-  SharePropertyModal, 
   ContactHostModal,
   BookingConfirmationModal,
   BookingSuccessModal,
@@ -43,7 +27,6 @@ import { useAuthStore } from '../lib/stores/authStore'
 import { useBookingStore } from '../lib/stores/bookingStore'
 import { calculateBookingPrice } from '../utils/priceCalculation'
 import { updatePropertyMetaTags, resetDefaultMetaTags } from '../utils/shareUtils'
-import { getDirectionsUrl } from '../utils/propertyUtils'
 import type { MapCoordinates } from '../interfaces/Map'
 import toast from 'react-hot-toast'
 import { usePropertyLike } from '../hooks/usePropertyLike'
@@ -449,15 +432,15 @@ const PropertyDetailPage: React.FC = () => {
   // If property is not available, show loading state briefly before redirect
   if (!property) {
     return (
-      <div className="h-screen bg-gray-50 flex items-center justify-center">
+      <div className="flex h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
           <PropertyCardSkeleton />
           <p className="mt-4 text-gray-600">{t('property.messages.loadingDetails')}</p>
           <button 
             onClick={handleBack}
-            className="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors flex items-center gap-2 mx-auto"
+            className="mx-auto mt-4 flex items-center gap-2 rounded-lg bg-gray-200 px-4 py-2 transition-colors hover:bg-gray-300"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="size-4" />
             {t('common.actions.goBack')}
           </button>
         </div>
@@ -467,10 +450,10 @@ const PropertyDetailPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <AlertCircle className="w-16 h-16 text-danger-500 mb-4" />
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('property.messages.couldNotLoad')}</h2>
-        <p className="text-gray-600 text-center mb-6">{error}</p>
+      <div className="flex h-screen flex-col items-center justify-center bg-gray-50 p-4">
+        <AlertCircle className="mb-4 size-16 text-danger-500" />
+        <h2 className="mb-2 text-2xl font-bold text-gray-900">{t('property.messages.couldNotLoad')}</h2>
+        <p className="mb-6 text-center text-gray-600">{error}</p>
         <Button onClick={() => navigate('/')} startContent={<ArrowLeft />}>
           {t('common.actions.backToHome')}
         </Button>
@@ -479,30 +462,30 @@ const PropertyDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
       {/* Header */}
-      <div className="flex-shrink-0 bg-white border-b border-gray-200 px-4 py-3 shadow-sm z-50">
-        <div className="flex items-center justify-between  mx-auto">
+      <div className="z-50 shrink-0 border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
+        <div className="mx-auto flex items-center  justify-between">
           <button 
             onClick={handleBack}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="rounded-full p-2 transition-colors hover:bg-gray-100"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-700" />
+            <ArrowLeft className="size-6 text-gray-700" />
           </button>
           <div className="flex items-center gap-3">
             <button 
               onClick={() => property && toggleLike(property.id)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors flex items-center gap-1"
+              className="flex items-center gap-1 rounded-full p-2 transition-colors hover:bg-gray-100"
               disabled={isLikeLoading}
             >
-              <Heart className={`w-6 h-6 ${property && isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
-              <span className="text-xs text-gray-700 font-semibold">{property?.like_count ?? 0}</span>
+              <Heart className={`size-6 ${property && isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <span className="text-xs font-semibold text-gray-700">{property?.like_count ?? 0}</span>
             </button>
             <button 
               onClick={() => property && handleShare(property)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="rounded-full p-2 transition-colors hover:bg-gray-100"
             >
-              <Share className="w-6 h-6 text-gray-700" />
+              <Share className="size-6 text-gray-700" />
             </button>
           </div>
         </div>
@@ -510,17 +493,17 @@ const PropertyDetailPage: React.FC = () => {
 
       {/* Main Content Container with Scroll */}
       <div className="flex-1 overflow-y-auto">
-        <div className=" mx-auto px-4 py-6">
+        <div className="mx-auto">
           {!property ? (
             // Loading or error state
-            <div className="flex items-center justify-center min-h-[400px]">
+            <div className="flex min-h-[400px] items-center justify-center">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500 mx-auto mb-4"></div>
+                <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-b-2 border-primary-500"></div>
                 <p className="text-gray-600">{t('property.messages.loading', 'Loading property details...')}</p>
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 h-full">
+            <div className="grid h-full grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Main Content */}
               <div className="lg:col-span-2">
                 <PropertyMediaGallery
@@ -554,7 +537,7 @@ const PropertyDetailPage: React.FC = () => {
                 {/* Reviews Section */}
                 <div className="mt-8">
                   {/* Review Summary */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                  <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <div className="text-center">
@@ -591,7 +574,7 @@ const PropertyDetailPage: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-2xl font-semibold text-gray-900">
                       {t('review.reviews.title')}
                     </h2>
@@ -619,8 +602,8 @@ const PropertyDetailPage: React.FC = () => {
 
                 {/* Location */}
                 <div className="mt-8">
-                  <h2 className="text-2xl font-semibold mb-4">{t('property.location.title')}</h2>
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                  <h2 className="mb-4 text-2xl font-semibold">{t('property.location.title')}</h2>
+                  <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
                     <LazyMapWrapper
                       key={property.id}
                       type="property"

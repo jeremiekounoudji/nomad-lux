@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart } from 'lucide-react';
-import MainLayout from '../components/layout/MainLayout';
 import PropertyCard from '../components/shared/PropertyCard';
 import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
 import { PageBanner } from '../components/shared';
 import { LikedPropertiesPageProps, Property } from '../interfaces';
 import { usePropertyStore } from '../lib/stores/propertyStore';
-import { useHomeFeed } from '../hooks/useHomeFeed';
 import { usePropertyLike } from '../hooks/usePropertyLike';
 import { getBannerConfig } from '../utils/bannerConfig';
 import toast from 'react-hot-toast';
@@ -80,8 +78,8 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="mx-auto max-w-7xl">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Header Banner */}
         <div className="col-span-full mb-6">
         <PageBanner
@@ -93,7 +91,7 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
           height={getBannerConfig('likedProperties').height}
           className="mb-8"
         >
-          <Heart className="w-6 h-6 text-red-400 fill-current" />
+          <Heart className="size-6 fill-current text-red-400" />
         </PageBanner>
       </div>
 
@@ -101,13 +99,13 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
       <div className="col-span-full">
         {isLikeLoading ? (
           // Loading Skeleton Grid
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((index) => (
               <PropertyCardSkeleton key={index} />
             ))}
           </div>
         ) : likedList.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {likedList.map((property) => (
               <PropertyCard
                 key={property.id}
@@ -121,19 +119,19 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl p-12 text-center border border-gray-200">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart className="w-8 h-8 text-gray-400" />
+          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gray-100">
+              <Heart className="size-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">
               {t('property.noLikedProperties')}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="mb-6 text-gray-500">
               {t('property.startExploringAndLike')}
             </p>
             <button 
               onClick={() => onPageChange?.('home')}
-              className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+              className="rounded-lg bg-primary-600 px-6 py-2 text-white transition-colors hover:bg-primary-700"
             >
               {t('property.exploreProperties')}
             </button>

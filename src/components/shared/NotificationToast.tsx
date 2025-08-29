@@ -28,14 +28,14 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
       case 'booking_cancelled':
       case 'booking_checked_in':
       case 'booking_checked_out':
-        return <Calendar className="w-4 h-4" />
+        return <Calendar className="size-4" />
       case 'property_liked':
-        return <Heart className="w-4 h-4" />
+        return <Heart className="size-4" />
       case 'property_approved':
       case 'property_rejected':
       case 'property_suspended':
       case 'property_submitted':
-        return <Home className="w-4 h-4" />
+        return <Home className="size-4" />
       case 'payment_success':
       case 'payment_failed':
       case 'booking_refunded':
@@ -43,17 +43,17 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
       case 'payout_rejected':
       case 'payout_paid':
       case 'payout_requested':
-        return <Star className="w-4 h-4" />
+        return <Star className="size-4" />
       case 'account_suspended':
       case 'profile_updated':
       case 'account_flagged':
       case 'bulk_action':
-        return <MessageCircle className="w-4 h-4" />
+        return <MessageCircle className="size-4" />
       case 'dispute_raised':
       case 'system_error':
-        return <Bell className="w-4 h-4" />
+        return <Bell className="size-4" />
       default:
-        return <Bell className="w-4 h-4" />
+        return <Bell className="size-4" />
     }
   }
 
@@ -169,24 +169,24 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
   }
 
   return (
-    <Card className="w-full max-w-sm bg-white shadow-lg border-0 ring-1 ring-gray-200">
+    <Card className="w-full max-w-sm border-0 bg-white shadow-lg ring-1 ring-gray-200">
       <CardBody className="p-0">
         <div className="flex items-start">
           {/* Left colored indicator */}
-          <div className={`w-1 h-full ${getTypeColor(notification.type)} rounded-l-lg`}></div>
+          <div className={`h-full w-1 ${getTypeColor(notification.type)} rounded-l-lg`}></div>
           
           <div className="flex-1 p-4">
             <div className="flex items-start gap-3">
               {/* Avatar/Icon Section */}
-              <div className="relative flex-shrink-0">
+              <div className="relative shrink-0">
                 {notification.avatar ? (
                   <Avatar
                     src={notification.avatar}
                     size="md"
-                    className="ring-2 ring-white shadow-md"
+                    className="shadow-md ring-2 ring-white"
                   />
                 ) : (
-                  <div className={`w-10 h-10 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-md`}>
+                  <div className={`size-10 ${getTypeColor(notification.type)} flex items-center justify-center rounded-full shadow-md`}>
                     <div className="text-white">
                       {getNotificationIcon(notification.type)}
                     </div>
@@ -194,28 +194,28 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
                 )}
                 
                 {/* Notification type badge */}
-                <div className={`absolute -bottom-0.5 -right-0.5 w-4 h-4 ${getTypeColor(notification.type)} rounded-full flex items-center justify-center shadow-sm border border-white`}>
-                  <div className="text-white text-xs">
+                <div className={`absolute -bottom-0.5 -right-0.5 size-4 ${getTypeColor(notification.type)} flex items-center justify-center rounded-full border border-white shadow-sm`}>
+                  <div className="text-xs text-white">
                     {getNotificationIcon(notification.type)}
                   </div>
                 </div>
               </div>
 
               {/* Content Section */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-sm text-gray-900 leading-tight mb-1">
+              <div className="min-w-0 flex-1">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="mb-1 text-sm font-semibold leading-tight text-gray-900">
                       {notification.title}
                     </h4>
                     
-                    <p className="text-gray-600 text-xs leading-relaxed mb-2 line-clamp-2">
+                    <p className="mb-2 line-clamp-2 text-xs leading-relaxed text-gray-600">
                       {notification.message}
                     </p>
                     
                     <div className="flex items-center gap-2">
                       <div className="flex items-center gap-1 text-gray-400">
-                        <Clock className="w-3 h-3" />
+                        <Clock className="size-3" />
                         <span className="text-xs">
                           {formatTime(notification.created_at)}
                         </span>
@@ -224,7 +224,7 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
                       <Chip
                         size="sm"
                         variant="flat"
-                        className="text-xs bg-gray-100 text-gray-700"
+                        className="bg-gray-100 text-xs text-gray-700"
                       >
                         {getTypeDisplayName(notification.type)}
                       </Chip>
@@ -237,17 +237,17 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({
                       isIconOnly
                       size="sm"
                       variant="light"
-                      className="text-gray-400 hover:text-gray-600 min-w-6 w-6 h-6"
+                      className="size-6 min-w-6 text-gray-400 hover:text-gray-600"
                       onClick={onDismiss}
                     >
-                      <X className="w-3 h-3" />
+                      <X className="size-3" />
                     </Button>
                   )}
                 </div>
 
                 {/* Action Buttons */}
                 {showActions && onAction && (
-                  <div className="flex gap-2 pt-2 border-t border-gray-100">
+                  <div className="flex gap-2 border-t border-gray-100 pt-2">
                     {(notification.type === 'booking_request_created' || notification.type === 'new_booking_request') && (
                       <>
                         <Button 
