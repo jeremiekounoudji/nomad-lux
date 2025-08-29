@@ -31,6 +31,11 @@ import toast from 'react-hot-toast'
 import WalletPage from './WalletPage'
 import { useTranslation } from '../lib/stores/translationStore'
 
+// Tutorial imports
+import { useTutorial } from '../hooks/useTutorial'
+import { TutorialModal } from '../components/shared/TutorialModal'
+import { getAllTutorialSteps } from '../utils/tutorialContent'
+
 // Add interface for popular place (matching the useHomeFeed hook)
 interface PopularPlace {
   id: string
@@ -55,6 +60,16 @@ const HomePage: React.FC = () => {
   const [cityPropertiesLoading, setCityPropertiesLoading] = useState(false)
   const [cityPropertiesError, setCityPropertiesError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState('home')
+
+  // Tutorial state
+  const [showTutorial, setShowTutorial] = useState(false)
+  const tutorialSteps = getAllTutorialSteps()
+  const {
+    tutorialState,
+    shouldShowTutorial,
+    startTutorial,
+    closeTutorial
+  } = useTutorial()
 
 
   // Infinite scroll ref
@@ -147,6 +162,24 @@ const HomePage: React.FC = () => {
       fetchPropertiesFeed(1, false)
     }
   }, [isAuthenticated, isLoading]) // Only essential dependencies
+
+  // Tutorial trigger logic
+  useEffect(() => {
+    if (isAuthenticated && !isLoading && currentPage === 'home') {
+      console.log('🎓 Checking tutorial trigger conditions', {
+        shouldShow: shouldShowTutorial(),
+        hasBeenShown: tutorialState.hasBeenShown,
+        isVisible: tutorialState.isVisible
+      })
+      
+      // Check if tutorial should be shown for first-time user
+      if (shouldShowTutorial() && !tutorialState.isVisible) {
+        console.log('🎓 Triggering tutorial for first-time user')
+        setShowTutorial(true)
+        startTutorial()
+      }
+    }
+  }, [isAuthenticated, isLoading, currentPage, shouldShowTutorial, tutorialState.hasBeenShown, tutorialState.isVisible, startTutorial])
 
   // Fetch city properties when a city is selected
   const fetchCityProperties = useCallback(async (city: PopularPlace) => {
@@ -408,8 +441,20 @@ const HomePage: React.FC = () => {
 
   // Default home page view (protected)
   return (
-          <div className="mx-auto">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    <>
+      {/* Tutorial Modal */}
+      <TutorialModal
+        steps={tutorialSteps}
+        isOpen={showTutorial}
+        onClose={() => {
+          console.log('🎓 Tutorial modal closed')
+          setShowTutorial(false)
+          closeTutorial()
+        }}
+      />
+
+      <div className="mx-auto">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Home Banner */}
         <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
           <PageBanner
@@ -455,13 +500,13 @@ const HomePage: React.FC = () => {
 
         {/* Properties Feed Loading State */}
         {feedLoading && properties.length === 0 && (
-          <>
+          <React.Fragment>
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={`skeleton-${index}`} className="col-span-1">
                 <PropertyCardSkeleton />
               </div>
             ))}
-          </>
+          </React.Fragment>
         )}
 
         {/* Property Cards - Each card takes one grid column */}
@@ -557,6 +602,7 @@ const HomePage: React.FC = () => {
 
       </div>
     </div>
+    </>
   )
 }
 

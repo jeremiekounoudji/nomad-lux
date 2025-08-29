@@ -58,14 +58,14 @@
   - [x] 3.7 Create tutorial content configuration with step data
   - [x] 3.8 Implement image loading and optimization utilities
 
-- [ ] 4.0 Integrate Tutorial with Homepage and User Flow
-  - [ ] 4.1 Modify HomePage component to check for first-time user visit
-  - [ ] 4.2 Implement tutorial trigger logic on homepage load
-  - [ ] 4.3 Add tutorial modal integration to HomePage component
-  - [ ] 4.4 Implement user preference checking for tutorial display
-  - [ ] 4.5 Add tutorial state management to user onboarding flow
-  - [ ] 4.6 Test tutorial integration with different user scenarios
-  - [ ] 4.7 Write unit tests for HomePage tutorial integration
+- [x] 4.0 Integrate Tutorial with Homepage and User Flow
+  - [x] 4.1 Modify HomePage component to check for first-time user visit
+  - [x] 4.2 Implement tutorial trigger logic on homepage load
+  - [x] 4.3 Add tutorial modal integration to HomePage component
+  - [x] 4.4 Implement user preference checking for tutorial display
+  - [x] 4.5 Add tutorial state management to user onboarding flow
+  - [x] 4.6 Test tutorial integration with different user scenarios
+  - [x] 4.7 Write unit tests for HomePage tutorial integration
 
 - [ ] 5.0 Add Translation Support and Analytics Integration
   - [ ] 5.1 Create English translation file `src/locales/en/tutorial.json`
