@@ -66,9 +66,12 @@ const HomePage: React.FC = () => {
   const tutorialSteps = getAllTutorialSteps()
   const {
     tutorialState,
+    userPreferences,
     startTutorial,
-    closeTutorial
+    closeTutorial,
+    resetTutorialAndPreferences,
   } = useTutorial()
+
 
 
   // Infinite scroll ref
@@ -162,16 +165,70 @@ const HomePage: React.FC = () => {
     }
   }, [isAuthenticated, isLoading]) // Only essential dependencies
 
-  // Tutorial trigger logic - ALWAYS SHOW FOR TESTING
+  // Tutorial trigger logic - show every time until user completes or sets never show again
   useEffect(() => {
     if (isAuthenticated && !isLoading && currentPage === 'home') {
-      console.log('🎓 Always showing tutorial for testing');
-      setShowTutorial(true);
-      if (!tutorialState.isVisible) {
+      // Check if tutorial should be shown:
+      // - NOT if user completed tutorial AND it's actually marked as completed
+      // - NOT if user explicitly set "never show again"
+      // - NOT if tutorial is already visible (avoid duplicate triggers)
+      const hasReallyCompleted = userPreferences?.hasCompletedTutorial && tutorialState.isCompleted;
+      const userNeverWantsToSee = userPreferences?.neverShowAgain;
+      const isAlreadyShowing = tutorialState.isVisible;
+      
+      const shouldShow = !hasReallyCompleted && !userNeverWantsToSee && !isAlreadyShowing;
+      
+      if (shouldShow) {
+        console.log('🎓 Triggering tutorial - conditions met:', {
+          hasReallyCompleted,
+          userNeverWantsToSee,
+          isAlreadyShowing,
+          shouldShow
+        });
+        setShowTutorial(true);
         startTutorial();
+      } else {
+        console.log('🎓 Tutorial not triggered:', {
+          hasReallyCompleted,
+          userNeverWantsToSee,
+          isAlreadyShowing,
+          tutorialStateCompleted: tutorialState.isCompleted,
+          userPrefsCompleted: userPreferences?.hasCompletedTutorial,
+          tutorialVisible: tutorialState.isVisible
+        });
       }
     }
-  }, [isAuthenticated, isLoading, currentPage, tutorialState.isVisible, startTutorial]);
+  }, [isAuthenticated, isLoading, currentPage, tutorialState.isCompleted, tutorialState.isVisible, userPreferences?.hasCompletedTutorial, userPreferences?.neverShowAgain, startTutorial]);
+
+  // Developer utility: Add global reset function for testing
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as Record<string, unknown>).resetTutorial = () => {
+        console.log('🆕 Resetting tutorial for development testing');
+        resetTutorialAndPreferences();
+        // Force a re-render to trigger the useEffect
+        setCurrentPage('temp');
+        setTimeout(() => setCurrentPage('home'), 10);
+      };
+      
+      (window as Record<string, unknown>).showTutorialState = () => {
+        console.log('🎓 Current tutorial state:', {
+          tutorialState,
+          userPreferences,
+          isAuthenticated,
+          isLoading,
+          currentPage
+        });
+      };
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete (window as Record<string, unknown>).resetTutorial;
+        delete (window as Record<string, unknown>).showTutorialState;
+      }
+    };
+  }, [tutorialState, userPreferences, isAuthenticated, isLoading, currentPage, resetTutorialAndPreferences]);
 
   // Fetch city properties when a city is selected
   const fetchCityProperties = useCallback(async (city: PopularPlace) => {

@@ -55,24 +55,27 @@ export const useTutorial = () => {
 
   // Check if tutorial should be shown
   const shouldShowTutorial = useCallback(() => {
-    if (userPreferences.hasCompletedTutorial && userPreferences.neverShowAgain) {
+    // Don't show if user explicitly set "never show again"
+    if (userPreferences.neverShowAgain) {
       return false
     }
     
+    // Don't show if user completed tutorial and autoStart is disabled
     if (userPreferences.hasCompletedTutorial && !config.autoStart) {
       return false
     }
     
-    return !tutorialState.hasBeenShown
-  }, [userPreferences, config.autoStart, tutorialState.hasBeenShown])
+    // Show by default unless user has completed the tutorial
+    return !userPreferences.hasCompletedTutorial
+  }, [userPreferences, config.autoStart])
 
-  // Auto-start tutorial if configured
-  useEffect(() => {
-    if (config.autoStart && shouldShowTutorial() && !tutorialState.isVisible) {
-      console.log('🎓 Auto-starting tutorial')
-      startTutorial()
-    }
-  }, [config.autoStart, shouldShowTutorial, tutorialState.isVisible, startTutorial])
+  // Auto-start tutorial if configured (disabled - handled by HomePage)
+  // useEffect(() => {
+  //   if (config.autoStart && shouldShowTutorial() && !tutorialState.isVisible) {
+  //     console.log('🎓 Auto-starting tutorial')
+  //     startTutorial()
+  //   }
+  // }, [config.autoStart, shouldShowTutorial, tutorialState.isVisible, startTutorial])
 
   // Handle keyboard navigation
   useEffect(() => {

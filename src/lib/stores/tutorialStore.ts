@@ -110,6 +110,7 @@ export const useTutorialStore = create<TutorialStoreState>()(
             ...state.tutorialState,
             isVisible: false,
             isCompleted: true,
+            hasBeenShown: true,
             completionTime
           },
           userPreferences: {

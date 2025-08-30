@@ -1,4 +1,5 @@
 import i18n from 'i18next'
+import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
@@ -21,6 +22,7 @@ import enLabels from '../locales/en/labels.json'
 import enActions from '../locales/en/actions.json'
 import enMap from '../locales/en/map.json'
 import enReview from '../locales/en/review.json'
+import enTutorial from '../locales/en/tutorial.json'
 
 import frCommon from '../locales/fr/common.json'
 import frNavigation from '../locales/fr/navigation.json'
@@ -40,6 +42,7 @@ import frLabels from '../locales/fr/labels.json'
 import frActions from '../locales/fr/actions.json'
 import frMap from '../locales/fr/map.json'
 import frReview from '../locales/fr/review.json'
+import frTutorial from '../locales/fr/tutorial.json'
 
 const resources = {
   en: {
@@ -60,7 +63,8 @@ const resources = {
     labels: enLabels,
     actions: enActions,
     map: enMap,
-    review: enReview
+    review: enReview,
+    tutorial: enTutorial
   },
   fr: {
     common: frCommon,
@@ -80,7 +84,8 @@ const resources = {
     labels: frLabels,
     actions: frActions,
     map: frMap,
-    review: frReview
+    review: frReview,
+    tutorial: frTutorial
   }
 }
 
@@ -107,7 +112,7 @@ i18n
     debug: process.env.NODE_ENV === 'development',
     
     // Namespace separation
-    ns: ['common', 'navigation', 'auth', 'property', 'booking', 'admin', 'validation', 'notifications', 'wallet', 'help', 'terms', 'search', 'profile', 'home', 'labels', 'actions', 'map'],
+    ns: ['common', 'navigation', 'auth', 'property', 'booking', 'admin', 'validation', 'notifications', 'wallet', 'help', 'terms', 'search', 'profile', 'home', 'labels', 'actions', 'map', 'review', 'tutorial'],
     
     // Pluralization
     pluralSeparator: '_',

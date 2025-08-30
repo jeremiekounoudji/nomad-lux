@@ -3,6 +3,7 @@ import {
   Modal,
   ModalContent,
   Button,
+  Checkbox,
 } from '@heroui/react';
 import { X } from 'lucide-react';
 import { useTranslation } from '../../lib/stores/translationStore';
@@ -19,10 +20,11 @@ interface TutorialModalProps {
 export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onClose }) => {
   const { t } = useTranslation(['tutorial', 'common']);
   const [imageError, setImageError] = useState(false);
+  const [neverShowAgain, setNeverShowAgainLocal] = useState(false);
   
   console.log('🎓 TutorialModal translation test:', {
-    title: t('tutorial:title'),
-    stepCounter: t('tutorial:stepCounter', { current: 1, total: 4 })
+    title: t('tutorial.title'),
+    stepCounter: t('tutorial.stepCounter', { current: 1, total: 4 })
   });
   const {
     tutorialState,
@@ -36,6 +38,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
     getCurrentStep,
     isLastStep,
     isFirstStep,
+    setNeverShowAgain,
   } = useTutorial();
 
   const {
@@ -83,6 +86,9 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
   const handleNext = () => {
     console.log('🎓 TutorialModal: Next button clicked');
     if (isLast) {
+      if (neverShowAgain) {
+        console.log('🎓 Setting never show again preference on completion');
+      }
       completeTutorial();
       trackTutorialFinished(steps.length);
     } else {
@@ -102,12 +108,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
     previousStep();
   };
 
-  const handleSkip = () => {
-    console.log('🎓 TutorialModal: Skip button clicked');
-    trackTutorialSkipped(tutorialState.currentStep + 1, steps.length);
-    skipTutorial();
-  };
-
   const handleClose = () => {
     console.log('🎓 TutorialModal: Close button clicked');
     closeTutorial();
@@ -125,42 +125,26 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
       onClose={handleClose}
       size="lg"
       scrollBehavior="inside"
-      classNames={{
-        base: "bg-black/60 backdrop-blur-sm",
-        wrapper: "p-4",
-        body: "p-0"
-      }}
+      
       aria-labelledby="tutorial-title"
       role="dialog"
     >
       <ModalContent>
-        <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden w-full max-w-md mx-auto min-h-[600px] flex flex-col">
+        <div className="bg-white dark:bg-gray-900 rounded-xl overflow-auto w-full max-w-md mx-auto min-h-[510px] flex flex-col">
           {/* Close Button */}
-          <div className="flex justify-end p-4 pb-0 flex-shrink-0">
-            <Button
-              isIconOnly
-              variant="light"
-              color="default"
-              size="sm"
-              onPress={handleClose}
-              className="text-gray-400 hover:text-gray-600"
-            >
-              <X className="size-5" />
-            </Button>
-          </div>
-
+          
           {/* Content */}
-          <div className="px-6 pb-6 flex-1 flex flex-col justify-between">
+          <div className="m-5 px-2 pb-6 flex-1 flex flex-col justify-between">
             {currentStep ? (
               <>
                 {/* Title */}
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  {t(`tutorial:${currentStep.title}`)}
+                  {t(`tutorial.${currentStep.title}`)}
                 </h2>
 
                 {/* Description */}
                 <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
-                  {t(`tutorial:${currentStep.description}`)}
+                  {t(`tutorial.${currentStep.description}`)}
                 </p>
 
                 {/* Tutorial Image - Fixed Height */}
@@ -172,13 +156,13 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                           <svg className="size-12 text-gray-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                           </svg>
-                          <p className="text-sm text-gray-500">{t('tutorial:image.error')}</p>
+                          <p className="text-sm text-gray-500">{t('tutorial.image.error')}</p>
                         </div>
                       </div>
                     ) : (
                       <img
                         src={currentStep.imageUrl}
-                        alt={t(`tutorial:${currentStep.imageAlt}`)}
+                        alt={t(`tutorial.${currentStep.imageAlt}`)}
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
                       />
@@ -200,15 +184,23 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                   ))}
                 </div>
 
-                {/* Step Counter */}
-                <div className="text-center mb-6">
-                  <span className="text-sm font-medium text-main">
-                    {t('tutorial:stepCounter', {
-                      current: tutorialState.currentStep + 1,
-                      total: steps.length
-                    })}
-                  </span>
-                </div>
+                {/* Never Show Again Checkbox */}
+                {config.showNeverShowAgain && (
+                  <div className="flex items-center justify-center mb-4">
+                    <Checkbox
+                      isSelected={neverShowAgain}
+                      onValueChange={(checked) => {
+                        setNeverShowAgainLocal(checked);
+                        setNeverShowAgain(checked);
+                      }}
+                      size="sm"
+                      className="text-sm text-gray-600 dark:text-gray-400"
+                    >
+                      {t('tutorial.preferences.neverShowAgain')}
+                    </Checkbox>
+                  </div>
+                )}
+
 
                 {/* Navigation Buttons */}
                 <div className="flex gap-3 mt-auto">
@@ -218,7 +210,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                       className="flex-1 border-gray-300 text-gray-700 hover:bg-gray-50"
                       onPress={handlePrevious}
                     >
-                      {t('tutorial:actions.previous')}
+                      {t('tutorial.actions.previous')}
                     </Button>
                   )}
                   
@@ -228,13 +220,13 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                     }`}
                     onPress={handleNext}
                   >
-                    {isLast ? t('tutorial:actions.finish') : t('tutorial:actions.next')}
+                    {isLast ? t('tutorial.actions.finish') : t('tutorial.actions.next')}
                   </Button>
                 </div>
               </>
             ) : (
               <div className="text-center py-8">
-                <p className="text-red-500">{t('tutorial:errors.noCurrentStep', 'No current step found!')}</p>
+                <p className="text-red-500">{t('tutorial.errors.noCurrentStep', 'No current step found!')}</p>
               </div>
             )}
           </div>
