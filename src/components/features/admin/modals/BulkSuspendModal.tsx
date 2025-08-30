@@ -1,8 +1,15 @@
 import React from 'react'
-import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react'
 import { useTranslation } from '../../../../lib/stores/translationStore'
-import { BulkSuspendModalProps } from '../../../interfaces/Component'
+// import { BulkSuspendModalProps } from '../../../interfaces/Component' // Commented out - interface not found
+
+interface BulkSuspendModalProps {
+  isOpen: boolean
+  onClose: () => void
+  selectedProperties: any[]
+  bulkSuspendLoading: boolean
+  handleBulkSuspendConfirm: () => void
+}
 
 export const BulkSuspendModal: React.FC<BulkSuspendModalProps> = ({
   isOpen,

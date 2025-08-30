@@ -1,28 +1,28 @@
 // Admin Dashboard Components
-export { default as AdminDashboard } from './AdminDashboard';
-export { default as AdminLayout } from './AdminLayout';
-export { default as AdminHeader } from './AdminHeader';
-export { default as AdminSidebar } from './AdminSidebar';
-export { default as AdminStats } from './AdminStats';
+export { AdminDashboard } from './AdminDashboard';
+export { AdminLayout } from './AdminLayout';
+export { AdminHeader } from './AdminHeader';
+export { AdminSidebar } from './AdminSidebar';
+export { AdminStats } from './AdminStats';
 
 // Property Management
-export { default as PropertyApproval } from './PropertyApproval';
-export { default as BookingManagement } from './BookingManagement';
-export { default as UserManagement } from './UserManagement';
-export { default as SystemSettings } from './SystemSettings';
+export { PropertyApproval } from './PropertyApproval';
+export { BookingManagement } from './BookingManagement';
+export { UserManagement } from './UserManagement';
+export { SystemSettings } from './SystemSettings';
 
 // Analytics & Reports
-export { default as AnalyticsDashboard } from './AnalyticsDashboard';
-export { default as ActivityLog } from './ActivityLog';
+export { AnalyticsDashboard } from './AnalyticsDashboard';
+export { ActivityLog } from './ActivityLog';
 
 // Map Components
-export { default as LocationVerificationMap } from './LocationVerificationMap';
-export { default as PropertyDistributionMap } from './PropertyDistributionMap';
-export { default as AdminMapToolbar } from './AdminMapToolbar';
-export { default as AdminPropertiesMap } from './AdminPropertiesMap';
+export { LocationVerificationMap } from './LocationVerificationMap';
+export { PropertyDistributionMap } from './PropertyDistributionMap';
+export { AdminMapToolbar } from './AdminMapToolbar';
+export { AdminPropertiesMap } from './AdminPropertiesMap';
 
 // Payout Management
-export { default as PayoutRequestsTable } from './PayoutRequestsTable';
+export { PayoutRequestsTable } from './PayoutRequestsTable';
 
 // Modal Components
 export * from './modals'; 

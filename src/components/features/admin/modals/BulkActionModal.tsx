@@ -1,8 +1,18 @@
 import React from 'react'
-import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Textarea } from '@heroui/react'
 import { useTranslation } from '../../../../lib/stores/translationStore'
-import { BulkActionModalProps } from '../../../interfaces/Component'
+// import { BulkActionModalProps } from '../../../interfaces/Component' // Commented out - interface not found
+
+interface BulkActionModalProps {
+  isOpen: boolean
+  onClose: () => void
+  bulkActionType: string
+  selectedProperties: any[]
+  rejectionReason: string
+  setRejectionReason: (reason: string) => void
+  handleBulkConfirm: () => void
+  bulkLoading: boolean
+}
 
 export const BulkActionModal: React.FC<BulkActionModalProps> = ({
   isOpen,

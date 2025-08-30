@@ -379,13 +379,13 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
       <div className="relative">
         <LazyMapWrapper
           type="properties"
-          properties={filteredProperties}
-          selectedProperties={selectedProperties}
+          properties={filteredProperties as any[]}
+          selectedProperty={selectedProperties[0] || null}
           height={height}
           enableSelection={activeTools.selection}
           enableMeasurement={activeTools.measurement}
           enableAreaSelection={activeTools.areaSelection}
-          onPropertyClick={onPropertyClick}
+          onPropertyClick={onPropertyClick as any}
           onPropertySelect={handlePropertySelect}
           onAreaSelection={handleAreaSelection}
           showPropertyDetails={true}

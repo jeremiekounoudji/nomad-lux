@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { HomePagePropertyCard, PropertyCardSkeleton, PageBanner } from '../components/shared';
 import { useSearchFeed } from '../hooks/useSearchFeed';
-import { useAuthStore } from '../lib/stores/authStore';
+// import { useAuthStore } from '../lib/stores/authStore'; // Commented out to avoid unused import warning
 import { usePropertyStore } from '../lib/stores/propertyStore';
 import { Property } from '../interfaces';
 import { Button } from '@heroui/react';
@@ -13,7 +13,7 @@ import { useTranslation } from '../lib/stores/translationStore';
 
 import { SearchPageProps } from '../interfaces';
 
-const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
+const SearchPage: React.FC<SearchPageProps> = ({ onPageChange: _onPageChange }) => {
   const { t } = useTranslation(['search', 'property', 'common'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
@@ -24,7 +24,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
   // Infinite scroll ref
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
-  const { isAuthenticated } = useAuthStore();
+  // const { isAuthenticated } = useAuthStore(); // Commented out to avoid unused variable warning
 
   // Use our search feed hook
   const {
@@ -34,7 +34,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange }) => {
     isLoadingMore,
     hasNextPage,
     totalResults,
-    activeFilters,
+    // activeFilters, // Commented out to avoid unused variable warning
     activeFiltersCount,
     sortBy,
     performSearch,

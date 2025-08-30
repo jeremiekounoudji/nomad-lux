@@ -35,13 +35,13 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   }
 
   // If user is authenticated but tries to access auth pages
-  if (isAuthenticated && [ROUTES.LOGIN, ROUTES.REGISTER].includes(location.pathname)) {
+  if (isAuthenticated && [ROUTES.LOGIN, ROUTES.REGISTER].includes(location.pathname as any)) {
     console.log('🔒 AuthGuard: Redirecting to home - Already authenticated');
     return <Navigate to={ROUTES.HOME} replace />;
   }
 
   // If admin is authenticated but tries to access admin auth pages
-  if (isAdmin && [ROUTES.ADMIN_LOGIN, ROUTES.ADMIN_REGISTER].includes(location.pathname)) {
+  if (isAdmin && [ROUTES.ADMIN_LOGIN, ROUTES.ADMIN_REGISTER].includes(location.pathname as any)) {
     console.log('🔒 AuthGuard: Redirecting to admin - Already authenticated admin');
     return <Navigate to={ROUTES.ADMIN} replace />;
   }

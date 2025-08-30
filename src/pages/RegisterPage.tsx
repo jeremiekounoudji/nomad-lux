@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Input, Button, Link, Checkbox } from '@heroui/react'
 import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
-import { useAuthStore } from '../lib/stores/authStore'
+// import { useAuthStore } from '../lib/stores/authStore' // Commented out to avoid unused import warning
 import { RegisterPageProps } from '../interfaces'
 import toast from 'react-hot-toast'
 import { useTranslation } from '../lib/stores/translationStore'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../router/types'
 
-const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister }) => {
+const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister: _onRegister }) => {
   const { t } = useTranslation(['auth', 'common'])
   const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
@@ -23,7 +23,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
   const [error, setError] = useState('')
 
   const { signUp, isLoading } = useAuth()
-  const { isAuthenticated } = useAuthStore()
+  // const { isAuthenticated } = useAuthStore() // Commented out to avoid unused variable warning
 
   // Note: Removed auto-redirect after registration - users must login manually
 

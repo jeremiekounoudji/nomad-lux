@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { Card, CardBody, Button, Spinner, Chip } from '@heroui/react'
-import { User, Settings, Shield, Bell, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone, Star, Globe } from 'lucide-react'
+import { User, Shield, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone, Star, Globe } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../lib/stores/translationStore'
 import { useAuthStore } from '../lib/stores/authStore'
@@ -15,16 +15,16 @@ import toast from 'react-hot-toast'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
   onProfileUpdate, 
-  onPasswordChange, 
+  // onPasswordChange, // Commented out to avoid unused variable warning 
   onImageUpload 
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { t } = useTranslation(['profile', 'common'])
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore() // Commented out to avoid unused variable warning
   const navigate = useNavigate()
   const { isUploading, uploadProgress, uploadImage, processImage } = useProfileImage()
-  const { profile, isLoading, error, updateProfile, refreshProfile } = useProfile()
+  const { profile, isLoading, error, updateProfile } = useProfile()
   
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)

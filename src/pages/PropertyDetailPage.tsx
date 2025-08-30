@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../lib/stores/translationStore';
-import { usePropertyTypeTranslation, useAmenitiesTranslation, useContentTranslation } from '../hooks/useTranslatedContent';
+import { useAmenitiesTranslation, useContentTranslation } from '../hooks/useTranslatedContent';
 import { 
   ArrowLeft, 
   Heart, 
@@ -43,7 +43,7 @@ import DeleteReviewModal from '../components/shared/modals/DeleteReviewModal';
 const PropertyDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { selectedProperty, setSelectedProperty } = usePropertyStore();
+  const { selectedProperty } = usePropertyStore();
   const { t } = useTranslation('property');
 
   // Simple property resolution: if selectedProperty exists and matches URL, use it
@@ -109,8 +109,9 @@ const PropertyDetailPage: React.FC = () => {
   }, [property]);
 
   // Loading states
-  const [isLoading, setIsLoading] = useState(false); // Remove this since we're not fetching
-  const [error, setError] = useState<string | null>(null);
+  // const [isLoading, setIsLoading] = useState(false); // Commented out to avoid unused variable warning
+  // const [error, setError] = useState<string | null>(null); // Commented out to avoid unused variable warning
+  const errorState = null; // Placeholder for error state
 
   // Rest of component state remains the same...
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -122,12 +123,12 @@ const PropertyDetailPage: React.FC = () => {
   const [checkOutTime, setCheckOutTime] = useState('11:00')
   const [guests, setGuests] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
-  const [isLiked, setIsLiked] = useState(property?.is_liked);
+  // const [isLiked, setIsLiked] = useState(property?.is_liked); // Commented out to avoid unused variable warning
 
 
 
   // Translation hooks
-  const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property?.property_type || '')
+  // const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property?.property_type || '') // Commented out to avoid unused variable warning
   const { translatedContent: translatedTitle } = useContentTranslation(
     'property',
     property?.id || '',
@@ -140,7 +141,7 @@ const PropertyDetailPage: React.FC = () => {
     'description',
     property?.description || ''
   )
-  const { translations: amenityTranslations, isLoading: amenitiesLoading } = useAmenitiesTranslation(property?.amenities || [])
+  const { translations: amenityTranslations } = useAmenitiesTranslation(property?.amenities || [])
 
   const nextMedia = () => {
     if (!property) return;
@@ -213,7 +214,7 @@ const PropertyDetailPage: React.FC = () => {
   const [propertySettings, setPropertySettings] = useState<any>(null)
 
   // Like hook
-  const { likedPropertyIds, isLoading: isLikeLoading, toggleLike, isLiked: isPropertyLiked } = usePropertyLike()
+  const { isLoading: isLikeLoading, toggleLike, isLiked: isPropertyLiked } = usePropertyLike()
 
   // Review hook
   const {
@@ -230,9 +231,9 @@ const PropertyDetailPage: React.FC = () => {
     openEditModal,
     openDeleteModal,
     closeModal,
-    handleCreateReview,
-    handleUpdateReview,
-    handleDeleteReview
+    // handleCreateReview, // Commented out to avoid unused variable warning
+    // handleUpdateReview, // Commented out to avoid unused variable warning
+    // handleDeleteReview // Commented out to avoid unused variable warning
   } = useReview(property?.id)
 
   // TODO: Review notifications and reminders
@@ -322,7 +323,7 @@ const PropertyDetailPage: React.FC = () => {
     // Check property settings for booking rules with defaults
     if (propertySettings) {
       const startDate = new Date(checkIn)
-      const endDate = new Date(checkOut)
+      // const endDate = new Date(checkOut) // Commented out to avoid unused variable warning
       const today = new Date()
       
       // Use default values if settings are null (as per BookingSystemImplementationPlan.md)
@@ -448,12 +449,12 @@ const PropertyDetailPage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (errorState) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-gray-50 p-4">
         <AlertCircle className="mb-4 size-16 text-danger-500" />
         <h2 className="mb-2 text-2xl font-bold text-gray-900">{t('property.messages.couldNotLoad')}</h2>
-        <p className="mb-6 text-center text-gray-600">{error}</p>
+        <p className="mb-6 text-center text-gray-600">{errorState}</p>
         <Button onClick={() => navigate('/')} startContent={<ArrowLeft />}>
           {t('common.actions.backToHome')}
         </Button>

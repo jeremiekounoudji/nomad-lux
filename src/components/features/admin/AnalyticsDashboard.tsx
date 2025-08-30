@@ -744,7 +744,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <CardBody className="p-6">
               <h3 className="mb-6 text-lg font-semibold text-gray-900">{t('admin.analytics.properties.performance', { defaultValue: 'Property Performance' })}</h3>
               <div className="space-y-4">
-                {topProperties.map((property, index) => (
+                {topProperties.map((property, _index) => (
                   <div key={property.id} className="flex items-center gap-4 rounded-lg border border-gray-200 p-4">
                     <img
                       src={property.image}

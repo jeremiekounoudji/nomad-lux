@@ -454,7 +454,7 @@ export const BookingManagement: React.FC<BookingManagementProps> = () => {
                         </div>
                         
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-gray-900">{formatPrice(booking.totalAmount, booking.currency || 'USD')}</div>
+                          <div className="text-2xl font-bold text-gray-900">{formatPrice(booking.totalAmount, 'USD')}</div>
                           <div className="text-sm text-gray-600">{booking.nights} {t('booking.labels.nights')} • {booking.guests} {t('booking.labels.guests')}</div>
                           <div className="mt-1 text-xs text-gray-500">Last activity: {booking.lastActivity}</div>
                         </div>
