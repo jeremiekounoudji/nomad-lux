@@ -1,11 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Modal,
-  ModalContent,
-  Button,
-  Checkbox,
-} from '@heroui/react';
+import { Modal, ModalContent, Button, Checkbox } from '@heroui/react';
 import { useTranslation } from '../../lib/stores/translationStore';
 import { useTutorial } from '../../hooks/useTutorial';
 import { useTutorialAnalytics } from '../../utils/tutorialAnalytics';
@@ -21,10 +15,10 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
   const { t } = useTranslation(['tutorial', 'common']);
   const [imageError, setImageError] = useState(false);
   const [neverShowAgain, setNeverShowAgainLocal] = useState(false);
-  
+
   console.log('🎓 TutorialModal translation test:', {
     title: t('tutorial.title'),
-    stepCounter: t('tutorial.stepCounter', { current: 1, total: 4 })
+    stepCounter: t('tutorial.stepCounter', { current: 1, total: 4 }),
   });
   const {
     tutorialState,
@@ -40,11 +34,8 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
     setNeverShowAgain,
   } = useTutorial();
 
-  const {
-    trackTutorialStarted,
-    trackStepCompleted,
-    trackTutorialFinished,
-  } = useTutorialAnalytics();
+  const { trackTutorialStarted, trackStepCompleted, trackTutorialFinished } =
+    useTutorialAnalytics();
 
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -123,36 +114,43 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
       onClose={handleClose}
       size="lg"
       scrollBehavior="inside"
-      
       aria-labelledby="tutorial-title"
       role="dialog"
     >
       <ModalContent>
-        <div className="bg-white dark:bg-gray-900 rounded-xl overflow-auto w-full max-w-md mx-auto min-h-[510px] flex flex-col">
+        <div className="mx-auto flex min-h-[510px] w-full max-w-md flex-col overflow-auto rounded-xl bg-white dark:bg-gray-900">
           {/* Close Button */}
-          
+
           {/* Content */}
-          <div className="m-5 px-2 pb-6 flex-1 flex flex-col justify-between">
+          <div className="m-5 flex flex-1 flex-col justify-between px-2 pb-6">
             {currentStep ? (
               <>
                 {/* Title */}
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                <h2 className="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
                   {t(`tutorial.${currentStep.title}`)}
                 </h2>
 
                 {/* Description */}
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                <p className="mb-6 leading-relaxed text-gray-600 dark:text-gray-400">
                   {t(`tutorial.${currentStep.description}`)}
                 </p>
 
                 {/* Tutorial Image - Fixed Height */}
                 <div className="mb-6">
-                  <div className="relative h-48 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                  <div className="relative h-48 overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
                     {imageError ? (
-                      <div className="flex items-center justify-center h-full">
+                      <div className="flex h-full items-center justify-center">
                         <div className="text-center">
-                          <svg className="size-12 text-gray-400 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                          <svg
+                            className="mx-auto mb-2 size-12 text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           <p className="text-sm text-gray-500">{t('tutorial.image.error')}</p>
                         </div>
@@ -161,7 +159,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                       <img
                         src={currentStep.imageUrl}
                         alt={t(`tutorial.${currentStep.imageAlt}`)}
-                        className="w-full h-full object-cover"
+                        className="size-full object-cover"
                         onError={() => setImageError(true)}
                       />
                     )}
@@ -169,11 +167,11 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                 </div>
 
                 {/* Step Progress Dots */}
-                <div className="flex justify-center gap-2 mb-6">
+                <div className="mb-6 flex justify-center gap-2">
                   {Array.from({ length: steps.length }, (_, index) => (
                     <div
                       key={index}
-                      className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                      className={`size-2 rounded-full transition-colors duration-200 ${
                         index === tutorialState.currentStep
                           ? 'bg-main'
                           : 'bg-gray-300 dark:bg-gray-600'
@@ -184,7 +182,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
 
                 {/* Never Show Again Checkbox */}
                 {config.showNeverShowAgain && (
-                  <div className="flex items-center justify-center mb-4">
+                  <div className="mb-4 flex items-center justify-center">
                     <Checkbox
                       isSelected={neverShowAgain}
                       onValueChange={(checked) => {
@@ -199,9 +197,8 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                   </div>
                 )}
 
-
                 {/* Navigation Buttons */}
-                <div className="flex gap-3 mt-auto">
+                <div className="mt-auto flex gap-3">
                   {!isFirst && (
                     <Button
                       variant="bordered"
@@ -211,9 +208,9 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                       {t('tutorial.actions.previous')}
                     </Button>
                   )}
-                  
+
                   <Button
-                    className={`flex-1 bg-main hover:bg-main/90 text-white ${
+                    className={`flex-1 bg-main text-white hover:bg-main/90 ${
                       isFirst ? 'ml-0' : ''
                     }`}
                     onPress={handleNext}
@@ -223,8 +220,10 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
                 </div>
               </>
             ) : (
-              <div className="text-center py-8">
-                <p className="text-red-500">{t('tutorial.errors.noCurrentStep', 'No current step found!')}</p>
+              <div className="py-8 text-center">
+                <p className="text-red-500">
+                  {t('tutorial.errors.noCurrentStep', 'No current step found!')}
+                </p>
               </div>
             )}
           </div>
