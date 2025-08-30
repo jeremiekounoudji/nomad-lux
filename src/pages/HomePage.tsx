@@ -203,7 +203,7 @@ const HomePage: React.FC = () => {
   // Developer utility: Add global reset function for testing
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      (window as Record<string, unknown>).resetTutorial = () => {
+      (window as unknown as Record<string, unknown>).resetTutorial = () => {
         console.log('🆕 Resetting tutorial for development testing');
         resetTutorialAndPreferences();
         // Force a re-render to trigger the useEffect
@@ -211,7 +211,7 @@ const HomePage: React.FC = () => {
         setTimeout(() => setCurrentPage('home'), 10);
       };
       
-      (window as Record<string, unknown>).showTutorialState = () => {
+      (window as unknown as Record<string, unknown>).showTutorialState = () => {
         console.log('🎓 Current tutorial state:', {
           tutorialState,
           userPreferences,
@@ -224,8 +224,8 @@ const HomePage: React.FC = () => {
     
     return () => {
       if (typeof window !== 'undefined') {
-        delete (window as Record<string, unknown>).resetTutorial;
-        delete (window as Record<string, unknown>).showTutorialState;
+        delete (window as unknown as Record<string, unknown>).resetTutorial;
+        delete (window as unknown as Record<string, unknown>).showTutorialState;
       }
     };
   }, [tutorialState, userPreferences, isAuthenticated, isLoading, currentPage, resetTutorialAndPreferences]);

@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Modal,
   ModalContent,
   Button,
   Checkbox,
 } from '@heroui/react';
-import { X } from 'lucide-react';
 import { useTranslation } from '../../lib/stores/translationStore';
 import { useTutorial } from '../../hooks/useTutorial';
 import { useTutorialAnalytics } from '../../utils/tutorialAnalytics';
@@ -31,7 +31,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
     config,
     startTutorial,
     completeTutorial,
-    skipTutorial,
     closeTutorial,
     nextStep,
     previousStep,
@@ -44,7 +43,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
   const {
     trackTutorialStarted,
     trackStepCompleted,
-    trackTutorialSkipped,
     trackTutorialFinished,
   } = useTutorialAnalytics();
 
