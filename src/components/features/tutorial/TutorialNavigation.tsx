@@ -1,64 +1,67 @@
-import React from 'react'
-import { Button } from '@heroui/react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useTutorialStore } from '../../../lib/stores/tutorialStore'
-import { useTranslation } from '../../../lib/stores/translationStore'
+import React from 'react';
+import { Button } from '@heroui/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTutorialStore } from '../../../lib/stores/tutorialStore';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 interface TutorialNavigationProps {
-  className?: string
-  onGetStarted?: () => void
+  className?: string;
+  onGetStarted?: () => void;
 }
 
-const TutorialNavigation: React.FC<TutorialNavigationProps> = ({ 
+const TutorialNavigation: React.FC<TutorialNavigationProps> = ({
   className = '',
-  onGetStarted 
+  onGetStarted,
 }) => {
-  const { t } = useTranslation('tutorial')
-  const { 
-    nextStep, 
-    previousStep, 
-    completeTutorial,
-    canGoNext, 
-    canGoPrevious, 
-    // isFirstStep, // Commented out to avoid unused variable warning
-    isLastStep 
-  } = useTutorialStore()
+  const { t } = useTranslation('tutorial');
+  const { nextStep, previousStep, completeTutorial, tutorialState } = useTutorialStore();
+
+  // Total steps - this should come from your tutorial configuration
+  const totalSteps = 4; // Adjust based on your actual tutorial steps
+
+  // Derive navigation state from tutorial state
+  const canGoPrevious = () => tutorialState.currentStep > 0;
+  const canGoNext = () => tutorialState.currentStep < totalSteps - 1;
+  const isLastStep = () => tutorialState.currentStep === totalSteps - 1;
 
   const handlePrevious = () => {
     if (canGoPrevious()) {
-      previousStep()
+      previousStep();
     }
-  }
+  };
 
   const handleNext = () => {
     if (canGoNext()) {
-      nextStep()
+      nextStep();
     }
-  }
+  };
 
   const handleGetStarted = () => {
-    completeTutorial()
+    completeTutorial();
     if (onGetStarted) {
-      onGetStarted()
+      onGetStarted();
     }
-  }
+  };
 
-  const handleKeyDown = (event: React.KeyboardEvent, action: 'previous' | 'next' | 'getStarted') => {
+  const handleKeyDown = (
+    event: React.KeyboardEvent,
+    action: 'previous' | 'next' | 'getStarted'
+  ) => {
     if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault()
+      event.preventDefault();
       switch (action) {
         case 'previous':
-          handlePrevious()
-          break
+          handlePrevious();
+          break;
         case 'next':
-          handleNext()
-          break
+          handleNext();
+          break;
         case 'getStarted':
-          handleGetStarted()
-          break
+          handleGetStarted();
+          break;
       }
     }
-  }
+  };
 
   return (
     <div className={`flex items-center justify-between ${className}`}>
@@ -66,12 +69,12 @@ const TutorialNavigation: React.FC<TutorialNavigationProps> = ({
       <Button
         variant="ghost"
         size="lg"
-        startContent={<ChevronLeft className="h-5 w-5" />}
+        startContent={<ChevronLeft className="size-5" />}
         onClick={handlePrevious}
         onKeyDown={(e) => handleKeyDown(e, 'previous')}
         isDisabled={!canGoPrevious()}
         className={`
-          transition-all duration-200 text-gray-600 hover:text-main hover:bg-main/10
+          text-gray-600 transition-all duration-200 hover:bg-main/10 hover:text-main
           ${!canGoPrevious() ? 'invisible' : 'visible'}
         `}
         aria-label={t('navigation.previous')}
@@ -86,7 +89,7 @@ const TutorialNavigation: React.FC<TutorialNavigationProps> = ({
           size="lg"
           onClick={handleGetStarted}
           onKeyDown={(e) => handleKeyDown(e, 'getStarted')}
-          className="min-w-32 font-semibold bg-main hover:bg-main/90 text-white"
+          className="min-w-32 bg-main font-semibold text-white hover:bg-main/90"
           aria-label={t('navigation.getStarted')}
         >
           {t('navigation.getStarted')}
@@ -96,18 +99,18 @@ const TutorialNavigation: React.FC<TutorialNavigationProps> = ({
           color="primary"
           variant="flat"
           size="lg"
-          endContent={<ChevronRight className="h-5 w-5" />}
+          endContent={<ChevronRight className="size-5" />}
           onClick={handleNext}
           onKeyDown={(e) => handleKeyDown(e, 'next')}
           isDisabled={!canGoNext()}
-          className="min-w-32 font-semibold bg-main/10 text-main hover:bg-main/20 border-main/20"
+          className="min-w-32 border-main/20 bg-main/10 font-semibold text-main hover:bg-main/20"
           aria-label={t('navigation.next')}
         >
           {t('navigation.next')}
         </Button>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default TutorialNavigation
+export default TutorialNavigation;
