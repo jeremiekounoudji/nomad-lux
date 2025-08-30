@@ -1,0 +1,20 @@
+{
+  "book": "Réserver",
+  "reserve": "Réserver",
+  "save": "Enregistrer", 
+  "cancel": "Annuler",
+  "edit": "Modifier",
+  "delete": "Supprimer",
+  "view": "Voir",
+  "share": "Partager",
+  "like": "Aimer",
+  "unlike": "Ne plus aimer",
+  "search": "Rechercher",
+  "filter": "Filtrer",
+  "sort": "Trier",
+  "signOut": "Se déconnecter",
+  "signIn": "Se connecter",
+  "register": "S'inscrire",
+  "directions": "Obtenir l'itinéraire",
+  "contact": "Contacter"
+}

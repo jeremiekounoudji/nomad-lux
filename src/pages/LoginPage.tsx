@@ -3,7 +3,10 @@ import { Card, CardBody, Input, Button, Link } from '@heroui/react'
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../lib/stores/authStore'
+import { useTranslation } from '../lib/stores/translationStore'
 import { LoginPageProps } from '../interfaces'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../router/types'
 import toast from 'react-hot-toast'
 
 const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
@@ -14,14 +17,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
   const { signIn, isLoading } = useAuth()
   const { isAuthenticated } = useAuthStore()
+  const { t } = useTranslation(['auth', 'common'])
+  const navigate = useNavigate()
 
   // Auto-redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       console.log('✅ Already authenticated - redirecting to home')
+      toast.success(t('auth.messages.loginSuccess'))
       onLogin?.()
     }
-  }, [isAuthenticated, onLogin])
+  }, [isAuthenticated, onLogin, t])
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
@@ -29,7 +35,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
     setError('')
     
     if (!email || !password) {
-      setError('Please fill in all fields')
+      setError(t('auth.messages.fillAllFields'))
       return
     }
 
@@ -46,31 +52,42 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       }
 
       console.log('✅ User sign in initiated - waiting for auth state update')
-      toast.success('Welcome back!')
+      // Don't show success toast here - let the useEffect handle it after redirect
       // The redirect will happen automatically via useEffect when auth state updates
       
     } catch (err: any) {
       console.error('❌ Exception during user sign in:', err)
-      setError(err.message || 'An unexpected error occurred')
-      toast.error(err.message || 'An unexpected error occurred')
+      setError(err.message || t('auth.messages.unexpectedError'))
+      toast.error(err.message || t('auth.messages.unexpectedError'))
     }
   }
 
   const handleBackToHome = () => {
-    onPageChange?.('home')
+    if (onPageChange) {
+      onPageChange('home')
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
 
   const handleForgotPassword = () => {
     // TODO: Implement forgot password functionality
     console.log('Forgot password clicked')
-    toast('Forgot password feature coming soon!', { icon: 'ℹ️' })
+    toast(t('auth.messages.forgotPasswordComingSoon'), { icon: 'ℹ️' })
   }
 
 
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative"
+      className="relative flex min-h-screen items-center justify-center p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -85,40 +102,35 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
+        className="absolute left-6 top-6 z-20 border border-white/30 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
         onPress={handleBackToHome}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Login Form */}
-      <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-md border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">NL</span>
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500">
+              <span className="text-xl font-bold text-white">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-white/80 text-sm">Sign in to your NomadLux account</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('auth.login.title')}</h1>
+            <p className="text-sm text-white/80">{t('auth.login.subtitle')}</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-400/30 rounded-lg">
-              <p className="text-red-100 text-sm">{error}</p>
-            </div>
-          )}
+
 
           {/* Form */}
           <div className="space-y-6">
             <Input
               type="email"
-              label="Email"
-              placeholder="Enter your email"
+              label={t('auth.login.email')}
+              placeholder={t('auth.login.email')}
               value={email}
               onValueChange={setEmail}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              startContent={<Mail className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -130,17 +142,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
             />
 
             <Input
-              label="Password"
-              placeholder="Enter your password"
+              label={t('auth.login.password')}
+              placeholder={t('auth.login.password')}
               value={password}
               onValueChange={setPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -157,32 +169,38 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
             <div className="flex items-center justify-between">
               <Link 
-                className="text-sm text-white/80 hover:text-white cursor-pointer"
+                className="cursor-pointer text-sm text-white/80 hover:text-white"
                 onPress={handleForgotPassword}
               >
-                Forgot password?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
 
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleLogin}
               isLoading={isLoading}
               isDisabled={!email || !password}
             >
-              {isLoading ? 'Signing In...' : 'Sign In'}
+              {isLoading ? t('auth.login.signingIn') : t('auth.login.signIn')}
             </Button>
 
             <div className="text-center">
-              <span className="text-white/80 text-sm">
-                Don't have an account?{' '}
+              <span className="text-sm text-white/80">
+                {t('auth.login.noAccount')}{' '}
                 <Link 
-                  className="text-white font-semibold hover:text-white/80 cursor-pointer"
-                  onPress={() => onPageChange?.('register')}
+                  className="cursor-pointer font-semibold text-white hover:text-white/80"
+                  onPress={() => {
+                    if (onPageChange) {
+                      onPageChange('register')
+                    } else {
+                      navigate(ROUTES.REGISTER)
+                    }
+                  }}
                 >
-                  Sign up
+                  {t('auth.login.signUp')}
                 </Link>
               </span>
             </div>

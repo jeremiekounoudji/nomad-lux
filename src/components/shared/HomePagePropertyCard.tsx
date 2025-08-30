@@ -1,10 +1,12 @@
 import React from 'react'
 import { Property } from '../../interfaces/Property'
-import { Heart, MapPin, Users, Bed, Bath } from 'lucide-react'
+import { Heart, MapPin, Users, Bed, Bath, Share2 } from 'lucide-react'
+import { useTranslation } from '../../lib/stores/translationStore'
 
 interface HomePagePropertyCardProps {
   property: Property
   onLike?: (id: string) => void
+  onShare?: (property: Property) => void
   onClick?: (property: Property) => void
   className?: string
 }
@@ -12,10 +14,12 @@ interface HomePagePropertyCardProps {
 const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
   property,
   onLike,
+  onShare,
   onClick,
   className = ''
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
+  const { t } = useTranslation(['property', 'labels', 'actions'])
 
   const nextImage = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -33,24 +37,33 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
     onLike?.(property.id)
   }
 
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onShare?.(property)
+  }
+
+  // Ensure images array exists and has content
+  const images = property.images || []
+  const currentImage = images[currentImageIndex] || images[0] || ''
+
   return (
     <div 
-      className={`bg-white rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}
+      className={`w-full cursor-pointer overflow-hidden rounded-lg bg-white shadow-lg transition-shadow duration-300 hover:shadow-xl ${className}`}
       onClick={handleCardClick}
     >
       {/* Header with host info */}
-      <div className="flex items-center justify-between p-3 border-b border-gray-100">
+      <div className="flex items-center justify-between border-b border-gray-100 p-3">
         <div className="flex items-center gap-3 text-left">
           <img
-            src={property.host.avatar_url}
-            alt={property.host.name}
-            className="w-8 h-8 rounded-full object-cover"
+            src={property.host?.avatar_url || ''}
+            alt={property.host?.name || 'Host'}
+            className="size-8 rounded-full object-cover"
           />
           <div className="text-left">
-            <p className="font-semibold text-sm text-gray-900 text-left truncate">{property.host.name}</p>
-            <div className="flex items-center gap-1 text-xs text-gray-500 text-left">
-              <MapPin className="w-3 h-3" />
-              <span>{property.location.city}, {property.location.country}</span>
+            <p className="truncate text-left text-sm font-semibold text-gray-900">{property.host?.name || 'Host'}</p>
+            <div className="flex items-center gap-1 text-left text-xs text-gray-500">
+              <MapPin className="size-3" />
+              <span>{property.location?.city || ''}, {property.location?.country || ''}</span>
             </div>
           </div>
         </div>
@@ -59,19 +72,19 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
       {/* Image */}
       <div className="relative p-3">
         <img
-          src={property.images[currentImageIndex]}
+          src={currentImage}
           alt={property.title}
-          className="w-full h-80 object-cover rounded-lg"
+          className="h-40 w-full rounded-lg object-cover"
           onClick={nextImage}
         />
         
         {/* Image indicators */}
-        {property.images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex gap-1">
-            {property.images.map((_, index) => (
+        {images.length > 1 && (
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1">
+            {images.map((_, index) => (
               <div
                 key={index}
-                className={`w-1.5 h-1.5 rounded-full ${
+                className={`size-1.5 rounded-full ${
                   index === currentImageIndex ? 'bg-white' : 'bg-white/50'
                 }`}
               />
@@ -79,54 +92,53 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           </div>
         )}
 
-        {/* Like button */}
-        <button
-          onClick={handleLike}
-          className="absolute top-3 right-3 p-2 rounded-full bg-black/20 hover:bg-black/30 transition-colors"
-        >
-          <Heart
-            className={`w-6 h-6 ${
-              property.is_liked ? 'fill-red-500 text-red-500' : 'text-white'
-            }`}
-          />
-        </button>
+
       </div>
 
       {/* Content */}
       <div className="p-4">
         {/* Actions row */}
-        <div className="flex items-center gap-4 mb-3">
+        <div className="mb-3 flex items-center gap-4">
           <button
             onClick={handleLike}
-            className="p-0 bg-transparent border-none"
+            className="border-none bg-transparent p-0"
           >
-            <Heart
-              className={`w-6 h-6 ${
-                property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-700'
-              } hover:text-gray-500 transition-colors`}
-            />
+            <div className="flex items-center gap-1">
+              <Heart
+                className={`size-6 ${
+                  property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-700'
+                } transition-colors hover:text-gray-500`}
+              />
+              <span className="text-xs font-semibold text-gray-700">{property.like_count ?? 0}</span>
+            </div>
+          </button>
+          <button
+            onClick={handleShare}
+            className="border-none bg-transparent p-0"
+          >
+            <Share2 className="size-6 text-gray-700 transition-colors hover:text-gray-500" />
           </button>
         </div>
 
         {/* Property details */}
         <div className="space-y-2 text-left">
-          <h3 className="font-semibold text-gray-900 text-lg leading-tight text-left truncate">
+          <h3 className="truncate text-left text-lg font-semibold leading-tight text-gray-900">
             {property.title}
           </h3>
 
           {/* Property specs */}
-          <div className="flex items-center gap-4 text-sm text-gray-600 text-left">
+          <div className="flex items-center gap-4 text-left text-sm text-gray-600">
             <div className="flex items-center gap-1">
-              <Users className="w-4 h-4" />
-              <span>{property.max_guests} guests</span>
+              <Users className="size-4" />
+              <span>{property.max_guests} {t('labels.guests')}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Bed className="w-4 h-4" />
-              <span>{property.bedrooms} beds</span>
+              <Bed className="size-4" />
+              <span>{property.bedrooms} {t('labels.beds')}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Bath className="w-4 h-4" />
-              <span>{property.bathrooms} baths</span>
+              <Bath className="size-4" />
+              <span>{property.bathrooms} {t('labels.baths')}</span>
             </div>
           </div>
 
@@ -134,15 +146,15 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           <div className="flex items-center justify-between pt-2">
             <div className="text-left">
               <p className="text-gray-900">
-                <span className="font-semibold text-lg">${property.price}</span>
-                <span className="text-gray-600 text-sm ml-1">per night</span>
+                <span className="text-lg font-semibold">{property.currency} {property.price}</span>
+                <span className="ml-1 text-sm text-gray-600">{t('labels.perNight')}</span>
               </p>
             </div>
             <button
               onClick={handleCardClick}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700"
             >
-              Book Now
+              {t('actions.book')}
             </button>
           </div>
         </div>

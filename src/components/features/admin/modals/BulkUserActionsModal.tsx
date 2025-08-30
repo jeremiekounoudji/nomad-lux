@@ -9,16 +9,16 @@ import {
   Avatar,
   Textarea,
   Chip,
-  Divider,
   Checkbox
 } from '@heroui/react'
-import { Users, Ban, UserCheck, Trash2, AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
-import { User } from './userTypes'
+import { Ban, UserCheck, Trash2, AlertTriangle } from 'lucide-react'
+import { AdminUser } from '../../../../interfaces'
+import { useTranslation } from '../../../../lib/stores/translationStore'
 
 interface BulkUserActionsModalProps {
   isOpen: boolean
   onClose: () => void
-  users: User[]
+  users: AdminUser[]
   action: 'suspend' | 'activate' | 'delete' | null
   onConfirm: (reason?: string) => void
 }
@@ -30,27 +30,15 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
   action,
   onConfirm
 }) => {
+  const { t } = useTranslation(['admin', 'common']);
   const [reason, setReason] = useState('')
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const handleSubmit = () => {
-    if (action === 'delete') {
-      if (reason.trim() && confirmDelete) {
-        onConfirm(reason)
-        handleClose()
-      }
-    } else if (action === 'suspend') {
-      if (reason.trim()) {
-        onConfirm(reason)
-        handleClose()
-      }
-    } else {
-      onConfirm()
-      handleClose()
-    }
-  }
-
-  const handleClose = () => {
+  const handleConfirm = () => {
+    if (action === 'delete' && !confirmDelete) return
+    if ((action === 'suspend' || action === 'delete') && !reason.trim()) return
+    
+    onConfirm(reason.trim() || undefined)
     setReason('')
     setConfirmDelete(false)
     onClose()
@@ -60,132 +48,100 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
     switch (action) {
       case 'suspend':
         return {
-          title: 'Suspend Multiple Users',
-          description: 'Temporarily disable access for selected users',
-          icon: <Ban className="w-5 h-5 text-white" />,
-          color: 'orange',
-          bgColor: 'bg-orange-500',
-          headerBg: 'bg-orange-50',
-          headerText: 'text-orange-900',
-          buttonColor: 'bg-orange-600 hover:bg-orange-700',
-          requiresReason: true
+          title: t('admin.users.bulkActions.suspend.title', { defaultValue: 'Suspend Users' }),
+          color: 'warning' as const,
+          icon: <Ban className="size-5" />,
+          description: t('admin.users.bulkActions.suspend.description', { defaultValue: `You are about to suspend ${users.length} users. This will prevent them from accessing the platform.` }),
+          requiresReason: true,
+          destructive: false
         }
       case 'activate':
         return {
-          title: 'Activate Multiple Users',
-          description: 'Restore platform access for selected users',
-          icon: <UserCheck className="w-5 h-5 text-white" />,
-          color: 'green',
-          bgColor: 'bg-green-500',
-          headerBg: 'bg-green-50',
-          headerText: 'text-green-900',
-          buttonColor: 'bg-green-600 hover:bg-green-700',
-          requiresReason: false
+          title: t('admin.users.bulkActions.activate.title', { defaultValue: 'Activate Users' }),
+          color: 'success' as const,
+          icon: <UserCheck className="size-5" />,
+          description: t('admin.users.bulkActions.activate.description', { defaultValue: `You are about to activate ${users.length} users. This will restore their platform access.` }),
+          requiresReason: false,
+          destructive: false
         }
       case 'delete':
         return {
-          title: 'Delete Multiple Users',
-          description: 'Permanently remove selected user accounts',
-          icon: <Trash2 className="w-5 h-5 text-white" />,
-          color: 'red',
-          bgColor: 'bg-red-500',
-          headerBg: 'bg-red-50',
-          headerText: 'text-red-900',
-          buttonColor: 'bg-red-600 hover:bg-red-700',
-          requiresReason: true
+          title: t('admin.users.bulkActions.delete.title', { defaultValue: 'Delete Users' }),
+          color: 'danger' as const,
+          icon: <Trash2 className="size-5" />,
+          description: t('admin.users.bulkActions.delete.description', { defaultValue: `You are about to permanently delete ${users.length} users and all their data. This action cannot be undone.` }),
+          requiresReason: true,
+          destructive: true
         }
       default:
-        return {
-          title: 'Bulk Action',
-          description: 'Perform action on selected users',
-          icon: <Users className="w-5 h-5 text-white" />,
-          color: 'gray',
-          bgColor: 'bg-gray-500',
-          headerBg: 'bg-gray-50',
-          headerText: 'text-gray-900',
-          buttonColor: 'bg-gray-600 hover:bg-gray-700',
-          requiresReason: false
-        }
+        return null
     }
   }
 
   const config = getActionConfig()
-
-  if (!action) return null
+  if (!config) return null
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} size="xl" scrollBehavior="inside">
-      <ModalContent className="max-h-[85vh]">
-        <ModalHeader className={`flex items-center gap-3 ${config.headerBg} ${config.headerText} rounded-t-lg`}>
-          <div className={`w-10 h-10 ${config.bgColor} rounded-full flex items-center justify-center`}>
-            {config.icon}
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">{config.title}</h3>
-            <p className="text-sm font-normal">{config.description}</p>
-          </div>
+    <Modal isOpen={isOpen} onClose={onClose} size="3xl">
+      <ModalContent>
+        <ModalHeader className="flex items-center gap-2">
+          {config.icon}
+          {config.title}
         </ModalHeader>
-        
         <ModalBody className="space-y-6">
-          {/* Warning/Info Notice */}
-          {action === 'delete' && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <XCircle className="w-5 h-5 text-red-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-red-800">Permanent Deletion Warning</h4>
-                  <p className="text-sm text-red-700 mt-1">
-                    This will permanently delete {users.length} user accounts and all their associated data. This action cannot be undone.
-                  </p>
-                </div>
-              </div>
+          {/* Action Description */}
+          <div className={`rounded-lg border p-4 ${
+            config.destructive 
+              ? 'border-red-200 bg-red-50' 
+              : action === 'suspend' 
+              ? 'border-yellow-200 bg-yellow-50' 
+              : 'border-green-200 bg-green-50'
+          }`}>
+            <div className="mb-2 flex items-center gap-2">
+              <AlertTriangle className={`size-5 ${
+                config.destructive 
+                  ? 'text-red-600' 
+                  : action === 'suspend' 
+                  ? 'text-yellow-600' 
+                  : 'text-green-600'
+              }`} />
+              <h4 className={`font-semibold ${
+                config.destructive 
+                  ? 'text-red-900' 
+                  : action === 'suspend' 
+                  ? 'text-yellow-900' 
+                  : 'text-green-900'
+              }`}>
+                {config.destructive ? t('admin.users.bulkActions.destructiveAction', { defaultValue: 'Destructive Action' }) : t('admin.users.bulkActions.bulkAction', { defaultValue: 'Bulk Action' })}
+              </h4>
             </div>
-          )}
+            <p className={`text-sm ${
+              config.destructive 
+                ? 'text-red-800' 
+                : action === 'suspend' 
+                ? 'text-yellow-800' 
+                : 'text-green-800'
+            }`}>
+              {config.description}
+            </p>
+          </div>
 
-          {action === 'suspend' && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-amber-800">Suspension Notice</h4>
-                  <p className="text-sm text-amber-700 mt-1">
-                    {users.length} user(s) will lose access to the platform immediately. They won't be able to make bookings or list properties.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {action === 'activate' && (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-green-800">Account Activation</h4>
-                  <p className="text-sm text-green-700 mt-1">
-                    {users.length} user(s) will regain full platform access including booking and listing capabilities.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Selected Users List */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 mb-3">
-              Selected Users ({users.length})
+          {/* Users List */}
+          <div>
+            <h4 className="mb-3 font-semibold text-gray-900">
+              {t('admin.users.bulkActions.selectedUsers', { defaultValue: `Selected Users (${users.length})` })}
             </h4>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
+            <div className="max-h-64 space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-4">
               {users.map((user) => (
-                <div key={user.id} className="flex items-center gap-3 p-2 bg-white rounded border">
-                  <Avatar src={user.avatar_url} name={user.display_name} size="sm" />
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 text-sm">{user.display_name}</h3>
-                    <p className="text-xs text-gray-600">{user.email}</p>
+                <div key={user.id} className="flex items-center gap-3 rounded-lg bg-gray-50 p-2">
+                  <Avatar src={user.avatar} name={user.name} size="sm" />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-gray-900">{user.name}</p>
+                    <p className="truncate text-xs text-gray-500">{user.email}</p>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
                     <Chip
-                      color={user.status === 'active' ? 'success' : user.status === 'suspended' ? 'danger' : 'warning'}
+                      color={user.status === 'active' ? 'success' : 'warning'}
                       size="sm"
                       variant="flat"
                       className="capitalize"
@@ -206,57 +162,67 @@ export const BulkUserActionsModal: React.FC<BulkUserActionsModalProps> = ({
             </div>
           </div>
 
-          <Divider />
-
-          {/* Reason Input (if required) */}
+          {/* Reason Input */}
           {config.requiresReason && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Reason for {action === 'delete' ? 'Deletion' : 'Suspension'} <span className="text-red-500">*</span>
-              </label>
               <Textarea
-                placeholder={`Please provide a detailed reason for ${action === 'delete' ? 'deleting' : 'suspending'} these user accounts...`}
+                label={t('admin.users.bulkActions.reason.label', { defaultValue: `Reason for ${action}${action === 'delete' ? 'ion' : 'ing'}` })}
+                placeholder={t('admin.users.bulkActions.reason.placeholder', { defaultValue: `Provide a reason for ${action === 'delete' ? 'deleting' : action === 'suspend' ? 'suspending' : ''} these users...` })}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                minRows={4}
-                className="w-full"
+                minRows={3}
+                isRequired
               />
-              <p className="text-xs text-gray-500 mt-2">
-                This reason will be logged for audit purposes{action === 'delete' ? ' and legal compliance' : ' and may be shared with users upon request'}.
-              </p>
             </div>
           )}
 
-          {/* Confirmation Checkbox (for delete) */}
+          {/* Delete Confirmation */}
           {action === 'delete' && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4">
               <Checkbox
                 isSelected={confirmDelete}
                 onValueChange={setConfirmDelete}
                 color="danger"
-                className="text-red-700"
               >
-                <span className="text-sm font-medium text-red-700">
-                  I understand that this action is permanent and will delete {users.length} user account(s) and all their data.
+                <span className="text-sm text-red-800">
+                  {t('admin.users.bulkActions.deleteConfirmation', { defaultValue: 'I understand that this action is permanent and cannot be undone. All user data, including bookings, properties, and payment history will be permanently deleted.' })}
                 </span>
               </Checkbox>
             </div>
           )}
+
+          {/* Summary */}
+          <div className="rounded-lg bg-gray-50 p-4">
+            <h4 className="mb-2 font-semibold text-gray-900">{t('admin.users.bulkActions.summary.title', { defaultValue: 'Action Summary' })}</h4>
+            <div className="space-y-1 text-sm text-gray-700">
+              <div>• {t('admin.users.bulkActions.summary.usersAffected', { defaultValue: `${users.length} users will be ${action === 'delete' ? 'deleted' : action}d` })}</div>
+              {action === 'suspend' && <div>• {t('admin.users.bulkActions.summary.suspendEffect', { defaultValue: 'Users will lose platform access immediately' })}</div>}
+              {action === 'activate' && <div>• {t('admin.users.bulkActions.summary.activateEffect', { defaultValue: 'Users will regain platform access immediately' })}</div>}
+              {action === 'delete' && (
+                <>
+                  <div>• {t('admin.users.bulkActions.summary.deleteEffect1', { defaultValue: 'All user data will be permanently removed' })}</div>
+                  <div>• {t('admin.users.bulkActions.summary.deleteEffect2', { defaultValue: 'Associated bookings and properties will be affected' })}</div>
+                </>
+              )}
+              <div>• {t('admin.users.bulkActions.summary.auditTrail', { defaultValue: 'Action will be logged in the audit trail' })}</div>
+            </div>
+          </div>
         </ModalBody>
         
-        <ModalFooter className="bg-gray-50 rounded-b-lg">
-          <Button variant="flat" onPress={handleClose}>
-            Cancel
+        <ModalFooter>
+          <Button variant="flat" onPress={onClose}>
+            {t('common.actions.cancel', { defaultValue: 'Cancel' })}
           </Button>
           <Button
-            onPress={handleSubmit}
+            color={config.color}
+            onPress={handleConfirm}
             isDisabled={
               (config.requiresReason && !reason.trim()) || 
               (action === 'delete' && !confirmDelete)
             }
-            className={`${config.buttonColor} text-white`}
+            startContent={config.icon}
           >
-            {action === 'delete' ? 'Delete' : action === 'suspend' ? 'Suspend' : 'Activate'} {users.length} User{users.length > 1 ? 's' : ''}
+            {config.title}
           </Button>
         </ModalFooter>
       </ModalContent>

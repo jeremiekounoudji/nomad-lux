@@ -19,7 +19,6 @@ import {
   ModalFooter,
   useDisclosure,
   Slider,
-  Badge,
   Spinner
 } from '@heroui/react'
 import { toast } from 'react-hot-toast'
@@ -30,16 +29,12 @@ import {
   Bell, 
   DollarSign, 
   Shield, 
-  Mail, 
-  Globe, 
-  Clock, 
-  Users,
+  Globe,
   Image as ImageIcon,
   FileText,
   Database,
   Activity,
   AlertCircle,
-  CheckCircle,
   Edit,
   Trash2,
   Plus,
@@ -57,6 +52,7 @@ import {
   SecuritySettings, 
   PaymentSettings 
 } from '../../../interfaces/Settings'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface SettingChange {
   id: string
@@ -78,6 +74,7 @@ interface NotificationTemplate {
 }
 
 export const SystemSettings: React.FC = () => {
+  const { t } = useTranslation(['admin', 'common', 'notifications'])
   const [selectedTab, setSelectedTab] = useState('general')
   const [showPasswords, setShowPasswords] = useState(false)
   
@@ -184,11 +181,11 @@ export const SystemSettings: React.FC = () => {
     try {
       console.log('💾 Saving all settings changes')
       await saveAllChanges()
-      toast.success('Settings saved successfully!')
+      toast.success(t('admin.messages.settingsUpdated', { defaultValue: 'Settings updated successfully' }))
       console.log('✅ Settings saved successfully')
     } catch (error) {
       console.error('❌ Failed to save settings:', error)
-      toast.error('Failed to save settings. Please try again.')
+      toast.error(t('common.messages.failed', { defaultValue: 'Failed to save settings. Please try again.' }))
     }
   }
 
@@ -286,12 +283,52 @@ export const SystemSettings: React.FC = () => {
     // Here you would delete the template from your backend
   }
 
+  const handleClearCache = async () => {
+    try {
+      console.log('🗑️ Cache clearing is temporarily disabled')
+      toast.info('Cache clearing is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleClearAllCache = async () => {
+    try {
+      console.log('🗑️ Cache clearing is temporarily disabled')
+      toast.info('Cache clearing is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleForceRefresh = () => {
+    try {
+      console.log('🔄 Force refresh is temporarily disabled')
+      toast.info('Force refresh is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
+  const handleCheckCacheHealth = () => {
+    try {
+      console.log('🔍 Cache health check is temporarily disabled')
+      toast.info('Cache health check is temporarily disabled')
+    } catch (error) {
+      console.error('❌ Error:', error)
+      toast.error('Operation failed')
+    }
+  }
+
   // Show loading spinner if settings are not loaded yet
   if (isLoading && !settings) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 items-center justify-center">
         <Spinner size="lg" color="primary" />
-        <span className="ml-3">Loading admin settings...</span>
+        <span className="ml-3">{t('admin.messages.loadingSettings', { defaultValue: 'Loading admin settings...' })}</span>
       </div>
     )
   }
@@ -299,11 +336,11 @@ export const SystemSettings: React.FC = () => {
   // Show error if settings failed to load
   if (error && !settings) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 items-center justify-center">
         <div className="text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <p className="text-red-600 font-medium">Failed to load admin settings</p>
-          <p className="text-gray-600 text-sm mt-2">{error}</p>
+          <AlertCircle className="mx-auto mb-4 size-12 text-red-500" />
+          <p className="font-medium text-red-600">{t('admin.messages.settingsLoadFailed', { defaultValue: 'Failed to load admin settings' })}</p>
+          <p className="mt-2 text-sm text-gray-600">{error}</p>
         </div>
       </div>
     )
@@ -319,33 +356,33 @@ export const SystemSettings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
-        <p className="text-gray-600 mt-1">Configure platform settings and preferences</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('admin.settings.generalSettings', { defaultValue: 'System Settings' })}</h1>
+        <p className="mt-1 text-gray-600">{t('admin.messages.settingsUpdated', { defaultValue: 'Configure platform settings and preferences' })}</p>
       </div>
 
       {/* Actions Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="flex gap-3">
           {hasUnsavedChanges && (
             <Chip color="warning" variant="flat">
-              Unsaved Changes
+              {t('common.messages.unsavedChanges', { defaultValue: 'Unsaved Changes' })}
             </Chip>
           )}
           <Button 
             variant="flat"
             onPress={onOpen}
-            startContent={<RefreshCw className="w-4 h-4" />}
+            startContent={<RefreshCw className="size-4" />}
           >
-            Change Log
+            {t('admin.reports.generateReport', { defaultValue: 'Change Log' })}
           </Button>
           <Button 
             color="primary"
-            startContent={!isLoading ? <Save className="w-4 h-4" /> : undefined}
+            startContent={!isLoading ? <Save className="size-4" /> : undefined}
             isDisabled={!hasUnsavedChanges || isLoading}
             isLoading={isLoading}
             onPress={() => handleSaveSettings()}
           >
-            Save Changes
+            {t('common.actions.save', { defaultValue: 'Save Changes' })}
           </Button>
         </div>
       </div>
@@ -363,71 +400,72 @@ export const SystemSettings: React.FC = () => {
             tabContent: "group-data-[selected=true]:text-primary-600"
           }}
         >
-          <Tab key="general" title="General" />
-          <Tab key="booking" title="Booking" />
-          <Tab key="payment" title="Payment" />
-          <Tab key="notifications" title="Notifications" />
-          <Tab key="security" title="Security" />
-          <Tab key="content" title="Content" />
+              <Tab key="general" title={t('admin.settings.generalSettings', { defaultValue: 'General' })} />
+              <Tab key="booking" title={t('admin.settings.bookingSettings', { defaultValue: 'Booking' })} />
+              <Tab key="payment" title={t('admin.settings.paymentSettings', { defaultValue: 'Payment' })} />
+              <Tab key="notifications" title={t('admin.settings.notificationSettings', { defaultValue: 'Notifications' })} />
+              <Tab key="security" title={t('admin.settings.securitySettings', { defaultValue: 'Security' })} />
+              <Tab key="content" title={t('admin.settings.contentSettings', { defaultValue: 'Content' })} />
+              <Tab key="cache" title={t('admin.settings.cacheManagement', { defaultValue: 'Cache Management' })} />
         </Tabs>
       </div>
 
       {/* General Settings */}
       {selectedTab === 'general' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Platform Configuration</h3>
-                <Settings className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.generalSettings', { defaultValue: 'Platform Configuration' })}</h3>
+                <Settings className="size-5 text-gray-400" />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <Input
-                  label="Site Name"
+                  label={t('admin.settings.siteName', { defaultValue: 'Site Name' })}
                   value={platformSettings.siteName || ''}
                   onChange={(e) => handlePlatformSettingChange('siteName', e.target.value)}
                 />
                 
                 <Input
-                  label="Contact Email"
+                  label={t('admin.settings.contactEmail', { defaultValue: 'Contact Email' })}
                   type="email"
                   value={platformSettings.contactEmail || ''}
                   onChange={(e) => handlePlatformSettingChange('contactEmail', e.target.value)}
                 />
                 
                 <Input
-                  label="Support Email"
+                  label={t('admin.settings.supportEmail', { defaultValue: 'Support Email' })}
                   type="email"
                   value={platformSettings.supportEmail || ''}
                   onChange={(e) => handlePlatformSettingChange('supportEmail', e.target.value)}
                 />
                 
                 <Select
-                  label="Default Language"
+                  label={t('admin.settings.defaultLanguage', { defaultValue: 'Default Language' })}
                   selectedKeys={platformSettings.defaultLanguage ? [platformSettings.defaultLanguage] : []}
                   onSelectionChange={(keys) => handlePlatformSettingChange('defaultLanguage', Array.from(keys)[0])}
                 >
-                  <SelectItem key="en">English</SelectItem>
-                  <SelectItem key="es">Spanish</SelectItem>
-                  <SelectItem key="fr">French</SelectItem>
-                  <SelectItem key="de">German</SelectItem>
+                  <SelectItem key="en">{t('common.languages.en', { defaultValue: 'English' })}</SelectItem>
+                  <SelectItem key="es">{t('common.languages.es', { defaultValue: 'Spanish' })}</SelectItem>
+                  <SelectItem key="fr">{t('common.languages.fr', { defaultValue: 'French' })}</SelectItem>
+                  <SelectItem key="de">{t('common.languages.de', { defaultValue: 'German' })}</SelectItem>
                 </Select>
                 
                 <Select
-                  label="Timezone"
+                  label={t('admin.settings.timezone', { defaultValue: 'Timezone' })}
                   selectedKeys={platformSettings.timezone ? [platformSettings.timezone] : []}
                   onSelectionChange={(keys) => handlePlatformSettingChange('timezone', Array.from(keys)[0])}
                 >
                   <SelectItem key="UTC">UTC</SelectItem>
-                  <SelectItem key="EST">Eastern Time</SelectItem>
-                  <SelectItem key="PST">Pacific Time</SelectItem>
+                  <SelectItem key="EST">{t('common.time.zones.est', { defaultValue: 'Eastern Time' })}</SelectItem>
+                  <SelectItem key="PST">{t('common.time.zones.pst', { defaultValue: 'Pacific Time' })}</SelectItem>
                   <SelectItem key="GMT">GMT</SelectItem>
                 </Select>
                 
                 <div className="md:col-span-2">
                   <Textarea
-                    label="Site Description"
+                    label={t('admin.settings.siteDescription', { defaultValue: 'Site Description' })}
                     value={platformSettings.siteDescription || ''}
                     onChange={(e) => handlePlatformSettingChange('siteDescription', e.target.value)}
                     minRows={3}
@@ -438,12 +476,12 @@ export const SystemSettings: React.FC = () => {
               <Divider className="my-6" />
               
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">System Status</h4>
+                <h4 className="font-semibold text-gray-900">{t('admin.settings.systemStatus', { defaultValue: 'System Status' })}</h4>
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-gray-900">Maintenance Mode</div>
-                    <div className="text-sm text-gray-600">Temporarily disable public access</div>
+                    <div className="font-medium text-gray-900">{t('admin.settings.maintenanceMode', { defaultValue: 'Maintenance Mode' })}</div>
+                    <div className="text-sm text-gray-600">{t('admin.settings.maintenanceModeDesc', { defaultValue: 'Temporarily disable public access' })}</div>
                   </div>
                   <Switch
                     isSelected={platformSettings.maintenanceMode || false}
@@ -458,8 +496,8 @@ export const SystemSettings: React.FC = () => {
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-gray-900">User Registration</div>
-                    <div className="text-sm text-gray-600">Allow new users to register</div>
+                    <div className="font-medium text-gray-900">{t('admin.settings.userRegistration', { defaultValue: 'User Registration' })}</div>
+                    <div className="text-sm text-gray-600">{t('admin.settings.userRegistrationDesc', { defaultValue: 'Allow new users to register' })}</div>
                   </div>
                   <Switch
                     isSelected={platformSettings.registrationEnabled || false}
@@ -475,25 +513,23 @@ export const SystemSettings: React.FC = () => {
             </CardBody>
           </Card>
 
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">File Upload Settings</h3>
-                <ImageIcon className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.fileUpload', { defaultValue: 'File Upload Settings' })}</h3>
+                <ImageIcon className="size-5 text-gray-400" />
               </div>
               
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Maximum File Size (MB)
-                  </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">{t('admin.settings.maxFileSize', { defaultValue: 'Maximum File Size (MB)' })}</label>
                   <Slider
                     value={[platformSettings.maxFileSize || 10]}
                     onChange={handleFileSizeChange}
                     maxValue={50}
                     minValue={1}
                     step={1}
-                    className="max-w-md w-full"
+                    className="w-full max-w-md"
                     showTooltip={true}
                     color="primary"
                     aria-label="Maximum file size in megabytes"
@@ -505,15 +541,11 @@ export const SystemSettings: React.FC = () => {
                       { value: 50, label: "50MB" }
                     ]}
                   />
-                  <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {platformSettings.maxFileSize || 10} MB
-                  </div>
+                  <div className="mt-2 text-center text-sm text-gray-600">{t('admin.settings.currentValue', { defaultValue: 'Current: {{value}} MB', value: platformSettings.maxFileSize || 10 })}</div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Allowed Image Formats
-                  </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">{t('admin.settings.allowedImageFormats', { defaultValue: 'Allowed Image Formats' })}</label>
                   <div className="flex flex-wrap gap-3">
                     {['jpg', 'jpeg', 'png', 'webp', 'svg'].map((format, index) => {
                       const allowedFormats = platformSettings.allowedImageFormats || []
@@ -529,10 +561,10 @@ export const SystemSettings: React.FC = () => {
                         <Chip
                           key={format}
                           variant="flat"
-                          className={`cursor-pointer transition-all duration-300 transform hover:scale-105 font-semibold px-4 py-2 ${
+                          className={`cursor-pointer px-4 py-2 font-semibold transition-all duration-300 hover:scale-105${
                             isSelected 
-                              ? `bg-gradient-to-r ${colors[index]} text-white shadow-lg hover:shadow-xl border-0` 
-                              : 'bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 hover:text-gray-900 border border-gray-300'
+                              ? `bg-gradient-to-r ${colors[index]} border-0 text-white shadow-lg hover:shadow-xl` 
+                              : 'border border-gray-300 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300 hover:text-gray-900'
                           }`}
                           onClick={() => {
                             const newFormats = allowedFormats.includes(format)
@@ -540,10 +572,10 @@ export const SystemSettings: React.FC = () => {
                               : [...allowedFormats, format]
                             handlePlatformSettingChange('allowedImageFormats', newFormats)
                           }}
-                          aria-label={`${isSelected ? 'Disable' : 'Enable'} ${format.toUpperCase()} format`}
+                          aria-label={isSelected ? t('common.actions.disable', { defaultValue: 'Disable' }) + ' ' + format.toUpperCase() + ' ' + t('admin.settings.format', { defaultValue: 'format' }) : t('common.actions.enable', { defaultValue: 'Enable' }) + ' ' + format.toUpperCase() + ' ' + t('admin.settings.format', { defaultValue: 'format' })}
                           size="lg"
                         >
-                          <span className="font-bold text-sm">{format.toUpperCase()}</span>
+                          <span className="text-sm font-bold">{format.toUpperCase()}</span>
                         </Chip>
                       )
                     })}
@@ -558,18 +590,16 @@ export const SystemSettings: React.FC = () => {
       {/* Booking Settings */}
       {selectedTab === 'booking' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Booking Configuration</h3>
-                <Calendar className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.bookingSettings', { defaultValue: 'Booking Configuration' })}</h3>
+                <Calendar className="size-5 text-gray-400" />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Commission Rate (%)
-                  </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">{t('admin.settings.commissionRate', { defaultValue: 'Commission Rate (%)' })}</label>
                   <Slider
                     value={[bookingSettings.commissionRate || 10]}
                     onChange={handleCommissionRateChange}
@@ -588,15 +618,11 @@ export const SystemSettings: React.FC = () => {
                       { value: 20, label: "20%" }
                     ]}
                   />
-                  <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {bookingSettings.commissionRate || 10}%
-                  </div>
+                  <div className="mt-2 text-center text-sm text-gray-600">{t('admin.settings.currentPercent', { defaultValue: 'Current: {{value}}%', value: bookingSettings.commissionRate || 10 })}</div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Payment Processing Fee (%)
-                  </label>
+                    <label className="mb-2 block text-sm font-medium text-gray-700">{t('admin.settings.paymentProcessingFee', { defaultValue: 'Payment Processing Fee (%)' })}</label>
                   <Slider
                     value={[bookingSettings.paymentProcessingFee || 2.9]}
                     onChange={handlePaymentFeeChange}
@@ -615,48 +641,41 @@ export const SystemSettings: React.FC = () => {
                       { value: 5, label: "5%" }
                     ]}
                   />
-                  <div className="text-sm text-gray-600 mt-2 text-center">
-                    Current: {bookingSettings.paymentProcessingFee || 2.9}%
-                  </div>
+                  <div className="mt-2 text-center text-sm text-gray-600">{t('admin.settings.currentPercent', { defaultValue: 'Current: {{value}}%', value: bookingSettings.paymentProcessingFee || 2.9 })}</div>
                 </div>
                 
                 <Input
-                  label="Maximum Advance Booking (days)"
+                  label={t('admin.settings.maxAdvanceBooking', { defaultValue: 'Maximum Advance Booking (days)' })}
                   type="number"
                   value={bookingSettings.maxAdvanceBooking?.toString() || '365'}
                   onChange={(e) => handleBookingSettingChange('maxAdvanceBooking', parseInt(e.target.value))}
                 />
                 
                 <Input
-                  label="Minimum Advance Booking (days)"
+                  label={t('admin.settings.minAdvanceBooking', { defaultValue: 'Minimum Advance Booking (days)' })}
                   type="number"
                   value={bookingSettings.minAdvanceBooking?.toString() || '1'}
                   onChange={(e) => handleBookingSettingChange('minAdvanceBooking', parseInt(e.target.value))}
                 />
                 
                 <Input
-                  label="Cancellation Grace Period (hours)"
+                  label={t('admin.settings.cancellationGrace', { defaultValue: 'Cancellation Grace Period (hours)' })}
                   type="number"
                   value={bookingSettings.cancellationGracePeriod?.toString() || '24'}
                   onChange={(e) => handleBookingSettingChange('cancellationGracePeriod', parseInt(e.target.value))}
                 />
                 
-                <Input
-                  label="Host Payout Delay (days)"
-                  type="number"
-                  value={bookingSettings.hostPayoutDelay?.toString() || '1'}
-                  onChange={(e) => handleBookingSettingChange('hostPayoutDelay', parseInt(e.target.value))}
-                />
+
                 
                 <Input
-                  label="Minimum Stay (nights)"
+                  label={t('admin.settings.minimumStay', { defaultValue: 'Minimum Stay (nights)' })}
                   type="number"
                   value={bookingSettings.minimumStay?.toString() || '1'}
                   onChange={(e) => handleBookingSettingChange('minimumStay', parseInt(e.target.value))}
                 />
                 
                 <Input
-                  label="Maximum Stay (nights)"
+                  label={t('admin.settings.maximumStay', { defaultValue: 'Maximum Stay (nights)' })}
                   type="number"
                   value={bookingSettings.maximumStay?.toString() || '30'}
                   onChange={(e) => handleBookingSettingChange('maximumStay', parseInt(e.target.value))}
@@ -666,12 +685,12 @@ export const SystemSettings: React.FC = () => {
               <Divider className="my-6" />
               
               <div className="space-y-4">
-                <h4 className="font-semibold text-gray-900">Booking Features</h4>
+                <h4 className="font-semibold text-gray-900">{t('admin.settings.bookingFeatures', { defaultValue: 'Booking Features' })}</h4>
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-gray-900">Auto-Approval</div>
-                    <div className="text-sm text-gray-600">Automatically approve eligible bookings</div>
+                    <div className="font-medium text-gray-900">{t('admin.settings.autoApproval', { defaultValue: 'Auto-Approval' })}</div>
+                    <div className="text-sm text-gray-600">{t('admin.settings.autoApprovalDesc', { defaultValue: 'Automatically approve eligible bookings' })}</div>
                   </div>
                   <Switch
                     isSelected={bookingSettings.autoApprovalEnabled || false}
@@ -686,8 +705,8 @@ export const SystemSettings: React.FC = () => {
                 
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium text-gray-900">Instant Booking</div>
-                    <div className="text-sm text-gray-600">Allow guests to book instantly without host approval</div>
+                    <div className="font-medium text-gray-900">{t('admin.settings.instantBooking', { defaultValue: 'Instant Booking' })}</div>
+                    <div className="text-sm text-gray-600">{t('admin.settings.instantBookingDesc', { defaultValue: 'Allow guests to book instantly without host approval' })}</div>
                   </div>
                   <Switch
                     isSelected={bookingSettings.instantBookingEnabled || false}
@@ -708,24 +727,24 @@ export const SystemSettings: React.FC = () => {
       {/* Payment Settings */}
       {selectedTab === 'payment' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Payment Gateway Configuration</h3>
-                <DollarSign className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.paymentSettings', { defaultValue: 'Payment Gateway Configuration' })}</h3>
+                <DollarSign className="size-5 text-gray-400" />
               </div>
               
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Stripe Configuration</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.stripe', { defaultValue: 'Stripe Configuration' })}</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Input
-                      label="Stripe Public Key"
+                      label={t('admin.settings.stripePublicKey', { defaultValue: 'Stripe Public Key' })}
                       value={paymentSettings.stripePublicKey || ''}
                       onChange={(e) => handlePaymentSettingChange('stripePublicKey', e.target.value)}
                     />
                     <Input
-                      label="Stripe Secret Key"
+                      label={t('admin.settings.stripeSecretKey', { defaultValue: 'Stripe Secret Key' })}
                       type={showPasswords ? 'text' : 'password'}
                       value={paymentSettings.stripeSecretKey || ''}
                       onChange={(e) => handlePaymentSettingChange('stripeSecretKey', e.target.value)}
@@ -737,7 +756,7 @@ export const SystemSettings: React.FC = () => {
                           onPress={() => setShowPasswords(!showPasswords)}
                           aria-label={showPasswords ? "Hide password" : "Show password"}
                         >
-                          {showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          {showPasswords ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                         </Button>
                       }
                     />
@@ -747,16 +766,16 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">PayPal Configuration</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.paypal', { defaultValue: 'PayPal Configuration' })}</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Input
-                      label="PayPal Client ID"
+                      label={t('admin.settings.paypalClientId', { defaultValue: 'PayPal Client ID' })}
                       type={showPasswords ? 'text' : 'password'}
                       value={paymentSettings.paypalClientId || ''}
                       onChange={(e) => handlePaymentSettingChange('paypalClientId', e.target.value)}
                     />
                     <Input
-                      label="PayPal Client Secret"
+                      label={t('admin.settings.paypalClientSecret', { defaultValue: 'PayPal Client Secret' })}
                       type={showPasswords ? 'text' : 'password'}
                       value={paymentSettings.paypalClientSecret || ''}
                       onChange={(e) => handlePaymentSettingChange('paypalClientSecret', e.target.value)}
@@ -767,39 +786,47 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Currency & Payout Settings</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.currencyAndPayout', { defaultValue: 'Currency & Payout Settings' })}</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Select
-                      label="Default Currency"
+                      label={t('admin.settings.defaultCurrency', { defaultValue: 'Default Currency' })}
                       selectedKeys={paymentSettings.defaultCurrency ? [paymentSettings.defaultCurrency] : []}
                       onSelectionChange={(keys) => handlePaymentSettingChange('defaultCurrency', Array.from(keys)[0])}
                     >
-                      <SelectItem key="USD">USD - US Dollar</SelectItem>
-                      <SelectItem key="EUR">EUR - Euro</SelectItem>
-                      <SelectItem key="GBP">GBP - British Pound</SelectItem>
-                      <SelectItem key="CAD">CAD - Canadian Dollar</SelectItem>
+                      <SelectItem key="USD">USD - {t('wallet.currency.usd', { defaultValue: 'US Dollar' })}</SelectItem>
+                      <SelectItem key="EUR">EUR - {t('wallet.currency.eur', { defaultValue: 'Euro' })}</SelectItem>
+                      <SelectItem key="GBP">GBP - {t('wallet.currency.gbp', { defaultValue: 'British Pound' })}</SelectItem>
+                      <SelectItem key="CAD">CAD - {t('wallet.currency.cad', { defaultValue: 'Canadian Dollar' })}</SelectItem>
                     </Select>
                     
                     <Select
-                      label="Payout Schedule"
+                      label={t('admin.settings.payoutSchedule', { defaultValue: 'Payout Schedule' })}
                       selectedKeys={paymentSettings.payoutSchedule ? [paymentSettings.payoutSchedule] : []}
                       onSelectionChange={(keys) => handlePaymentSettingChange('payoutSchedule', Array.from(keys)[0])}
                     >
-                      <SelectItem key="daily">Daily</SelectItem>
-                      <SelectItem key="weekly">Weekly</SelectItem>
-                      <SelectItem key="monthly">Monthly</SelectItem>
+                      <SelectItem key="daily">{t('common.time.daily', { defaultValue: 'Daily' })}</SelectItem>
+                      <SelectItem key="weekly">{t('common.time.weekly', { defaultValue: 'Weekly' })}</SelectItem>
+                      <SelectItem key="monthly">{t('common.time.monthly', { defaultValue: 'Monthly' })}</SelectItem>
                     </Select>
                     
                     <Input
-                      label="Minimum Payout Amount"
+                      label={t('admin.settings.minimumPayout', { defaultValue: 'Minimum Payout Amount' })}
                       type="number"
                       value={paymentSettings.minimumPayoutAmount?.toString() || '50'}
                       onChange={(e) => handlePaymentSettingChange('minimumPayoutAmount', parseFloat(e.target.value))}
-                      startContent={<DollarSign className="w-4 h-4" />}
+                      startContent={<DollarSign className="size-4" />}
                     />
                     
                     <Input
-                      label="Tax Rate (%)"
+                      label={t('admin.settings.paymentHoldDays', { defaultValue: 'Payment Hold Days' })}
+                      type="number"
+                      value={paymentSettings.paymentHoldDays?.toString() || '1'}
+                      onChange={(e) => handlePaymentSettingChange('paymentHoldDays', parseInt(e.target.value))}
+                      description={t('admin.settings.paymentHoldDesc', { defaultValue: 'Days to hold payment before making it eligible for payout' })}
+                    />
+                    
+                    <Input
+                      label={t('admin.settings.taxRate', { defaultValue: 'Tax Rate (%)' })}
                       type="number"
                       value={paymentSettings.taxRate?.toString() || '0'}
                       onChange={(e) => handlePaymentSettingChange('taxRate', parseFloat(e.target.value))}
@@ -811,12 +838,12 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-900">Payment Features</h4>
+                  <h4 className="font-semibold text-gray-900">{t('admin.settings.paymentFeatures', { defaultValue: 'Payment Features' })}</h4>
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-gray-900">Auto-Payout</div>
-                      <div className="text-sm text-gray-600">Automatically process host payouts</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.autoPayout', { defaultValue: 'Auto-Payout' })}</div>
+                       <div className="text-sm text-gray-600">{t('admin.settings.autoPayoutDesc', { defaultValue: 'Automatically process host payouts' })}</div>
                     </div>
                     <Switch
                       isSelected={paymentSettings.autoPayoutEnabled || false}
@@ -831,8 +858,8 @@ export const SystemSettings: React.FC = () => {
                   
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-gray-900">Charge Taxes</div>
-                      <div className="text-sm text-gray-600">Automatically calculate and charge taxes</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.chargeTaxes', { defaultValue: 'Charge Taxes' })}</div>
+                       <div className="text-sm text-gray-600">{t('admin.settings.chargeTaxesDesc', { defaultValue: 'Automatically calculate and charge taxes' })}</div>
                     </div>
                     <Switch
                       isSelected={paymentSettings.chargeTaxes || false}
@@ -854,21 +881,21 @@ export const SystemSettings: React.FC = () => {
       {/* Notifications Settings */}
       {selectedTab === 'notifications' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Notification Preferences</h3>
-                <Bell className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.notificationSettings', { defaultValue: 'Notification Preferences' })}</h3>
+                <Bell className="size-5 text-gray-400" />
               </div>
               
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Notification Channels</h4>
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.notificationChannels', { defaultValue: 'Notification Channels' })}</h4>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Email Notifications</div>
-                        <div className="text-sm text-gray-600">Send notifications via email</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.emailNotifications', { defaultValue: 'Email Notifications' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.emailNotificationsDesc', { defaultValue: 'Send notifications via email' })}</div>
                       </div>
                       <Switch
                         isSelected={notificationSettings.emailNotifications || false}
@@ -883,8 +910,8 @@ export const SystemSettings: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">SMS Notifications</div>
-                        <div className="text-sm text-gray-600">Send notifications via SMS</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.smsNotifications', { defaultValue: 'SMS Notifications' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.smsNotificationsDesc', { defaultValue: 'Send notifications via SMS' })}</div>
                       </div>
                       <Switch
                         isSelected={notificationSettings.smsNotifications || false}
@@ -899,8 +926,8 @@ export const SystemSettings: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Push Notifications</div>
-                        <div className="text-sm text-gray-600">Send browser push notifications</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.pushNotifications', { defaultValue: 'Push Notifications' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.pushNotificationsDesc', { defaultValue: 'Send browser push notifications' })}</div>
                       </div>
                       <Switch
                         isSelected={notificationSettings.pushNotifications || false}
@@ -918,8 +945,8 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Notification Types</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.notificationTypes', { defaultValue: 'Notification Types' })}</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {[
                       { key: 'bookingConfirmations', label: 'Booking Confirmations', desc: 'New booking notifications' },
                       { key: 'paymentNotifications', label: 'Payment Notifications', desc: 'Payment success/failure alerts' },
@@ -928,7 +955,7 @@ export const SystemSettings: React.FC = () => {
                       { key: 'marketingEmails', label: 'Marketing Emails', desc: 'Promotional and marketing content' },
                       { key: 'weeklyReports', label: 'Weekly Reports', desc: 'Weekly platform statistics' }
                     ].map((item) => (
-                      <div key={item.key} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div key={item.key} className="flex items-center justify-between rounded-lg bg-gray-50 p-3">
                         <div>
                           <div className="font-medium text-gray-900">{item.label}</div>
                           <div className="text-sm text-gray-600">{item.desc}</div>
@@ -952,58 +979,58 @@ export const SystemSettings: React.FC = () => {
           </Card>
 
           {/* Email Templates */}
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Email Templates</h3>
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('notifications.templates.title', { defaultValue: 'Email Templates' })}</h3>
                 <div className="flex gap-2">
                   <Button
                     size="sm"
                     color="primary"
                     onPress={onTemplateOpen}
-                    startContent={<Plus className="w-4 h-4" />}
+                    startContent={<Plus className="size-4" />}
                   >
-                    New Template
+                    {t('notifications.templates.new', { defaultValue: 'New Template' })}
                   </Button>
                 </div>
               </div>
               
               <div className="space-y-3">
                 {mockNotificationTemplates.map((template) => (
-                  <div key={template.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div key={template.id} className="flex items-center justify-between rounded-lg border border-gray-200 p-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3">
                         <h4 className="font-medium text-gray-900">{template.name}</h4>
-                        <Chip size="sm" variant="flat" color={template.enabled ? 'success' : 'default'}>
-                          {template.enabled ? 'Active' : 'Inactive'}
+                         <Chip size="sm" variant="flat" color={template.enabled ? 'success' : 'default'}>
+                          {template.enabled ? t('common.status.active') : t('common.status.inactive', { defaultValue: 'Inactive' })}
                         </Chip>
                         <Chip size="sm" variant="flat">
                           {template.type.toUpperCase()}
                         </Chip>
                       </div>
-                      <p className="text-sm text-gray-600 mt-1">{template.subject}</p>
-                      <p className="text-xs text-gray-500 mt-1">Last modified: {template.lastModified}</p>
+                      <p className="mt-1 text-sm text-gray-600">{template.subject}</p>
+                      <p className="mt-1 text-xs text-gray-500">Last modified: {template.lastModified}</p>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
+                       <Button 
                         isIconOnly 
                         size="sm" 
                         variant="flat" 
                         color="primary"
-                        aria-label="Edit template"
+                         aria-label={t('common.actions.edit', { defaultValue: 'Edit template' })}
                         onPress={() => handleEditTemplate(template)}
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="size-4" />
                       </Button>
                       <Button 
                         isIconOnly 
                         size="sm" 
                         variant="flat" 
                         color="danger" 
-                        aria-label="Delete template"
+                         aria-label={t('common.actions.delete', { defaultValue: 'Delete template' })}
                         onPress={() => handleDeleteTemplate(template.id)}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -1017,40 +1044,40 @@ export const SystemSettings: React.FC = () => {
       {/* Security Settings */}
       {selectedTab === 'security' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Security Configuration</h3>
-                <Shield className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.securitySettings', { defaultValue: 'Security Configuration' })}</h3>
+                <Shield className="size-5 text-gray-400" />
               </div>
               
               <div className="space-y-6">
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Authentication Settings</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.authentication', { defaultValue: 'Authentication Settings' })}</h4>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <Input
-                      label="Minimum Password Length"
+                      label={t('admin.settings.passwordMin', { defaultValue: 'Minimum Password Length' })}
                       type="number"
                       value={securitySettings.passwordMinLength?.toString() || '8'}
                       onChange={(e) => handleSecuritySettingChange('passwordMinLength', parseInt(e.target.value))}
                     />
                     
                     <Input
-                      label="Session Timeout (minutes)"
+                      label={t('admin.settings.sessionTimeout', { defaultValue: 'Session Timeout (minutes)' })}
                       type="number"
                       value={securitySettings.sessionTimeout?.toString() || '60'}
                       onChange={(e) => handleSecuritySettingChange('sessionTimeout', parseInt(e.target.value))}
                     />
                     
                     <Input
-                      label="Max Login Attempts"
+                      label={t('admin.settings.maxLoginAttempts', { defaultValue: 'Max Login Attempts' })}
                       type="number"
                       value={securitySettings.maxLoginAttempts?.toString() || '5'}
                       onChange={(e) => handleSecuritySettingChange('maxLoginAttempts', parseInt(e.target.value))}
                     />
                     
                     <Input
-                      label="API Rate Limit (per hour)"
+                      label={t('admin.settings.apiRateLimit', { defaultValue: 'API Rate Limit (per hour)' })}
                       type="number"
                       value={securitySettings.apiRateLimit?.toString() || '1000'}
                       onChange={(e) => handleSecuritySettingChange('apiRateLimit', parseInt(e.target.value))}
@@ -1061,12 +1088,12 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Security Features</h4>
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.securityFeatures', { defaultValue: 'Security Features' })}</h4>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Two-Factor Authentication Required</div>
-                        <div className="text-sm text-gray-600">Require 2FA for all admin accounts</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.twoFactorRequired', { defaultValue: 'Two-Factor Authentication Required' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.twoFactorRequiredDesc', { defaultValue: 'Require 2FA for all admin accounts' })}</div>
                       </div>
                       <Switch
                         isSelected={securitySettings.twoFactorRequired || false}
@@ -1081,8 +1108,8 @@ export const SystemSettings: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Require Special Characters</div>
-                        <div className="text-sm text-gray-600">Passwords must contain special characters</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.requireSpecialChars', { defaultValue: 'Require Special Characters' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.requireSpecialCharsDesc', { defaultValue: 'Passwords must contain special characters' })}</div>
                       </div>
                       <Switch
                         isSelected={securitySettings.passwordRequireSpecialChars || false}
@@ -1097,8 +1124,8 @@ export const SystemSettings: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Enable Audit Log</div>
-                        <div className="text-sm text-gray-600">Log all admin actions and changes</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.enableAuditLog', { defaultValue: 'Enable Audit Log' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.enableAuditLogDesc', { defaultValue: 'Log all admin actions and changes' })}</div>
                       </div>
                       <Switch
                         isSelected={securitySettings.enableAuditLog || false}
@@ -1113,8 +1140,8 @@ export const SystemSettings: React.FC = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900">Encrypt User Data</div>
-                        <div className="text-sm text-gray-600">Encrypt sensitive user information</div>
+                        <div className="font-medium text-gray-900">{t('admin.settings.encryptUserData', { defaultValue: 'Encrypt User Data' })}</div>
+                        <div className="text-sm text-gray-600">{t('admin.settings.encryptUserDataDesc', { defaultValue: 'Encrypt sensitive user information' })}</div>
                       </div>
                       <Switch
                         isSelected={securitySettings.encryptUserData || false}
@@ -1132,23 +1159,23 @@ export const SystemSettings: React.FC = () => {
                 <Divider />
                 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-4">Access Control</h4>
+                  <h4 className="mb-4 font-semibold text-gray-900">{t('admin.settings.accessControl', { defaultValue: 'Access Control' })}</h4>
                   <div className="space-y-4">
                     <Textarea
-                      label="IP Whitelist"
-                      placeholder="Enter IP addresses (one per line)"
+                      label={t('admin.settings.ipWhitelist', { defaultValue: 'IP Whitelist' })}
+                      placeholder={t('admin.settings.ipWhitelistPlaceholder', { defaultValue: 'Enter IP addresses (one per line)' })}
                       value={securitySettings.ipWhitelist || ''}
                       onChange={(e) => handleSecuritySettingChange('ipWhitelist', e.target.value)}
                       minRows={3}
-                      description="Restrict admin access to specific IP addresses"
+                      description={t('admin.settings.ipWhitelistDesc', { defaultValue: 'Restrict admin access to specific IP addresses' })}
                     />
                     
                     <Input
-                      label="Data Retention Period (days)"
+                      label={t('admin.settings.dataRetention', { defaultValue: 'Data Retention Period (days)' })}
                       type="number"
                       value={securitySettings.dataRetentionPeriod?.toString() || '30'}
                       onChange={(e) => handleSecuritySettingChange('dataRetentionPeriod', parseInt(e.target.value))}
-                      description="How long to keep user data after account deletion"
+                      description={t('admin.settings.dataRetentionDesc', { defaultValue: 'How long to keep user data after account deletion' })}
                     />
                   </div>
                 </div>
@@ -1161,45 +1188,45 @@ export const SystemSettings: React.FC = () => {
       {/* Content Settings */}
       {selectedTab === 'content' && (
         <div className="space-y-6">
-          <Card className="shadow-sm border border-gray-200">
+          <Card className="border border-gray-200 shadow-sm">
             <CardBody className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-semibold text-gray-900">Content Management</h3>
-                <FileText className="w-5 h-5 text-gray-400" />
+              <div className="mb-6 flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{t('admin.settings.contentSettings', { defaultValue: 'Content Management' })}</h3>
+                <FileText className="size-5 text-gray-400" />
               </div>
               
               <div className="space-y-6">
                 <Textarea
-                  label="Terms of Service"
-                  placeholder="Enter terms of service content..."
+                  label={t('admin.settings.termsOfService', { defaultValue: 'Terms of Service' })}
+                  placeholder={t('admin.settings.termsPlaceholder', { defaultValue: 'Enter terms of service content...' })}
                   minRows={6}
                   description="Legal terms and conditions for platform use"
                 />
                 
                 <Textarea
-                  label="Privacy Policy"
-                  placeholder="Enter privacy policy content..."
+                  label={t('admin.settings.privacyPolicy', { defaultValue: 'Privacy Policy' })}
+                  placeholder={t('admin.settings.privacyPlaceholder', { defaultValue: 'Enter privacy policy content...' })}
                   minRows={6}
                   description="Privacy policy and data handling practices"
                 />
                 
                 <Textarea
-                  label="Host Guidelines"
-                  placeholder="Enter host guidelines..."
+                  label={t('admin.settings.hostGuidelines', { defaultValue: 'Host Guidelines' })}
+                  placeholder={t('admin.settings.hostGuidelinesPlaceholder', { defaultValue: 'Enter host guidelines...' })}
                   minRows={4}
                   description="Guidelines and rules for property hosts"
                 />
                 
                 <Textarea
-                  label="Guest Guidelines"
-                  placeholder="Enter guest guidelines..."
+                  label={t('admin.settings.guestGuidelines', { defaultValue: 'Guest Guidelines' })}
+                  placeholder={t('admin.settings.guestGuidelinesPlaceholder', { defaultValue: 'Enter guest guidelines...' })}
                   minRows={4}
                   description="Guidelines and rules for guests"
                 />
                 
                 <Textarea
-                  label="Cancellation Policy"
-                  placeholder="Enter cancellation policy..."
+                  label={t('admin.settings.cancellationPolicy', { defaultValue: 'Cancellation Policy' })}
+                  placeholder={t('admin.settings.cancellationPolicyPlaceholder', { defaultValue: 'Enter cancellation policy...' })}
                   minRows={4}
                   description="Default cancellation policy text"
                 />
@@ -1207,43 +1234,235 @@ export const SystemSettings: React.FC = () => {
             </CardBody>
           </Card>
         </div>
-      )}
+              )}
+
+        {/* Cache Management Tab */}
+        {selectedTab === 'cache' && (
+          <div className="space-y-6">
+            <Card className="border border-gray-200 shadow-sm">
+              <CardBody className="p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <div>
+                    <h3 className="mb-2 text-lg font-semibold text-gray-900">{t('admin.settings.cacheManagement', { defaultValue: 'Cache Management' })}</h3>
+                    <p className="text-gray-600">{t('admin.settings.cacheManagementDesc', { defaultValue: 'Manage application cache to resolve loading issues and improve performance' })}</p>
+                  </div>
+                  <Database className="size-8 text-blue-500" />
+                </div>
+
+                {/* Cache Status */}
+                <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <Card className="border border-blue-200 bg-blue-50">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-blue-700">{t('admin.settings.browserCache', { defaultValue: 'Browser Cache' })}</p>
+                          <p className="text-xs text-blue-600">{t('admin.settings.browserCacheDesc', { defaultValue: 'HTTP cache and service workers' })}</p>
+                        </div>
+                        <Activity className="size-5 text-blue-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <Card className="border border-green-200 bg-green-50">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-green-700">{t('admin.settings.appCache', { defaultValue: 'App Cache' })}</p>
+                          <p className="text-xs text-green-600">{t('admin.settings.appCacheDesc', { defaultValue: 'Zustand stores and localStorage' })}</p>
+                        </div>
+                        <Database className="size-5 text-green-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  <Card className="border border-purple-200 bg-purple-50">
+                    <CardBody className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-purple-700">{t('admin.settings.supabaseCache', { defaultValue: 'Supabase Cache' })}</p>
+                          <p className="text-xs text-purple-600">{t('admin.settings.supabaseCacheDesc', { defaultValue: 'API response cache' })}</p>
+                        </div>
+                        <Globe className="size-5 text-purple-500" />
+                      </div>
+                    </CardBody>
+                  </Card>
+                </div>
+
+                {/* Cache Actions */}
+                <div className="space-y-4">
+                  <Divider />
+                  
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <Button
+                      color="warning"
+                      variant="flat"
+                      size="lg"
+                      startContent={<RefreshCw className="size-4" />}
+                      onPress={handleClearCache}
+                      className="h-16"
+                    >
+                       <div className="text-center">
+                        <div className="font-semibold">{t('admin.settings.clearAppCache', { defaultValue: 'Clear App Cache' })}</div>
+                        <div className="text-xs opacity-75">{t('admin.settings.clearAppCacheDesc', { defaultValue: 'Clear Zustand stores & localStorage' })}</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="danger"
+                      variant="flat"
+                      size="lg"
+                      startContent={<Trash2 className="size-4" />}
+                      onPress={handleClearAllCache}
+                      className="h-16"
+                    >
+                       <div className="text-center">
+                        <div className="font-semibold">{t('admin.settings.clearAllCache', { defaultValue: 'Clear All Cache' })}</div>
+                        <div className="text-xs opacity-75">{t('admin.settings.clearAllCacheDesc', { defaultValue: 'Clear everything & restart' })}</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="primary"
+                      variant="flat"
+                      size="lg"
+                      startContent={<AlertCircle className="size-4" />}
+                      onPress={handleCheckCacheHealth}
+                      className="h-16"
+                    >
+                       <div className="text-center">
+                        <div className="font-semibold">{t('admin.settings.detectIssues', { defaultValue: 'Detect Issues' })}</div>
+                        <div className="text-xs opacity-75">{t('admin.settings.detectIssuesDesc', { defaultValue: 'Check for cache problems' })}</div>
+                      </div>
+                    </Button>
+
+                    <Button
+                      color="secondary"
+                      variant="flat"
+                      size="lg"
+                      startContent={<RotateCcw className="size-4" />}
+                      onPress={handleForceRefresh}
+                      className="h-16"
+                    >
+                       <div className="text-center">
+                        <div className="font-semibold">{t('admin.settings.forceRefresh', { defaultValue: 'Force Refresh' })}</div>
+                        <div className="text-xs opacity-75">{t('admin.settings.forceRefreshDesc', { defaultValue: 'Reload with cache busting' })}</div>
+                      </div>
+                    </Button>
+                  </div>
+
+                  <Divider />
+
+                  {/* Cache Settings */}
+                  <div className="space-y-4">
+                    <h4 className="text-md font-semibold text-gray-900">{t('admin.settings.cacheSettings', { defaultValue: 'Cache Settings' })}</h4>
+                    
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">{t('admin.settings.cacheDuration', { defaultValue: 'Cache Duration (minutes)' })}</label>
+                        <Slider
+                          size="sm"
+                          step={5}
+                          minValue={0}
+                          maxValue={60}
+                          defaultValue={[5]}
+                          className="max-w-md"
+                          color="primary"
+                        />
+                        <p className="text-xs text-gray-500">{t('admin.settings.cacheDurationDesc', { defaultValue: 'How long to cache API responses' })}</p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-700">{t('admin.settings.autoClearInterval', { defaultValue: 'Auto-clear interval (hours)' })}</label>
+                        <Slider
+                          size="sm"
+                          step={1}
+                          minValue={1}
+                          maxValue={24}
+                          defaultValue={[12]}
+                          className="max-w-md"
+                          color="secondary"
+                        />
+                        <p className="text-xs text-gray-500">{t('admin.settings.autoClearIntervalDesc', { defaultValue: 'Automatically clear stale cache' })}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <Switch 
+                        size="sm" 
+                        color="success"
+                        defaultSelected
+                        classNames={{
+                          wrapper: "group-data-[selected=true]:bg-success-500",
+                          thumb: "group-data-[selected=true]:bg-white"
+                        }}
+                      />
+                      <label className="text-sm text-gray-700">{t('admin.settings.enableCacheBusting', { defaultValue: 'Enable cache busting in development' })}</label>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <Switch 
+                        size="sm" 
+                        color="warning"
+                        classNames={{
+                          wrapper: "group-data-[selected=true]:bg-warning-500",
+                          thumb: "group-data-[selected=true]:bg-white"
+                        }}
+                      />
+                      <label className="text-sm text-gray-700">{t('admin.settings.showCacheDebug', { defaultValue: 'Show cache debug information' })}</label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Cache Information */}
+                <div className="mt-6 rounded-lg bg-gray-50 p-4">
+                  <h5 className="mb-2 text-sm font-semibold text-gray-700">{t('admin.settings.whenToClear', { defaultValue: '💡 When to Clear Cache' })}</h5>
+                  <ul className="space-y-1 text-xs text-gray-600">
+                    <li>• {t('admin.settings.clearTip1', { defaultValue: 'GET requests not returning updated data' })}</li>
+                    <li>• {t('admin.settings.clearTip2', { defaultValue: 'Properties or settings showing old values' })}</li>
+                    <li>• {t('admin.settings.clearTip3', { defaultValue: 'App behaving unexpectedly after updates' })}</li>
+                    <li>• {t('admin.settings.clearTip4', { defaultValue: "Before reporting bugs to ensure it's not cache-related" })}</li>
+                  </ul>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
+        )}
 
       {/* Action Buttons */}
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Button
           variant="flat"
           onPress={() => handleResetSettings()}
-          startContent={<RotateCcw className="w-4 h-4" />}
-          className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-0"
+          startContent={<RotateCcw className="size-4" />}
+          className="border-0 bg-gradient-to-r from-red-500 to-red-600 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-red-600 hover:to-red-700 hover:shadow-xl"
           size="lg"
         >
-          Reset to Default
+          {t('common.actions.reset', { defaultValue: 'Reset to Default' })}
         </Button>
         
         <div className="flex gap-4">
           <Button
             variant="flat"
             onPress={() => console.log('Test configuration')}
-            className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold px-6 py-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border-0"
+            className="border-0 bg-gradient-to-r from-yellow-500 to-orange-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:from-yellow-600 hover:to-orange-600 hover:shadow-xl"
             size="lg"
           >
-            Test Configuration
+            {t('admin.settings.testConfiguration', { defaultValue: 'Test Configuration' })}
           </Button>
           <Button
             color="primary"
             onPress={() => handleSaveSettings()}
             isDisabled={!hasUnsavedChanges || isLoading}
             isLoading={isLoading}
-            startContent={!isLoading ? <Save className="w-4 h-4" /> : undefined}
-            className={`font-semibold px-6 py-3 shadow-lg hover:shadow-xl transform transition-all duration-200 ${
+            startContent={!isLoading ? <Save className="size-4" /> : undefined}
+            className={`px-6 py-3 font-semibold shadow-lg transition-all duration-200 hover:shadow-xl${
               hasUnsavedChanges && !isLoading
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white hover:scale-105' 
-                : 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:scale-105 hover:from-blue-600 hover:to-blue-700' 
+                : 'cursor-not-allowed bg-gradient-to-r from-gray-300 to-gray-400 text-gray-500'
             }`}
             size="lg"
           >
-            Save Changes
+            {t('common.actions.save', { defaultValue: 'Save Changes' })}
           </Button>
         </div>
       </div>
@@ -1252,29 +1471,29 @@ export const SystemSettings: React.FC = () => {
       <Modal isOpen={isOpen} onClose={onClose} size="3xl">
         <ModalContent>
           <ModalHeader>
-            Settings Change Log
+            {t('admin.settings.changeLog', { defaultValue: 'Settings Change Log' })}
           </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
               {mockSettingChanges.map((change) => (
-                <div key={change.id} className="p-4 border border-gray-200 rounded-lg">
+                <div key={change.id} className="rounded-lg border border-gray-200 p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="mb-2 flex items-center gap-2">
                         <h4 className="font-semibold text-gray-900">{change.setting}</h4>
                         <Chip size="sm" variant="flat" color="primary">
-                          {change.category}
+                          {t(`admin.settings.categories.${change.category.toLowerCase()}`, { defaultValue: change.category })}
                         </Chip>
                       </div>
-                      <div className="text-sm text-gray-600 space-y-1">
+                      <div className="space-y-1 text-sm text-gray-600">
                         <div>
-                          <span className="font-medium">From:</span> {change.oldValue}
+                           <span className="font-medium">{t('common.labels.from', { defaultValue: 'From:' })}</span> {change.oldValue}
                         </div>
                         <div>
-                          <span className="font-medium">To:</span> {change.newValue}
+                           <span className="font-medium">{t('common.labels.to', { defaultValue: 'To:' })}</span> {change.newValue}
                         </div>
                         <div>
-                          <span className="font-medium">Changed by:</span> {change.changedBy}
+                           <span className="font-medium">{t('admin.settings.changedBy', { defaultValue: 'Changed by:' })}</span> {change.changedBy}
                         </div>
                       </div>
                     </div>
@@ -1288,10 +1507,10 @@ export const SystemSettings: React.FC = () => {
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={onClose}>
-              Close
+              {t('common.buttons.close')}
             </Button>
-            <Button color="primary" startContent={<Download className="w-4 h-4" />}>
-              Export Log
+            <Button color="primary" startContent={<Download className="size-4" />}>
+              {t('admin.settings.exportLog', { defaultValue: 'Export Log' })}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -1301,55 +1520,55 @@ export const SystemSettings: React.FC = () => {
       <Modal isOpen={isTemplateOpen} onClose={onTemplateClose} size="2xl">
         <ModalContent>
           <ModalHeader>
-            Create Email Template
+            {t('notifications.templates.create', { defaultValue: 'Create Email Template' })}
           </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
-              <Input
-                label="Template Name"
-                placeholder="Enter template name"
+                <Input
+                 label={t('notifications.templates.name', { defaultValue: 'Template Name' })}
+                 placeholder={t('notifications.templates.namePlaceholder', { defaultValue: 'Enter template name' })}
               />
               
-              <Input
-                label="Subject Line"
-                placeholder="Enter email subject"
+               <Input
+                 label={t('notifications.templates.subject', { defaultValue: 'Subject Line' })}
+                 placeholder={t('notifications.templates.subjectPlaceholder', { defaultValue: 'Enter email subject' })}
               />
               
-              <Select
-                label="Template Type"
-                placeholder="Select template type"
+               <Select
+                 label={t('notifications.templates.type', { defaultValue: 'Template Type' })}
+                 placeholder={t('notifications.templates.typePlaceholder', { defaultValue: 'Select template type' })}
               >
-                <SelectItem key="email">Email</SelectItem>
-                <SelectItem key="sms">SMS</SelectItem>
-                <SelectItem key="push">Push Notification</SelectItem>
+                 <SelectItem key="email">{t('notifications.templates.types.email', { defaultValue: 'Email' })}</SelectItem>
+                 <SelectItem key="sms">{t('notifications.templates.types.sms', { defaultValue: 'SMS' })}</SelectItem>
+                 <SelectItem key="push">{t('notifications.templates.types.push', { defaultValue: 'Push Notification' })}</SelectItem>
               </Select>
               
-              <Textarea
-                label="Template Content"
-                placeholder="Enter template content with variables like {{name}}, {{property}}, etc."
+               <Textarea
+                 label={t('notifications.templates.content', { defaultValue: 'Template Content' })}
+                 placeholder={t('notifications.templates.contentPlaceholder', { defaultValue: 'Enter template content with variables like {{name}}, {{property}}, etc.' })}
                 minRows={6}
               />
               
               <div className="flex items-center gap-2">
-                <Switch 
+                 <Switch 
                   size="sm" 
                   color="success"
                   classNames={{
                     wrapper: "group-data-[selected=true]:bg-success-500",
                     thumb: "group-data-[selected=true]:bg-white"
                   }}
-                  aria-label="Enable template immediately"
+                   aria-label={t('notifications.templates.enableNow', { defaultValue: 'Enable template immediately' })}
                 />
-                <label className="text-sm text-gray-700">Enable template immediately</label>
+                 <label className="text-sm text-gray-700">{t('notifications.templates.enableNow', { defaultValue: 'Enable template immediately' })}</label>
               </div>
             </div>
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={onTemplateClose}>
-              Cancel
+              {t('common.actions.cancel', { defaultValue: 'Cancel' })}
             </Button>
             <Button color="primary" onPress={onTemplateClose}>
-              Create Template
+              {t('notifications.templates.create', { defaultValue: 'Create Template' })}
             </Button>
           </ModalFooter>
         </ModalContent>
@@ -1359,48 +1578,48 @@ export const SystemSettings: React.FC = () => {
       <Modal isOpen={isEditTemplateOpen} onClose={onEditTemplateClose} size="2xl">
         <ModalContent>
           <ModalHeader>
-            Edit Template: {editingTemplate?.name}
+            {t('notifications.templates.edit', { defaultValue: 'Edit Template' })}: {editingTemplate?.name}
           </ModalHeader>
           <ModalBody>
             <div className="space-y-4">
-              <Input
-                label="Template Name"
+               <Input
+                 label={t('notifications.templates.name', { defaultValue: 'Template Name' })}
                 value={templateForm.name}
                 onChange={(e) => setTemplateForm(prev => ({ ...prev, name: e.target.value }))}
                 placeholder="Enter template name"
               />
               
-              <Input
-                label="Subject Line"
+               <Input
+                 label={t('notifications.templates.subject', { defaultValue: 'Subject Line' })}
                 value={templateForm.subject}
                 onChange={(e) => setTemplateForm(prev => ({ ...prev, subject: e.target.value }))}
                 placeholder="Enter email subject"
               />
               
-              <Select
-                label="Template Type"
+               <Select
+                 label={t('notifications.templates.type', { defaultValue: 'Template Type' })}
                 selectedKeys={[templateForm.type]}
                 onSelectionChange={(keys) => setTemplateForm(prev => ({ ...prev, type: Array.from(keys)[0] as 'email' | 'sms' | 'push' }))}
               >
-                <SelectItem key="email">Email</SelectItem>
-                <SelectItem key="sms">SMS</SelectItem>
-                <SelectItem key="push">Push Notification</SelectItem>
+                 <SelectItem key="email">{t('notifications.templates.types.email', { defaultValue: 'Email' })}</SelectItem>
+                 <SelectItem key="sms">{t('notifications.templates.types.sms', { defaultValue: 'SMS' })}</SelectItem>
+                 <SelectItem key="push">{t('notifications.templates.types.push', { defaultValue: 'Push Notification' })}</SelectItem>
               </Select>
               
-              <Textarea
-                label="Template Content"
-                placeholder="Enter template content with variables like {{name}}, {{property}}, etc."
+               <Textarea
+                 label={t('notifications.templates.content', { defaultValue: 'Template Content' })}
+                 placeholder={t('notifications.templates.contentPlaceholder', { defaultValue: 'Enter template content with variables like {{name}}, {{property}}, etc.' })}
                 minRows={6}
-                description="Use {{variable}} syntax for dynamic content"
+                 description={t('notifications.templates.contentDesc', { defaultValue: 'Use {{variable}} syntax for dynamic content' })}
               />
             </div>
           </ModalBody>
           <ModalFooter>
             <Button variant="flat" onPress={onEditTemplateClose}>
-              Cancel
+              {t('common.actions.cancel', { defaultValue: 'Cancel' })}
             </Button>
             <Button color="primary" onPress={handleSaveTemplate}>
-              Save Changes
+              {t('common.actions.save', { defaultValue: 'Save Changes' })}
             </Button>
           </ModalFooter>
         </ModalContent>

@@ -28,7 +28,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-50 flex overflow-hidden">
+    <div className="fixed inset-0 flex overflow-hidden bg-gray-50">
       {/* Sidebar */}
       <AdminSidebar 
         currentSection={currentSection}
@@ -39,7 +39,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       />
       
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
         <AdminHeader 
           onToggleSidebar={toggleSidebar}
@@ -60,7 +60,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Mobile Sidebar Overlay */}
       {isSidebarOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

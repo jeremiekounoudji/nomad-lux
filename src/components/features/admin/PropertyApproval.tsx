@@ -1,183 +1,66 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
   Card, 
   CardBody, 
   Button, 
   Chip, 
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
   Tabs,
   Tab,
-  Textarea,
   Checkbox,
   Input,
-  Select,
-  SelectItem,
-  Avatar,
-  Progress,
-  Image,
-  Divider
+  Avatar
 } from '@heroui/react'
-import { 
-  CheckCircle, 
-  XCircle, 
-  Eye, 
-  MapPin, 
-  Calendar,
-  Image as ImageIcon,
-  Video,
-  Star,
-  DollarSign,
-  Search,
-  Filter,
-  ChevronLeft,
-  ChevronRight,
-  Download,
-  MoreHorizontal,
-  ZoomIn,
-  Play,
-  Clock,
-  Bath,
-  Bed,
-  Car,
-  Wifi,
-  Users,
-  Flag,
-  MessageSquare,
-  Home,
-  Camera,
-  Ban
-} from 'lucide-react'
+import { CheckCircle, XCircle, Eye, MapPin, Image as ImageIcon, Video, Star, Search, Home, Ban, Loader2 } from 'lucide-react'
 import { 
   PropertyApprovalModal, 
   PropertyRejectionModal, 
   PropertySuspensionModal, 
-  Property 
+  PropertyDetailsModal,
+  ImageLightboxModal,
+  BulkActionModal,
+  BulkSuspendModal
 } from './modals'
+import { useAdminProperty } from '../../../hooks/useAdminProperty'
+import { DatabaseProperty } from '../../../interfaces/DatabaseProperty'
+import { getStatusColor, getStatusDisplayName } from '../../../utils/propertyUtils'
+import toast from 'react-hot-toast'
+import { useTranslation } from '../../../lib/stores/translationStore'
+import { formatPrice } from '../../../utils/currencyUtils'
 
-interface PropertyApprovalProps {
-  onPageChange: (page: string) => void
-}
-
-const mockProperties: Property[] = [
-  {
-    id: '1',
-    title: 'Luxury Beach House with Ocean View',
-    description: 'Beautiful beachfront property with stunning ocean views, private beach access, and modern amenities. Perfect for families and groups looking for a premium coastal experience.',
-    location: 'Malibu, California',
-    coordinates: { lat: 34.0259, lng: -118.7798 },
-    price: 450,
-    images: [
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400',
-      'https://images.unsplash.com/photo-1567496898669-ee935f5f647a?w=400',
-      'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400'
-    ],
-    video: '/property1-video.mp4',
-    host: {
-      name: 'Sarah Johnson',
-      email: 'sarah.johnson@email.com',
-      rating: 4.8,
-      joinDate: '2023-06-15'
-    },
-    submittedDate: '2024-01-15',
-    status: 'pending',
-    amenities: ['WiFi', 'Pool', 'Beach Access', 'Kitchen', 'Parking', 'Air Conditioning'],
-    propertyType: 'House',
-    bedrooms: 4,
-    bathrooms: 3,
-    maxGuests: 8
-  },
-  {
-    id: '2',
-    title: 'Modern Downtown Apartment',
-    description: 'Stylish apartment in the heart of downtown with city views and close to all attractions.',
-    location: 'New York, NY',
-    coordinates: { lat: 40.7128, lng: -74.0060 },
-    price: 180,
-    images: [
-      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
-      'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=400'
-    ],
-    host: {
-      name: 'Michael Chen',
-      email: 'michael.chen@email.com',
-      rating: 4.5,
-      joinDate: '2023-12-01'
-    },
-    submittedDate: '2024-01-16',
-    status: 'approved',
-    amenities: ['WiFi', 'Gym', 'Concierge', 'Kitchen'],
-    propertyType: 'Apartment',
-    bedrooms: 2,
-    bathrooms: 1,
-    maxGuests: 4
-  },
-  {
-    id: '3',
-    title: 'Cozy Mountain Cabin',
-    description: 'Rustic cabin nestled in the mountains with hiking trails and scenic views.',
-    location: 'Aspen, Colorado',
-    coordinates: { lat: 39.1911, lng: -106.8175 },
-    price: 220,
-    images: [
-      'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
-      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
-      'https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400'
-    ],
-    host: {
-      name: 'Emma Rodriguez',
-      email: 'emma.rodriguez@email.com',
-      rating: 4.9,
-      joinDate: '2023-03-20'
-    },
-    submittedDate: '2024-01-17',
-    status: 'rejected',
-    amenities: ['WiFi', 'Fireplace', 'Kitchen', 'Parking', 'Hiking Trails'],
-    propertyType: 'Cabin',
-    bedrooms: 3,
-    bathrooms: 2,
-    maxGuests: 6
-  },
-  {
-    id: '4',
-    title: 'City Center Loft',
-    description: 'Modern loft with industrial design in the heart of the city.',
-    location: 'San Francisco, CA',
-    coordinates: { lat: 37.7749, lng: -122.4194 },
-    price: 320,
-    images: [
-      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400',
-      'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=400'
-    ],
-    host: {
-      name: 'David Wilson',
-      email: 'david.wilson@email.com',
-      rating: 4.7,
-      joinDate: '2023-08-10'
-    },
-    submittedDate: '2024-01-18',
-    status: 'pending',
-    amenities: ['WiFi', 'Kitchen', 'Workspace', 'Parking'],
-    propertyType: 'Loft',
-    bedrooms: 1,
-    bathrooms: 1,
-    maxGuests: 2
-  }
-]
+// props are managed via internal navigation hooks; no external props currently used
 
 export const PropertyApproval: React.FC = () => {
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
-  const [selectedTab, setSelectedTab] = useState('pending')
+  const { t } = useTranslation(['admin', 'property', 'common'])
+  // Hook for admin property management
+  const {
+    filteredProperties,
+    isLoading,
+    error,
+    statusFilter,
+    statusCounts,
+    pagination,
+    fetchAdminProperties,
+    approveProperty,
+    rejectProperty,
+    handleTabSelectionChange,
+    goToPage,
+    isAdmin,
+    bulkApproveProperties,
+    bulkRejectProperties,
+    bulkSuspendProperties,
+    suspendProperty,
+    getPropertyStatistics
+  } = useAdminProperty()
+
+  // Component state
+  const [selectedProperty, setSelectedProperty] = useState<DatabaseProperty | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedProperties, setSelectedProperties] = useState<string[]>([])
   const [rejectionReason, setRejectionReason] = useState('')
   const [suspensionReason, setSuspensionReason] = useState('')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [reviewChecklist, setReviewChecklist] = useState({
     title: false,
     description: false,
@@ -187,6 +70,31 @@ export const PropertyApproval: React.FC = () => {
     amenities: false,
     policies: false
   })
+  const [bulkActionType, setBulkActionType] = useState<'approve' | 'reject' | null>(null)
+  const [bulkLoading, setBulkLoading] = useState(false)
+  const [bulkSuspendLoading, setBulkSuspendLoading] = useState(false)
+  const [isBulkSuspendModalOpen, setIsBulkSuspendModalOpen] = useState(false)
+
+  // Load properties on component mount
+  useEffect(() => {
+    if (isAdmin) {
+      fetchAdminProperties()
+    }
+  }, [fetchAdminProperties, isAdmin])
+
+  // Fetch property statistics as early as possible
+  useEffect(() => {
+    if (isAdmin) {
+      getPropertyStatistics()
+    }
+  }, [getPropertyStatistics, isAdmin])
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
   
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { 
@@ -196,7 +104,6 @@ export const PropertyApproval: React.FC = () => {
   } = useDisclosure()
   const {
     isOpen: isImageOpen,
-    onOpen: onImageOpen,
     onClose: onImageClose
   } = useDisclosure()
   const {
@@ -209,42 +116,58 @@ export const PropertyApproval: React.FC = () => {
     onOpen: onSuspendOpen,
     onClose: onSuspendClose
   } = useDisclosure()
+  const {
+    isOpen: isBulkModalOpen,
+    onOpen: onBulkModalOpen,
+    onClose: onBulkModalClose
+  } = useDisclosure()
 
-  const [pendingApprovalProperty, setPendingApprovalProperty] = useState<Property | null>(null)
+  const [pendingApprovalProperty, setPendingApprovalProperty] = useState<DatabaseProperty | null>(null)
 
-  const filteredProperties = mockProperties.filter(property => {
-    const matchesSearch = property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         property.location.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTab = selectedTab === 'all' || property.status === selectedTab
-    return matchesSearch && matchesTab
+  // Filter properties by search query (backend filtering is handled by the hook)
+  const searchFilteredProperties = filteredProperties.filter(property => {
+    if (!searchQuery.trim()) return true
+    const searchLower = searchQuery.toLowerCase()
+    return (
+      property.title.toLowerCase().includes(searchLower) ||
+      `${property.location?.city}, ${property.location?.country}`.toLowerCase().includes(searchLower) ||
+      property.description.toLowerCase().includes(searchLower)
+    )
   })
 
-  const stats = {
-    pending: mockProperties.filter(p => p.status === 'pending').length,
-    approved: mockProperties.filter(p => p.status === 'approved').length,
-    rejected: mockProperties.filter(p => p.status === 'rejected').length,
-    all: mockProperties.length
-  }
-
-  const handleApproveConfirm = (property: Property) => {
+  const handleApproveConfirm = (property: DatabaseProperty) => {
     setPendingApprovalProperty(property)
     onApproveOpen()
   }
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     if (pendingApprovalProperty) {
       console.log('Approving property:', pendingApprovalProperty.id)
-      // TODO: Implement approval logic
-      onApproveClose()
-      setPendingApprovalProperty(null)
+      setActionLoading('approve')
+      
+      const result = await approveProperty(pendingApprovalProperty.id)
+      
+      if (result) {
+        onApproveClose()
+        setPendingApprovalProperty(null)
+        toast.success(t('property.messages.propertyApproved'))
+      }
+      setActionLoading(null)
     }
   }
 
-  const handleReject = (propertyId: string, reason: string) => {
+  const handleReject = async (propertyId: string, reason: string) => {
     console.log('Rejecting property:', propertyId, 'Reason:', reason)
-    setRejectionReason('')
-    onRejectClose()
-    // TODO: Implement rejection logic
+    setActionLoading('reject')
+    
+    const result = await rejectProperty(propertyId, reason)
+    
+    if (result) {
+      setRejectionReason('')
+      onRejectClose()
+      toast.success(t('property.messages.propertyRejected'))
+    }
+    setActionLoading(null)
   }
 
   const handleRejectModal = () => {
@@ -253,16 +176,17 @@ export const PropertyApproval: React.FC = () => {
     }
   }
 
-  const handleSuspendConfirm = (property: Property) => {
-    setSelectedProperty(property)
-    onSuspendOpen()
-  }
-
-  const handleSuspend = (propertyId: string, reason: string) => {
-    console.log('Suspending property:', propertyId, 'Reason:', reason)
+  const handleSuspend = async (propertyId: string, reason: string) => {
+    setActionLoading('suspend')
+    try {
+      await suspendProperty(propertyId, reason)
+      toast.success(t('property.messages.propertySuspended'))
+    } catch (e: any) {
+      toast.error(e?.message || t('property.messages.failedToLoad', { defaultValue: 'Failed to suspend property' }))
+    }
     setSuspensionReason('')
+    setActionLoading(null)
     onSuspendClose()
-    // TODO: Implement suspension logic
   }
 
   const handleSuspendModal = () => {
@@ -271,20 +195,28 @@ export const PropertyApproval: React.FC = () => {
     }
   }
 
-  const getStatusChip = (status: Property['status']) => {
-    switch (status) {
-      case 'pending':
-        return <Chip size="sm" color="warning" variant="solid">Pending</Chip>
-      case 'approved':
-        return <Chip size="sm" color="success" variant="solid">Approved</Chip>
-      case 'rejected':
-        return <Chip size="sm" color="danger" variant="solid">Rejected</Chip>
-      default:
-        return <Chip size="sm" color="default" variant="solid">Unknown</Chip>
-    }
+  const handleSuspendConfirm = (property: DatabaseProperty) => {
+    setSelectedProperty(property)
+    onSuspendOpen()
   }
 
-  const getActionButtons = (property: Property) => {
+  const getStatusChip = (status: DatabaseProperty['status']) => {
+    return (
+      <Chip 
+        size="sm" 
+        color={getStatusColor(status)} 
+        variant="solid"
+        className="font-medium text-white"
+      >
+        {getStatusDisplayName(status)}
+      </Chip>
+    )
+  }
+
+  const getActionButtons = (property: DatabaseProperty) => {
+    const isPropertyLoading = actionLoading === 'approve' && pendingApprovalProperty?.id === property.id ||
+                             actionLoading === 'reject' && selectedProperty?.id === property.id
+
     switch (property.status) {
       case 'pending':
         return (
@@ -293,19 +225,21 @@ export const PropertyApproval: React.FC = () => {
               size="sm"
               color="danger"
               variant="flat"
-              startContent={<XCircle className="w-4 h-4" />}
+              startContent={isPropertyLoading ? <Loader2 className="size-4 animate-spin" /> : <XCircle className="size-4" />}
               onPress={() => {
                 setSelectedProperty(property)
                 onRejectOpen()
               }}
+              isDisabled={isPropertyLoading}
             >
               Reject
             </Button>
             <Button
               size="sm"
               color="success"
-              startContent={<CheckCircle className="w-4 h-4" />}
+              startContent={isPropertyLoading ? <Loader2 className="size-4 animate-spin" /> : <CheckCircle className="size-4" />}
               onPress={() => handleApproveConfirm(property)}
+              isDisabled={isPropertyLoading}
             >
               Accept
             </Button>
@@ -317,7 +251,7 @@ export const PropertyApproval: React.FC = () => {
             size="sm"
             color="warning"
             variant="flat"
-            startContent={<Ban className="w-4 h-4" />}
+            startContent={<Ban className="size-4" />}
             onPress={() => handleSuspendConfirm(property)}
           >
             Suspend
@@ -331,8 +265,24 @@ export const PropertyApproval: React.FC = () => {
   }
 
   const handleBulkAction = (action: 'approve' | 'reject') => {
-    console.log(`Bulk ${action} for properties:`, selectedProperties)
+    setBulkActionType(action)
+    onBulkModalOpen()
+  }
+
+  const handleBulkConfirm = async () => {
+    if (!bulkActionType) return
+    setBulkLoading(true)
+    if (bulkActionType === 'approve') {
+      const { success, failed } = await bulkApproveProperties(selectedProperties)
+      toast.success(`${success.length} properties approved. ${failed.length ? failed.length + ' failed.' : ''}`)
+    } else if (bulkActionType === 'reject') {
+      const { success, failed } = await bulkRejectProperties(selectedProperties, rejectionReason)
+      toast.success(`${success.length} properties rejected. ${failed.length ? failed.length + ' failed.' : ''}`)
+    }
+    setBulkLoading(false)
     setSelectedProperties([])
+    setBulkActionType(null)
+    onBulkModalClose()
   }
 
   const handlePropertySelect = (propertyId: string, checked: boolean) => {
@@ -345,22 +295,19 @@ export const PropertyApproval: React.FC = () => {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedProperties(mockProperties.map(p => p.id))
+      setSelectedProperties(searchFilteredProperties.map(p => p.id))
     } else {
       setSelectedProperties([])
     }
   }
 
-  const handleViewDetails = (property: Property) => {
+  const handleViewDetails = (property: DatabaseProperty) => {
     setSelectedProperty(property)
     setCurrentImageIndex(0)
     onOpen()
   }
 
-  const handleImageClick = (index: number) => {
-    setCurrentImageIndex(index)
-    onImageOpen()
-  }
+  // Lightbox image open managed by other UI; helper kept if reintroduced later
 
   const nextImage = () => {
     if (selectedProperty) {
@@ -383,47 +330,55 @@ export const PropertyApproval: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Property Approval</h1>
-        <p className="text-gray-600 mt-1">Review and approve property listings</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('admin.properties.pendingApproval')}</h1>
+        <p className="mt-1 text-gray-600">{t('admin.dashboard.overview', { defaultValue: 'Review and approve property listings' })}</p>
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-orange-500 to-red-500 text-white">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        <Card className="border border-gray-200 bg-gradient-to-br from-orange-500 to-red-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">3</h3>
-            <p className="text-white/90 font-medium">Pending Review</p>
-            <p className="text-white/70 text-sm">Requires attention</p>
+            <h3 className="text-4xl font-bold text-white">{statusCounts.pending}</h3>
+            <p className="font-medium text-white/90">{t('admin.properties.pendingApproval')}</p>
+            <p className="text-sm text-white/70">{t('admin.bookings.requireAttention', { defaultValue: 'Requires attention' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">45</h3>
-            <p className="text-white/90 font-medium">Approved This Month</p>
-            <p className="text-white/70 text-sm">85% approval rate</p>
+            <h3 className="text-4xl font-bold text-white">{statusCounts.approved}</h3>
+            <p className="font-medium text-white/90">{t('admin.properties.approved')}</p>
+            <p className="text-sm text-white/70">{t('property.stats.sections.revenue', { defaultValue: 'Live properties' })}</p>
           </CardBody>
         </Card>
         
-        <Card className="shadow-sm border border-gray-200 bg-gradient-to-br from-red-500 to-pink-500 text-white">
+        <Card className="border border-gray-200 bg-gradient-to-br from-red-500 to-pink-500 text-white shadow-sm">
           <CardBody className="p-6 text-center">
-            <h3 className="text-4xl font-bold text-white">8</h3>
-            <p className="text-white/90 font-medium">Rejected This Month</p>
-            <p className="text-white/70 text-sm">Quality control</p>
+            <h3 className="text-4xl font-bold text-white">{statusCounts.rejected}</h3>
+            <p className="font-medium text-white/90">{t('admin.properties.rejected')}</p>
+            <p className="text-sm text-white/70">{t('admin.messages.actionCannotBeUndone', { defaultValue: 'Not approved' })}</p>
+          </CardBody>
+        </Card>
+
+        <Card className="border border-gray-200 bg-gradient-to-br from-purple-500 to-indigo-500 text-white shadow-sm">
+          <CardBody className="p-6 text-center">
+            <h3 className="text-4xl font-bold text-white">{statusCounts.suspended || 0}</h3>
+            <p className="font-medium text-white/90">{t('admin.properties.suspended')}</p>
+            <p className="text-sm text-white/70">{t('admin.messages.confirmAction', { defaultValue: 'Temporarily disabled' })}</p>
           </CardBody>
         </Card>
       </div>
 
       {/* Search and Bulk Actions */}
-      <Card className="shadow-sm border border-gray-200">
+      <Card className="border border-gray-200 shadow-sm">
         <CardBody className="p-6">
-          <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+          <div className="flex flex-col items-start gap-4 lg:flex-row lg:items-center">
             <div className="flex-1">
               <Input
-                placeholder="Search properties by title, location, or host..."
+                placeholder={t('admin.actions.search') + '...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                startContent={<Search className="w-4 h-4 text-gray-400" />}
+                startContent={<Search className="size-4 text-gray-400" />}
               />
             </div>
             
@@ -433,20 +388,20 @@ export const PropertyApproval: React.FC = () => {
                 isIndeterminate={selectedProperties.length > 0 && selectedProperties.length < filteredProperties.length}
                 onValueChange={handleSelectAll}
               >
-                Select All
+                {t('admin.actions.selectAll')}
               </Checkbox>
               
               {selectedProperties.length > 0 && (
                 <div className="flex gap-2">
                   <Chip color="primary" variant="flat">
-                    {selectedProperties.length} selected
+                    {t('common.labels.selectedCount', { count: selectedProperties.length, defaultValue: '{{count}} selected' })}
                   </Chip>
                   <Button
                     size="sm"
                     color="success"
                     onPress={() => handleBulkAction('approve')}
                   >
-                    Bulk Approve
+                    {t('admin.actions.approve', { defaultValue: 'Bulk Approve' })}
                   </Button>
                   <Button
                     size="sm"
@@ -454,7 +409,16 @@ export const PropertyApproval: React.FC = () => {
                     variant="flat"
                     onPress={() => handleBulkAction('reject')}
                   >
-                    Bulk Reject
+                    {t('admin.actions.reject', { defaultValue: 'Bulk Reject' })}
+                  </Button>
+                  <Button
+                    size="sm"
+                    color="warning"
+                    variant="flat"
+                    isLoading={bulkSuspendLoading}
+                    onPress={() => setIsBulkSuspendModalOpen(true)}
+                  >
+                    {t('admin.actions.suspend', { defaultValue: 'Bulk Suspend' })}
                   </Button>
                 </div>
               )}
@@ -466,8 +430,8 @@ export const PropertyApproval: React.FC = () => {
       {/* Tabs */}
       <div className="w-full">
         <Tabs
-          selectedKey={selectedTab}
-          onSelectionChange={(key) => setSelectedTab(key as string)}
+          selectedKey={statusFilter}
+          onSelectionChange={handleTabSelectionChange}
           variant="underlined"
           classNames={{
             tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
@@ -476,427 +440,227 @@ export const PropertyApproval: React.FC = () => {
             tabContent: "group-data-[selected=true]:text-primary-600"
           }}
         >
-          <Tab key="all" title={`All (${stats.all})`} />
-          <Tab key="pending" title={`Pending (${stats.pending})`} />
-          <Tab key="approved" title={`Approved (${stats.approved})`} />
-          <Tab key="rejected" title={`Rejected (${stats.rejected})`} />
+          <Tab key="pending" title={`${t('admin.properties.pendingApproval')} (${statusCounts.pending})`} />
+          <Tab key="approved" title={`${t('admin.properties.approved')} (${statusCounts.approved})`} />
+          <Tab key="rejected" title={`${t('admin.properties.rejected')} (${statusCounts.rejected})`} />
+          <Tab key="suspended" title={`${t('admin.properties.suspended')} (${statusCounts.suspended || 0})`} />
         </Tabs>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="flex items-center gap-2">
+            <Loader2 className="size-6 animate-spin" />
+            <span>{t('property.messages.loadingProperties')}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="py-12 text-center">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+            <h3 className="mb-2 text-lg font-medium text-red-800">{t('property.messages.failedToLoad', { defaultValue: 'Error Loading Properties' })}</h3>
+            <Button color="primary" onPress={() => fetchAdminProperties({ force: true })}>
+              {t('common.actions.retry', { defaultValue: 'Try Again' })}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !error && searchFilteredProperties.length === 0 && (
+        <div className="py-12 text-center">
+          <Home className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
+            {t('property.messages.noProperties', { defaultValue: `No ${statusFilter === 'all' ? '' : statusFilter} properties found` })}
+          </h3>
+          <p className="mb-4 text-gray-500">
+            {searchQuery ? t('admin.properties.noMatch', { defaultValue: 'No properties match "{{query}}"', query: searchQuery }) : t('admin.properties.noneAvailable', { defaultValue: `No ${statusFilter} properties available.` })}
+          </p>
+          {searchQuery && (
+            <Button color="primary" onPress={() => setSearchQuery('')}>
+              {t('common.actions.clear', { defaultValue: 'Clear Search' })}
+            </Button>
+          )}
+        </div>
+      )}
+
       {/* Properties Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredProperties.map((property) => (
-          <Card key={property.id} className="shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-            <CardBody className="p-0">
-              {/* Selection Checkbox */}
-              <div className="absolute top-4 left-4 z-10">
-                <Checkbox
-                  isSelected={selectedProperties.includes(property.id)}
-                  onValueChange={(checked) => handlePropertySelect(property.id, checked)}
-                  classNames={{
-                    base: "bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-white/20",
-                    wrapper: "before:border-primary-500 after:bg-primary-500",
-                    icon: "text-white"
-                  }}
-                />
-              </div>
-
-              {/* Property Image */}
-              <div className="relative h-48 bg-gray-200 rounded-t-lg overflow-hidden">
-                <img
-                  src={property.images[0]}
-                  alt={property.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <div className="flex items-center gap-2 text-sm">
-                    <ImageIcon className="w-4 h-4" />
-                    <span>{property.images.length} photos</span>
-                    {property.video && (
-                      <>
-                        <span>•</span>
-                        <Video className="w-4 h-4" />
-                        <span>1 video</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4">
-                  {getStatusChip(property.status)}
-                </div>
-              </div>
-
-              {/* Property Details */}
-              <div className="p-6">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
-                      {property.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{property.location}</span>
-                    </div>
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <span>{property.propertyType}</span>
-                      <span>•</span>
-                      <span>{property.bedrooms} bed</span>
-                      <span>•</span>
-                      <span>{property.bathrooms} bath</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-gray-900">${property.price}</div>
-                    <div className="text-sm text-gray-600">per night</div>
-                  </div>
-                </div>
-
-                {/* Host Info */}
-                <div className="flex items-center gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
-                  <Avatar
-                    name={property.host.display_name}
-                    size="sm"
-                    className="flex-shrink-0"
+      {!isLoading && !error && searchFilteredProperties.length > 0 && (
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          {searchFilteredProperties.map((property) => (
+            <Card key={property.id} className="border border-gray-200 shadow-sm transition-shadow hover:shadow-md">
+              <CardBody className="p-0">
+                {/* Selection Checkbox */}
+                <div className="absolute left-4 top-4 z-10">
+                  <Checkbox
+                    isSelected={selectedProperties.includes(property.id)}
+                    onValueChange={(checked) => handlePropertySelect(property.id, checked)}
+                    classNames={{
+                      base: "bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-white/20",
+                      wrapper: "before:border-primary-500 after:bg-primary-500",
+                      icon: "text-white"
+                    }}
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">{property.host.display_name}</div>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs text-gray-600">{property.host.rating}</span>
-                      <span className="text-xs text-gray-500">• Member since {property.host.joinDate}</span>
+                </div>
+
+                {/* Property Image */}
+                <div className="relative h-48 overflow-hidden rounded-t-lg bg-gray-200">
+                  <img
+                    src={property.images[0]}
+                    alt={property.title}
+                    className="size-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                      <div className="flex items-center gap-2 text-sm">
+                      <ImageIcon className="size-4" />
+                        <span>{property.images.length} {t('property.labels.images')}</span>
+                      {property.video && (
+                        <>
+                          <span>•</span>
+                          <Video className="size-4" />
+                            <span>1 {t('property.labels.video')}</span>
+                        </>
+                      )}
                     </div>
+                  </div>
+                  <div className="absolute right-4 top-4">
+                    {getStatusChip(property.status)}
                   </div>
                 </div>
 
-                {/* Amenities Preview */}
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-1">
-                    {property.amenities.slice(0, 3).map((amenity) => (
-                      <Chip key={amenity} size="sm" variant="flat" color="default">
-                        {amenity}
-                      </Chip>
-                    ))}
-                    {property.amenities.length > 3 && (
-                      <Chip size="sm" variant="flat" color="default">
-                        +{property.amenities.length - 3} more
-                      </Chip>
-                    )}
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-2 items-center">
-                  <Button
-                    size="sm"
-                    variant="flat"
-                    onPress={() => handleViewDetails(property)}
-                    startContent={<Eye className="w-4 h-4" />}
-                  >
-                    View Details
-                  </Button>
-                  {getActionButtons(property)}
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-        ))}
-      </div>
-
-      {/* Property Details Modal - Keep this one as it has complex functionality */}
-      <Modal 
-        isOpen={isOpen} 
-        onClose={onClose} 
-        size="5xl"
-        scrollBehavior="inside"
-        classNames={{
-          base: "max-h-[90vh]",
-          body: "py-6"
-        }}
-      >
-        <ModalContent>
-          <ModalHeader>
-            Property Review: {selectedProperty?.title}
-          </ModalHeader>
-          <ModalBody className="max-h-[65vh] overflow-y-auto">
-            {selectedProperty && (
-              <div className="space-y-6">
-                {/* Image Gallery */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Property Images</h4>
-                  <div className="grid grid-cols-4 gap-2">
-                    {selectedProperty.images.map((image, index) => (
-                      <div
-                        key={index}
-                        className="relative aspect-square bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
-                        onClick={() => handleImageClick(index)}
-                      >
-                        <img
-                          src={image}
-                          alt={`Property ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity">
-                          <ZoomIn className="w-6 h-6 text-white" />
-                        </div>
+                {/* Property Details */}
+                <div className="p-6">
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-gray-900">
+                        {property.title}
+                      </h3>
+                      <div className="mb-2 flex items-center gap-2 text-sm text-gray-600">
+                        <MapPin className="size-4" />
+                        <span>{property.location?.city}, {property.location?.country}</span>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Location Details with Map */}
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Location Details</h4>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <div>
-                        <label className="text-sm font-medium text-gray-600">Address</label>
-                        <p className="text-sm text-gray-900">{selectedProperty.location}</p>
-                      </div>
-                      <div>
-                        <label className="text-sm font-medium text-gray-600">Coordinates</label>
-                        <p className="text-sm text-gray-900">
-                          Lat: {selectedProperty.coordinates.lat}, Lng: {selectedProperty.coordinates.lng}
-                        </p>
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
+                        <span>{property.property_type}</span>
+                        <span>•</span>
+                        <span>{property.bedrooms} {t('property.labels.beds')}</span>
+                        <span>•</span>
+                        <span>{property.bathrooms} {t('property.labels.baths')}</span>
                       </div>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-2">Map Preview</label>
-                      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border">
-                        <img
-                          src={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/pin-s-home+ff0000(${selectedProperty.coordinates.lng},${selectedProperty.coordinates.lat})/${selectedProperty.coordinates.lng},${selectedProperty.coordinates.lat},13/300x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA`}
-                          alt="Property location map"
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            // Fallback to OpenStreetMap if Mapbox fails
-                            (e.target as HTMLImageElement).src = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${selectedProperty.coordinates.lng},${selectedProperty.coordinates.lat},13/300x300?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA`
-                          }}
-                        />
-                      </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-900">{formatPrice(property.price_per_night, property.currency || 'USD')}</div>
+                      <div className="text-sm text-gray-600">{t('property.labels.perNight')}</div>
                     </div>
                   </div>
-                </div>
 
-                {/* Property Details Grid */}
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Property Type</label>
-                      <p className="text-sm text-gray-900">{selectedProperty.propertyType}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Location</label>
-                      <p className="text-sm text-gray-900">{selectedProperty.location}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Host</label>
-                      <div className="flex items-center gap-2">
-                        <Avatar name={selectedProperty.host.display_name} size="sm" />
-                        <div>
-                          <p className="text-sm text-gray-900 font-medium">{selectedProperty.host.display_name}</p>
-                          <p className="text-xs text-gray-600">{selectedProperty.host.email}</p>
-                        </div>
+                  {/* Host Info */}
+                  <div className="mb-4 flex items-center gap-3 rounded-lg bg-gray-50 p-3">
+                    <Avatar
+                      name={t('property.modal.contactHost.title', { defaultValue: 'Host' })}
+                      size="sm"
+                      className="shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-medium">{t('admin.properties.hostInformation', { defaultValue: 'Host ID:' })} {property.host_id}</div>
+                      <div className="flex items-center gap-1">
+                        <Star className="size-3 fill-yellow-400 text-yellow-400" />
+                        <span className="text-xs text-gray-600">{property.rating || 0}</span>
+                        <span className="text-xs text-gray-500">• {t('admin.properties.createdYear', { defaultValue: 'Created {{year}}', year: new Date(property.created_at).getFullYear() })}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Price per night</label>
-                      <p className="text-sm text-gray-900">${selectedProperty.price}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Capacity</label>
-                      <p className="text-sm text-gray-900">
-                        {selectedProperty.bedrooms} bed • {selectedProperty.bathrooms} bath • {selectedProperty.maxGuests} guests
-                      </p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600">Submitted</label>
-                      <p className="text-sm text-gray-900">{selectedProperty.submittedDate}</p>
+                  {/* Amenities Preview */}
+                  <div className="mb-4">
+                    <div className="flex flex-wrap gap-1">
+                      {property.amenities.slice(0, 3).map((amenity) => (
+                        <Chip key={amenity} size="sm" variant="flat" color="default">
+                          {amenity}
+                        </Chip>
+                      ))}
+                      {property.amenities.length > 3 && (
+                        <Chip size="sm" variant="flat" color="default">
+                          +{property.amenities.length - 3} {t('property.labels.more')}
+                        </Chip>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Description</label>
-                  <p className="text-sm text-gray-900 mt-1">{selectedProperty.description}</p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-600">Amenities</label>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {selectedProperty.amenities.map((amenity) => (
-                      <Chip key={amenity} size="sm" variant="flat">
-                        {amenity}
-                      </Chip>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Review Checklist - Beautiful Design */}
-                <div className="bg-gradient-to-br from-primary-50 to-secondary-50 border border-primary-200 rounded-xl p-6">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
-                      <CheckCircle className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-xl text-gray-900">Review Checklist</h4>
-                      <p className="text-sm text-gray-600">Complete all items before approval</p>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      { key: 'title', label: 'Title is descriptive and appropriate', icon: '📝' },
-                      { key: 'description', label: 'Description is detailed and accurate', icon: '📄' },
-                      { key: 'images', label: 'Images are high quality and representative', icon: '📸' },
-                      { key: 'location', label: 'Location is accurate and properly set', icon: '📍' },
-                      { key: 'price', label: 'Price is reasonable for the market', icon: '💰' },
-                      { key: 'amenities', label: 'Amenities list is accurate and complete', icon: '✨' },
-                      { key: 'policies', label: 'House rules and policies are appropriate', icon: '📋' }
-                    ].map((item) => (
-                      <div
-                        key={item.key}
-                        className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-                          reviewChecklist[item.key as keyof typeof reviewChecklist]
-                            ? 'bg-success-50 border-success-200 shadow-sm'
-                            : 'bg-white border-gray-200 hover:border-primary-300'
-                        }`}
-                      >
-                        <Checkbox
-                          isSelected={reviewChecklist[item.key as keyof typeof reviewChecklist]}
-                          onValueChange={(checked) => 
-                            setReviewChecklist(prev => ({ ...prev, [item.key]: checked }))
-                          }
-                          classNames={{
-                            wrapper: "after:bg-primary-500 before:border-primary-500",
-                            icon: "text-white"
-                          }}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">{item.icon}</span>
-                            <span className="text-sm font-medium text-gray-700">{item.label}</span>
-                          </div>
-                        </Checkbox>
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-6 p-4 bg-white/60 rounded-lg border border-primary-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-3 h-3 rounded-full ${allChecked ? 'bg-success-500' : 'bg-gray-300'}`}></div>
-                        <span className="text-sm font-medium">
-                          {Object.values(reviewChecklist).filter(Boolean).length} of 7 items completed
-                        </span>
-                      </div>
-                      <div className="w-32 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-primary-500 h-2 rounded-full transition-all duration-300"
-                          style={{ 
-                            width: `${(Object.values(reviewChecklist).filter(Boolean).length / 7) * 100}%` 
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <div className="flex gap-3 w-full">
-              <Button variant="flat" onPress={onClose}>
-                Close
-              </Button>
-              {selectedProperty?.status === 'pending' && (
-                <>
-                  <Button
-                    color="danger"
-                    variant="flat"
-                    startContent={<XCircle className="w-4 h-4" />}
-                    onPress={() => {
-                      onClose()
-                      onRejectOpen()
-                    }}
-                  >
-                    Reject
-                  </Button>
-                  <Button
-                    color="success"
-                    startContent={<CheckCircle className="w-4 h-4" />}
-                    onPress={() => {
-                      if (selectedProperty) {
-                        handleApproveConfirm(selectedProperty)
-                        onClose()
-                      }
-                    }}
-                    isDisabled={!allChecked}
-                  >
-                    Approve Property
-                  </Button>
-                </>
-              )}
-              {selectedProperty?.status === 'approved' && (
-                <Button
-                  color="warning"
-                  variant="flat"
-                  startContent={<Ban className="w-4 h-4" />}
-                  onPress={() => {
-                    if (selectedProperty) {
-                      handleSuspendConfirm(selectedProperty)
-                      onClose()
-                    }
-                  }}
-                >
-                  Suspend Property
-                </Button>
-              )}
-            </div>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* Image Lightbox Modal */}
-      <Modal isOpen={isImageOpen} onClose={onImageClose} size="4xl">
-        <ModalContent>
-          <ModalBody className="p-0">
-            {selectedProperty && (
-              <div className="relative">
-                <img
-                  src={selectedProperty.images[currentImageIndex]}
-                  alt={`Property image ${currentImageIndex + 1}`}
-                  className="w-full h-[70vh] object-contain bg-black"
-                />
-                
-                {/* Navigation Arrows */}
-                {selectedProperty.images.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="flat"
+                      onPress={() => handleViewDetails(property as DatabaseProperty)}
+                      startContent={<Eye className="size-4" />}
                     >
-                      <ChevronLeft className="w-6 h-6" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
-                    >
-                      <ChevronRight className="w-6 h-6" />
-                    </button>
-                  </>
-                )}
-                
-                {/* Image Counter */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {selectedProperty.images.length}
+                      {t('property.actions.viewDetails')}
+                    </Button>
+                    {getActionButtons(property as DatabaseProperty)}
+                  </div>
                 </div>
-              </div>
-            )}
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+              </CardBody>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+          <button
+            onClick={() => goToPage(pagination.currentPage - 1)}
+            disabled={pagination.currentPage === 1 || isLoading}
+            className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+              ${pagination.currentPage === 1 || isLoading
+                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+          >
+            {t('admin.pagination.previous', { defaultValue: 'Previous' })}
+          </button>
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-700">
+              {t('admin.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: pagination.currentPage, total: pagination.totalPages })}
+            </span>
+          </div>
+          <button
+            onClick={() => goToPage(pagination.currentPage + 1)}
+            disabled={isLoading || pagination.currentPage >= pagination.totalPages}
+            className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+              ${isLoading || pagination.currentPage >= pagination.totalPages
+                ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+          >
+            {t('admin.pagination.next', { defaultValue: 'Next' })}
+          </button>
+        </div>
+      )}
+
+      {/* Property Details Modal - now extracted */}
+      <PropertyDetailsModal
+        isOpen={isOpen}
+        onClose={onClose}
+        selectedProperty={selectedProperty}
+        reviewChecklist={reviewChecklist}
+        setReviewChecklist={setReviewChecklist}
+        allChecked={allChecked}
+        onRejectOpen={onRejectOpen}
+        handleApproveConfirm={handleApproveConfirm}
+      />
+
+      {/* Image Lightbox Modal - now extracted */}
+      <ImageLightboxModal
+        isOpen={isImageOpen}
+        onClose={onImageClose}
+        selectedProperty={selectedProperty}
+        currentImageIndex={currentImageIndex}
+        prevImage={prevImage}
+        nextImage={nextImage}
+      />
 
       {/* Use extracted modal components */}
       <PropertyApprovalModal
@@ -922,6 +686,34 @@ export const PropertyApproval: React.FC = () => {
         suspensionReason={suspensionReason}
         onReasonChange={setSuspensionReason}
         onSuspend={handleSuspendModal}
+      />
+
+      {/* Bulk Action Confirmation Modal - now extracted */}
+      <BulkActionModal
+        isOpen={isBulkModalOpen}
+        onClose={onBulkModalClose}
+        bulkActionType={bulkActionType}
+        selectedProperties={selectedProperties}
+        rejectionReason={rejectionReason}
+        setRejectionReason={setRejectionReason}
+        handleBulkConfirm={handleBulkConfirm}
+        bulkLoading={bulkLoading}
+      />
+
+      {/* Bulk Suspend Confirmation Modal - now extracted */}
+      <BulkSuspendModal
+        isOpen={isBulkSuspendModalOpen}
+        onClose={() => setIsBulkSuspendModalOpen(false)}
+        selectedProperties={selectedProperties}
+        bulkSuspendLoading={bulkSuspendLoading}
+        handleBulkSuspendConfirm={async () => {
+          setBulkSuspendLoading(true)
+          const { success, failed } = await bulkSuspendProperties(selectedProperties, '')
+          toast.success(`${success.length} properties suspended. ${failed.length ? failed.length + ' failed.' : ''}`)
+          setSelectedProperties([])
+          setBulkSuspendLoading(false)
+          setIsBulkSuspendModalOpen(false)
+        }}
       />
     </div>
   )

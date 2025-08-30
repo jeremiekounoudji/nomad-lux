@@ -1,0 +1,1071 @@
+{
+  "banner": {
+    "title": "Admin Panel",
+    "subtitle": "Manage properties, bookings, users, and platform settings"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "users": "Users",
+    "refunds": "Refunds",
+    "payments": "Payments",
+    "settings": "Settings",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "support": "Support",
+    "login": "admin-login",
+    "register": "admin-register"
+  },
+  "sections": {
+    "dashboard": "dashboard",
+    "users": "users",
+    "properties": "properties",
+    "bookings": "bookings",
+    "refunds": "refunds",
+    "analytics": "analytics",
+    "settings": "settings",
+    "activities": "activities"
+  },
+  "activity": {
+    "title": "Activity Log"
+  },
+  "analytics": {
+    "title": "Analytics"
+  },
+  "dashboard": {
+    "overview": "Overview",
+    "totalUsers": "Total Users",
+    "totalProperties": "Total Properties",
+    "totalBookings": "Total Bookings",
+    "totalRevenue": "Total Revenue",
+    "activeProperties": "Active Properties",
+    "pendingApprovals": "Pending Approvals",
+    "recentActivity": "Recent Activity",
+    "topHosts": "Top Hosts",
+    "popularProperties": "Popular Properties",
+    "bookingTrends": "Booking Trends",
+    "revenueTrends": "Revenue Trends",
+    "submitted": "Submitted"
+  },
+  "messages": {
+    "noProperties": "There are no properties to display on the map.",
+    "propertyMapDescription": "View all properties distributed across locations on an interactive map."
+  },
+  "properties": {
+    "allProperties": "All Properties",
+    "pendingApproval": "Pending Approval",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "suspended": "Suspended",
+    "approveProperty": "Approve Property",
+    "rejectProperty": "Reject Property",
+    "suspendProperty": "Suspend Property",
+    "viewProperty": "View Property",
+    "editProperty": "Edit Property",
+    "deleteProperty": "Delete Property",
+    "propertyDetails": "Property Details",
+    "propertyDetailsModal": {
+      "title": "Property Review: {{title}}",
+      "propertyImages": "Property Images",
+      "zoom": "Zoom",
+      "labels": {
+        "propertyType": "Property Type",
+        "location": "Location",
+        "host": "Host",
+        "hostId": "Host ID:",
+        "created": "Created:",
+        "pricePerNight": "Price per night",
+        "capacity": "Capacity",
+        "bed": "bed",
+        "bath": "bath",
+        "guests": "guests",
+        "submitted": "Submitted",
+        "description": "Description",
+        "amenities": "Amenities"
+      },
+      "reviewChecklist": {
+        "title": "Review Checklist",
+        "subtitle": "Complete all items before approval",
+        "items": {
+          "title": "Title is descriptive and appropriate",
+          "description": "Description is detailed and accurate",
+          "images": "Images are high quality and representative",
+          "location": "Location is verified and accurate",
+          "price": "Price is reasonable for the market",
+          "amenities": "Amenities list is accurate and complete",
+          "policies": "House rules and policies are appropriate"
+        },
+        "progress": "{{completed}} of {{total}} items completed"
+      },
+      "buttons": {
+        "close": "Close",
+        "reject": "Reject",
+        "approveProperty": "Approve Property",
+        "suspendProperty": "Suspend Property"
+      }
+    },
+    "hostInformation": "Host Information",
+    "approvalStatus": "Approval Status",
+    "rejectionReason": "Rejection Reason",
+    "suspensionReason": "Suspension Reason",
+    "noMatch": "No properties match \"{{query}}\"",
+    "noneAvailable": "No {{status}} properties available.",
+    "createdYear": "Created {{year}}"
+  },
+  "bulkActions": {
+    "approve": {
+      "title": "Approve Properties",
+      "description": "These properties will be made visible to users and available for booking."
+    },
+    "reject": {
+      "title": "Reject Properties",
+      "description": "These properties will be rejected and hosts will be notified."
+    },
+    "suspend": {
+      "title": "Suspend Properties",
+      "description": "These properties will be temporarily suspended from bookings."
+    },
+    "delete": {
+      "title": "Delete Properties",
+      "description": "These properties will be permanently deleted. This action cannot be undone."
+    },
+    "selectedCount": "{{count}} properties selected",
+    "reason": {
+      "label": "Reason for {{action}}",
+      "placeholder": "Please provide a reason for {{action}}ing these properties..."
+    },
+    "confirmButton": "{{action}} {{count}} Properties",
+    "success": "Successfully {{action}}ed {{count}} properties",
+    "errors": {
+      "provideReason": "Please provide a reason for this action",
+      "failed": "Failed to complete bulk action"
+    }
+  },
+  "map": {
+    "selectedInArea": "Selected {{count}} properties in area"
+  },
+  "export": {
+    "success": "Exported {{count}} properties as {{format}}"
+  },
+  "refresh": {
+    "success": "Properties refreshed"
+  },
+  "distribution": {
+    "title": "Property Distribution",
+    "propertiesCount": "{{count}} Properties",
+    "locationsCount": "{{count}} Locations",
+    "topLocations": "Top Locations",
+    "properties": "properties",
+    "statusDistribution": "Status Distribution",
+    "statusLabels": {
+      "approved": "Approved Properties",
+      "pending": "Pending Review",
+      "rejected": "Rejected Properties",
+      "suspended": "Suspended Properties"
+    },
+    "locationBreakdown": "Location Breakdown",
+    "viewDetails": "View Details",
+    "table": {
+      "location": "Location",
+      "total": "Total",
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "suspended": "Suspended"
+    }
+  },
+  "bookings": {
+    "allBookings": "All Bookings",
+    "pendingBookings": "Pending Bookings",
+    "confirmedBookings": "Confirmed Bookings",
+    "cancelledBookings": "Cancelled Bookings",
+    "completedBookings": "Completed Bookings",
+    "bookingDetails": "Booking Details",
+    "bookingDetailsModal": {
+      "title": "Booking Details - {{id}}",
+      "propertyInformation": "Property Information",
+      "guestInformation": "Guest Information",
+      "bookingDetails": "Booking Details",
+      "paymentInformation": "Payment Information",
+      "labels": {
+        "property": "Property:",
+        "propertyId": "Property ID:",
+        "host": "Host:",
+        "hostEmail": "Host Email:",
+        "guest": "Guest:",
+        "email": "Email:",
+        "phone": "Phone:",
+        "guests": "Guests:",
+        "people": "people",
+        "checkIn": "Check-in:",
+        "checkOut": "Check-out:",
+        "nights": "Nights:",
+        "totalAmount": "Total Amount:",
+        "bookingDate": "Booking Date:",
+        "status": "Status:",
+        "paymentStatus": "Payment Status:",
+        "total": "Total:"
+      },
+      "buttons": {
+        "close": "Close",
+        "contactGuest": "Contact Guest",
+        "contactHost": "Contact Host"
+      }
+    },
+    "guestInformation": "Guest Information",
+    "hostInformation": "Host Information",
+    "paymentStatus": "Payment Status",
+    "bookingStatus": "Booking Status",
+    "refundBooking": "Refund Booking",
+    "cancelBooking": "Cancel Booking",
+    "requireAttention": "Requires attention",
+    "errorLoading": "Error Loading Bookings",
+    "currentlyConfirmed": "Currently confirmed",
+    "activeDisputes": "Active Disputes",
+    "revenueCompleted": "Revenue (Completed)",
+    "searchPlaceholder": "Search by booking ID, guest name, or property...",
+    "filterByStatus": "Filter by status",
+    "allStatus": "All Status",
+    "disputes": "Disputes",
+    "loading": "Loading bookings...",
+    "labels": {
+      "id": "ID:",
+      "guest": "Guest:",
+      "host": "Host:",
+      "bookingId": "Booking ID:",
+      "type": "Type:",
+      "reporter": "Reporter:",
+      "created": "Created:",
+      "assignedTo": "Assigned to:"
+    },
+    "bookedOn": "Booked on {{date}}",
+    "disputeFiledOn": "Dispute filed on {{date}}",
+    "manageDispute": "Manage Dispute",
+    "contactParties": "Contact Parties",
+    "contactPartiesModal": {
+      "title": "Contact Information - {{id}}",
+      "propertyInfo": {
+        "nights": "nights",
+        "guests": "guests"
+      },
+      "guest": {
+        "title": "Guest",
+        "subtitle": "Booking party",
+        "labels": {
+          "name": "Name",
+          "phone": "Phone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Call",
+          "email": "Email"
+        }
+      },
+      "host": {
+        "title": "Host",
+        "subtitle": "Property owner",
+        "labels": {
+          "name": "Name",
+          "phone": "Phone",
+          "email": "Email"
+        },
+        "buttons": {
+          "call": "Call",
+          "email": "Email"
+        }
+      },
+      "guidelines": {
+        "title": "Admin Communication Guidelines",
+        "points": {
+          "professional": "Always maintain professional communication standards",
+          "document": "Document all interactions in the booking activity log",
+          "urgent": "For urgent matters, contact both parties and escalate if needed"
+        }
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "buttons": {
+          "sendEmailTemplate": "Send Email Template",
+          "scheduleCall": "Schedule Call",
+          "emergencyContact": "Emergency Contact",
+          "documentCall": "Document Call"
+        }
+      },
+      "buttons": {
+        "close": "Close",
+        "openMessageCenter": "Open Message Center"
+      }
+    },
+    "openDisputes": "Open Disputes",
+    "underInvestigation": "Under Investigation",
+    "urgentPriority": "Urgent Priority",
+    "disputeNumber": "Dispute #{{id}}",
+    "priorityLabel": "Priority",
+    "messagesCount": "{{count}} message"
+  },
+  "disputes": {
+    "management": {
+      "title": "Dispute Management - #{{id}}",
+      "disputeInformation": "Dispute Information",
+      "assignment": "Assignment",
+      "description": "Description",
+      "communicationThread": "Communication Thread",
+      "addResponse": "Add Response",
+      "labels": {
+        "type": "Type:",
+        "priority": "Priority:",
+        "reporter": "Reporter:",
+        "status": "Status:",
+        "created": "Created:",
+        "assignedTo": "Assigned to:",
+        "bookingId": "Booking ID:"
+      },
+      "unassigned": "Unassigned",
+      "responsePlaceholder": "Type your response...",
+      "buttons": {
+        "close": "Close",
+        "sendResponse": "Send Response",
+        "resolveDispute": "Resolve Dispute"
+      }
+    }
+  },
+  "users": {
+    "allUsers": "All Users",
+    "hosts": "Hosts",
+    "guests": "Guests",
+    "admins": "Admins",
+    "activeUsers": "Active Users",
+    "suspendedUsers": "Suspended Users",
+    "bannedUsers": "Banned Users",
+    "userDetails": "User Details",
+    "accountStatus": "Account Status",
+    "userRole": "User Role",
+    "suspendUser": "Suspend User",
+    "banUser": "Ban User",
+    "activateUser": "Activate User",
+    "deleteUser": "Delete User",
+    "viewProfile": "View Profile",
+    "editProfile": "Edit Profile",
+    "adminUser": "Admin User",
+    "activation": {
+      "title": "Activate User Account",
+      "subtitle": "Restore full platform access for this user",
+      "notice": {
+        "title": "Account Activation",
+        "description": "This user will regain full access to the platform including booking properties and listing new accommodations."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login"
+      },
+      "effects": {
+        "title": "What happens when you activate this account:",
+        "login": "User can log in and access their dashboard",
+        "booking": "Booking and property listing capabilities restored",
+        "features": "All platform features become available",
+        "status": "User status changes to \"Active\""
+      },
+      "confirmButton": "Activate User Account"
+    },
+    "deletion": {
+      "title": "Delete User Account",
+      "subtitle": "This action cannot be undone",
+      "notice": {
+        "title": "Permanent Account Deletion",
+        "description": "This will permanently delete the user's account, all their data, bookings, and properties. This action cannot be reversed."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login",
+        "totalRevenue": "Total Revenue"
+      },
+      "dataImpact": {
+        "title": "Data That Will Be Permanently Deleted:",
+        "profile": "User profile and personal information",
+        "bookings": "All booking history and records",
+        "properties": "Property listings and related data",
+        "payments": "Payment history and financial records",
+        "reviews": "Reviews and ratings given/received"
+      },
+      "reason": {
+        "label": "Reason for Deletion",
+        "placeholder": "Please provide a detailed reason for permanently deleting this user account...",
+        "help": "This reason will be logged for audit purposes and legal compliance."
+      },
+      "confirmation": {
+        "text": "I understand that this action is permanent and cannot be undone. All user data will be permanently deleted."
+      },
+      "confirmButton": "Permanently Delete Account"
+    },
+    "suspension": {
+      "title": "Suspend User Account",
+      "subtitle": "This action will temporarily disable the user's access",
+      "notice": {
+        "title": "Important Notice",
+        "description": "Suspending this user will immediately restrict their access to the platform. They will not be able to make new bookings or list properties."
+      },
+      "userDetails": "User Details",
+      "labels": {
+        "totalBookings": "Total Bookings",
+        "properties": "Properties",
+        "memberSince": "Member Since",
+        "lastLogin": "Last Login"
+      },
+      "reason": {
+        "label": "Reason for Suspension",
+        "placeholder": "Please provide a detailed reason for suspending this user account...",
+        "help": "This reason will be logged and may be shared with the user upon request."
+      },
+      "confirmButton": "Suspend User Account"
+    },
+    "bulkActions": {
+      "suspend": {
+        "title": "Suspend Users",
+        "description": "You are about to suspend {{count}} users. This will prevent them from accessing the platform."
+      },
+      "activate": {
+        "title": "Activate Users",
+        "description": "You are about to activate {{count}} users. This will restore their platform access."
+      },
+      "delete": {
+        "title": "Delete Users",
+        "description": "You are about to permanently delete {{count}} users and all their data. This action cannot be undone."
+      },
+      "destructiveAction": "Destructive Action",
+      "bulkAction": "Bulk Action",
+      "selectedUsers": "Selected Users ({{count}})",
+      "reason": {
+        "label": "Reason for {{action}}",
+        "placeholder": "Provide a reason for {{action}} these users..."
+      },
+      "deleteConfirmation": "I understand that this action is permanent and cannot be undone. All user data, including bookings, properties, and payment history will be permanently deleted.",
+      "summary": {
+        "title": "Action Summary",
+        "usersAffected": "{{count}} users will be {{action}}",
+        "suspendEffect": "Users will lose platform access immediately",
+        "activateEffect": "Users will regain platform access immediately",
+        "deleteEffect1": "All user data will be permanently removed",
+        "deleteEffect2": "Associated bookings and properties will be affected",
+        "auditTrail": "Action will be logged in the audit trail"
+      }
+    },
+    "messages": {
+      "sendToMultiple": "Send Message to {{count}} Users",
+      "sendToUser": "Send Message to {{name}}",
+      "recipients": "Recipients",
+      "recipient": "Recipient",
+      "messageType": "Message Type",
+      "types": {
+        "email": "Email",
+        "sms": "SMS",
+        "push": "Push Notification"
+      },
+      "subject": "Subject",
+      "subjectPlaceholder": "Enter email subject...",
+      "message": "Message",
+      "characterCount": "{{current}}/{{max}} characters",
+      "placeholders": {
+        "email": "Enter your email message here...\n\nThis email will be sent to the selected user(s) with your admin signature.",
+        "sms": "Enter your SMS message here (160 characters max)...",
+        "push": "Enter your push notification message here...",
+        "default": "Enter your message here..."
+      },
+      "preview": "Preview",
+      "previewPlaceholder": "Your message will appear here...",
+      "signature": {
+        "bestRegards": "Best regards,",
+        "team": "Nomad Lux Admin Team",
+        "email": "admin@nomadlux.com"
+      },
+      "sendEmail": "Send Email",
+      "sendSMS": "Send SMS",
+      "sendNotification": "Send Notification"
+    }
+  },
+  "payments": {
+    "allPayments": "All Payments",
+    "pendingPayments": "Pending Payments",
+    "completedPayments": "Completed Payments",
+    "failedPayments": "Failed Payments",
+    "refundedPayments": "Refunded Payments",
+    "paymentDetails": "Payment Details",
+    "paymentMethod": "Payment Method",
+    "paymentAmount": "Payment Amount",
+    "processingFee": "Processing Fee",
+    "netAmount": "Net Amount",
+    "refundPayment": "Refund Payment",
+    "payoutRequests": "Payout Requests",
+    "approvePayout": "Approve Payout",
+    "rejectPayout": "Reject Payout",
+    "paymentTracking": "Payment Tracking",
+    "paymentRecords": "Payment Records",
+    "loadingRecords": "Loading payment records...",
+    "noRecords": "No payment records found.",
+    "noRequests": "No payout requests found.",
+    "recordDetails": "Payment Record Details",
+    "labels": {
+      "id": "ID",
+      "bookingId": "Booking ID",
+      "amount": "Amount",
+      "status": "Status",
+      "method": "Method",
+      "provider": "Provider",
+      "intentId": "Intent ID",
+      "processingFee": "Processing Fee",
+      "platformFee": "Platform Fee",
+      "netAmount": "Net Amount",
+      "payoutStatus": "Payout Status",
+      "payoutDate": "Payout Date",
+      "payoutReference": "Payout Reference",
+      "failureReason": "Failure Reason",
+      "refundAmount": "Refund Amount",
+      "refundReason": "Refund Reason"
+    },
+    "refundModal": {
+      "title": "Process Refund - {{id}}",
+      "originalPayment": "Original Payment",
+      "refundAmountPlaceholder": "Enter refund amount",
+      "refundReasonPlaceholder": "Reason for refund...",
+      "buttons": {
+        "cancel": "Cancel",
+        "processRefund": "Process Refund"
+      }
+    },
+    "initiatedAt": "Initiated At",
+    "completedAt": "Completed At",
+    "refundedAt": "Refunded At",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "metadata": "Metadata",
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "refunded": "Refunded",
+      "partial_refund": "Partial Refund"
+    }
+  },
+  "settings": {
+    "generalSettings": "General Settings",
+    "bookingSettings": "Booking Settings",
+    "paymentSettings": "Payment Settings",
+    "notificationSettings": "Notification Settings",
+    "securitySettings": "Security Settings",
+    "contentSettings": "Content Settings",
+    "cancellationSettings": "Cancellation Settings",
+    "platformFee": "Platform Fee",
+    "minimumPayout": "Minimum Payout",
+    "payoutSchedule": "Payout Schedule",
+    "autoApproval": "Auto Approval",
+    "emailNotifications": "Email Notifications",
+    "pushNotifications": "Push Notifications",
+    "maintenanceMode": "Maintenance Mode",
+    "siteName": "Site Name",
+    "contactEmail": "Contact Email",
+    "supportEmail": "Support Email",
+    "defaultLanguage": "Default Language",
+    "timezone": "Timezone",
+    "siteDescription": "Site Description",
+    "systemStatus": "System Status",
+    "maintenanceModeDesc": "Temporarily disable public access",
+    "userRegistration": "User Registration",
+    "userRegistrationDesc": "Allow new users to register",
+    "fileUpload": "File Upload Settings",
+    "maxFileSize": "Maximum File Size (MB)",
+    "currentValue": "Current: {{value}} MB",
+    "allowedImageFormats": "Allowed Image Formats",
+    "format": "format",
+    "commissionRate": "Commission Rate (%)",
+    "currentPercent": "Current: {{value}}%",
+    "paymentProcessingFee": "Payment Processing Fee (%)",
+    "maxAdvanceBooking": "Maximum Advance Booking (days)",
+    "minAdvanceBooking": "Minimum Advance Booking (days)",
+    "cancellationGrace": "Cancellation Grace Period (hours)",
+    "minimumStay": "Minimum Stay (nights)",
+    "maximumStay": "Maximum Stay (nights)",
+    "bookingFeatures": "Booking Features",
+    "autoApprovalDesc": "Automatically approve eligible bookings",
+    "instantBooking": "Instant Booking",
+    "instantBookingDesc": "Allow guests to book instantly without host approval",
+    "stripe": "Stripe Configuration",
+    "stripePublicKey": "Stripe Public Key",
+    "stripeSecretKey": "Stripe Secret Key",
+    "paypal": "PayPal Configuration",
+    "paypalClientId": "PayPal Client ID",
+    "paypalClientSecret": "PayPal Client Secret",
+    "currencyAndPayout": "Currency & Payout Settings",
+    "defaultCurrency": "Default Currency",
+    "minimumPayout": "Minimum Payout Amount",
+    "paymentHoldDays": "Payment Hold Days",
+    "paymentHoldDesc": "Days to hold payment before making it eligible for payout",
+    "taxRate": "Tax Rate (%)",
+    "paymentFeatures": "Payment Features",
+    "autoPayout": "Auto-Payout",
+    "autoPayoutDesc": "Automatically process host payouts",
+    "chargeTaxes": "Charge Taxes",
+    "chargeTaxesDesc": "Automatically calculate and charge taxes",
+    "notificationChannels": "Notification Channels",
+    "emailNotificationsDesc": "Send notifications via email",
+    "smsNotifications": "SMS Notifications",
+    "smsNotificationsDesc": "Send notifications via SMS",
+    "pushNotificationsDesc": "Send browser push notifications",
+    "notificationTypes": "Notification Types",
+    "authentication": "Authentication Settings",
+    "passwordMin": "Minimum Password Length",
+    "sessionTimeout": "Session Timeout (minutes)",
+    "maxLoginAttempts": "Max Login Attempts",
+    "apiRateLimit": "API Rate Limit (per hour)",
+    "securityFeatures": "Security Features",
+    "twoFactorRequired": "Two-Factor Authentication Required",
+    "twoFactorRequiredDesc": "Require 2FA for all admin accounts",
+    "requireSpecialChars": "Require Special Characters",
+    "requireSpecialCharsDesc": "Passwords must contain special characters",
+    "enableAuditLog": "Enable Audit Log",
+    "enableAuditLogDesc": "Log all admin actions and changes",
+    "encryptUserData": "Encrypt User Data",
+    "encryptUserDataDesc": "Encrypt sensitive user information",
+    "accessControl": "Access Control",
+    "ipWhitelist": "IP Whitelist",
+    "ipWhitelistPlaceholder": "Enter IP addresses (one per line)",
+    "ipWhitelistDesc": "Restrict admin access to specific IP addresses",
+    "dataRetention": "Data Retention Period (days)",
+    "dataRetentionDesc": "How long to keep user data after account deletion",
+    "termsOfService": "Terms of Service",
+    "termsPlaceholder": "Enter terms of service content...",
+    "privacyPolicy": "Privacy Policy",
+    "privacyPlaceholder": "Enter privacy policy content...",
+    "hostGuidelines": "Host Guidelines",
+    "hostGuidelinesPlaceholder": "Enter host guidelines...",
+    "guestGuidelines": "Guest Guidelines",
+    "guestGuidelinesPlaceholder": "Enter guest guidelines...",
+    "cancellationPolicy": "Cancellation Policy",
+    "cancellationPolicyPlaceholder": "Enter cancellation policy...",
+    "cacheManagement": "Cache Management",
+    "cacheManagementDesc": "Manage application cache to resolve loading issues and improve performance",
+    "browserCache": "Browser Cache",
+    "browserCacheDesc": "HTTP cache and service workers",
+    "appCache": "App Cache",
+    "appCacheDesc": "Zustand stores and localStorage",
+    "supabaseCache": "Supabase Cache",
+    "supabaseCacheDesc": "API response cache",
+    "clearAppCache": "Clear App Cache",
+    "clearAppCacheDesc": "Clear Zustand stores & localStorage",
+    "clearAllCache": "Clear All Cache",
+    "clearAllCacheDesc": "Clear everything & restart",
+    "detectIssues": "Detect Issues",
+    "detectIssuesDesc": "Check for cache problems",
+    "forceRefresh": "Force Refresh",
+    "forceRefreshDesc": "Reload with cache busting",
+    "cacheSettings": "Cache Settings",
+    "cacheDuration": "Cache Duration (minutes)",
+    "cacheDurationDesc": "How long to cache API responses",
+    "autoClearInterval": "Auto-clear interval (hours)",
+    "autoClearIntervalDesc": "Automatically clear stale cache",
+    "enableCacheBusting": "Enable cache busting in development",
+    "showCacheDebug": "Show cache debug information",
+    "whenToClear": "💡 When to Clear Cache",
+    "clearTip1": "GET requests not returning updated data",
+    "clearTip2": "Properties or settings showing old values",
+    "clearTip3": "App behaving unexpectedly after updates",
+    "clearTip4": "Before reporting bugs to ensure it's not cache-related",
+    "testConfiguration": "Test Configuration",
+    "changeLog": "Settings Change Log",
+    "categories": {
+      "booking": "Booking",
+      "security": "Security",
+      "general": "General"
+    },
+    "changedBy": "Changed by:",
+    "exportLog": "Export Log"
+  },
+  "reports": {
+    "bookingReports": "Booking Reports",
+    "revenueReports": "Revenue Reports",
+    "userReports": "User Reports",
+    "propertyReports": "Property Reports",
+    "paymentReports": "Payment Reports",
+    "exportReport": "Export Report",
+    "generateReport": "Generate Report",
+    "reportPeriod": "Report Period",
+    "dailyReport": "Daily Report",
+    "weeklyReport": "Weekly Report",
+    "monthlyReport": "Monthly Report",
+    "yearlyReport": "Yearly Report"
+  },
+  "actions": {
+    "approve": "Approve",
+    "reject": "Reject",
+    "suspend": "Suspend",
+    "activate": "Activate",
+    "ban": "Ban",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "filter": "Filter",
+    "search": "Search",
+    "bulkAction": "Bulk Action",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "viewActivities": "View all activities",
+    "message": "Send Message"
+  },
+  "roles": {
+    "super_admin": "Super Administrator",
+    "admin": "Administrator",
+    "host": "Host",
+    "guest": "Guest",
+    "user": "User"
+  },
+  "search": {
+    "placeholder": "Search users, properties, bookings..."
+  },
+  "messages": {
+    "propertyApproved": "Property approved successfully",
+    "propertyApprovalModal": {
+      "title": "Approve Property",
+      "labels": {
+        "hostId": "Host ID:"
+      },
+      "confirmations": {
+        "readyToApprove": "Ready to approve?",
+        "description": "This property will be published and available for guests to book. The host will be notified of the approval."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "approveProperty": "Approve Property"
+      }
+    },
+    "bulkSuspendModal": {
+      "title": "Confirm Bulk Suspension",
+      "confirmation": "Are you sure you want to suspend {{count}} properties?",
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    },
+    "bulkActionModal": {
+      "title": {
+        "approve": "Confirm Bulk Approval",
+        "reject": "Confirm Bulk Rejection"
+      },
+      "confirmation": "Are you sure you want to {{action}} {{count}} properties?",
+      "labels": {
+        "rejectionReason": "Rejection Reason (applies to all)"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "confirm": "Confirm"
+      }
+    },
+    "imageLightboxModal": {
+      "altText": "Property image {{index}}",
+      "navigation": {
+        "previous": "Previous image",
+        "next": "Next image"
+      },
+      "counter": "{{current}} / {{total}}"
+    },
+    "propertyRejected": "Property rejected successfully",
+    "propertyRejectionModal": {
+      "title": "Reject Property",
+      "description": "Please provide a reason for rejecting this property. This will be sent to the host.",
+      "placeholders": {
+        "reason": "Reason for rejection..."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "rejectProperty": "Reject Property"
+      }
+    },
+    "propertySuspended": "Property suspended successfully",
+    "propertySuspensionModal": {
+      "title": "Suspend Property",
+      "labels": {
+        "hostId": "Host ID:",
+        "reasonForSuspension": "Reason for suspension",
+        "required": "*"
+      },
+      "warnings": {
+        "suspendProperty": "Suspend this property?",
+        "description": "This will temporarily hide the property from guests and prevent new bookings. Existing bookings will remain active. The host will be notified."
+      },
+      "placeholders": {
+        "reason": "Please provide a reason for suspending this property..."
+      },
+      "descriptions": {
+        "reason": "This reason will be sent to the host and recorded in the property history."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "suspendProperty": "Suspend Property"
+      }
+    },
+    "userSuspended": "User suspended successfully",
+    "userActivated": "User activated successfully",
+    "userBanned": "User banned successfully",
+    "paymentRefunded": "Payment refunded successfully",
+    "payoutApproved": "Payout approved successfully",
+    "payoutRejected": "Payout rejected successfully",
+    "approveRejectPayoutModal": {
+      "title": {
+        "approve": "Approve Payout Request",
+        "reject": "Reject Payout Request"
+      },
+      "labels": {
+        "amount": "Amount:",
+        "host": "Host:",
+        "note": "Note (optional)"
+      },
+      "placeholders": {
+        "approve": "Add a note for approval...",
+        "reject": "Reason for rejection..."
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "approve": "Approve",
+        "reject": "Reject",
+        "approving": "Approving...",
+        "rejecting": "Rejecting..."
+      },
+      "errors": {
+        "actionFailed": "Action failed"
+      }
+    },
+    "settingsUpdated": "Settings updated successfully",
+    "reportGenerated": "Report generated successfully",
+    "bulkActionCompleted": "Bulk action completed successfully",
+    "confirmAction": "Are you sure you want to perform this action?",
+    "actionCannotBeUndone": "This action cannot be undone",
+    "loadingSettings": "Loading admin settings...",
+    "settingsLoadFailed": "Failed to load admin settings"
+  },
+  "login": {
+    "title": "Admin Access",
+    "subtitle": "Nomad Lux Administration",
+    "email": "Admin Email",
+    "passwordPlaceholder": "Enter admin password",
+    "signIn": "Sign In to Admin Panel",
+    "needAccess": "Need admin access?",
+    "requestAccess": "Request Access",
+    "infoTitle": "Admin Access:",
+    "info": "Only accounts with admin or super_admin roles can access the admin panel.",
+    "emailPlaceholder": "admin@nomadlux.com",
+    "unexpectedError": "An unexpected error occurred"
+  },
+  "register": {
+    "title": "Create Admin Account",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "phoneOptional": "Phone Number (Optional)",
+    "reason": "Reason for Admin Access",
+    "reasonPlaceholder": "Please explain why you need admin access to Nomad Lux...",
+    "creating": "Creating Admin Account...",
+    "create": "Create Admin Account",
+    "infoTitle": "Admin Registration:",
+    "info": "Your account will be created with full administrative privileges and immediate access to the admin panel.",
+    "hasAccount": "Already have an admin account?",
+    "signInHere": "Sign in here"
+  },
+  "activity": {
+    "title": "Activity Log",
+    "subtitle": "Monitor all platform activities and events",
+    "advancedFilters": "Advanced Filters",
+    "searchPlaceholder": "Search activities by action, user, target...",
+    "severity": {
+      "label": "Severity",
+      "all": "All Severities",
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "critical": "Critical"
+    },
+    "tabs": {
+      "allActivities": "All Activities ({{count}})",
+      "users": "Users ({{count}})",
+      "properties": "Properties ({{count}})",
+      "bookings": "Bookings ({{count}})",
+      "payments": "Payments ({{count}})",
+      "security": "Security ({{count}})",
+      "system": "System ({{count}})"
+    },
+    "empty": {
+      "title": "No activities found",
+      "subtitle": "Try adjusting your search filters to see more results."
+    }
+  },
+  "analytics": {
+    "title": "Analytics Dashboard",
+    "subtitle": "Detailed insights and platform performance metrics",
+    "subtitleShort": "Platform insights and performance metrics",
+    "vsLastMonth": "vs last month",
+    "period": {
+      "select": "Select period",
+      "last7": "Last 7 days",
+      "last30": "Last 30 days",
+      "last90": "Last 90 days",
+      "lastYear": "Last year"
+    },
+    "customRange": "Custom Range",
+    "tabs": {
+      "revenue": "Revenue"
+    },
+    "sections": {
+      "revenueTrend": "Revenue Trend",
+      "bookingStatus": "Booking Status",
+      "userGrowth": "User Growth",
+      "platformHealth": "Platform Health"
+    },
+    "revenue": {
+      "monthlyRevenue": "Monthly Revenue",
+      "breakdown": "Revenue Breakdown",
+      "commission": "Commission",
+      "serviceFees": "Service Fees",
+      "premiumFeatures": "Premium Features"
+    },
+    "topPerformingProperties": "Top Performing Properties",
+    "topPerformingHosts": "Top Performing Hosts",
+    "labels": {
+      "bookings": "{{count}} bookings",
+      "revenue": "revenue",
+      "properties": "{{count}} properties",
+      "responseRate": "{{value}}% response rate",
+      "totalRevenue": "total revenue",
+      "host": "Host",
+      "bookingsOnly": "Bookings",
+      "rating": "Rating",
+      "revenueOnly": "Revenue",
+      "avgDays": "Avg. {{value}} days"
+    },
+    "users": {
+      "statistics": "User Statistics",
+      "totalRegistered": "Total Registered Users",
+      "active30Days": "Active Users (30 days)",
+      "newThisMonth": "New Users (This Month)",
+      "retentionRate": "User Retention Rate"
+    },
+    "properties": {
+      "performance": "Property Performance"
+    },
+    "bookings": {
+      "statusDistribution": "Booking Status Distribution",
+      "metrics": "Booking Metrics",
+      "avgValue": "Average Booking Value",
+      "successRate": "Booking Success Rate",
+      "avgStay": "Average Stay Duration",
+      "repeatRate": "Repeat Booking Rate"
+    },
+    "stats": {
+      "avgResponseTime": "Average Response Time",
+      "customerSatisfaction": "Customer Satisfaction",
+      "propertyApprovalRate": "Property Approval Rate",
+      "platformUptime": "Platform Uptime"
+    }
+  },
+  "locationVerification": {
+    "title": "Location Verification",
+    "coordsUnavailable": {
+      "title": "Coordinates unavailable",
+      "subtitle": "This property does not have valid location coordinates."
+    },
+    "verified": "Location Verified",
+    "invalid": "Location Invalid",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "verifyButton": "Verify Location",
+    "city": "City",
+    "country": "Country",
+    "neighborhood": "Neighborhood",
+    "address": "Address"
+  },
+  "mapToolbar": {
+    "searchPlaceholder": "Search by location, property name...",
+    "filters": "Filters",
+    "statusLabels": {
+      "approved": "Approved",
+      "pending": "Pending",
+      "rejected": "Rejected",
+      "suspended": "Suspended"
+    },
+    "tools": {
+      "selection": "Toggle selection mode",
+      "measurement": "Distance measurement",
+      "areaSelection": "Area selection"
+    },
+    "refresh": "Refresh",
+    "export": "Export",
+    "exportOptions": "Export options",
+    "exportAs": {
+      "csv": "Export as CSV",
+      "json": "Export as JSON",
+      "excel": "Export as Excel"
+    },
+    "selectedCount": "{{count}} propert{{count === 1 ? 'y' : 'ies'}} selected",
+    "bulkActions": {
+      "approve": "Approve selected",
+      "approveButton": "Approve",
+      "reject": "Reject selected",
+      "rejectButton": "Reject",
+      "suspend": "Suspend selected",
+      "suspendButton": "Suspend"
+    },
+    "advancedFilters": {
+      "title": "Advanced Filters",
+      "clearAll": "Clear All",
+      "priceRange": "Price Range (per night)",
+      "min": "Min",
+      "max": "Max",
+      "dateRange": "Created Date Range",
+      "quickStats": "Quick Stats",
+      "totalProperties": "Total Properties",
+      "visible": "Visible",
+      "selected": "Selected"
+    },
+    "marker": {
+      "quickActions": "Quick Actions",
+      "viewDetails": "View Details",
+      "editProperty": "Edit Property",
+      "contactHost": "Contact Host",
+      "photos": "photos",
+      "created": "Created",
+      "hostSince": "Host since",
+      "current": "Current",
+      "night": "/night",
+      "statusChange": {
+        "approveProperty": "Approve Property",
+        "rejectProperty": "Reject Property",
+        "suspendProperty": "Suspend Property",
+        "setToPending": "Set to Pending",
+        "descriptions": {
+          "approve": "This property will be made visible to users and available for booking.",
+          "reject": "This property will be rejected and the host will be notified.",
+          "suspend": "This property will be temporarily suspended from bookings.",
+          "pending": "This property will be moved back to pending status for review."
+        },
+        "reasonLabel": "Reason for {{action}}",
+        "reasonPlaceholder": "Please provide a reason for {{action}}ing this property...",
+        "cancel": "Cancel",
+        "processing": "Processing...",
+        "actions": {
+          "approve": "Approve",
+          "reject": "Reject",
+          "suspend": "Suspend",
+          "pending": "Pending"
+        },
+        "messages": {
+          "reasonRequired": "Please provide a reason for this action",
+          "statusChangeFailed": "Failed to change property status",
+          "propertyStatusChanged": "Property {{status}} successfully"
+        }
+      }
+    }
+  }
+}

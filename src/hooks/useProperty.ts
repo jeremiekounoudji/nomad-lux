@@ -23,11 +23,12 @@ export const useProperty = () => {
     id: data.id,
     title: data.title,
     description: data.description,
-    price: data.price,
+    price: data.price_per_night,
+    price_per_night: data.price_per_night,
     currency: data.currency,
     location: data.location,
     images: data.images,
-    videos: data.videos,
+    videos: data.video ? [data.video] : [],
     host: {
       id: data.host.id,
       name: data.host.name,
@@ -61,7 +62,13 @@ export const useProperty = () => {
     service_fee: data.service_fee,
     instant_book: data.instant_book || false,
     additional_fees: data.additional_fees || [],
-    distance: data.distance || '0 km away'
+    distance: data.distance || '0 km away',
+    like_count: data.like_count || 0,
+    unavailable_dates: data.unavailable_dates || [],
+    timezone: data.timezone || 'UTC',
+    suspended_at: data.suspended_at,
+    suspended_by: data.suspended_by,
+    suspension_reason: data.suspension_reason
   })
 
   // Submit a new property
@@ -180,12 +187,45 @@ export const useProperty = () => {
         throw new Error('Video upload failed')
       }
 
-      // Step 2: Prepare property data for database with uploaded URLs
+      // Step 2: Handle property settings (settings-first workflow)
+      let propertySettingsId: string
+
+      if (propertyData.create_new_settings && propertyData.property_settings) {
+        console.log('🔄 Step 2a: Creating new property settings first...')
+        
+        // Create property settings first
+        const { data: settingsData, error: settingsError } = await supabase
+          .from('host_property_settings')
+          .insert({
+            host_id: user.id,
+            ...propertyData.property_settings
+          })
+          .select()
+          .single()
+
+        if (settingsError) {
+          console.error('❌ Error creating property settings:', settingsError)
+          throw new Error(`Failed to create property settings: ${settingsError.message}`)
+        }
+
+        propertySettingsId = settingsData.id
+        console.log('✅ Property settings created:', propertySettingsId)
+        
+      } else if (propertyData.existing_settings_id) {
+        console.log('🔄 Step 2b: Using existing property settings:', propertyData.existing_settings_id)
+        propertySettingsId = propertyData.existing_settings_id
+        
+      } else {
+        throw new Error('No property settings provided - either create new or select existing settings')
+      }
+
+      // Step 3: Prepare property data for database with uploaded URLs and settings ID
       const dbPropertyData = {
         host_id: user.id,
+        property_settings_id: propertySettingsId, // Link to property settings
         title: propertyData.title,
         description: propertyData.description,
-        price: propertyData.price,
+        price_per_night: propertyData.price,
         currency: propertyData.currency || 'USD',
         location: {
           city: propertyData.location.city,
@@ -197,7 +237,7 @@ export const useProperty = () => {
           }
         },
         images: imageUrls, // Use uploaded URLs instead of File objects
-        videos: videoUrl, // Use uploaded URL instead of File object
+        video: videoUrl, // Use uploaded URL instead of File object
         property_type: propertyData.property_type,
         max_guests: propertyData.max_guests,
         bedrooms: propertyData.bedrooms,
@@ -208,11 +248,12 @@ export const useProperty = () => {
         status: 'pending'
       }
 
-      console.log('💾 Step 3: Inserting property data into database:', {
+      console.log('💾 Step 4: Inserting property data into database:', {
         title: dbPropertyData.title,
         imageCount: dbPropertyData.images.length,
-        hasVideo: !!dbPropertyData.videos,
-        propertyType: dbPropertyData.property_type
+        hasVideo: !!dbPropertyData.video,
+        propertyType: dbPropertyData.property_type,
+        settingsId: propertySettingsId
       })
 
       const { data, error } = await supabase
@@ -286,11 +327,11 @@ export const useProperty = () => {
       
       if (updates.title) dbUpdates.title = updates.title
       if (updates.description) dbUpdates.description = updates.description
-      if (updates.price) dbUpdates.price = updates.price
+      if (updates.price) dbUpdates.price_per_night = updates.price
       if (updates.currency) dbUpdates.currency = updates.currency
       if (updates.location) dbUpdates.location = updates.location
       if (updates.images) dbUpdates.images = updates.images
-      if (updates.videos) dbUpdates.videos = updates.videos
+      if (updates.videos) dbUpdates.video = updates.videos
       if (updates.property_type) dbUpdates.property_type = updates.property_type
       if (updates.max_guests) dbUpdates.max_guests = updates.max_guests
       if (updates.bedrooms) dbUpdates.bedrooms = updates.bedrooms

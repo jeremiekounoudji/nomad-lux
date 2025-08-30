@@ -1,0 +1,50 @@
+{
+  "title": "Conditions générales",
+  "lastUpdated": "Dernière mise à jour : {{date}}",
+  "sections": {
+    "introduction": {
+      "title": "1. Introduction",
+      "content": "Bienvenue sur NomadLux. En accédant à notre plateforme ou en l'utilisant, vous acceptez d'être lié par les présentes Conditions générales. Veuillez les lire attentivement."
+    },
+    "definitions": {
+      "title": "2. Définitions",
+      "items": {
+        "platform": "\"Plateforme\" désigne le site web et les services NomadLux",
+        "user": "\"Utilisateur\" désigne toute personne qui accède à la Plateforme ou l'utilise",
+        "host": "\"Hôte\" désigne les utilisateurs qui publient des propriétés sur la Plateforme",
+        "guest": "\"Invité\" désigne les utilisateurs qui réservent des propriétés via la Plateforme"
+      }
+    },
+    "responsibilities": {
+      "title": "3. Responsabilités de l'utilisateur",
+      "content": "Les utilisateurs sont responsables de la confidentialité des informations de leur compte et de toutes les activités effectuées sous leur compte."
+    },
+    "booking": {
+      "title": "4. Réservations et paiements",
+      "content": "Toutes les réservations et les paiements sont traités via notre plateforme sécurisée. Les utilisateurs s'engagent à payer tous les frais et taxes applicables."
+    },
+    "cancellation": {
+      "title": "5. Politique d'annulation",
+      "content": "Les politiques d'annulation varient selon la propriété. Les utilisateurs doivent consulter la politique spécifique avant de réserver."
+    },
+    "privacy": {
+      "title": "6. Confidentialité",
+      "content": "Nos pratiques en matière de confidentialité sont régies par notre Politique de confidentialité, qui fait partie intégrante des présentes Conditions générales."
+    },
+    "contact": {
+      "title": "Contactez-nous",
+      "description": "Si vous avez des questions concernant ces Conditions générales, veuillez nous contacter :",
+      "email": "Email",
+      "address": "Adresse",
+      "phone": "Téléphone",
+      "emailAddress": "legal@nomadlux.com",
+      "streetAddress": "123 Luxury Street, Suite 100",
+      "phoneNumber": "+1 (555) 123-4567"
+    }
+  }
+}
+
+
+
+
+

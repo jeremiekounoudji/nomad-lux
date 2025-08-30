@@ -1,0 +1,22 @@
+{
+  "loadingLibraries": "Loading map libraries...",
+  "loadingMap": "Loading map...",
+  "loadingMarkers": "Loading markers...",
+  "loadingDirections": "Loading directions...",
+  "loadingNearby": "Loading nearby places...",
+  "locationNotAvailable": "Location not available",
+  "propertyLocation": "Property location",
+  "nearbyPlaces": "Nearby places",
+  "getDirections": "Get directions",
+  "viewOnMap": "View on map",
+  "distance": "{{distance}} away",
+  "walkingDistance": "{{duration}} walk",
+  "drivingDistance": "{{duration}} drive",
+  "transitDistance": "{{duration}} by transit",
+  "cyclingDistance": "{{duration}} by bike",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "recenter": "Recenter map",
+  "showNearby": "Show nearby places",
+  "hideNearby": "Hide nearby places"
+}

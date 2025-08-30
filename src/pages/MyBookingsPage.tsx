@@ -1,197 +1,119 @@
-import React, { useState } from 'react'
-import { Card, CardBody, Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, X } from 'lucide-react'
-import MainLayout from '../components/layout/MainLayout'
-import { MyBookingsPageProps, Booking } from '../interfaces'
-import { CancelBookingModal } from '../components/shared'
+import React, { useState, useEffect } from 'react'
+import { Button, Tabs, Tab, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Avatar, Chip, Divider } from '@heroui/react'
+import { Calendar, MapPin, Star, CreditCard, Phone, Mail, MessageCircle, User, X } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { PageBanner } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
+import { MyBookingsPageProps, DatabaseBooking } from '../interfaces'
+import { CancelBookingModal, ContactHostModal } from '../components/shared'
+import { useBookingManagement } from '../hooks/useBookingManagement'
+import { useBookingStore } from '../lib/stores/bookingStore'
+import { BookingStatus } from '../interfaces/Booking'
+import { formatPrice } from '../utils/currencyUtils'
+import MyBookingCard from '../components/shared/MyBookingCard'
+import { useAuthStore } from '../lib/stores/authStore'
+import { useTranslation } from '../lib/stores/translationStore'
 
-const mockBookings: Booking[] = [
-  {
-    id: '1',
-    propertyName: 'GastronomicGrove',
-    propertyImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
-    location: '5502 Preston Rd, Inglewood',
-    rating: 4.8,
-    checkIn: '2024-02-15',
-    checkOut: '2024-02-18',
-    guests: 2,
-    totalPrice: 450,
-    status: 'completed',
-    hostName: 'Maria Rodriguez',
-    hostAvatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
-    hostPhone: '+1 (555) 123-4567',
-    hostEmail: 'maria@example.com',
-    bookingDate: '2024-01-20',
-    paymentMethod: 'Visa ending in 4242',
-    amenities: ['WiFi', 'Kitchen', 'Parking', 'Pool'],
-    cleaningFee: 25,
-    serviceFee: 35,
-    taxes: 40,
-    bookingTimeline: [
-      { date: '2024-01-20', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' },
-      { date: '2024-02-14', event: 'Check-in Instructions', description: 'Host sent check-in instructions' },
-      { date: '2024-02-15', event: 'Checked In', description: 'Successfully checked into the property' },
-      { date: '2024-02-18', event: 'Checked Out', description: 'Completed stay and checked out' }
-    ]
-  },
-  {
-    id: '2',
-    propertyName: 'AmbrosiaArcade',
-    propertyImage: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400',
-    location: '6391 Elgin St, Celina, Delaware',
-    rating: 4.4,
-    checkIn: '2024-03-10',
-    checkOut: '2024-03-13',
-    guests: 4,
-    totalPrice: 320,
-    status: 'active',
-    hostName: 'John Smith',
-    hostAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    hostPhone: '+1 (555) 987-6543',
-    hostEmail: 'john@example.com',
-    bookingDate: '2024-02-25',
-    paymentMethod: 'Mastercard ending in 8888',
-    specialRequests: 'Late check-in requested',
-    amenities: ['WiFi', 'Kitchen', 'Gym', 'Spa'],
-    cleaningFee: 30,
-    serviceFee: 25,
-    taxes: 35,
-    bookingTimeline: [
-      { date: '2024-02-25', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' },
-      { date: '2024-03-09', event: 'Reminder Sent', description: 'Check-in reminder sent to your email' }
-    ]
-  },
-  {
-    id: '3',
-    propertyName: 'TasteTrove Tavern',
-    propertyImage: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400',
-    location: '3891 Ranchview Dr, Richardson',
-    rating: 4.3,
-    checkIn: '2024-04-05',
-    checkOut: '2024-04-08',
-    guests: 3,
-    totalPrice: 280,
-    status: 'active',
-    hostName: 'Sarah Johnson',
-    hostAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-    hostPhone: '+1 (555) 456-7890',
-    hostEmail: 'sarah@example.com',
-    bookingDate: '2024-03-01',
-    paymentMethod: 'Amex ending in 1234',
-    amenities: ['WiFi', 'Kitchen', 'Fireplace', 'Garden'],
-    cleaningFee: 20,
-    serviceFee: 30,
-    taxes: 25,
-    bookingTimeline: [
-      { date: '2024-03-01', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' }
-    ]
-  },
-  {
-    id: '4',
-    propertyName: 'RadiantRepast',
-    propertyImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400',
-    location: '1901 Thornridge Cir, Shiloh',
-    rating: 4.9,
-    checkIn: '2024-01-20',
-    checkOut: '2024-01-23',
-    guests: 2,
-    totalPrice: 380,
-    status: 'cancelled',
-    hostName: 'Michael Chen',
-    hostAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    hostPhone: '+1 (555) 321-0987',
-    hostEmail: 'michael@example.com',
-    bookingDate: '2024-01-05',
-    paymentMethod: 'Visa ending in 5678',
-    amenities: ['WiFi', 'Kitchen', 'Balcony', 'AC'],
-    cleaningFee: 25,
-    serviceFee: 30,
-    taxes: 35,
-    bookingTimeline: [
-      { date: '2024-01-05', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' },
-      { date: '2024-01-18', event: 'Booking Cancelled', description: 'Booking was cancelled due to host unavailability' }
-    ]
-  },
-  {
-    id: '5',
-    propertyName: 'Sunset Villa',
-    propertyImage: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400',
-    location: '2847 Sunset Blvd, Los Angeles',
-    rating: 4.6,
-    checkIn: '2024-05-15',
-    checkOut: '2024-05-18',
-    guests: 6,
-    totalPrice: 520,
-    status: 'active',
-    hostName: 'Lisa Wang',
-    hostAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150',
-    hostPhone: '+1 (555) 789-0123',
-    hostEmail: 'lisa@example.com',
-    bookingDate: '2024-04-01',
-    paymentMethod: 'Visa ending in 9999',
-    amenities: ['WiFi', 'Pool', 'Kitchen', 'Parking', 'Garden'],
-    cleaningFee: 40,
-    serviceFee: 45,
-    taxes: 55,
-    bookingTimeline: [
-      { date: '2024-04-01', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' }
-    ]
-  },
-  {
-    id: '6',
-    propertyName: 'Ocean Breeze Apartment',
-    propertyImage: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400',
-    location: '1234 Ocean Drive, Miami',
-    rating: 4.7,
-    checkIn: '2024-06-10',
-    checkOut: '2024-06-13',
-    guests: 4,
-    totalPrice: 390,
-    status: 'completed',
-    hostName: 'Carlos Martinez',
-    hostAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
-    hostPhone: '+1 (555) 654-3210',
-    hostEmail: 'carlos@example.com',
-    bookingDate: '2024-05-01',
-    paymentMethod: 'Mastercard ending in 7777',
-    amenities: ['WiFi', 'Beach Access', 'Kitchen', 'Balcony'],
-    cleaningFee: 30,
-    serviceFee: 35,
-    taxes: 40,
-    bookingTimeline: [
-      { date: '2024-05-01', event: 'Booking Confirmed', description: 'Your booking has been confirmed by the host' },
-      { date: '2024-06-09', event: 'Check-in Instructions', description: 'Host sent check-in instructions' },
-      { date: '2024-06-10', event: 'Checked In', description: 'Successfully checked into the property' },
-      { date: '2024-06-13', event: 'Checked Out', description: 'Completed stay and checked out' }
-    ]
+// Extended type for guest bookings with joined properties data
+type GuestBookingWithProperties = DatabaseBooking & {
+  properties?: {
+    title: string
+    images: string[]
+    location: {
+      city: string
+      country: string
+      address?: string
+      coordinates: {
+        lat: number
+        lng: number
+      }
+    }
+    rating: number
   }
+  hosts?: {
+    id: string
+    display_name: string
+    avatar_url?: string
+    email: string
+    phone?: string
+    host_rating?: number
+    total_host_reviews: number
+  }
+}
+
+const ITEMS_PER_PAGE = 6
+const ALL_STATUSES: BookingStatus[] = [
+  'pending',
+  'confirmed',
+  'cancelled',
+  'completed',
+  'rejected',
+  'accepted-and-waiting-for-payment',
+  'payment-failed',
 ]
 
 const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
-  const [selectedTab, setSelectedTab] = useState<string>('active')
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
-  const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null)
+  const { user } = useAuthStore()
+  const { t } = useTranslation(['booking', 'common'])
+  const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
+  const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
+  const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
+  const [bookingToContact, setBookingToContact] = useState<GuestBookingWithProperties | null>(null)
+  const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure()
+  const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
+  const [paginationByStatus, setPaginationByStatus] = useState<Record<BookingStatus, { page: number }>>(() => {
+    const initial: Record<BookingStatus, { page: number }> = {} as any
+    ALL_STATUSES.forEach(status => { initial[status] = { page: 1 } })
+    return initial
+  })
+  const { loadGuestBookings, cancelBooking } = useBookingManagement()
+  const { guestBookings, isLoadingGuestBookings, error } = useBookingStore()
+  
+  // Type cast since the query includes joined properties data
+  const guestBookingsWithProperties = guestBookings as GuestBookingWithProperties[]
 
-  const filteredBookings = mockBookings.filter(booking => booking.status === selectedTab)
+  useEffect(() => {
+    loadGuestBookings().catch(console.error)
+  }, [loadGuestBookings])
 
-  const getStatusColor = (status: string) => {
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
+
+  const filteredBookings = guestBookingsWithProperties.filter(booking => booking.status === selectedTab)
+  const page = paginationByStatus[selectedTab]?.page || 1
+  const pageSize = ITEMS_PER_PAGE
+  const totalPages = Math.ceil(filteredBookings.length / pageSize)
+  const paginatedBookings = filteredBookings.slice((page - 1) * pageSize, page * pageSize)
+
+  const getStatusColor = (status: string): "default" | "primary" | "secondary" | "success" | "warning" | "danger" => {
     switch (status) {
-      case 'active':
-        return 'secondary'
-      case 'completed':
+      case 'accepted-and-waiting-for-payment':
+        return 'warning'
+      case 'confirmed':
         return 'success'
+      case 'completed':
+        return 'primary'
       case 'cancelled':
+      case 'rejected':
+        return 'danger'
+      case 'payment-failed':
         return 'danger'
       default:
         return 'default'
     }
   }
 
-  const getStatusActions = (booking: Booking) => {
+  const getStatusActions = (booking: GuestBookingWithProperties) => {
     switch (booking.status) {
-      case 'active':
+      case 'accepted-and-waiting-for-payment':
+        return null // handled inside card with full-width buttons
+      case 'confirmed':
         return (
           <div className="flex gap-2">
             <Button 
@@ -199,182 +121,245 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
               variant="flat" 
               color="danger"
               onPress={() => handleCancelBooking(booking)}
-              startContent={<X className="w-4 h-4" />}
+              startContent={<X className="size-4" />}
             >
-              Cancel
+              {t('booking.actions.cancelBooking')}
             </Button>
-            <Button size="sm" color="secondary" variant="flat">
-              Message Host
+            <Button 
+              size="sm" 
+              color="secondary" 
+              variant="flat"
+              onPress={() => handleContactHost(booking)}
+            >
+              {t('booking.actions.contactHost')}
             </Button>
           </div>
         )
       case 'completed':
         return (
-          <div className="flex gap-2">
-            <Button size="sm" variant="flat">
-              Re-Book
-            </Button>
-            <Button size="sm" color="primary">
-              Write Review
-            </Button>
-          </div>
+                  <div className="flex gap-2">
+          <Button size="sm" variant="flat">
+            {t('booking.actions.rebook')}
+          </Button>
+          <Button size="sm" color="primary">
+            {t('booking.actions.leaveReview')}
+          </Button>
+        </div>
         )
       case 'cancelled':
         return (
-          <Button size="sm" variant="flat">
-            Re-Book
-          </Button>
+                  <Button size="sm" variant="flat">
+          {t('booking.actions.rebook')}
+        </Button>
         )
       default:
         return null
     }
   }
 
-  const handleBookingClick = (booking: Booking) => {
+  const handleBookingClick = (booking: GuestBookingWithProperties) => {
     setSelectedBooking(booking)
     onOpen()
   }
 
-  const handleCancelBooking = (booking: Booking) => {
+  const handleCancelBooking = (booking: GuestBookingWithProperties) => {
     setBookingToCancel(booking)
     onCancelOpen()
   }
 
-  const handleConfirmCancel = (reason: string) => {
-    console.log('Cancelling booking:', bookingToCancel?.id, 'Reason:', reason)
-    // Here you would typically make an API call to cancel the booking
-    // For now, just close the modal
+  const handleContactHost = (booking: GuestBookingWithProperties) => {
+    setBookingToContact(booking)
+    onContactOpen()
+  }
+
+  const handlePayNow = (booking: GuestBookingWithProperties) => {
+    console.log('✅ FedaPay checkout completed for booking:', booking.id)
+    // Refresh bookings to update status
+    loadGuestBookings().catch(console.error)
+  }
+
+  const handlePaymentSuccess = (transactionId: string) => {
+    console.log('✅ Payment successful, closing modal and refreshing bookings', { transactionId })
+    setBookingToPay(null)
+    // Refresh bookings to show updated status
+    loadGuestBookings().catch(console.error)
+  }
+
+  const handlePaymentError = (error: string) => {
+    console.error('❌ Payment failed:', error)
+    // Keep modal open so user can retry
+  }
+
+  const handleConfirmCancel = async (reason: string) => {
+    if (!bookingToCancel) return
+    
+    try {
+      console.log('🔄 Cancelling booking:', bookingToCancel.id, 'Reason:', reason)
+      
+      // Call the cancel booking method (this will handle refund processing)
+      await cancelBooking(bookingToCancel.id, reason, false)
+      
+      // Refresh bookings to show updated status
+      await loadGuestBookings()
+      
+      // Close modal and clear state
     setBookingToCancel(null)
     onCancelClose()
+
+      toast.success(t('booking.messages.bookingCancelled'))
+      
+      console.log('✅ Booking cancelled and refund request created successfully')
+    } catch (error) {
+      console.error('❌ Failed to cancel booking:', error)
+      // Keep modal open so user can retry
+    }
   }
 
-  const stats = {
-    active: mockBookings.filter(b => b.status === 'active').length,
-    completed: mockBookings.filter(b => b.status === 'completed').length,
-    cancelled: mockBookings.filter(b => b.status === 'cancelled').length
+  const handleContactHostClose = () => {
+    setBookingToContact(null)
+    onContactClose()
   }
 
-  const totalSpent = mockBookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.totalPrice, 0)
-  const avgRating = mockBookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.rating, 0) / mockBookings.filter(b => b.status === 'completed').length
+  const stats: Record<BookingStatus, number> = ALL_STATUSES.reduce((acc, status) => {
+    acc[status] = guestBookingsWithProperties.filter(b => b.status === status).length
+    return acc
+  }, {} as Record<BookingStatus, number>)
+
+  const totalSpent = guestBookingsWithProperties.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.total_amount, 0)
+  const avgRating = 0 // Rating not available in DatabaseBooking
+
+  const handleTabChange = (key: string | number) => {
+    setSelectedTab(key as BookingStatus)
+    setPaginationByStatus(prev => {
+      const status = key as BookingStatus
+      if (prev[status]) return prev
+      return { ...prev, [status]: { page: 1 } }
+    })
+  }
+
+  const handlePageChange = (page: number) => {
+    setPaginationByStatus(prev => ({
+      ...prev,
+      [selectedTab]: { page }
+    }))
+  }
 
   return (
-    <>
-      <MainLayout currentPage="bookings" onPageChange={onPageChange}>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-          {/* Banner Header */}
-          <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-            <div className="text-left">
-              <h1 className="text-3xl font-bold mb-2">My Bookings</h1>
-              <p className="text-primary-100 text-lg">Manage your property bookings and travel history</p>
-            </div>
-          </div>
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {/* Banner Header - Full Width */}
+        <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
+        <PageBanner
+          backgroundImage={getBannerConfig('myBookings').image}
+                      title={t('booking.myBookings.banner.title')}
+            subtitle={t('booking.myBookings.banner.subtitle')}
+          imageAlt={t('common.pageBanner.myBookings')}
+          overlayOpacity={getBannerConfig('myBookings').overlayOpacity}
+          height={getBannerConfig('myBookings').height}
+          className="mb-8"
+        />
+        </div>
 
-          {/* Tabs */}
-          <div className="w-full">
+        {/* Tabs - Full Width */}
+        <div className="col-span-1 md:col-span-2 lg:col-span-4">
+          <div className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={selectedTab}
-              onSelectionChange={(key) => setSelectedTab(key as string)}
+              onSelectionChange={handleTabChange}
               variant="underlined"
               classNames={{
-                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+                tabList: "gap-2 sm:gap-4 md:gap-6 w-max relative rounded-none p-0 border-b border-divider",
                 cursor: "w-full bg-primary-500",
-                tab: "max-w-fit px-0 h-12",
-                tabContent: "group-data-[selected=true]:text-primary-600"
+                tab: "max-w-fit px-2 sm:px-3 md:px-4 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-xs sm:text-sm md:text-base whitespace-nowrap"
               }}
             >
-              <Tab key="active" title={`Active (${stats.active})`} />
-              <Tab key="completed" title={`Completed (${stats.completed})`} />
-              <Tab key="cancelled" title={`Cancelled (${stats.cancelled})`} />
+              {ALL_STATUSES.map(status => (
+                <Tab key={status} title={`${t(`booking.status.${status}`)} (${stats[status]})`} />
+              ))}
             </Tabs>
           </div>
         </div>
 
-        {/* Bookings Grid - 3 on large, 2 on medium, 1 on small */}
-        {filteredBookings.length > 0 ? (
-          filteredBookings.map((booking) => (
-            <div key={booking.id} className="col-span-1">
-              <Card className="hover:shadow-lg transition-shadow duration-200">
-                {/* Property Image with Status */}
-                <div 
-                  className="relative cursor-pointer"
-                  onClick={() => handleBookingClick(booking)}
-                >
-                  <img
-                    src={booking.propertyImage}
-                    alt={booking.propertyName}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <Chip 
-                      color={getStatusColor(booking.status)}
-                      variant="solid"
-                      size="sm"
-                      className="text-white font-medium"
-                    >
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                    </Chip>
-                  </div>
-                </div>
-
-                <CardBody className="p-4">
-                  {/* Property Info */}
-                  <div className="space-y-3">
-                    <div 
-                      className="cursor-pointer"
-                      onClick={() => handleBookingClick(booking)}
-                    >
-                      <h3 className="font-semibold text-lg text-gray-900 line-clamp-1">
-                        {booking.propertyName}
-                      </h3>
-                      <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                        <MapPin className="w-4 h-4" />
-                        <span className="line-clamp-1">{booking.location}</span>
-                      </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-medium">{booking.rating}</span>
-                      </div>
-                    </div>
-
-                    {/* Dates */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(booking.checkIn).toLocaleDateString()} - {new Date(booking.checkOut).toLocaleDateString()}</span>
-                    </div>
-
-                    {/* Price */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-primary-600">
-                        ${booking.totalPrice}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {booking.guests} guest{booking.guests > 1 ? 's' : ''}
-                      </span>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="pt-2">
-                      {getStatusActions(booking)}
-                    </div>
-                  </div>
-                </CardBody>
-              </Card>
+        {/* Loading State - Full Width */}
+      {isLoadingGuestBookings ? (
+          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <span className="text-lg text-gray-500">{t('booking.messages.loading')}</span>
+        </div>
+      ) : paginatedBookings.length > 0 ? (
+        <>
+            {/* Booking Cards - Each card takes one grid column */}
+          {paginatedBookings.map((booking) => (
+             
+            <MyBookingCard
+              booking={booking}
+              onClick={handleBookingClick}
+              getStatusColor={getStatusColor}
+              getStatusActions={getStatusActions}
+              onPayNow={handlePayNow}
+              onCancelBooking={handleCancelBooking}
+            />
+           
+          ))}
+          
+          {/* Pagination - Full Width */}
+          {totalPages > 1 && (
+              <div className="col-span-1 mt-6 flex items-center justify-between border-t border-gray-100 pt-4 md:col-span-2 lg:col-span-4">
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1 || isLoadingGuestBookings}
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+                  ${page === 1 || isLoadingGuestBookings
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.previous', { defaultValue: 'Previous' })}
+              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  {t('booking.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: page, total: totalPages })}
+                </span>
+              </div>
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={isLoadingGuestBookings || page >= totalPages}
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+                  ${isLoadingGuestBookings || page >= totalPages
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.next', { defaultValue: 'Next' })}
+              </button>
             </div>
-          ))
-        ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No {selectedTab} bookings
-            </h3>
-            <p className="text-gray-500">
-              {selectedTab === 'active' && "You don't have any active bookings at the moment."}
-              {selectedTab === 'completed' && "You haven't completed any bookings yet."}
-              {selectedTab === 'cancelled' && "You don't have any cancelled bookings."}
-            </p>
-          </div>
-        )}
-      </MainLayout>
+          )}
+        </>
+      ) : (
+          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <Calendar className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
+            {(() => {
+              const message = t('booking.messages.noBookings', { status: t(`booking.status.${selectedTab}`) })
+              console.log('🌐 MyBookingsPage: noBookings message:', message, 'for status:', selectedTab)
+              return message
+            })()}
+          </h3>
+          <p className="text-gray-500">
+            {(() => {
+              let message = ''
+              if (selectedTab === 'pending') message = t('booking.messages.noPendingBookings')
+              else if (selectedTab === 'confirmed') message = t('booking.messages.noConfirmedBookings')
+              else if (selectedTab === 'cancelled') message = t('booking.messages.noCancelledBookings')
+              else if (selectedTab === 'completed') message = t('booking.messages.noCompletedBookings')
+              else if (selectedTab === 'rejected') message = t('booking.messages.noRejectedBookings')
+              else if (selectedTab === 'accepted-and-waiting-for-payment') message = t('booking.messages.noAwaitingPaymentBookings')
+              else if (selectedTab === 'payment-failed') message = t('booking.messages.noFailedPaymentBookings')
+              
+              console.log('🌐 MyBookingsPage: specific message:', message, 'for status:', selectedTab)
+              return message
+            })()}
+          </p>
+        </div>
+      )}
 
       {/* Booking Details Modal */}
       <Modal 
@@ -387,9 +372,9 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Booking Details</h2>
+                <h2 className="text-xl font-bold">{t('booking.details.title')}</h2>
                 {selectedBooking && (
-                  <p className="text-sm text-gray-600">Booking ID: {selectedBooking.id}</p>
+                  <p className="text-sm text-gray-600">{t('booking.details.bookingId', { id: selectedBooking.id })}</p>
                 )}
               </ModalHeader>
               <ModalBody>
@@ -398,27 +383,32 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
                     {/* Property Info */}
                     <div className="flex gap-4">
                       <img
-                        src={selectedBooking.propertyImage}
-                        alt={selectedBooking.propertyName}
-                        className="w-24 h-24 object-cover rounded-lg"
+                        src={selectedBooking.properties?.images?.[0] || ''}
+                        alt={selectedBooking.properties?.title || ''}
+                        className="size-24 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{selectedBooking.propertyName}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{selectedBooking.location}</span>
+                        <h3 className="text-lg font-semibold">{selectedBooking.properties?.title}</h3>
+                        <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+                          <MapPin className="size-4" />
+                          <span>
+                            {selectedBooking.properties?.location?.city && selectedBooking.properties?.location?.country 
+                              ? `${selectedBooking.properties.location.city}, ${selectedBooking.properties.location.country}`
+                              : t('booking.details.locationNotAvailable')
+                            }
+                          </span>
                         </div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm font-medium">{selectedBooking.rating}</span>
+                        <div className="mt-1 flex items-center gap-1">
+                          <Star className="size-4 fill-current text-yellow-500" />
+                          <span className="text-sm font-medium">{selectedBooking.properties?.rating}</span>
                         </div>
                         <Chip 
                           color={getStatusColor(selectedBooking.status)}
                           variant="solid"
                           size="sm"
-                          className="text-white font-medium mt-2"
+                          className="mt-2 font-medium text-white"
                         >
-                          {selectedBooking.status.charAt(0).toUpperCase() + selectedBooking.status.slice(1)}
+                          {t(`booking.status.${selectedBooking.status}`)}
                         </Chip>
                       </div>
                     </div>
@@ -427,32 +417,52 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Host Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <User className="w-5 h-5" />
-                        Host Information
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <User className="size-5" />
+                        {t('booking.details.hostInformation')}
                       </h4>
                       <div className="flex items-center gap-3">
-                        <Avatar src={selectedBooking.hostAvatar} size="md" />
+                        <Avatar 
+                          size="md" 
+                          src={selectedBooking.hosts?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedBooking.hosts?.display_name || 'Host')}`}
+                          alt={selectedBooking.hosts?.display_name || 'Host'}
+                        />
                         <div className="flex-1">
-                          <p className="font-medium">{selectedBooking.hostName}</p>
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              <span>{selectedBooking.hostPhone}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Mail className="w-4 h-4" />
-                              <span>{selectedBooking.hostEmail}</span>
-                            </div>
+                          <p className="font-medium">{selectedBooking.hosts?.display_name || t('booking.labels.host')}</p>
+                          <div className="mt-1 flex items-center gap-4 text-sm text-gray-600">
+                            {selectedBooking.hosts ? (
+                              <>
+                                <div className="flex items-center gap-1">
+                                  <Star className="size-3 fill-current text-yellow-500" />
+                                  <span>{selectedBooking.hosts.host_rating?.toFixed(1) || 'N/A'}</span>
+                                </div>
+                                <span>{selectedBooking.hosts.total_host_reviews || 0} reviews</span>
+                              </>
+                            ) : (
+                              <span>{t('booking.details.contactNotAvailable')}</span>
+                            )}
                           </div>
+                          {selectedBooking.hosts?.email && (
+                            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                              <Mail className="size-3" />
+                              <span>{selectedBooking.hosts.email}</span>
+                            </div>
+                          )}
+                          {selectedBooking.hosts?.phone && (
+                            <div className="mt-1 flex items-center gap-2 text-sm text-gray-600">
+                              <Phone className="size-3" />
+                              <span>{selectedBooking.hosts.phone}</span>
+                            </div>
+                          )}
                         </div>
                         <Button
                           size="sm"
                           color="secondary"
                           variant="flat"
-                          startContent={<MessageCircle className="w-4 h-4" />}
+                          startContent={<MessageCircle className="size-4" />}
+                            onPress={() => handleContactHost(selectedBooking)}
                         >
-                          Message
+                          {t('booking.actions.contactHost')}
                         </Button>
                       </div>
                     </div>
@@ -461,26 +471,26 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Booking Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
-                        Booking Information
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <Calendar className="size-5" />
+                        {t('booking.details.bookingInformation')}
                       </h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-gray-600">Check-in</p>
-                          <p className="font-medium">{new Date(selectedBooking.checkIn).toLocaleDateString()}</p>
+                          <p className="text-gray-600">{t('booking.details.checkIn')}</p>
+                          <p className="font-medium">{new Date(selectedBooking.check_in_date).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Check-out</p>
-                          <p className="font-medium">{new Date(selectedBooking.checkOut).toLocaleDateString()}</p>
+                          <p className="text-gray-600">{t('booking.details.checkOut')}</p>
+                          <p className="font-medium">{new Date(selectedBooking.check_out_date).toLocaleDateString()}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Guests</p>
-                          <p className="font-medium">{selectedBooking.guests} guest{selectedBooking.guests > 1 ? 's' : ''}</p>
+                                                <p className="text-gray-600">{t('booking.details.guests')}</p>
+                      <p className="font-medium">{selectedBooking.guest_count} {selectedBooking.guest_count > 1 ? t('booking.details.guestsPlural') : t('booking.details.guest')}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">Booking Date</p>
-                          <p className="font-medium">{new Date(selectedBooking.bookingDate).toLocaleDateString()}</p>
+                          <p className="text-gray-600">{t('booking.details.bookingDate')}</p>
+                          <p className="font-medium">{new Date(selectedBooking.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
                     </div>
@@ -489,92 +499,56 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
 
                     {/* Payment Information */}
                     <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <CreditCard className="w-5 h-5" />
-                        Payment Information
+                      <h4 className="mb-3 flex items-center gap-2 font-semibold">
+                        <CreditCard className="size-5" />
+                        {t('booking.details.paymentInformation')}
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span>Accommodation</span>
-                          <span>${(selectedBooking.totalPrice - selectedBooking.cleaningFee - selectedBooking.serviceFee - selectedBooking.taxes).toFixed(2)}</span>
+                          <span>{t('booking.details.accommodation')}</span>
+                          <span>{formatPrice((selectedBooking.total_amount - (selectedBooking.cleaning_fee || 0) - (selectedBooking.service_fee || 0) - (selectedBooking.taxes || 0)), selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Cleaning fee</span>
-                          <span>${selectedBooking.cleaningFee}</span>
+                          <span>{t('booking.details.cleaningFee')}</span>
+                          <span>{formatPrice(selectedBooking.cleaning_fee || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Service fee</span>
-                          <span>${selectedBooking.serviceFee}</span>
+                          <span>{t('booking.details.serviceFee')}</span>
+                          <span>{formatPrice(selectedBooking.service_fee || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Taxes</span>
-                          <span>${selectedBooking.taxes}</span>
+                          <span>{t('booking.details.taxes')}</span>
+                          <span>{formatPrice(selectedBooking.taxes || 0, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <Divider />
                         <div className="flex justify-between font-semibold">
-                          <span>Total</span>
-                          <span>${selectedBooking.totalPrice}</span>
+                          <span>{t('booking.details.total')}</span>
+                          <span>{formatPrice(selectedBooking.total_amount, selectedBooking.currency || 'USD')}</span>
                         </div>
                         <div className="mt-2 text-gray-600">
-                          <p>Payment method: {selectedBooking.paymentMethod}</p>
+                          <p>{t('booking.details.paymentMethod')}</p>
                         </div>
                       </div>
                     </div>
 
                     <Divider />
 
-                    {/* Amenities */}
-                    <div>
-                      <h4 className="font-semibold mb-3">Amenities</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedBooking.amenities.map((amenity, index) => (
-                          <Chip key={index} variant="flat" size="sm">
-                            {amenity}
-                          </Chip>
-                        ))}
-                      </div>
-                    </div>
-
                     {/* Special Requests */}
-                    {selectedBooking.specialRequests && (
+                    {selectedBooking.special_requests && (
                       <>
                         <Divider />
                         <div>
-                          <h4 className="font-semibold mb-3">Special Requests</h4>
-                          <p className="text-sm text-gray-600">{selectedBooking.specialRequests}</p>
+                          <h4 className="mb-3 font-semibold">{t('booking.details.specialRequests')}</h4>
+                          <p className="text-sm text-gray-600">{selectedBooking.special_requests}</p>
                         </div>
                       </>
                     )}
-
-                    <Divider />
-
-                    {/* Booking Timeline */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
-                        Booking Timeline
-                      </h4>
-                      <div className="space-y-3">
-                        {selectedBooking.bookingTimeline.map((event, index) => (
-                          <div key={index} className="flex gap-3">
-                            <div className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <p className="font-medium text-sm">{event.event}</p>
-                                <span className="text-xs text-gray-500">{new Date(event.date).toLocaleDateString()}</span>
-                              </div>
-                              <p className="text-sm text-gray-600">{event.description}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
                   </div>
                 )}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  {t('common.buttons.close')}
                 </Button>
                 {selectedBooking && (
                   <div className="flex gap-2">
@@ -587,16 +561,51 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
         </ModalContent>
       </Modal>
 
-      {/* Cancel Booking Modal */}
-      {bookingToCancel && (
+        {/* Cancel Booking Modal */}
+        {bookingToCancel && (
         <CancelBookingModal
           isOpen={isCancelOpen}
           onClose={onCancelClose}
-          booking={bookingToCancel}
+            booking={{
+              id: bookingToCancel.id,
+              propertyName: bookingToCancel.properties?.title || '',
+              propertyImage: bookingToCancel.properties?.images?.[0] || '',
+              location: bookingToCancel.properties?.location?.city && bookingToCancel.properties?.location?.country 
+                ? `${bookingToCancel.properties.location.city}, ${bookingToCancel.properties.location.country}`
+                : '',
+              checkIn: bookingToCancel.check_in_date,
+              checkOut: bookingToCancel.check_out_date,
+              guests: bookingToCancel.guest_count,
+              totalPrice: bookingToCancel.total_amount,
+              currency: bookingToCancel.currency || 'USD',
+              status: bookingToCancel.status
+            }}
           onConfirmCancel={handleConfirmCancel}
         />
-      )}
-    </>
+        )}
+
+        {/* Contact Host Modal */}
+        {bookingToContact && (
+          <ContactHostModal
+            isOpen={isContactOpen}
+            onClose={handleContactHostClose}
+            property={{
+              id: bookingToContact.property_id,
+              title: bookingToContact.properties?.title || '',
+              images: bookingToContact.properties?.images || [],
+              location: bookingToContact.properties?.location || { city: '', country: '', coordinates: { lat: 0, lng: 0 } },
+              host: {
+                id: bookingToContact.hosts?.id || '',
+                display_name: bookingToContact.hosts?.display_name || '',
+                avatar_url: bookingToContact.hosts?.avatar_url || '',
+                email: bookingToContact.hosts?.email || '',
+                phone: bookingToContact.hosts?.phone || ''
+              }
+            }}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 

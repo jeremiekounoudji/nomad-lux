@@ -1,120 +1,177 @@
-import React, { useState } from 'react'
-import { Card, CardBody, Button, Avatar, Chip, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider, Tabs, Tab } from '@heroui/react'
-import { Calendar, MapPin, Star, Clock, CreditCard, Phone, Mail, MessageCircle, User, Home, Eye, DollarSign, Check, X, ClipboardList } from 'lucide-react'
-import MainLayout from '../components/layout/MainLayout'
-import { BookingRequestsPageProps, BookingRequest } from '../interfaces'
+import React, { useState, useEffect, useMemo } from 'react'
+import { useDisclosure, Tabs, Tab } from '@heroui/react'
+import { ClipboardList } from 'lucide-react'
 
-const mockBookingRequests: BookingRequest[] = [
-  {
-    id: 'req-1',
-    propertyName: 'Luxury Beachfront Villa',
-    propertyImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
-    propertyId: 'user-1',
-    guestName: 'Emily Johnson',
-    guestAvatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
-    guestEmail: 'emily.johnson@email.com',
-    guestPhone: '+1 (555) 123-4567',
-    checkIn: '2024-03-15',
-    checkOut: '2024-03-18',
-    guests: 4,
-    totalPrice: 1350,
-    status: 'pending',
-    requestDate: '2024-02-28',
-    message: 'Hi! We are a family of 4 looking for a peaceful getaway. We promise to take great care of your beautiful property.',
-    guestRating: 4.9,
-    guestReviews: 23,
-    paymentMethod: 'Visa ending in 4242',
-    cleaningFee: 75,
-    serviceFee: 105,
-    taxes: 120
-  },
-  {
-    id: 'req-2',
-    propertyName: 'Cozy Mountain Cabin',
-    propertyImage: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
-    propertyId: 'user-2',
-    guestName: 'Michael Chen',
-    guestAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-    guestEmail: 'michael.chen@email.com',
-    guestPhone: '+1 (555) 987-6543',
-    checkIn: '2024-04-10',
-    checkOut: '2024-04-13',
-    guests: 2,
-    totalPrice: 540,
-    status: 'pending',
-    requestDate: '2024-03-01',
-    message: 'Looking forward to a romantic weekend getaway in your beautiful cabin!',
-    guestRating: 4.7,
-    guestReviews: 15,
-    paymentMethod: 'Mastercard ending in 8888',
-    cleaningFee: 40,
-    serviceFee: 45,
-    taxes: 55
-  },
-  {
-    id: 'req-3',
-    propertyName: 'Urban Loft',
-    propertyImage: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400',
-    propertyId: 'user-3',
-    guestName: 'Sarah Williams',
-    guestAvatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150',
-    guestEmail: 'sarah.williams@email.com',
-    guestPhone: '+1 (555) 456-7890',
-    checkIn: '2024-03-20',
-    checkOut: '2024-03-25',
-    guests: 3,
-    totalPrice: 900,
-    status: 'approved',
-    requestDate: '2024-02-25',
-    guestRating: 4.8,
-    guestReviews: 31,
-    paymentMethod: 'Amex ending in 1234',
-    cleaningFee: 60,
-    serviceFee: 75,
-    taxes: 85
-  },
-  {
-    id: 'req-4',
-    propertyName: 'Countryside Villa',
-    propertyImage: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=400',
-    propertyId: 'user-4',
-    guestName: 'David Rodriguez',
-    guestAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150',
-    guestEmail: 'david.rodriguez@email.com',
-    guestPhone: '+1 (555) 321-0987',
-    checkIn: '2024-02-10',
-    checkOut: '2024-02-13',
-    guests: 6,
-    totalPrice: 720,
-    status: 'declined',
-    requestDate: '2024-01-28',
-    guestRating: 4.2,
-    guestReviews: 8,
-    paymentMethod: 'Visa ending in 5678',
-    cleaningFee: 50,
-    serviceFee: 60,
-    taxes: 70
-  }
+import { PageBanner, BookingRequestCard, BookingRequestDetailsModal, DeclineBookingModal, ConfirmApprovalModal } from '../components/shared'
+import { getBannerConfig } from '../utils/bannerConfig'
+import { BookingRequestsPageProps, BookingRequest, BookingStatus, PaginationParams } from '../interfaces'
+import { useBookingManagement } from '../hooks/useBookingManagement'
+import { useAuthStore } from '../lib/stores/authStore'
+import { useBookingStore } from '../lib/stores/bookingStore'
+import toast from 'react-hot-toast'
+import { useTranslation } from '../lib/stores/translationStore'
+
+const ITEMS_PER_PAGE = 10
+
+const ALL_STATUSES: BookingStatus[] = [
+  'pending',
+  'confirmed',
+  'cancelled',
+  'completed',
+  'rejected',
+  'accepted-and-waiting-for-payment',
+  'payment-failed',
 ]
 
-const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange }) => {
-  const [selectedTab, setSelectedTab] = useState<string>('pending')
+// Helper function to get status color
+const getStatusColor = (status: BookingStatus | 'no_shows') => {
+  switch (status) {
+    case 'pending':
+      return 'warning'
+    case 'confirmed':
+      return 'success'
+    case 'cancelled':
+    case 'rejected':
+      return 'danger'
+    case 'completed':
+      return 'primary'
+    case 'accepted-and-waiting-for-payment':
+      return 'secondary'
+    case 'payment-failed':
+      return 'danger'
+    case 'no_shows':
+      return 'danger'
+    default:
+      return 'default'
+  }
+}
+
+const BookingRequestsPage: React.FC<BookingRequestsPageProps> = () => {
+  const { t } = useTranslation(['booking', 'common'])
+  const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedRequest, setSelectedRequest] = useState<BookingRequest | null>(null)
+  const [rejectReason, setRejectReason] = useState<string>('')
+  const [paginationParamsByStatus, setPaginationParamsByStatus] = useState<Record<BookingStatus, PaginationParams>>(() => {
+    const initial: Record<BookingStatus, PaginationParams> = {} as any
+    ALL_STATUSES.forEach(status => {
+      initial[status] = {
+    page: 1,
+    pageSize: ITEMS_PER_PAGE,
+    sortBy: 'created_at',
+        sortOrder: 'desc',
+      }
+    })
+    return initial
+  })
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { 
+    isOpen: isDeclineModalOpen, 
+    onOpen: onDeclineModalOpen, 
+    onClose: onDeclineModalClose 
+  } = useDisclosure()
+  const {
+    isOpen: isConfirmModalOpen,
+    onOpen: onConfirmModalOpen,
+    onClose: onConfirmModalClose
+  } = useDisclosure()
 
-  const filteredRequests = mockBookingRequests.filter(request => request.status === selectedTab)
+  // Hooks
+  const { user } = useAuthStore()
+  const {
+    loadHostBookingRequestsByStatus,
+    loadBookingRequestsCounts,
+    approveBooking,
+    declineBooking
+  } = useBookingManagement()
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return 'warning'
-      case 'approved':
-        return 'success'
-      case 'declined':
-        return 'danger'
-      default:
-        return 'default'
+  // Get data from store
+  const { 
+    bookingRequestsByStatus,
+    paginationData,
+    isLoadingHostRequests, 
+    error 
+  } = useBookingStore()
+
+  // Request counts state
+  const [requestCounts, setRequestCounts] = useState<Record<BookingStatus | 'no_shows', number>>({
+    pending: 0,
+    confirmed: 0,
+    cancelled: 0,
+    'accepted-and-waiting-for-payment': 0,
+    completed: 0,
+    rejected: 0,
+    'payment-failed': 0,
+    'no_shows': 0
+  })
+
+  // Per-request loading state
+  const [updatingBookingId, setUpdatingBookingId] = useState<string | null>(null)
+  const [updatingAction, setUpdatingAction] = useState<'approve' | 'decline' | null>(null)
+
+  // Load booking requests and counts on component mount and tab/page change
+  useEffect(() => {
+    if (user?.id) {
+      const paginationParams = paginationParamsByStatus[selectedTab]
+      // Load requests for current tab with pagination
+      loadHostBookingRequestsByStatus(
+        selectedTab,
+        paginationParams,
+        user.id
+      ).catch(console.error)
+
+      // Load counts for all statuses
+      loadBookingRequestsCounts(user.id)
+        .then(counts => {
+          setRequestCounts({
+            ...counts,
+            'no_shows': 0 // Default to 0 since it's not in the DB
+          })
+        })
+        .catch(error => {
+          console.error('❌ Error loading booking counts:', error)
+          toast.error(t('booking.bookingRequests.messages.failedToLoadCounts'))
+          setRequestCounts({
+            pending: 0,
+            confirmed: 0,
+            cancelled: 0,
+            completed: 0,
+            rejected: 0,
+            'accepted-and-waiting-for-payment': 0,
+            'payment-failed': 0,
+            'no_shows': 0
+          })
+        })
     }
+  }, [user?.id, selectedTab, paginationParamsByStatus[selectedTab].page])
+
+  // Handle tab switch: restore last page for that status (default to 1)
+  const handleTabChange = (key: string | number) => {
+    setSelectedTab(key as BookingStatus)
+    setPaginationParamsByStatus(prev => {
+      const status = key as BookingStatus
+      // If already has params, keep; else, set to page 1
+      if (prev[status]) return prev
+      return {
+        ...prev,
+        [status]: {
+          page: 1,
+          pageSize: ITEMS_PER_PAGE,
+          sortBy: 'created_at',
+          sortOrder: 'desc',
+        }
+      }
+    })
+  }
+
+  // Handle page change for current tab only
+  const handlePageChange = (page: number) => {
+    setPaginationParamsByStatus(prev => ({
+      ...prev,
+      [selectedTab]: {
+        ...prev[selectedTab],
+        page
+      }
+    }))
   }
 
   const handleRequestClick = (request: BookingRequest) => {
@@ -122,368 +179,243 @@ const BookingRequestsPage: React.FC<BookingRequestsPageProps> = ({ onPageChange 
     onOpen()
   }
 
-  const handleApprove = (requestId: string) => {
-    console.log('Approving request:', requestId)
-    // TODO: Implement approval logic
+  const handleApprove = async (requestId: string) => {
+    setUpdatingBookingId(requestId)
+    setUpdatingAction('approve')
+    try {
+      console.log('🔄 Approving booking:', requestId)
+      await approveBooking(requestId)
+      toast.success(t('booking.bookingRequests.messages.approvedSuccessfully'))
+      
+      // Reload current page data
+      if (user?.id) {
+        loadHostBookingRequestsByStatus(selectedTab, paginationParamsByStatus[selectedTab], user.id)
+        loadBookingRequestsCounts(user.id).then(counts => setRequestCounts(counts))
+      }
+    } catch (error) {
+      console.error('❌ Error approving booking:', error)
+      toast.error(t('booking.bookingRequests.messages.failedToApprove'))
+    } finally {
+      setUpdatingBookingId(null)
+      setUpdatingAction(null)
+    }
   }
 
-  const handleDecline = (requestId: string) => {
-    console.log('Declining request:', requestId)
-    // TODO: Implement decline logic
+  const handleDecline = async (requestId: string) => {
+    if (!rejectReason.trim()) {
+      toast.error(t('booking.bookingRequests.messages.provideRejectReason'))
+      return
+    }
+
+    setUpdatingBookingId(requestId)
+    setUpdatingAction('decline')
+    try {
+      console.log('🔄 Declining booking:', requestId)
+      await declineBooking(requestId, rejectReason)
+      toast.success(t('booking.bookingRequests.messages.declinedSuccessfully'))
+      
+      // Reload current page data
+      if (user?.id) {
+        loadHostBookingRequestsByStatus(selectedTab, paginationParamsByStatus[selectedTab], user.id)
+        loadBookingRequestsCounts(user.id).then(counts => setRequestCounts(counts))
+      }
+      onClose() // Close the modal after successful decline
+      setRejectReason('') // Reset the reason
+    } catch (error) {
+      console.error('❌ Error declining booking:', error)
+      toast.error(t('booking.bookingRequests.messages.failedToDecline'))
+    } finally {
+      setUpdatingBookingId(null)
+      setUpdatingAction(null)
+    }
   }
 
-  const stats = {
-    pending: mockBookingRequests.filter(r => r.status === 'pending').length,
-    approved: mockBookingRequests.filter(r => r.status === 'approved').length,
-    declined: mockBookingRequests.filter(r => r.status === 'declined').length
+  const handleApproveConfirm = async () => {
+    if (!selectedRequest) return;
+    
+    try {
+      await handleApprove(selectedRequest.id);
+      onConfirmModalClose();
+    } catch (error) {
+      console.error('Error in approval confirmation:', error);
+    }
+  };
+
+  const currentRequests = bookingRequestsByStatus[selectedTab] || []
+  const currentPagination = paginationData[selectedTab]
+
+  // Remove incorrect requests initialization and use currentRequests directly
+  const requests = currentRequests;
+
+  const mapStatusKey = (status: BookingStatus | 'no_shows') => {
+    switch (status) {
+      case 'accepted-and-waiting-for-payment':
+        return 'acceptedWaitingPayment'
+      case 'payment-failed':
+        return 'paymentFailed'
+      case 'no_shows':
+        return 'noShow'
+      default:
+        return status
+    }
   }
 
-  const totalRevenue = mockBookingRequests.filter(r => r.status === 'approved').reduce((sum, r) => sum + r.totalPrice, 0)
-  const avgGuestRating = mockBookingRequests.reduce((sum, r) => sum + r.guestRating, 0) / mockBookingRequests.length
+  const tabTitle = (status: BookingStatus) => `${t(`booking.status.${mapStatusKey(status)}`)} (${requestCounts[status]})`
+  const emptyStatusLabel = useMemo(() => t(`booking.status.${mapStatusKey(selectedTab)}`), [selectedTab, t])
 
   return (
     <>
-      <MainLayout currentPage="requests" onPageChange={onPageChange}>
-        <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-6">
-          {/* Header Banner */}
-          <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-            <div className="text-left">
-              <h1 className="text-3xl font-bold mb-2">Booking Requests</h1>
-              <p className="text-primary-100 text-lg">Manage your property booking requests</p>
-            </div>
-          </div>
+      {/* Header Section - Full Width */}
+      <div className="col-span-full mb-6">
+        {/* Banner Header */}
+        <PageBanner
+          backgroundImage={getBannerConfig('bookingRequests').image}
+          title={t('booking.bookingRequests.banner.title')}
+          subtitle={t('booking.bookingRequests.banner.subtitle')}
+          imageAlt={t('common.pageBanner.bookingRequests')}
+          overlayOpacity={getBannerConfig('bookingRequests').overlayOpacity}
+          height={getBannerConfig('bookingRequests').height}
+          className="mb-8"
+        />
 
-          {/* Tabs */}
-          <div className="w-full">
+        {/* Tabs */}
+        <div className="w-full overflow-hidden">
+          <div className="scrollbar-none overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={selectedTab}
-              onSelectionChange={(key) => setSelectedTab(key as string)}
+              onSelectionChange={handleTabChange}
               variant="underlined"
               classNames={{
-                tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+                tabList: "gap-3 sm:gap-6 w-max sm:w-full relative rounded-none p-0 border-b border-divider min-w-full",
                 cursor: "w-full bg-primary-500",
-                tab: "max-w-fit px-0 h-12",
-                tabContent: "group-data-[selected=true]:text-primary-600"
+                tab: "max-w-fit px-2 sm:px-0 h-12 flex-shrink-0",
+                tabContent: "group-data-[selected=true]:text-primary-600 text-sm sm:text-base whitespace-nowrap"
               }}
             >
-              <Tab key="pending" title={`Pending (${stats.pending})`} />
-              <Tab key="approved" title={`Approved (${stats.approved})`} />
-              <Tab key="declined" title={`Declined (${stats.declined})`} />
+              <Tab key="pending" title={tabTitle('pending')} />
+              <Tab key="confirmed" title={tabTitle('confirmed')} />
+              <Tab key="cancelled" title={tabTitle('cancelled')} />
+              <Tab key="completed" title={tabTitle('completed')} />
+              <Tab key="rejected" title={tabTitle('rejected')} />
+              <Tab key="accepted-and-waiting-for-payment" title={tabTitle('accepted-and-waiting-for-payment')} />
+              <Tab key="payment-failed" title={tabTitle('payment-failed')} />
             </Tabs>
           </div>
         </div>
+      </div>
 
-        {/* Requests Grid */}
-        {filteredRequests.length > 0 ? (
-          filteredRequests.map((request) => (
-            <div key={request.id} className="col-span-1">
-              <Card className="hover:shadow-lg transition-shadow duration-200">
-                {/* Property Image with Status */}
-                <div 
-                  className="relative cursor-pointer"
-                  onClick={() => handleRequestClick(request)}
-                >
-                  <img
-                    src={request.propertyImage}
-                    alt={request.propertyName}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <Chip 
-                      color={getStatusColor(request.status)}
-                      variant="solid"
-                      size="sm"
-                      className="text-white font-medium"
-                    >
-                      {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
-                    </Chip>
-                  </div>
-                </div>
-
-                <CardBody className="p-4">
-                  <div className="space-y-3">
-                    {/* Property & Guest Info */}
-                    <div 
-                      className="cursor-pointer"
-                      onClick={() => handleRequestClick(request)}
-                    >
-                      <h3 className="font-semibold text-lg text-gray-900 line-clamp-1">
-                        {request.propertyName}
-                      </h3>
-                      <div className="flex items-center gap-2 mt-2">
-                        <Avatar src={request.guestAvatar} size="sm" />
-                        <div>
-                          <p className="font-medium text-sm">{request.guestName}</p>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                            <span className="text-xs text-gray-600">{request.guestRating} ({request.guestReviews} reviews)</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Dates */}
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="w-4 h-4" />
-                      <span>{new Date(request.checkIn).toLocaleDateString()} - {new Date(request.checkOut).toLocaleDateString()}</span>
-                    </div>
-
-                    {/* Price & Guests */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-primary-600">
-                        ${request.totalPrice}
-                      </span>
-                      <span className="text-sm text-gray-500">
-                        {request.guests} guest{request.guests > 1 ? 's' : ''}
-                      </span>
-                    </div>
-
-                    {/* Actions */}
-                    {request.status === 'pending' && (
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          size="sm"
-                          color="danger"
-                          variant="flat"
-                          startContent={<X className="w-4 h-4" />}
-                          onPress={() => handleDecline(request.id)}
-                          className="flex-1"
-                        >
-                          Decline
-                        </Button>
-                        <Button
-                          size="sm"
-                          color="success"
-                          startContent={<Check className="w-4 h-4" />}
-                          onPress={() => handleApprove(request.id)}
-                          className="flex-1"
-                        >
-                          Approve
-                        </Button>
-                      </div>
-                    )}
-
-                    {request.status === 'approved' && (
-                      <div className="pt-2">
-                        <Button
-                          size="sm"
-                          color="secondary"
-                          variant="flat"
-                          startContent={<MessageCircle className="w-4 h-4" />}
-                          className="w-full"
-                        >
-                          Message Guest
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
+      {/* Loading State */}
+      {isLoadingHostRequests ? (
+        <div className="col-span-full py-12 text-center">
+          <span className="text-lg text-gray-500">{t('booking.bookingRequests.loading')}</span>
+        </div>
+      ) : error ? (
+        <div className="col-span-full py-12 text-center text-red-600">
+          {error}
+        </div>
+      ) : requests.length > 0 ? (
+        <>
+          {/* Requests Grid */}
+          <div className="col-span-full">
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {requests.map((request) => (
+                <BookingRequestCard
+                  key={request.id}
+                  request={request}
+                  onRequestClick={handleRequestClick}
+                  onApprove={handleApprove}
+                  onDecline={handleDecline}
+                  onConfirmModalOpen={() => {
+                    setSelectedRequest(request);
+                    onConfirmModalOpen();
+                  }}
+                  onDeclineModalOpen={() => {
+                    setSelectedRequest(request);
+                    onDeclineModalOpen();
+                  }}
+                  updatingBookingId={updatingBookingId}
+                  updatingAction={updatingAction}
+                  getStatusColor={getStatusColor}
+                  mapStatusKey={mapStatusKey}
+                />
+              ))}
             </div>
-          ))
-        ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
-            <ClipboardList className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No {selectedTab} requests
-            </h3>
-            <p className="text-gray-500">
-              {selectedTab === 'pending' && "You don't have any pending booking requests."}
-              {selectedTab === 'approved' && "You haven't approved any booking requests yet."}
-              {selectedTab === 'declined' && "You haven't declined any booking requests."}
-            </p>
           </div>
-        )}
-      </MainLayout>
+          
+          {/* Pagination - Full Width */}
+          {currentPagination && currentPagination.totalPages > 1 && (
+            <div className="col-span-full mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+              <button
+                onClick={() => handlePageChange(currentPagination.currentPage - 1)}
+                disabled={currentPagination.currentPage === 1 || isLoadingHostRequests}
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+                  ${currentPagination.currentPage === 1 || isLoadingHostRequests
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.previous', { defaultValue: 'Previous' })}
+              </button>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-700">
+                  {t('booking.pagination.pageOf', { defaultValue: 'Page {{current}} of {{total}}', current: currentPagination.currentPage, total: currentPagination.totalPages })}
+                </span>
+              </div>
+              <button
+                onClick={() => handlePageChange(currentPagination.currentPage + 1)}
+                disabled={isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages}
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium transition-colors
+                  ${isLoadingHostRequests || currentPagination.currentPage >= currentPagination.totalPages
+                    ? 'cursor-not-allowed bg-gray-100 text-gray-400' 
+                    : 'bg-primary-600 text-white hover:bg-primary-700'}`}
+              >
+                {t('booking.pagination.next', { defaultValue: 'Next' })}
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="col-span-full py-12 text-center">
+          <ClipboardList className="mx-auto mb-4 size-16 text-gray-300" />
+          <h3 className="mb-2 text-lg font-medium text-gray-900">
+            {t('booking.bookingRequests.emptyTitle', { status: emptyStatusLabel })}
+          </h3>
+          <p className="text-gray-500">
+            {t('booking.bookingRequests.emptyDescription', { status: emptyStatusLabel })}
+          </p>
+        </div>
+      )}
 
       {/* Request Details Modal */}
-      <Modal 
-        isOpen={isOpen} 
+      <BookingRequestDetailsModal
+        isOpen={isOpen}
         onClose={onClose}
-        size="2xl"
-        scrollBehavior="inside"
-      >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Booking Request Details</h2>
-                {selectedRequest && (
-                  <p className="text-sm text-gray-600">Request ID: {selectedRequest.id}</p>
-                )}
-              </ModalHeader>
-              <ModalBody>
-                {selectedRequest && (
-                  <div className="space-y-6">
-                    {/* Property Info */}
-                    <div className="flex gap-4">
-                      <img
-                        src={selectedRequest.propertyImage}
-                        alt={selectedRequest.propertyName}
-                        className="w-24 h-24 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{selectedRequest.propertyName}</h3>
-                        <Chip 
-                          color={getStatusColor(selectedRequest.status)}
-                          variant="solid"
-                          size="sm"
-                          className="text-white font-medium mt-2"
-                        >
-                          {selectedRequest.status.charAt(0).toUpperCase() + selectedRequest.status.slice(1)}
-                        </Chip>
-                      </div>
-                    </div>
+        selectedRequest={selectedRequest}
+        updatingBookingId={updatingBookingId}
+        updatingAction={updatingAction}
+        onDeclineModalOpen={onDeclineModalOpen}
+        onConfirmModalOpen={onConfirmModalOpen}
+      />
 
-                    <Divider />
+      {/* Decline Booking Modal */}
+      <DeclineBookingModal
+        isOpen={isDeclineModalOpen}
+        onClose={onDeclineModalClose}
+        rejectReason={rejectReason}
+        setRejectReason={setRejectReason}
+        onDecline={() => selectedRequest && handleDecline(selectedRequest.id)}
+        isLoading={updatingBookingId === selectedRequest?.id}
+        disabled={!rejectReason.trim() || updatingBookingId === selectedRequest?.id}
+      />
 
-                    {/* Guest Information */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <User className="w-5 h-5" />
-                        Guest Information
-                      </h4>
-                      <div className="flex items-center gap-3">
-                        <Avatar src={selectedRequest.guestAvatar} size="md" />
-                        <div className="flex-1">
-                          <p className="font-medium">{selectedRequest.guestName}</p>
-                          <div className="flex items-center gap-1 mt-1">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                            <span className="text-sm font-medium">{selectedRequest.guestRating}</span>
-                            <span className="text-sm text-gray-500">({selectedRequest.guestReviews} reviews)</span>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              <span>{selectedRequest.guestPhone}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Mail className="w-4 h-4" />
-                              <span>{selectedRequest.guestEmail}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Booking Details */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <Calendar className="w-5 h-5" />
-                        Booking Details
-                      </h4>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div>
-                          <p className="text-gray-600">Check-in</p>
-                          <p className="font-medium">{new Date(selectedRequest.checkIn).toLocaleDateString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Check-out</p>
-                          <p className="font-medium">{new Date(selectedRequest.checkOut).toLocaleDateString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Guests</p>
-                          <p className="font-medium">{selectedRequest.guests} guest{selectedRequest.guests > 1 ? 's' : ''}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-600">Request Date</p>
-                          <p className="font-medium">{new Date(selectedRequest.requestDate).toLocaleDateString()}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Divider />
-
-                    {/* Payment Information */}
-                    <div>
-                      <h4 className="font-semibold mb-3 flex items-center gap-2">
-                        <CreditCard className="w-5 h-5" />
-                        Payment Information
-                      </h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Accommodation</span>
-                          <span>${(selectedRequest.totalPrice - selectedRequest.cleaningFee - selectedRequest.serviceFee - selectedRequest.taxes).toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Cleaning fee</span>
-                          <span>${selectedRequest.cleaningFee}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Service fee</span>
-                          <span>${selectedRequest.serviceFee}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Taxes</span>
-                          <span>${selectedRequest.taxes}</span>
-                        </div>
-                        <Divider />
-                        <div className="flex justify-between font-semibold">
-                          <span>Total</span>
-                          <span>${selectedRequest.totalPrice}</span>
-                        </div>
-                        <div className="mt-2 text-gray-600">
-                          <p>Payment method: {selectedRequest.paymentMethod}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Guest Message */}
-                    {selectedRequest.message && (
-                      <>
-                        <Divider />
-                        <div>
-                          <h4 className="font-semibold mb-3 flex items-center gap-2">
-                            <MessageCircle className="w-5 h-5" />
-                            Guest Message
-                          </h4>
-                          <div className="bg-gray-50 rounded-lg p-3">
-                            <p className="text-sm text-gray-700">{selectedRequest.message}</p>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                {selectedRequest && selectedRequest.status === 'pending' && (
-                  <div className="flex gap-2">
-                    <Button
-                      color="danger"
-                      variant="flat"
-                      startContent={<X className="w-4 h-4" />}
-                      onPress={() => {
-                        handleDecline(selectedRequest.id)
-                        onClose()
-                      }}
-                    >
-                      Decline
-                    </Button>
-                    <Button
-                      color="success"
-                      startContent={<Check className="w-4 h-4" />}
-                      onPress={() => {
-                        handleApprove(selectedRequest.id)
-                        onClose()
-                      }}
-                    >
-                      Approve
-                    </Button>
-                  </div>
-                )}
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      {/* Confirm Approval Modal */}
+      <ConfirmApprovalModal
+        isOpen={isConfirmModalOpen}
+        onClose={onConfirmModalClose}
+        onConfirm={handleApproveConfirm}
+        isLoading={updatingBookingId === selectedRequest?.id}
+      />
     </>
   )
 }
 
-export default BookingRequestsPage 
+export default BookingRequestsPage

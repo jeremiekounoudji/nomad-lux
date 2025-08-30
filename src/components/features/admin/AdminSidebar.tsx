@@ -1,5 +1,6 @@
 import React from 'react'
-import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock } from 'lucide-react'
+import { Crown, Home, Users, Building2, Calendar, BarChart3, Settings, LogOut, X, Clock, DollarSign } from 'lucide-react'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface AdminSidebarProps {
   currentSection: string
@@ -16,14 +17,16 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onToggle,
   onLogout
 }) => {
+  const { t } = useTranslation(['admin', 'auth'])
   const menuItems = [
-    { key: 'dashboard', label: 'Dashboard', icon: Home },
-    { key: 'users', label: 'User Management', icon: Users },
-    { key: 'properties', label: 'Property Approval', icon: Building2 },
-    { key: 'bookings', label: 'Booking Management', icon: Calendar },
-    { key: 'activities', label: 'Activity Log', icon: Clock },
-    { key: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { key: 'settings', label: 'System Settings', icon: Settings },
+    { key: 'dashboard', label: t('admin.navigation.dashboard'), icon: Home },
+    { key: 'users', label: t('admin.navigation.users'), icon: Users },
+    { key: 'properties', label: t('admin.navigation.properties'), icon: Building2 },
+    { key: 'bookings', label: t('admin.navigation.bookings'), icon: Calendar },
+    { key: 'refunds', label: t('admin.navigation.refunds'), icon: DollarSign },
+    { key: 'activities', label: t('admin.activity.title'), icon: Clock },
+    { key: 'analytics', label: t('admin.analytics.title'), icon: BarChart3 },
+    { key: 'settings', label: t('admin.navigation.settings'), icon: Settings },
   ]
 
   const handleLogout = () => {
@@ -42,43 +45,43 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   return (
     <>
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 lg:z-auto ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-gray-200 bg-white transition-transform duration-300 ease-in-out lg:static lg:inset-0 lg:z-auto lg:translate-x-0${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+        <div className="flex h-16 items-center justify-between border-b border-gray-200 px-6">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <Crown className="w-5 h-5 text-white" />
+            <div className="flex size-8 items-center justify-center rounded-lg bg-primary-600">
+              <Crown className="size-5 text-white" />
             </div>
             <div>
-              <h1 className="font-script font-bold text-xl text-primary-600">Nomad Lux</h1>
-              <p className="text-xs text-gray-500">Admin Panel</p>
+              <h1 className="font-script text-xl font-bold text-primary-600">Nomad Lux</h1>
+              <p className="text-xs text-gray-500">{t('admin.banner.title')}</p>
             </div>
           </div>
           
           {/* Close button for mobile */}
           <button
             onClick={onToggle}
-            className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="rounded-md p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 lg:hidden"
           >
-            <X className="w-5 h-5" />
+            <X className="size-5" />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        <nav className="flex-1 space-y-2 overflow-y-auto px-4 py-6">
           {menuItems.map((item) => (
             <button
               key={item.key}
               onClick={() => handleItemClick(item.key)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-colors ${
+              className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left transition-colors ${
                 currentSection === item.key
-                  ? 'bg-primary-50 text-primary-700 font-medium'
+                  ? 'bg-primary-50 font-medium text-primary-700'
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
-              <item.icon className={`w-5 h-5 ${
+              <item.icon className={`size-5 ${
                 currentSection === item.key ? 'text-primary-600' : 'text-gray-500'
               }`} />
               <span className="truncate">{item.label}</span>
@@ -87,13 +90,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         </nav>
 
         {/* Logout */}
-        <div className="p-4 border-t border-gray-200">
+        <div className="border-t border-gray-200 p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-gray-700 transition-colors hover:bg-red-50 hover:text-red-600"
           >
-            <LogOut className="w-5 h-5" />
-            <span>Sign Out</span>
+            <LogOut className="size-5" />
+            <span>{t('auth.actions.logout')}</span>
           </button>
         </div>
       </div>

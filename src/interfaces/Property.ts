@@ -3,6 +3,20 @@
 // Property status type
 export type PropertyStatus = 'approved' | 'pending' | 'paused' | 'rejected'
 
+// City interface for property listings
+export interface City {
+  id: string
+  name: string
+  country: string
+  property_count: number
+  average_price: number
+  featured_image: string
+  coordinates: {
+    lat: number
+    lng: number
+  }
+}
+
 // Simplified host interface for property listings
 export interface PropertyHost {
   id: string
@@ -37,6 +51,7 @@ export interface Property {
   title: string
   description: string
   price: number
+  price_per_night: number
   currency: string
   location: {
     city: string
@@ -69,6 +84,15 @@ export interface Property {
   created_at: string
   total_before_taxes?: number
   status?: PropertyStatus
+  
+  // New availability management fields
+  unavailable_dates?: string[]
+  timezone?: string
+  like_count: number
+  // Suspension fields
+  suspended_at?: string | null
+  suspended_by?: string | null
+  suspension_reason?: string | null
 }
 
 // Admin property interface
@@ -97,6 +121,10 @@ export interface AdminProperty {
   bedrooms: number
   bathrooms: number
   maxGuests: number
+  // Suspension fields
+  suspended_at?: string | null
+  suspended_by?: string | null
+  suspension_reason?: string | null
 }
 
 export interface PopularPlace {
@@ -130,6 +158,7 @@ export interface TopProperty {
 export interface DatabaseProperty {
   id: string
   host_id: string
+  property_settings_id?: string // Reference to host_property_settings
   title: string
   description: string
   price_per_night: number
@@ -153,6 +182,11 @@ export interface DatabaseProperty {
   cleaning_fee?: number
   service_fee?: number
   status: PropertyStatus
+  
+  // New availability management fields
+  unavailable_dates?: string[] // Array of ISO datetime strings
+  timezone?: string // Property timezone (e.g., 'America/New_York', 'Europe/London')
+  
   created_at: string
   updated_at: string
   approved_at?: string

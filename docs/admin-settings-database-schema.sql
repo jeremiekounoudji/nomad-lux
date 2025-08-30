@@ -174,4 +174,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER update_admin_settings_timestamp_trigger
     BEFORE UPDATE ON admin_settings
     FOR EACH ROW
-    EXECUTE FUNCTION update_admin_settings_timestamp(); 
+    EXECUTE FUNCTION update_admin_settings_timestamp();
+
+-- Add reject_reason column to bookings table
+ALTER TABLE bookings ADD COLUMN reject_reason TEXT; 

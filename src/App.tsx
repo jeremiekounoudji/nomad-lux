@@ -1,12 +1,16 @@
 import React from 'react'
 import { Toaster } from 'react-hot-toast'
+import { RouterProvider } from 'react-router-dom'
 import { useAuthInit } from './hooks/useAuthInit'
-import HomePage from './pages/HomePage'
+import { useTranslationInit } from './hooks/useTranslationInit'
+import { router } from './router'
 import './App.css'
+import './lib/i18n' // Initialize i18next
 
-// Auth wrapper component to initialize auth state
-const AuthWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// App initialization wrapper component
+const AppInitWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useAuthInit()
+  useTranslationInit()
   return <>{children}</>
 }
 
@@ -14,35 +18,33 @@ function App() {
   console.log('🚀 App component initializing', { timestamp: new Date().toISOString() })
   
   return (
-    <AuthWrapper>
-      <div className="App">
-        <HomePage />
-        <Toaster 
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
+    <AppInitWrapper>
+      <RouterProvider router={router} />
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: '#4ade80',
+              secondary: '#fff',
             },
-            success: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#4ade80',
-                secondary: '#fff',
-              },
+          },
+          error: {
+            duration: 5000,
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
             },
-            error: {
-              duration: 5000,
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#fff',
-              },
-            },
-          }}
-        />
-      </div>
-    </AuthWrapper>
+          },
+        }}
+      />
+    </AppInitWrapper>
   )
 }
 

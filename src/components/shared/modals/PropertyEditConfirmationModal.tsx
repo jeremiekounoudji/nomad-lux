@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip } from '@heroui/react'
 import { AlertTriangle, Edit } from 'lucide-react'
 import { PropertyEditConfirmation } from '../../../interfaces'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface PropertyEditConfirmationModalProps {
   isOpen: boolean
@@ -18,6 +19,7 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
   confirmation,
   isLoading = false
 }) => {
+  const { t } = useTranslation(['property', 'common'])
   if (!confirmation) return null
 
   const getStatusColor = (status: string) => {
@@ -32,10 +34,10 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'approved': return 'Approved'
-      case 'pending': return 'Pending'
-      case 'paused': return 'Paused'
-      case 'rejected': return 'Rejected'
+      case 'approved': return t('common.status.approved')
+      case 'pending': return t('common.status.pending')
+      case 'paused': return t('common.status.suspended')
+      case 'rejected': return t('common.status.rejected')
       default: return status
     }
   }
@@ -47,32 +49,32 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-warning-500" />
-                <h2 className="text-xl font-bold">Confirm Property Edit</h2>
+                <AlertTriangle className="size-5 text-warning-500" />
+                <h2 className="text-xl font-bold">{t('property.editConfirm.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600 font-normal">
-                This action will affect your property's approval status
+              <p className="text-sm font-normal text-gray-600">
+                {t('property.editConfirm.subtitle')}
               </p>
             </ModalHeader>
             
             <ModalBody>
               <div className="space-y-4">
                 {/* Property Info */}
-                <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                <div className="flex gap-3 rounded-lg bg-gray-50 p-3">
                   <img
                     src={confirmation.property.images[0]}
                     alt={confirmation.property.title}
-                    className="w-16 h-16 object-cover rounded-lg"
+                    className="size-16 rounded-lg object-cover"
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">
                       {confirmation.property.title}
                     </h3>
-                    <p className="text-sm text-gray-600 line-clamp-2">
+                    <p className="line-clamp-2 text-sm text-gray-600">
                       {confirmation.property.description}
                     </p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-sm text-gray-500">Current Status:</span>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-sm text-gray-500">{t('property.editConfirm.currentStatus')}:</span>
                       <Chip 
                         color={getStatusColor(confirmation.currentStatus)}
                         variant="solid"
@@ -87,34 +89,32 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
 
                 {/* Warning Message */}
                 {confirmation.willResetToPending ? (
-                  <div className="bg-warning-50 border border-warning-200 rounded-lg p-4">
+                  <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
                     <div className="flex items-start gap-3">
-                      <AlertTriangle className="w-5 h-5 text-warning-600 mt-0.5 flex-shrink-0" />
+                      <AlertTriangle className="mt-0.5 size-5 shrink-0 text-warning-600" />
                       <div>
-                        <h4 className="font-semibold text-warning-800 mb-1">
-                          Status Will Change to Pending
+                        <h4 className="mb-1 font-semibold text-warning-800">
+                          {t('property.editConfirm.willChangeTitle')}
                         </h4>
                         <p className="text-sm text-warning-700">
-                          Since this property is currently <strong>{getStatusLabel(confirmation.currentStatus)}</strong>, 
-                          making changes will reset its status to <strong>Pending</strong> for admin review.
+                          {t('property.editConfirm.willChangeBody', { status: getStatusLabel(confirmation.currentStatus) })}
                         </p>
-                        <p className="text-sm text-warning-700 mt-2">
-                          Your property will need to be re-approved by an administrator before it becomes visible to guests again.
+                        <p className="mt-2 text-sm text-warning-700">
+                          {t('property.editConfirm.reapproveNote')}
                         </p>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
                     <div className="flex items-start gap-3">
-                      <Edit className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                      <Edit className="mt-0.5 size-5 shrink-0 text-blue-600" />
                       <div>
-                        <h4 className="font-semibold text-blue-800 mb-1">
-                          Safe to Edit
+                        <h4 className="mb-1 font-semibold text-blue-800">
+                          {t('property.editConfirm.safeTitle')}
                         </h4>
                         <p className="text-sm text-blue-700">
-                          Your property is currently <strong>{getStatusLabel(confirmation.currentStatus)}</strong>, 
-                          so you can make changes without affecting its approval status.
+                          {t('property.editConfirm.safeBody', { status: getStatusLabel(confirmation.currentStatus) })}
                         </p>
                       </div>
                     </div>
@@ -122,7 +122,7 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
                 )}
 
                 <div className="text-sm text-gray-600">
-                  <p>Are you sure you want to proceed with editing this property?</p>
+                  <p>{t('property.editConfirm.confirmPrompt')}</p>
                 </div>
               </div>
             </ModalBody>
@@ -134,15 +134,15 @@ const PropertyEditConfirmationModal: React.FC<PropertyEditConfirmationModalProps
                 onPress={onClose}
                 disabled={isLoading}
               >
-                Cancel
+                {t('common.buttons.cancel')}
               </Button>
               <Button 
                 color={confirmation.willResetToPending ? "warning" : "primary"}
                 onPress={onConfirm}
                 isLoading={isLoading}
-                startContent={!isLoading && <Edit className="w-4 h-4" />}
+                startContent={!isLoading && <Edit className="size-4" />}
               >
-                {confirmation.willResetToPending ? "Edit & Reset Status" : "Edit Property"}
+                {confirmation.willResetToPending ? t('property.editConfirm.editAndReset') : t('property.editConfirm.editProperty')}
               </Button>
             </ModalFooter>
           </>

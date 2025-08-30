@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Modal,
   ModalContent,
@@ -9,7 +9,6 @@ import {
   Input,
   Card,
   CardBody,
-  Chip,
   Divider
 } from '@heroui/react'
 import { 
@@ -23,98 +22,120 @@ import {
   Link,
   Check,
   Star,
-  MapPin
+  MapPin,
+  Send
 } from 'lucide-react'
 import { SharePropertyModalProps } from '../../../interfaces/Component'
+import { 
+  shareContent, 
+  createPropertyShareData, 
+  createSocialShareUrls, 
+  openSocialShare,
+  isWebShareSupported 
+} from '../../../utils/shareUtils'
+import toast from 'react-hot-toast'
+import { useTranslation } from '../../../lib/stores/translationStore'
 
 export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
   isOpen,
   onClose,
   property
 }) => {
+  const { t } = useTranslation(['property', 'common'])
   const [copied, setCopied] = useState(false)
   const [customMessage, setCustomMessage] = useState('')
+  const [webShareSupported, setWebShareSupported] = useState(false)
 
-  const propertyUrl = `https://nomadlux.com/property/${property.id}`
-  const defaultMessage = `Check out this amazing property: ${property.title} in ${property.location.city}, ${property.location.country}. ${propertyUrl}`
+  // Initialize Web Share API support
+  useEffect(() => {
+    setWebShareSupported(isWebShareSupported())
+  }, [])
+
+  // Generate share data
+  const baseShareData = createPropertyShareData(property)
+  const shareData = {
+    ...baseShareData,
+    text: customMessage || baseShareData.text
+  }
+  const socialUrls = createSocialShareUrls(shareData)
 
   const shareOptions = [
     {
-      name: 'Copy Link',
-      icon: <Copy className="w-5 h-5" />,
+      name: t('property.share.copyLink'),
+      icon: <Copy className="size-5" />,
       color: 'default',
+      bgColor: 'bg-gray-100 hover:bg-gray-200',
+      textColor: 'text-gray-700',
       action: () => handleCopyLink()
     },
     {
-      name: 'WhatsApp',
-      icon: <MessageCircle className="w-5 h-5" />,
+      name: t('property.actions.whatsapp'),
+      icon: <MessageCircle className="size-5" />,
       color: 'success',
-      action: () => handleWhatsAppShare()
+      bgColor: 'bg-green-100 hover:bg-green-200',
+      textColor: 'text-green-700',
+      action: () => openSocialShare(socialUrls.whatsapp)
     },
     {
-      name: 'Facebook',
-      icon: <Facebook className="w-5 h-5" />,
+      name: t('property.share.facebook'),
+      icon: <Facebook className="size-5" />,
       color: 'primary',
-      action: () => handleFacebookShare()
+      bgColor: 'bg-blue-100 hover:bg-blue-200',
+      textColor: 'text-blue-700',
+      action: () => openSocialShare(socialUrls.facebook)
     },
     {
-      name: 'Twitter',
-      icon: <Twitter className="w-5 h-5" />,
+      name: t('property.share.twitter'),
+      icon: <Twitter className="size-5" />,
       color: 'secondary',
-      action: () => handleTwitterShare()
+      bgColor: 'bg-sky-100 hover:bg-sky-200',
+      textColor: 'text-sky-700',
+      action: () => openSocialShare(socialUrls.twitter)
     },
     {
-      name: 'Email',
-      icon: <Mail className="w-5 h-5" />,
+      name: t('property.share.email'),
+      icon: <Mail className="size-5" />,
       color: 'warning',
-      action: () => handleEmailShare()
+      bgColor: 'bg-orange-100 hover:bg-orange-200',
+      textColor: 'text-orange-700',
+      action: () => window.location.href = socialUrls.email
     },
     {
-      name: 'Instagram',
-      icon: <Instagram className="w-5 h-5" />,
+      name: t('property.share.instagram'),
+      icon: <Instagram className="size-5" />,
       color: 'danger',
+      bgColor: 'bg-pink-100 hover:bg-pink-200',
+      textColor: 'text-pink-700',
       action: () => handleInstagramShare()
     }
   ]
 
-  const handleCopyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(propertyUrl)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (error) {
-      console.error('Failed to copy link:', error)
+  const handleNativeShare = async () => {
+    const success = await shareContent(shareData, {
+      showSuccessToast: true,
+      showErrorToast: false
+    })
+    
+    if (success) {
+      onClose()
     }
   }
 
-  const handleWhatsAppShare = () => {
-    const message = customMessage || defaultMessage
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, '_blank')
-  }
-
-  const handleFacebookShare = () => {
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(propertyUrl)}`
-    window.open(facebookUrl, '_blank', 'width=600,height=400')
-  }
-
-  const handleTwitterShare = () => {
-    const message = customMessage || `Check out this amazing property: ${property.title} in ${property.location.city}, ${property.location.country}`
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(propertyUrl)}`
-    window.open(twitterUrl, '_blank', 'width=600,height=400')
-  }
-
-  const handleEmailShare = () => {
-    const subject = `Check out this property: ${property.title}`
-    const body = customMessage || defaultMessage
-    const emailUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    window.open(emailUrl)
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareData.url)
+      setCopied(true)
+      toast.success(t('property.share.linkCopied'))
+      setTimeout(() => setCopied(false), 3000)
+    } catch (error) {
+      console.error('Failed to copy link:', error)
+      toast.error(t('property.share.copyFailed'))
+    }
   }
 
   const handleInstagramShare = () => {
-    // Instagram doesn't allow direct URL sharing, so we'll copy the link instead
     handleCopyLink()
-    alert('Link copied! You can paste it in your Instagram story or bio.')
+    toast.success(t('property.share.instagramCopied'))
   }
 
   const handleClose = () => {
@@ -135,35 +156,35 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <Share2 className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Share Property</h2>
+                <Share2 className="size-6 text-primary-500" />
+                <h2 className="text-xl font-bold">{t('property.share.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">Share this amazing property with friends and family</p>
+              <p className="text-sm text-gray-600">{t('property.share.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
                 {/* Property Preview */}
-                <Card>
+                <Card className="border border-gray-200">
                   <CardBody className="p-4">
-                    <div className="flex gap-4">
+                    <div className="flex items-start gap-4">
                       <img
                         src={property.images[0]}
                         alt={property.title}
-                        className="w-20 h-20 object-cover rounded-lg"
+                        className="size-20 rounded-lg object-cover"
                       />
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg line-clamp-1">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
+                        <h3 className="line-clamp-1 text-lg font-semibold">{property.title}</h3>
+                        <div className="mt-1 flex items-center gap-1 text-sm text-gray-600">
+                          <MapPin className="size-4" />
                           <span className="line-clamp-1">{`${property.location.city}, ${property.location.country}`}</span>
                         </div>
-                        <div className="flex items-center gap-4 mt-2">
+                        <div className="mt-2 flex items-center gap-4">
                           <div className="flex items-center gap-1">
-                            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                            <Star className="size-4 fill-current text-yellow-500" />
                             <span className="text-sm font-medium">{property.rating}</span>
                           </div>
                           <span className="text-lg font-bold text-primary-600">
-                            ${property.price}/night
+                            ${property.price}{t('property.labels.perNight')}
                           </span>
                         </div>
                       </div>
@@ -171,15 +192,48 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                   </CardBody>
                 </Card>
 
+                {/* Native Share Button - Show if supported */}
+                {webShareSupported && (
+                  <div className="space-y-3">
+                    <Button
+                      color="primary"
+                      size="lg"
+                      fullWidth
+                      onPress={handleNativeShare}
+                      startContent={<Send className="size-5" />}
+                      className="font-semibold"
+                    >
+                      {t('property.share.quickShare')}
+                    </Button>
+                    <Divider />
+                  </div>
+                )}
+
+                {/* Custom Message */}
+                <div className="space-y-2">
+                  <label className="font-semibold text-gray-700">{t('property.share.customMessageLabel')}</label>
+                  <Input
+                    placeholder={t('property.share.customMessagePlaceholder')}
+                    value={customMessage}
+                    onChange={(e) => setCustomMessage(e.target.value)}
+                    maxLength={280}
+                    variant="bordered"
+                  />
+                  <p className="text-xs text-gray-500">
+                    {t('property.share.charactersCount', { count: customMessage.length, max: 280 })}
+                  </p>
+                </div>
+
                 {/* Share URL */}
                 <div className="space-y-2">
-                  <label className="font-semibold">Property Link</label>
+                  <label className="font-semibold text-gray-700">{t('property.share.propertyLink')}</label>
                   <div className="flex gap-2">
                     <Input
-                      value={propertyUrl}
+                      value={shareData.url}
                       readOnly
-                      startContent={<Link className="w-4 h-4 text-gray-400" />}
+                      startContent={<Link className="size-4 text-gray-400" />}
                       className="flex-1"
+                      variant="bordered"
                     />
                     <Button
                       isIconOnly
@@ -187,90 +241,56 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                       variant="flat"
                       onPress={handleCopyLink}
                     >
-                      {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
                     </Button>
                   </div>
                   {copied && (
-                    <p className="text-sm text-success-600">Link copied to clipboard!</p>
+                    <p className="text-sm text-success-600">✓ {t('property.share.linkCopied')}</p>
                   )}
-                </div>
-
-                {/* Custom Message */}
-                <div className="space-y-2">
-                  <label className="font-semibold">Custom Message (Optional)</label>
-                  <Input
-                    placeholder="Add a personal message to share with the link..."
-                    value={customMessage}
-                    onChange={(e) => setCustomMessage(e.target.value)}
-                    maxLength={200}
-                  />
-                  <p className="text-xs text-gray-500">
-                    {customMessage.length}/200 characters
-                  </p>
                 </div>
 
                 <Divider />
 
-                {/* Share Options */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold">Share via</h4>
-                  <div className="grid grid-cols-3 gap-3">
+                {/* Social Share Options */}
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-gray-700">{t('property.share.shareOnSocial')}</h4>
+                  <div className="grid grid-cols-3 gap-4">
                     {shareOptions.map((option) => (
-                      <Button
+                      <button
                         key={option.name}
-                        variant="flat"
-                        color={option.color as any}
-                        onPress={option.action}
-                        className="flex flex-col gap-2 h-20"
+                        onClick={option.action}
+                        className={`flex flex-col items-center gap-3 rounded-xl p-4 transition-all duration-200 ${option.bgColor} ${option.textColor} hover:scale-105 hover:shadow-md`}
                       >
-                        {option.icon}
-                        <span className="text-xs">{option.name}</span>
-                      </Button>
+                        <div className="rounded-full bg-white p-2 shadow-sm">
+                          {option.icon}
+                        </div>
+                        <span className="text-sm font-medium">{option.name}</span>
+                      </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Share Stats (could be real data from backend) */}
-                <div className="p-4 bg-gray-50 rounded-lg">
-                  <h4 className="font-semibold mb-3">Share Impact</h4>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-2xl font-bold text-primary-600">247</p>
-                      <p className="text-xs text-gray-600">Times Shared</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-secondary-600">1.2k</p>
-                      <p className="text-xs text-gray-600">Views from Shares</p>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-success-600">23</p>
-                      <p className="text-xs text-gray-600">Bookings from Shares</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tips */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2">Sharing Tips</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Add a personal message to increase engagement</li>
-                    <li>• Share in relevant travel or local community groups</li>
-                    <li>• Tag friends who might be interested in this location</li>
-                    <li>• Share at peak times (evenings and weekends) for better visibility</li>
+                {/* Sharing Tips */}
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                  <h4 className="mb-2 font-semibold text-blue-800">💡 {t('property.share.tipsTitle')}</h4>
+                  <ul className="space-y-1 text-sm text-blue-700">
+                    <li>• {t('property.share.tipAddMessage')}</li>
+                    <li>• {t('property.share.tipShareGroups')}</li>
+                    <li>• {t('property.share.tipTagFriends')}</li>
                   </ul>
                 </div>
               </div>
             </ModalBody>
             <ModalFooter>
               <Button color="default" variant="light" onPress={handleClose}>
-                Close
+                {t('common.buttons.close')}
               </Button>
               <Button 
                 color="primary" 
                 onPress={handleCopyLink}
-                startContent={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                startContent={copied ? <Check className="size-4" /> : <Copy className="size-4" />}
               >
-                {copied ? 'Copied!' : 'Copy Link'}
+                {copied ? t('property.share.copied') : t('property.share.copyLink')}
               </Button>
             </ModalFooter>
           </>

@@ -1,0 +1,312 @@
+{
+  "title": "My Profile",
+  "subtitle": "View and manage your account information",
+  "memberSince": "Member since",
+  "roles": {
+    "hostAndGuest": "Host & Guest"
+  },
+  "verified": "Verified",
+  "status": {
+    "active": "Active"
+  },
+  "stats": {
+    "properties": "Properties",
+    "bookings": "Bookings",
+    "avgRating": "Avg Rating",
+    "reviews": "Reviews"
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location"
+  },
+  "accountDetails": "Account Details",
+  "account": {
+    "memberSince": "Member since",
+    "lastActive": "Last active",
+    "preferredLanguage": "Preferred Language"
+  },
+  "accountSummary": "Account Summary",
+  "summary": {
+    "verificationLevel": "Verification Level",
+    "complete": "Complete",
+    "accountStatus": "Account Status",
+    "currency": "Currency"
+  },
+  "actions": {
+    "editProfile": "Edit Profile",
+    "editPersonalInfo": "Edit Personal Information",
+    "changePassword": "Change Password",
+    "editPrivacySettings": "Edit Privacy Settings",
+    "editNotificationSettings": "Edit Notification Settings",
+    "changePhoto": "Change Photo",
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset to Defaults",
+    "confirmReset": "Confirm Reset"
+  },
+  "revenue": {
+    "totalRevenue": "Total Revenue",
+    "hostSince": "Host since"
+  },
+  "contactInformation": "Contact Information",
+  "defaultLanguage": "English",
+  "sections": {
+    "personalInfo": "Personal Information",
+    "security": "Security",
+    "privacy": "Privacy & Settings",
+    "notifications": "Notifications"
+  },
+  "fields": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "bio": "Bio",
+    "location": "Location",
+    "dateOfBirth": "Date of Birth",
+    "status": "Status"
+  },
+  "placeholders": {
+    "firstName": "Enter your first name",
+    "lastName": "Enter your last name",
+    "phone": "Enter your phone number",
+    "bio": "Tell others about yourself...",
+    "location": "Enter your location",
+    "dateOfBirth": "MM/DD/YYYY"
+  },
+  "validation": {
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "invalidPhone": "Please enter a valid phone number",
+    "bioTooLong": "Bio must be less than 500 characters"
+  },
+  "messages": {
+    "updateSuccess": "Profile updated successfully",
+    "passwordChangeSuccess": "Password changed successfully",
+    "imageUploadSuccess": "Profile image uploaded successfully"
+  },
+  "password": {
+    "description": "Choose a new password for your account",
+    "fields": {
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password"
+    },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "passwordTooShort": "Password must be at least 6 characters long",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "changeFailed": "Failed to change password"
+    }
+  },
+  "errors": {
+    "title": "Error Loading Profile",
+    "loadFailed": "Failed to load profile information",
+    "noProfile": "No Profile Found",
+    "profileNotFound": "Profile information could not be found"
+  },
+  "security": {
+    "description": "Keep your account secure by regularly updating your password"
+  },
+  "privacy": {
+    "title": "Privacy Settings",
+    "profileVisibility": "Profile Visibility",
+    "profileVisibilityDescription": "Control who can see your profile information",
+    "showEmail": "Show Email",
+    "showEmailDescription": "Allow others to see your email address",
+    "showPhone": "Show Phone",
+    "showPhoneDescription": "Allow others to see your phone number",
+    "showLocation": "Show Location",
+    "showLocationDescription": "Allow others to see your location",
+    "visibility": {
+      "public": "Public",
+      "hostsOnly": "Hosts Only",
+      "private": "Private",
+      "friends": "Friends"
+    }
+  },
+  "notifications": {
+    "title": "Notification Settings",
+    "email": "Email Notifications",
+    "emailDescription": "Receive booking updates and messages via email",
+    "push": "Push Notifications",
+    "pushDescription": "Receive notifications on your device",
+    "sms": "SMS Notifications",
+    "smsDescription": "Receive urgent notifications via SMS"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "language": "Language",
+    "currency": "Currency",
+    "timezone": "Timezone",
+    "theme": "Theme",
+    "theme": {
+      "auto": "Auto",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "image": {
+    "title": "Profile Picture",
+    "uploadTitle": "Upload Profile Picture",
+    "uploadDescription": "Drag and drop an image here, or click to select",
+    "currentImage": "Current Profile Picture",
+    "currentImageDescription": "Your current profile picture",
+    "preview": "Image Preview",
+    "uploading": "Uploading...",
+    "uploadProgress": "Upload Progress",
+    "fileInput": "Select image file",
+    "dragDropArea": "Drag and drop area for image upload",
+    "cropCanvas": "Image crop canvas",
+    "supportedFormats": "Supported formats: {{formats}}",
+    "maxSize": "Max size: {{size}}MB",
+    "actions": {
+      "selectFile": "Select File",
+      "upload": "Upload",
+      "cancel": "Cancel",
+      "crop": "Crop",
+      "rotate": "Rotate",
+      "download": "Download",
+      "remove": "Remove",
+      "applyCrop": "Apply Crop"
+    },
+    "errors": {
+      "fileTooLarge": "File is too large. Maximum size is {{maxSize}}MB",
+      "invalidFormat": "Invalid file format. Supported formats: {{formats}}",
+      "uploadFailed": "Failed to upload image",
+      "removeFailed": "Failed to remove image"
+    },
+    "cropTitle": "Crop Image",
+    "cropDescription": "Adjust the crop area to create a square profile picture"
+  },
+  "password": {
+    "formTitle": "Change Password Form",
+    "fields": {
+      "current": "Current Password",
+      "new": "New Password",
+      "confirm": "Confirm Password"
+    },
+    "placeholders": {
+      "current": "Enter your current password",
+      "new": "Enter your new password",
+      "confirm": "Confirm your new password"
+    },
+    "validation": {
+      "currentRequired": "Current password is required",
+      "newRequired": "New password is required",
+      "tooShort": "Password must be at least 8 characters",
+      "tooWeak": "Password is too weak",
+      "confirmRequired": "Please confirm your password",
+      "mismatch": "Passwords do not match"
+    },
+    "strength": {
+      "label": "Password Strength",
+      "veryWeak": "Very Weak",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "requirements": {
+      "title": "Password Requirements",
+      "length": "At least 8 characters",
+      "lengthMissing": "At least 8 characters required",
+      "uppercase": "At least one uppercase letter",
+      "uppercaseMissing": "At least one uppercase letter required",
+      "lowercase": "At least one lowercase letter",
+      "lowercaseMissing": "At least one lowercase letter required",
+      "number": "At least one number",
+      "numberMissing": "At least one number required",
+      "special": "At least one special character",
+      "specialMissing": "At least one special character required"
+    },
+    "actions": {
+      "change": "Change Password"
+    },
+    "security": {
+      "title": "Security Notice",
+      "description": "Your password should be unique and not used on other websites. We recommend using a password manager."
+    },
+    "show": "Show password",
+    "hide": "Hide password"
+  },
+  "settings": {
+    "saveSuccess": "Settings saved successfully",
+    "saveError": "Failed to save settings",
+    "resetSuccess": "Settings reset to defaults",
+    "resetTitle": "Reset Settings",
+    "resetDescription": "This will reset all your privacy, notification, and preference settings to their default values. This action cannot be undone.",
+    "actions": {
+      "save": "Save Changes",
+      "reset": "Reset to Defaults"
+    }
+  },
+  "edit": {
+    "title": "Edit Profile",
+    "subtitle": "Update your personal information and preferences",
+    "validation": {
+      "fillAllPasswordFields": "Please fill all password fields",
+      "passwordsDoNotMatch": "New passwords do not match",
+      "passwordTooShort": "New password must be at least 8 characters"
+    },
+    "picture": {
+      "title": "Profile Picture",
+      "upload": "Upload a new profile picture",
+      "changePhoto": "Change Photo"
+    },
+    "basic": {
+      "title": "Basic Information",
+      "fullName": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "dateOfBirth": "Date of Birth",
+      "preferredLanguage": "Preferred Language",
+      "bio": "Bio",
+      "bioPlaceholder": "Tell others about yourself..."
+    },
+    "security": {
+      "title": "Security",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password"
+    },
+    "privacy": {
+      "title": "Privacy & Notifications",
+      "profileVisibility": "Profile Visibility",
+      "profileVisibilityDescription": "Control who can see your profile information",
+      "visibility": {
+        "public": "Public - Visible to everyone",
+        "hostsOnly": "Hosts Only - Only property hosts can see details",
+        "private": "Private - Only basic info visible"
+      },
+      "emailNotifications": "Email Notifications",
+      "emailDescription": "Receive booking updates and messages via email",
+      "smsNotifications": "SMS Notifications",
+      "smsDescription": "Receive urgent notifications via SMS"
+    },
+    "saveChanges": "Save Changes"
+  },
+  "languages": {
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "French",
+    "german": "German",
+    "italian": "Italian",
+    "portuguese": "Portuguese",
+    "chinese": "Chinese",
+    "japanese": "Japanese",
+    "korean": "Korean",
+    "arabic": "Arabic",
+    "hindi": "Hindi",
+    "russian": "Russian"
+  }
+}
+
+
+
+
+

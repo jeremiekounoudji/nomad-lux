@@ -18,7 +18,6 @@ export interface BookingSettings {
   maxAdvanceBooking?: number
   minAdvanceBooking?: number
   cancellationGracePeriod?: number
-  hostPayoutDelay?: number
   minimumStay?: number
   maximumStay?: number
   autoApprovalEnabled?: boolean
@@ -58,9 +57,14 @@ export interface PaymentSettings {
   defaultCurrency?: string
   payoutSchedule?: string
   minimumPayoutAmount?: number
+  paymentHoldDays?: number
   taxRate?: number
   autoPayoutEnabled?: boolean
   chargeTaxes?: boolean
+}
+
+export interface ContentSettings {
+  propertyTypes?: PropertyType[]
 }
 
 export interface AdminSettings {
@@ -69,6 +73,7 @@ export interface AdminSettings {
   notification?: NotificationSettings
   security?: SecuritySettings
   payment?: PaymentSettings
+  content?: ContentSettings
 }
 
 export interface AdminSettingRecord {
@@ -84,4 +89,10 @@ export interface AdminSettingRecord {
   updated_by?: string
   created_at?: string
   updated_at?: string
+}
+
+export interface PropertyType {
+  value: string
+  label: string
+  category: string
 } 

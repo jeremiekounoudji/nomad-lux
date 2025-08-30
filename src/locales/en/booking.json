@@ -1,0 +1,407 @@
+{
+  "myBookings": {
+    "banner": {
+      "title": "My Bookings",
+      "subtitle": "Manage your property bookings and travel history"
+    }
+  },
+  "steps": {
+    "selectDates": "Select Dates",
+    "guestInfo": "Guest Information",
+    "payment": "Payment",
+    "confirmation": "Confirmation"
+  },
+  "labels": {
+    "property": "Property",
+    "locationNotAvailable": "Location not available",
+    "guestsCount": "{{count}} guest",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "host": "Host",
+    "adults": "Adults",
+    "children": "Children",
+    "infants": "Infants",
+    "specialRequests": "Special Requests",
+    "totalPrice": "Total Price",
+    "priceBreakdown": "Price Breakdown",
+    "nightlyRate": "Nightly Rate",
+    "nights": "nights",
+    "cleaningFee": "Cleaning Fee",
+    "serviceFee": "Service Fee",
+    "taxes": "Taxes",
+    "total": "Total",
+    "paymentMethod": "Payment Method",
+    "cardNumber": "Card Number",
+    "expiryDate": "Expiry Date",
+    "cvv": "CVV",
+    "billingAddress": "Billing Address",
+    "bookingReference": "Booking Reference",
+    "hostContact": "Host Contact",
+    "checkInInstructions": "Check-in Instructions",
+    "houseRules": "House Rules",
+    "cancellationPolicy": "Cancellation Policy",
+    "completeDetails": "Complete your booking details",
+    "specialRequestsPlaceholder": "Any special requests or notes for your host",
+    "specialRequestsHelper": "Share any specific needs or preferences",
+    "totalBeforeTaxes": "Total before taxes",
+    "rejectionReason": "Rejection Reason",
+    "superhost": "Superhost",
+    "guest": "guest",
+    "guestsPlural": "guests",
+    "night": "night",
+    "maxGuests": "Maximum {{guests}} guests allowed",
+    "reviews": "reviews",
+    "checkInTime": "CHECK-IN TIME",
+    "checkOutTime": "CHECK-OUT TIME",
+    "specialRequestsOptional": "SPECIAL REQUESTS (OPTIONAL)",
+    "nights": "nights"
+  },
+  "actions": {
+    "selectDates": "Select Dates",
+    "addGuests": "Add Guests",
+    "bookNow": "Book Now",
+    "confirmBooking": "Confirm Booking",
+    "payNow": "Pay Now",
+    "keepBooking": "Keep Booking",
+    "contactHost": "Contact Host",
+    "viewBooking": "View Booking",
+    "cancelBooking": "Cancel Booking",
+    "modifyBooking": "Modify Booking",
+    "leaveReview": "Leave Review",
+    "rebook": "Re-Book",
+    "downloadReceipt": "Download Receipt",
+    "reportIssue": "Report Issue",
+    "retryPayment": "Retry Payment",
+    "bookForAmount": "Book for ${{amount}}",
+    "decline": "Decline",
+    "approve": "Approve",
+    "viewDetails": "View Details",
+    "checkingAvailability": "Checking Availability...",
+    "creatingBooking": "Creating Booking...",
+    "reserveNow": "Reserve Now",
+    "viewMyBookings": "View My Bookings",
+    "bookNow": "Book Now",
+    "reserve": "Reserve",
+    "cancelBooking": "Cancel Booking",
+    "confirmCancellation": "Confirm Cancellation",
+    "cancelling": "Cancelling...",
+    "contactHost": "Contact Host",
+    "rebook": "Rebook",
+    "leaveReview": "Leave Review",
+    "payNow": "Pay Now",
+    "viewDetails": "View Details",
+    "editBooking": "Edit Booking",
+    "requestCancellation": "Request Cancellation",
+    "acceptBooking": "Accept Booking",
+    "declineBooking": "Decline Booking",
+    "markAsCompleted": "Mark as Completed",
+    "processRefund": "Process Refund",
+    "sendMessage": "Send Message",
+    "callHost": "Call Host",
+    "emailHost": "Email Host",
+    "whatsapp": "WhatsApp"
+  },
+  "cancel": {
+    "title": "Cancel Booking",
+    "subtitle": "We're sorry to see you cancel your booking",
+    "policy": {
+      "title": "Cancellation Policy",
+      "description": "Your refund amount depends on when you cancel after making the booking:",
+      "rule24h": "Within 24 hours of booking: 100% refund",
+      "rule7d": "Within 7 days of booking: 50% refund",
+      "rule14d": "After 14 days of booking: No refund"
+    },
+    "refund": {
+      "title": "Refund Breakdown",
+      "originalTotal": "Original booking total",
+      "serviceFeeNonRefundable": "Service fee (non-refundable)",
+      "refundAmount": "Refund amount"
+    },
+    "reason": {
+      "title": "Why are you cancelling?",
+      "pleaseSpecify": "Please specify",
+      "placeholder": "Tell us more about your reason for cancelling",
+      "changePlans": "Change of plans",
+      "foundAlternative": "Found alternative accommodation",
+      "emergency": "Emergency situation",
+      "notAsDescribed": "Property not as described",
+      "hostUnavailable": "Host unavailable/unresponsive",
+      "other": "Other"
+    },
+    "warning": {
+      "title": "Important",
+      "message": "Once you cancel this booking, it cannot be undone. You'll need to make a new booking if you change your mind."
+    }
+  },
+  "status": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "rejected": "Rejected",
+    "accepted-and-waiting-for-payment": "Accepted and waiting for payment",
+    "payment-failed": "Payment failed"
+  },
+  "reviews": {
+    "count": "{{count}} reviews"
+  },
+  "bookingRequests": {
+    "banner": {
+      "title": "Booking Requests",
+      "subtitle": "Manage and respond to guest booking requests"
+    },
+    "loading": "Loading booking requests...",
+    "showingRange": "Showing {{from}} to {{to}} of {{total}} requests",
+    "emptyTitle": "No {{status}} requests",
+    "emptyDescription": "You have no {{status}} booking requests at the moment.",
+    "details": {
+      "title": "Booking Request Details",
+      "subtitle": "Review all information about this booking request",
+      "propertyInformation": "Property Information",
+      "locationPlaceholder": "Location details here",
+      "propertyTypePlaceholder": "Property type details",
+      "guestInformation": "Guest Information",
+      "bookingDetails": "Booking Details",
+      "totalAmount": "Total Amount",
+      "paymentStatus": "Payment Status",
+      "timeline": "Request Timeline",
+      "requestCreated": "Request Created"
+    },
+    "decline": {
+      "title": "Decline Booking Request",
+      "description": "Please provide a reason for declining this booking request. This will be visible to the guest.",
+      "placeholder": "Enter reason for declining...",
+      "confirm": "Decline Booking"
+    },
+    "approve": {
+      "title": "Confirm Approval",
+      "description": "Are you sure you want to approve this booking request? This will notify the guest and initiate the payment process.",
+      "confirm": "Confirm Approval"
+    }
+  },
+  "messages": {
+    "cancelling": "Cancelling...",
+    "loading": "Loading bookings...",
+    "noBookings": "No {{status}} bookings",
+    "noPendingBookings": "You don't have any pending bookings at the moment.",
+    "noConfirmedBookings": "You don't have any confirmed bookings at the moment.",
+    "noCancelledBookings": "You don't have any cancelled bookings.",
+    "noCompletedBookings": "You haven't completed any bookings yet.",
+    "noRejectedBookings": "You don't have any rejected bookings.",
+    "noAwaitingPaymentBookings": "You don't have any bookings awaiting payment.",
+    "noFailedPaymentBookings": "You don't have any bookings with failed payment.",
+    "bookingSuccess": "Booking confirmed successfully!",
+    "bookingPending": "Your booking request has been sent to the host",
+    "bookingCancelled": "Booking cancelled successfully",
+    "paymentSuccess": "Payment processed successfully",
+    "paymentFailed": "Payment failed. Please try again.",
+    "unavailableDates": "Selected dates are not available",
+    "minimumStay": "Minimum stay is {{nights}} nights",
+    "maximumGuests": "Maximum {{guests}} guests allowed",
+    "bookingExpired": "This booking request has expired",
+    "hostApprovalRequired": "Host approval required for this property",
+    "instantBookAvailable": "Instant book available",
+    "checkInSoon": "Check-in is in {{hours}} hours",
+    "checkOutSoon": "Check-out is in {{hours}} hours",
+    "reviewReminder": "Don't forget to leave a review for your stay",
+    "dateUnavailableOn": "{{date}} is not available for booking",
+    "checkInSelected": "Check-in date selected",
+    "checkOutSelected": "Check-out date selected",
+    "checkInUpdated": "Check-in date updated",
+    "datesCleared": "Dates cleared",
+    "checkOutCleared": "Check-out date cleared",
+    "pastDateNotAllowed": "Cannot select a date in the past",
+    "rangeIncludesUnavailableOn": "The selected date range includes an unavailable date: {{date}}",
+    "checkOutClearedDueToCheckIn": "Check-out date cleared due to new check-in date",
+    "selectCheckInFirst": "Please select a check-in date first",
+    "checkoutAfterCheckin": "Check-out date must be after check-in date",
+    "checkOutUpdated": "Check-out date updated",
+    "propertyDataMissing": "Cannot process booking: property data is missing.",
+    "timeUpdated": "Time updated",
+    "noChargeYet": "You won't be charged yet",
+    "reservationSubmitted": "Your reservation has been successfully submitted. You'll receive a confirmation email shortly.",
+    "processingReservation": "Processing your reservation..."
+  },
+  "validation": {
+    "selectDates": "Please select check-in and check-out dates",
+    "checkoutAfterCheckin": "Check-out date must be after check-in date",
+    "minAdvanceBooking": "Minimum {{days}} day(s) advance booking required",
+    "checkInTimeRange": "Check-in time must be between 6:00 AM and 10:00 PM",
+    "checkOutTimeRange": "Check-out time must be between 6:00 AM and 12:00 PM"
+  },
+
+  "calendar": {
+    "localTimeLabel": "Local time:",
+    "timezoneNotice": "All times shown are in the property's local timezone to avoid confusion",
+    "hide": "Hide Calendar",
+    "show": "Show Calendar",
+    "helperText": "Use the date inputs above or click on available dates in the calendar"
+  },
+  "policies": {
+    "cancellation": {
+      "flexible": "Flexible - Full refund 1 day prior to arrival",
+      "moderate": "Moderate - Full refund 5 days prior to arrival",
+      "strict": "Strict - 50% refund up until 1 week prior to arrival"
+    },
+    "checkIn": "Check-in: {{time}}",
+    "checkOut": "Check-out: {{time}}",
+    "checkInAvailable": "Check-in available 6:00 AM - 10:00 PM",
+    "checkOutRequired": "Check-out required by 12:00 PM",
+    "smoking": "No smoking",
+    "pets": "No pets allowed",
+    "parties": "No parties or events",
+    "additionalRules": "Additional house rules may apply"
+  },
+  "details": {
+    "title": "Booking Details",
+    "bookingId": "Booking ID: {{id}}",
+    "locationNotAvailable": "Location not available",
+    "contactNotAvailable": "Contact information not available",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "guests": "Guests",
+    "guest": "guest",
+    "guestsPlural": "guests",
+    "bookingDate": "Booking Date",
+    "bookingInformation": "Booking Information",
+    "hostInformation": "Host Information",
+    "paymentInformation": "Payment Information",
+    "accommodation": "Accommodation",
+    "cleaningFee": "Cleaning fee",
+    "serviceFee": "Service fee",
+    "taxes": "Taxes",
+    "total": "Total",
+    "paymentMethod": "Payment method: Not available",
+    "specialRequests": "Special Requests"
+  },
+  "modals": {
+    "confirmReservation": {
+      "title": "Confirm Your Reservation",
+      "subtitle": "Please review your booking details"
+    }
+  },
+  "payment": {
+    "description": "Booking payment for {{title}}",
+    "createRecordFailed": "Failed to create payment record",
+    "initFailed": "Payment initialization failed",
+    "notCompleted": "Payment was not completed successfully",
+    "cancelledByUser": "Payment was cancelled by user",
+    "cancelledWithReason": "Payment cancelled: {{reason}}",
+    "declinedWithReason": "Payment declined: {{reason}}",
+    "failedWithCode": "Payment failed: {{code}}",
+    "openModalFailed": "Failed to open payment modal",
+    "payWithFedaPay": "Pay with FedaPay",
+    "unknownReason": "Unknown reason",
+    "transactionDeclined": "Transaction declined",
+    "completionFailed": "Payment completion failed",
+    "methods": {
+      "card": "Credit/Debit Card",
+      "paypal": "PayPal",
+      "bankTransfer": "Bank Transfer",
+      "fedapayCard": "FedaPay Card",
+      "fedapayMobile": "Mobile Money",
+      "fedapayBank": "FedaPay Bank Transfer"
+    },
+    "security": "Your payment information is secure and encrypted",
+    "processing": "Processing payment...",
+    "failed": "Payment failed",
+    "success": "Payment successful",
+    "refund": "Refund processed",
+    "partialRefund": "Partial refund processed",
+    "retrying": "Retrying...",
+    "initializing": "Initializing Payment",
+    "settingUpAgain": "Setting up payment again...",
+    "pleaseWait": "Please wait while we prepare your payment...",
+    "error": "Payment Error",
+    "tryAgain": "Try Again",
+    "completePayment": "Complete Payment",
+    "processingFee": "Processing Fee",
+    "platformFee": "Platform Fee",
+    "preparing": "Preparing payment...",
+    "methods": {
+      "cards": "Cards",
+      "mobileMoney": "Mobile Money",
+      "bankTransfer": "Bank Transfer"
+    }
+  },
+  "host": {
+    "title": "Booking Management",
+    "subtitle": "Manage your property bookings and guest requests",
+    "loading": "Loading your bookings...",
+    "searchPlaceholder": "Search bookings...",
+    "filterPlaceholder": "Filter by status",
+    "approveSuccess": "Booking approved successfully!",
+    "approveFailed": "Failed to approve booking",
+    "declineSuccess": "Booking declined",
+    "declineFailed": "Failed to decline booking",
+    "messageSent": "Message sent to guest!",
+    "messageFailed": "Failed to send message",
+    "statuses": {
+      "all": "All Statuses",
+      "pending": "Pending",
+      "approved": "Approved",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "declined": "Declined",
+      "cancelled": "Cancelled"
+    },
+    "tabs": {
+      "all": "All Bookings",
+      "pending": "Pending",
+      "approved": "Approved",
+      "confirmed": "Confirmed",
+      "completed": "Completed"
+    },
+    "noBookings": {
+      "title": "No bookings found",
+      "tryAdjusting": "Try adjusting your search or filter criteria",
+      "noneYet": "You don't have any bookings yet"
+    },
+    "labels": {
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "guests": "Guests",
+      "total": "Total"
+    },
+    "actions": {
+      "details": "Details",
+      "approve": "Approve",
+      "decline": "Decline",
+      "contact": "Contact"
+    },
+    "modals": {
+      "details": {
+        "title": "Booking Details",
+        "guestInfo": "Guest Information",
+        "bookingInfo": "Booking Information",
+        "specialRequests": "Special Requests",
+        "close": "Close",
+        "approveBooking": "Approve Booking",
+        "declineBooking": "Decline Booking",
+        "labels": {
+          "property": "Property",
+          "bookingId": "Booking ID",
+          "checkIn": "Check-in",
+          "checkOut": "Check-out",
+          "guests": "Guests",
+          "totalAmount": "Total Amount"
+        }
+      },
+      "approve": {
+        "title": "Approve Booking",
+        "message": "Are you sure you want to approve this booking? The guest will be notified and can proceed with payment.",
+        "cancel": "Cancel",
+        "confirm": "Approve Booking"
+      },
+      "decline": {
+        "title": "Decline Booking",
+        "message": "Are you sure you want to decline this booking? The guest will be notified.",
+        "reasonLabel": "Reason (Optional)",
+        "reasonPlaceholder": "Enter reason for declining...",
+        "cancel": "Cancel",
+        "confirm": "Decline Booking"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "discoverLuxury": "Discover Luxury",
+  "findPerfectStay": "Find your perfect stay in the world's most beautiful destinations",
+  "popularPlaces": "Popular Places",
+  "viewAll": "View All",
+  "explore": "Explore",
+  "hero": {
+    "title": "Discover Luxury",
+    "subtitle": "Find your perfect stay in the world's most beautiful destinations",
+    "searchPlaceholder": "Where do you want to go?",
+    "searchButton": "Search"
+  },
+  "sections": {
+    "popularPlaces": "Popular Places",
+    "nearbyListings": "Nearby Listings",
+    "topProperties": "Top Properties"
+  },
+  "actions": {
+    "viewAll": "View All",
+    "explore": "Explore",
+    "search": "Search"
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "buttons": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "deleting": "Suppression...",
+    "edit": "Modifier",
+    "submit": "Soumettre",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "close": "Fermer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "clear": "Effacer",
+    "apply": "Appliquer",
+    "upload": "Télécharger",
+    "download": "Télécharger",
+    "view": "Voir",
+    "explore": "Explorer",
+    "share": "Partager",
+    "like": "J'aime",
+    "unlike": "Je n'aime plus",
+    "list": "Liste",
+    "map": "Carte",
+    "tryAgain": "Réessayer",
+    "updateLocation": "Mettre à jour l'emplacement",
+    "refreshFeed": "Actualiser le flux",
+    "refreshForNewListings": "Actualiser pour de nouvelles annonces",
+    "submitReview": "Soumettre l'avis",
+    "editReview": "Modifier l'avis",
+    "deleteReview": "Supprimer l'avis",
+    "cancelReview": "Annuler",
+    "saveReview": "Enregistrer les modifications"
+  },
+  "labels": {
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "city": "Ville",
+    "country": "Pays",
+    "date": "Date",
+    "time": "Heure",
+    "price": "Prix",
+    "currency": "Devise",
+    "status": "Statut",
+    "description": "Description",
+    "title": "Titre",
+    "category": "Catégorie",
+    "type": "Type",
+    "location": "Emplacement",
+    "rating": "Note",
+    "reviews": "Avis",
+    "selectedCount": "{{count}} sélectionné",
+    "language": "Langue",
+    "user": "Utilisateur",
+    "target": "Cible",
+    "ip": "IP",
+    "from": "De :",
+    "to": "À :",
+    "verifiedStay": "Séjour vérifié"
+  },
+  "status": {
+    "active": "Actif",
+    "inactive": "Inactif",
+    "pending": "En attente",
+    "approved": "Approuvé",
+    "rejected": "Rejeté",
+    "cancelled": "Annulé",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "processing": "En cours",
+    "suspended": "Suspendu",
+    "unknown": "Inconnu"
+  },
+  "messages": {
+    "loading": "Chargement...",
+    "saving": "Enregistrement...",
+    "uploading": "Téléversement...",
+    "success": "Succès !",
+    "error": "Une erreur s'est produite",
+    "processing": "Traitement...",
+    "noData": "Aucune donnée disponible",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir partir ?",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
+    "settingUp": "Configuration de votre expérience",
+    "takingTooLong": "Cela prend trop de temps ? Cliquez ici pour continuer",
+    "failed": "Échec",
+    "signInRequired": "Veuillez vous connecter pour accéder à cette fonctionnalité",
+    "signInToBook": "Veuillez vous connecter pour réserver des propriétés",
+    "bookingComingSoon": "Fonctionnalité de réservation bientôt disponible !",
+    "signInToAccessProfile": "Veuillez vous connecter pour accéder à votre profil",
+    "feedRefreshed": "Flux actualisé !",
+    "notSpecified": "Non spécifié",
+    "notProvided": "Non fourni",
+    "failedToLoad": "Échec du chargement des propriétés",
+    "noProperties": "Aucune propriété trouvée",
+    "noPropertiesInArea": "Aucune propriété trouvée dans votre région",
+    "noPropertiesInCity": "Aucune propriété trouvée à {{city}}",
+    "failedToLoadProperties": "Échec du chargement des propriétés. Veuillez réessayer.",
+    "seenAllProperties": "Vous avez vu toutes les propriétés disponibles",
+    "unexpectedError": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+    "reviewSubmitted": "Avis soumis avec succès",
+    "reviewUpdated": "Avis mis à jour avec succès",
+    "reviewDeleted": "Avis supprimé avec succès",
+    "reviewError": "Erreur lors du traitement de l'avis"
+  },
+  "pagination": {
+    "showing": "Affichage",
+    "to": "à",
+    "of": "sur",
+    "results": "résultats",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "goToPage": "Aller à la page",
+    "itemsPerPage": "Éléments par page"
+  },
+  "actions": {
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "clear": "Effacer",
+    "reset": "Réinitialiser aux valeurs par défaut"
+  },
+  "time": {
+    "thisMonth": "Ce mois-ci"
+  },
+  "debug": {
+    "info": "Infos de débogage",
+    "userAuthStatus": "Statut d'authentification",
+    "isLoading": "isLoading",
+    "isAuthenticated": "isAuthenticated",
+    "isAdmin": "isAdmin",
+    "user": "utilisateur",
+    "userId": "userId"
+  },
+  "upload": {
+    "uploaded": "✓ TÉLÉVERSÉ",
+    "failed": "✗ ÉCHEC",
+    "uploadFailedWithReason": "Échec du téléversement : {{reason}}",
+    "header": "Téléversement des fichiers ({{completed}}/{{total}})",
+    "error": "Erreur",
+    "progressAria": "Progression du téléversement pour {{fileName}}",
+    "errorWithReason": "Erreur : {{reason}}",
+    "allUploaded": "Tous les fichiers ont été téléversés avec succès",
+    "someFailed": "Certains téléversements ont échoué",
+    "uploadingFiles": "Téléversement des fichiers...",
+    "progress": "Progression du téléversement",
+    "completedOfTotal": "{{completed}}/{{total}} terminé",
+    "unknown": "Inconnu",
+    "overallProgress": "Progression générale du téléversement",
+    "completed": "100%"
+  },
+  "time": {
+    "now": "Maintenant",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "tomorrow": "Demain",
+    "thisWeek": "Cette semaine",
+    "lastWeek": "La semaine dernière",
+    "thisMonth": "Ce mois-ci",
+    "lastMonth": "Le mois dernier",
+    "minute": "minute",
+    "minutes": "minutes",
+    "hour": "heure",
+    "hours": "heures",
+    "day": "jour",
+    "days": "jours",
+    "week": "semaine",
+    "weeks": "semaines",
+    "month": "mois",
+    "months": "mois",
+    "year": "année",
+    "years": "années",
+    "ago": "il y a",
+    "zones": {
+      "est": "Heure de l'Est",
+      "pst": "Heure du Pacifique"
+    },
+    "daily": "Quotidien",
+    "weekly": "Hebdomadaire",
+    "monthly": "Mensuel"
+  },
+  "actions": {
+    "close": "Fermer",
+    "retry": "Réessayer",
+    "clear": "Effacer",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "backToHome": "Retour à l'accueil"
+  },
+  "notSpecified": "Non spécifié",
+  "notProvided": "Non fourni",
+  "pageBanner": {
+    "alt": "Arrière-plan de la bannière de page",
+    "bannerLabel": "Bannière de page {{title}}",
+    "home": "Arrière-plan de découverte de propriétés de luxe",
+    "search": "Arrière-plan de recherche et découverte de propriétés",
+    "createProperty": "Arrière-plan d'architecture de maison moderne",
+    "editProperty": "Arrière-plan de modification et mise à jour de propriété",
+    "myListings": "Arrière-plan de gestion de propriétés",
+    "myBookings": "Arrière-plan de voyage et réservation",
+    "likedProperties": "Arrière-plan de propriétés favorites",
+    "bookingRequests": "Arrière-plan de communication et demandes",
+    "notifications": "Arrière-plan de notifications et alertes",
+    "wallet": "Arrière-plan de gestion financière et portefeuille",
+    "admin": "Arrière-plan de tableau de bord et gestion admin",
+    "help": "Arrière-plan d'aide et support"
+  },
+  "languages": {
+    "en": "Anglais",
+    "es": "Espagnol",
+    "fr": "Français",
+    "de": "Allemand"
+  },
+  "map": {
+    "loading": "Chargement de la carte...",
+    "initializing": "Initialisation de la carte...",
+    "loadingLibraries": "Chargement des bibliothèques de carte...",
+    "progress": {
+      "loading": "Chargement de {{current}}... ({{loaded}}/{{total}})",
+      "complete": "Terminé"
+    },
+    "error": {
+      "initialization": "Échec de l'initialisation de la carte",
+      "tileLoading": "Échec du chargement des tuiles : {{message}}",
+      "retry": "Échec du chargement de la carte après {{count}} tentatives. Veuillez actualiser la page.",
+      "timeout": "La carte prend plus de temps que prévu à charger",
+      "generic": "Échec du chargement de la carte",
+      "network": {
+        "title": "Erreur de connexion réseau",
+        "description": "Impossible de charger les tuiles de carte en raison de problèmes réseau.",
+        "suggestions": {
+          "0": "Vérifiez votre connexion Internet",
+          "1": "Essayez d'actualiser la page",
+          "2": "Passez à un autre réseau si disponible"
+        }
+      },
+      "tiles": {
+        "title": "Tuiles de carte indisponibles",
+        "description": "Le service de carte est actuellement indisponible.",
+        "suggestions": {
+          "0": "Les tuiles de carte peuvent être temporairement indisponibles",
+          "1": "Réessayez dans quelques instants",
+          "2": "Contactez le support si le problème persiste"
+        }
+      },
+      "initialization": {
+        "title": "Échec de l'initialisation de la carte",
+        "description": "Échec de l'initialisation du composant de carte.",
+        "suggestions": {
+          "0": "Actualisez la page pour recharger la carte",
+          "1": "Effacez le cache du navigateur et réessayez",
+          "2": "Contactez le support si le problème persiste"
+        }
+      },
+      "location": {
+        "title": "Erreur de localisation",
+        "description": "Impossible de déterminer ou d'afficher l'emplacement.",
+        "suggestions": {
+          "0": "Vérifiez les permissions de localisation dans votre navigateur",
+          "1": "Vérifiez que les coordonnées sont valides",
+          "2": "Essayez d'entrer un autre emplacement"
+        }
+      },
+      "unknown": {
+        "title": "Erreur de carte",
+        "description": "Une erreur inattendue s'est produite lors du chargement de la carte.",
+        "suggestions": {
+          "0": "Essayez d'actualiser la page",
+          "1": "Effacez le cache du navigateur si le problème persiste",
+          "2": "Contactez le support pour obtenir de l'aide"
+        }
+      }
+    },
+    "retry": {
+      "attempt": "Nouvelle tentative de chargement de la carte ({{current}}/{{max}})",
+      "maxReached": "Nombre maximum de tentatives atteint"
+    },
+    "tiles": {
+      "loading": "Chargement des tuiles de carte...",
+      "loaded": "Tuiles de carte chargées avec succès",
+      "error": "Erreur de chargement des tuiles"
+    },
+    "actions": {
+      "tryAgain": "Réessayer",
+      "reloadPage": "Actualiser la page",
+      "openInOpenStreetMap": "Ouvrir dans OpenStreetMap"
+    },
+    "labels": {
+      "technicalDetails": "Détails techniques",
+      "tryFollowing": "Essayez ce qui suit :",
+      "needToViewLocation": "Besoin de voir l'emplacement ?"
+    },
+    "measurement": {
+      "title": "Outils de mesure",
+      "distance": "Distance",
+      "area": "Surface",
+      "cancel": "Annuler",
+      "measurements": "Mesures",
+      "instructions": {
+        "distance": "Cliquez sur la carte pour ajouter des points pour la mesure de distance. Double-cliquez pour terminer.",
+        "area": "Cliquez sur la carte pour créer une surface. Minimum 3 points requis. Double-cliquez pour terminer."
+      },
+      "current": {
+        "points": "Points",
+        "currentDistance": "Distance actuelle",
+        "needMorePoints": "Besoin de 3+ points"
+      },
+      "items": {
+        "distance": "Distance #{{index}}",
+        "area": "Surface #{{index}}",
+        "points": "{{count}} points",
+        "perimeter": "Périmètre"
+      },
+      "summary": {
+        "totalDistanceLines": "Total des lignes de distance",
+        "totalAreas": "Total des surfaces"
+      },
+      "actions": {
+        "copyData": "Copier les données de mesure",
+        "exportMeasurements": "Exporter les mesures",
+        "clearAll": "Effacer toutes les mesures",
+        "deleteMeasurement": "Supprimer la mesure"
+      },
+      "messages": {
+        "distanceCompleted": "Mesure de distance terminée : {{distance}}",
+        "areaCompleted": "Mesure de surface terminée : {{area}}",
+        "allCleared": "Toutes les mesures effacées",
+        "deleted": "Mesure supprimée",
+        "dataCopied": "Données de mesure copiées dans le presse-papiers",
+        "exported": "Mesures exportées"
+      }
+    },
+    "virtualization": {
+      "performance": {
+        "total": "Total",
+        "visible": "Visible",
+        "clusters": "Clusters",
+        "reduction": "Réduction",
+        "zoom": "Zoom",
+        "mode": "Mode"
+      },
+      "messages": {
+        "updatingMarkers": "Mise à jour des marqueurs visibles pour la vue",
+        "renderedMarkers": "{{markers}} marqueurs et {{clusters}} clusters rendus",
+        "errorUpdating": "Erreur lors de la mise à jour du contenu visible"
+      }
+    }
+  }
+}

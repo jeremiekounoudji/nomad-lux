@@ -1,0 +1,22 @@
+{
+  "loadingLibraries": "Chargement des bibliothèques de carte...",
+  "loadingMap": "Chargement de la carte...",
+  "loadingMarkers": "Chargement des marqueurs...",
+  "loadingDirections": "Chargement de l'itinéraire...",
+  "loadingNearby": "Chargement des lieux à proximité...",
+  "locationNotAvailable": "Localisation non disponible",
+  "propertyLocation": "Emplacement de la propriété",
+  "nearbyPlaces": "Lieux à proximité",
+  "getDirections": "Obtenir l'itinéraire",
+  "viewOnMap": "Voir sur la carte",
+  "distance": "à {{distance}}",
+  "walkingDistance": "{{duration}} à pied",
+  "drivingDistance": "{{duration}} en voiture",
+  "transitDistance": "{{duration}} en transport",
+  "cyclingDistance": "{{duration}} à vélo",
+  "zoomIn": "Zoomer",
+  "zoomOut": "Dézoomer",
+  "recenter": "Recentrer la carte",
+  "showNearby": "Afficher les lieux à proximité",
+  "hideNearby": "Masquer les lieux à proximité"
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Modal,
   ModalContent,
@@ -6,206 +6,172 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Textarea,
-  Avatar,
-  Chip,
-  Card,
-  CardBody,
-  RadioGroup,
-  Radio
 } from '@heroui/react'
-import { MessageCircle, Star, Send, MapPin } from 'lucide-react'
+import { MessageCircle, Phone, Mail, MessageSquare, AlertCircle } from 'lucide-react'
 import { ContactHostModalProps } from '../../../interfaces/Component'
+import { useTranslation } from '../../../lib/stores/translationStore'
+import toast from 'react-hot-toast'
 
 export const ContactHostModal: React.FC<ContactHostModalProps> = ({
   isOpen,
   onClose,
-  property,
-  onSendMessage
+  property
 }) => {
-  const [messageType, setMessageType] = useState('general')
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const { t } = useTranslation(['property', 'common'])
 
-  const messageTypes = [
-    { value: 'general', label: 'General inquiry' },
-    { value: 'booking', label: 'Booking question' },
-    { value: 'amenities', label: 'Ask about amenities' },
-    { value: 'location', label: 'Location and directions' },
-    { value: 'checkin', label: 'Check-in process' },
-    { value: 'house_rules', label: 'House rules' }
-  ]
-
-  const getPrefilledMessage = (type: string) => {
-    switch (type) {
-      case 'booking':
-        return "Hi! I'm interested in booking your property. Could you please provide more details about availability and the booking process?"
-      case 'amenities':
-        return "Hello! I'd like to know more about the amenities available at your property. Are there any additional facilities not mentioned in the listing?"
-      case 'location':
-        return "Hi! Could you please provide more information about the location and how to get to your property? Are there any specific landmarks nearby?"
-      case 'checkin':
-        return "Hello! I'd like to understand the check-in process. What time can I check in, and how will I receive the keys?"
-      case 'house_rules':
-        return "Hi! Could you please clarify the house rules for your property? I want to make sure I understand all the guidelines."
-      default:
-        return ''
-    }
+  // Ensure property and host data exists
+  if (!property || !property.host) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>
+                <div className="flex items-center gap-2">
+                  <AlertCircle className="size-6 text-red-500" />
+                  <h2 className="text-xl font-bold">{t('property.modal.contactHost.error')}</h2>
+                </div>
+              </ModalHeader>
+              <ModalBody>
+                <p className="text-gray-600">{t('property.modal.contactHost.noHostData')}</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="default" variant="light" onPress={onClose}>
+                  {t('common.buttons.close')}
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    )
   }
 
-  const handleTypeChange = (type: string) => {
-    setMessageType(type)
-    const prefilledMessage = getPrefilledMessage(type)
-    if (prefilledMessage && !message) {
-      setMessage(prefilledMessage)
+  const handleCall = () => {
+    if (!property.host.phone) {
+      toast.error(t('property.modal.contactHost.noPhone'))
+      return
     }
-  }
-
-  const handleSendMessage = async () => {
-    if (!message.trim()) return
-
-    setIsLoading(true)
     try {
-      await onSendMessage(message)
-      handleClose()
+      window.location.href = `tel:${property.host.phone}`
     } catch (error) {
-      console.error('Failed to send message:', error)
-    } finally {
-      setIsLoading(false)
+      toast.error(t('property.modal.contactHost.callError'))
     }
   }
 
-  const handleClose = () => {
-    setMessageType('general')
-    setMessage('')
-    onClose()
+  const handleEmail = () => {
+    if (!property.host.email) {
+      toast.error(t('property.modal.contactHost.noEmail'))
+      return
+    }
+    try {
+      window.location.href = `mailto:${property.host.email}`
+    } catch (error) {
+      toast.error(t('property.modal.contactHost.emailError'))
+    }
   }
+
+  const handleWhatsApp = () => {
+    if (!property.host.phone) {
+      toast.error(t('property.modal.contactHost.noPhone'))
+      return
+    }
+    try {
+      // Remove any non-numeric characters from phone number
+      const phone = property.host.phone.replace(/\D/g, '')
+      const message = encodeURIComponent(`Hi ${property.host.display_name}, I'm interested in your property "${property.title}". Can you provide more information?`)
+      window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
+    } catch (error) {
+      toast.error(t('property.modal.contactHost.whatsappError'))
+    }
+  }
+
+  // Check available contact methods
+  const hasPhone = !!property.host.phone
+  const hasEmail = !!property.host.email
+  const availableMethods = [hasPhone, hasEmail, hasPhone].filter(Boolean).length
 
   return (
     <Modal 
       isOpen={isOpen} 
-      onClose={handleClose}
-      size="2xl"
+      onClose={onClose}
+      size="lg"
       scrollBehavior="inside"
+      classNames={{
+        wrapper: "z-[9999]",
+        backdrop: "z-[9998]",
+        base: "z-[9999]"
+      }}
     >
       <ModalContent>
         {(onClose) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
-                <MessageCircle className="w-6 h-6 text-primary-500" />
-                <h2 className="text-xl font-bold">Contact Host</h2>
+                <MessageCircle className="size-6 text-primary-500" />
+                <h2 className="text-xl font-bold">{t('property.modal.contactHost.title')}</h2>
               </div>
-              <p className="text-sm text-gray-600">Send a message about this property</p>
+              <p className="text-sm text-gray-600">{t('property.modal.contactHost.subtitle')}</p>
             </ModalHeader>
             <ModalBody>
               <div className="space-y-6">
-                {/* Property Info */}
-                <Card>
-                  <CardBody className="p-4">
-                    <div className="flex gap-4">
-                      <img
-                        src={property.images[0]}
-                        alt={property.title}
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{property.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-600 mt-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{`${property.location.city}, ${property.location.country}`}</span>
-                        </div>
-                        <div className="flex items-center gap-1 mt-1">
-                          <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                          <span className="text-sm font-medium">{property.rating}</span>
-                          <span className="text-lg font-bold text-primary-600 ml-2">
-                            ${property.price}/night
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardBody>
-                </Card>
+                
 
-                {/* Host Info */}
-                <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                                  <Avatar src={property.host?.avatar_url} size="lg" />
-                <div className="flex-1">
-                  <h4 className="font-semibold text-lg">{property.host?.display_name}</h4>
-                  <div className="flex items-center gap-4 mt-1">
-                    <Chip size="sm" color="success" variant="flat">
-                      Superhost
-                    </Chip>
-                    <span className="text-sm text-gray-600">
-                      {property.host?.experience || 4} years hosting
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 mt-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="text-sm font-medium">4.9 host rating</span>
-                      <span className="text-sm text-gray-500">• Usually responds within a few hours</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Message Type */}
+                {/* Contact Options */}
                 <div className="space-y-4">
-                  <h4 className="font-semibold">What would you like to ask about?</h4>
-                  <RadioGroup
-                    value={messageType}
-                    onValueChange={handleTypeChange}
-                    classNames={{
-                      wrapper: "space-y-2"
-                    }}
-                  >
-                    {messageTypes.map((type) => (
-                      <Radio key={type.value} value={type.value}>
-                        {type.label}
-                      </Radio>
-                    ))}
-                  </RadioGroup>
+                  <h5 className="font-medium text-gray-900">{t('property.modal.contactHost.chooseMethod')}</h5>
+                  
+                  <div className="grid gap-3">
+                    {hasPhone && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-green-500 text-white hover:bg-green-600"
+                        onClick={handleCall}
+                        startContent={<Phone className="size-5" />}
+                      >
+                        {t('property.actions.callHost')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
+                      </Button>
+                    )}
+                    
+                    {hasEmail && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-blue-500 text-white hover:bg-blue-600"
+                        onClick={handleEmail}
+                        startContent={<Mail className="size-5" />}
+                      >
+                        {t('property.actions.emailHost')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.email}</span>
+                      </Button>
+                    )}
+
+                    {hasPhone && (
+                      <Button
+                        size="lg"
+                        className="w-full bg-[#25D366] text-white hover:bg-[#128C7E]"
+                        onClick={handleWhatsApp}
+                        startContent={<MessageSquare className="size-5" />}
+                      >
+                        {t('property.actions.whatsapp')}
+                        <span className="ml-2 text-sm opacity-90">{property.host.phone}</span>
+                      </Button>
+                    )}
+                  </div>
+
+                  {availableMethods === 0 && (
+                    <div className="py-4 text-center">
+                      <AlertCircle className="mx-auto mb-2 size-8 text-gray-400" />
+                      <p className="text-gray-600">{t('property.modal.contactHost.noContactMethods')}</p>
+                    </div>
+                  )}
                 </div>
 
-                {/* Message Input */}
-                <div className="space-y-2">
-                  <label className="font-semibold">Your message</label>
-                  <Textarea
-                    placeholder="Type your message here..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    minRows={6}
-                    maxRows={10}
-                    isRequired
-                  />
-                  <p className="text-xs text-gray-500">
-                    Be specific about your needs and questions. The host will get back to you soon!
-                  </p>
-                </div>
-
-                {/* Guidelines */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h4 className="font-semibold text-blue-800 mb-2">Message Guidelines</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Be respectful and courteous in your communication</li>
-                    <li>• Include specific dates if asking about availability</li>
-                    <li>• Mention the number of guests if relevant</li>
-                    <li>• Ask one question at a time for clarity</li>
-                  </ul>
-                </div>
               </div>
             </ModalBody>
             <ModalFooter>
-              <Button color="default" variant="light" onPress={handleClose}>
-                Cancel
-              </Button>
-              <Button 
-                color="primary" 
-                onPress={handleSendMessage}
-                isLoading={isLoading}
-                isDisabled={!message.trim()}
-                startContent={!isLoading && <Send className="w-4 h-4" />}
-              >
-                {isLoading ? 'Sending...' : 'Send Message'}
+              <Button color="default" variant="light" onPress={onClose} className="w-full">
+                {t('common.buttons.close')}
               </Button>
             </ModalFooter>
           </>

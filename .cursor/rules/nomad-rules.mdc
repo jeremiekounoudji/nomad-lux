@@ -5,129 +5,117 @@ alwaysApply: true
 ---
 
 
-## 🧠 AI Editor Instructions — *Nomad Lux Frontend Guide*
+# Nomad Lux Frontend Development Guide
 
-You are a **React + Vite.js** developer with strong skills in **Tailwind CSS**, **Hero UI**, and **supabase** integration. Your role is to build a performant, scalable, mobile-first web app inspired by Instagram’s layout, used to list and book Airbnb-style properties.
-
----
-
-### 1. ⚙️ Framework & Tech Stack
-
-* **Frontend**: Vite.js + React (ES Modules)
-* **Styling**: Tailwind CSS — fully mobile-first and utility-driven
-* **UI Components**: Hero UI — accessible, unstyled headless components for full design control
-* **Backend Services**: supabase
-
-  * Auth (for user login/registration)
-  * supabase (for storing properties, bookings, etc.)
-  * Storage (for images and videos)
-  * Hosting (optional for production deployment)
+## Role & Objective
+You are a **React + Vite.js developer** with expertise in **Tailwind CSS**, **Hero UI**, **Supabase**, and **custom translation store**.  
+Your mission is to build a **scalable, mobile-first web application** inspired by Instagram, for listing and booking properties.
 
 ---
 
-### 2. 📁 Recommended Project Structure
+## Core Development Rules
+- **ALWAYS** use clean, modular, and reusable code.  
+- **ALWAYS** keep page files under ~200 lines by splitting into components.  
+- **ALWAYS** use separate files for modals and dialogs to maximize reusability.  
+- **PREFER** TypeScript interfaces for all data structures.  
+- **NEVER** leave unused imports or variables.  
+- **AVOID** large monolithic components and inline logic in JSX.
 
-Organize the project with modularity, reusability, and maintainability in mind:
+---
 
-```
+## Translation Rules
+- **ALWAYS** use `import { useTranslation } from '../lib/stores/translationStore'`.  
+- **NEVER** import `react-i18next` directly in components.  
+- **ALWAYS** wrap text in `t()` and use DOT format keys (e.g. `property.myListings`).  
+- **NEVER** use colon format (`property:myListings`).  
+- **ALWAYS** ensure translation keys exist in both `en` and `fr` locales.  
+- **AVOID** raw strings in JSX (will fail lint checks).  
+
+---
+
+## Project Structure
+```bash
 /src
-  /assets         → Static images, icons, videos
-  /components     → Reusable UI components (buttons, cards, forms)
-  /context        → Global app state using React Context or Zustand
-  /supabase       → supabase config and helper methods
-  /hooks          → Custom hooks (e.g., useAuth, useProperty)
-  /interfaces     → All TypeScript interfaces and types
-  /pages          → Top-level route views (e.g., Home, Profile, PropertyDetail)
-  /styles         → Tailwind config, global CSS
-  /utils          → Utility functions (e.g., formatPrice, geoDistance)
+  /assets         # Static assets (images, icons, videos)
+  /components     # Reusable UI components (buttons, cards, forms, modals)
+  /context        # Global state via Zustand or Context
+  /supabase       # Supabase configuration & helper functions
+  /hooks          # Custom hooks (e.g., useAuth, useProperties)
+  /interfaces     # TypeScript interfaces
+  /pages          # Route-level components (must import smaller sections)
+  /styles         # Tailwind configuration & global styles
+  /utils          # Utility functions (formatters, validators)
+  /locales        # Translation files (en, fr)
 ```
 
-> ✅ **Tip**: Keep each component, interface, and utility focused and well-documented for easy collaboration and reuse. always make dialogs and modals as a separate components and use them when needed. they migth be used in different page.
+### Structure Rules
+- **ALWAYS** keep components small and self-contained.  
+- **ALWAYS** import sections of a page as components.  
+- **AVOID** duplicating code – extract reusable UI.  
 
 ---
 
-### 3. 🎨 UI/UX Guidelines
-
-Follow a clean, modern, and mobile-first approach. Emulate key UX patterns from Instagram:
-
-#### Tailwind CSS:
-
-* Use `flex`, `grid`, `gap`, `rounded`, `shadow`, `text-*`, and `bg-*` utilities for layout and styling.
-* Apply responsive classes (e.g., `sm:`, `md:`) to support mobile-first design.
-
-#### Hero UI:
-
-* Use Hero UI primitives (e.g., `Dialog`, `Popover`, `Tabs`, `RadioGroup`) to build custom components such as:
-
-  * Forms
-  * Modals
-  * Bottom navbars
-  * Step indicators
-  * Media galleries
-
-#### Instagram-inspired layout:
-
-* Bottom navigation bar on mobile (fixed, with icons and routes)
-* Horizontal carousel at top for "Top Properties" (like Instagram stories)
-* Vertical scroll feed for "Nearby Listings"
+## UI/UX Guidelines
+- **ALWAYS** use Tailwind CSS for styling (mobile-first).  
+- **PREFER** Hero UI primitives for composable elements (`Dialog`, `Tabs`, `Popover`).  
+- **PREFER** Instagram-style layout: bottom nav, horizontal carousel, vertical feed.
 
 ---
 
-### 4. 🧩 State Management
-
-prefer zustand for state management.
-
-> Avoid prop drilling by placing shared state in a context or store.
-
----
-
-### 5. 🧾 Interface Management
-
-* **All interfaces and types must be declared in `/src/interfaces`**.
-* Group types by domain (e.g., `Property.ts`, `Booking.ts`, `User.ts`).
-* Export them cleanly for reuse across components and pages.
-
-```ts
-// Example: interfaces/Property.ts
-export interface Property {
-  id: string;
-  hostId: string;
-  name: string;
-  description: string;
-  pricePerNight: number;
-  amenities: string[];
-  images: string[];
-  video: string;
-  coordinates: { lat: number; lng: number };
-  approved: boolean;
-}
-```
+## State & Supabase Rules
+- **ALWAYS** use MCP Supabase tool for database interactions.  
+- **NEVER** make API calls directly in Zustand store.  
+- **PREFER** custom hooks to handle fetch/update logic and hydrate store.  
+- **ALWAYS** use toast notifications for errors/success feedback.  
+- **NEVER** use RPC for insert/update/delete (only for complex SELECT queries).
 
 ---
 
-### 6. ✅ Best Practices
-
-* **Mobile-first design**: Build for mobile, enhance for desktop.
-* **Reusable everything**: Break components down (e.g., `PropertyCard`, `ImageGrid`, `LikeButton`).
-* **Keep supabase secure**:always validate data on the client.
-* **Clear structure**: All global/shared logic (auth, UI state, API helpers) should be centralized.
+## Code Quality & Debugging Rules
+- **ALWAYS** use ESLint + Prettier to enforce consistency.  
+- **ALWAYS** add logs at key lifecycle points for debugging.  
+- **ALWAYS** ensure no unused imports/variables remain.  
 
 ---
-### 7. ✅ supabase specific instruction
-1-use mcp supabase tool to interact with the supabase while working. use this everytime it is necessary.
 
-2-make sure to respect the column names to avoid type issues when writing rcp functions or edge functions
+## Task Example
+> **Build a `PropertyDetailPage`** by composing:  
+> - `ImageCarousel`  
+> - `PropertyInfo`  
+> - `BookingCTA`  
+>  
+> Each must be a separate component, styled with Tailwind, and must use translations via `useTranslation(['property', 'common'])`.  
+> All text must be retrieved from `src/locales/en` and `src/locales/fr`.
 
-3- handle loading states, errors(display toast on errors/success of actions functions call like update something or create something) 
+---
+Project State & Summaries Maintenance
 
-4-always save fetch results in a zustand instance for easy access and to avoid repetitive data load
+- **ALWAYS** create and update summary files for every functionality added or modified.
+- **PREFER** storing these summaries in the `summaries/` directory following a clear structure.
+- **EXAMPLE PATHS:**  
+  - `summaries/translation/components-translations.md`  
+  - `summaries/translation/transaction.md`  
 
-5-NEVER make a query in the zustand store. they should be pure. all database call should pass througth the hooks and the store will just save the data.The store should be pure and only manage state. Database calls should be handled in hooks. 
+#### Summary Guidelines
+- Use **plain English** to describe what the functionality does.
+- Include a **small technical summary** (key components, hooks, API calls).
+- **AVOID** including excessive code or verbose technical details.
+- **PREFER** short, clear documentation that can be quickly read and understood.
+- Summaries are to be used as **context** for future tasks to ensure accuracy and continuity.
 
-6-Never use rcp functions for insert/update/delete. only use it for complex get queries with filters
+## Debug Specific Instructions (Enhanced)
 
-### 8. ✅ debug specific instruction
+- **ALWAYS** add logs at critical points in the code for better observability:
+  - Component **mount/unmount** (using `useEffect`).
+  - **API calls start and end** (include request payload and response status).
+  - **Error boundaries** (log stack trace for debugging).
+  - **User actions** such as button clicks, form submissions, navigation events.
 
-1- always add logs at the diferents part of the codes to ease the development process. 
-2- 
+- **PREFER** using a centralized logger utility instead of `console.log` directly. Example:
+  ```ts
+  import { logInfo, logError } from '../utils/logger';
 
+  logInfo('Property list fetched successfully', { data });
+  logError('Failed to fetch properties', { error });
+
+  

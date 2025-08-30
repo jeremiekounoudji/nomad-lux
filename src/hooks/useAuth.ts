@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
-import { User, UserRole } from "../interfaces/User";
+import { User } from "../interfaces/User";
 import { useUser } from "./useUser";
 import { useAuthStore } from "../lib/stores/authStore";
+import { useAuthRedirect } from "./useAuthRedirect";
 
 interface UserRegistrationData {
   email: string;
@@ -23,6 +23,7 @@ export const useAuth = () => {
 
   const { createUser, fetchUserByAuthId } = useUser();
   const { setAuthData, clearAuth, setLoading } = useAuthStore();
+  const { redirectAfterLogin, redirectAfterLogout } = useAuthRedirect();
 
   console.log("🔐 useAuth hook initialized", {
     timestamp: new Date().toISOString(),
@@ -168,6 +169,7 @@ export const useAuth = () => {
 
       // Step 2: The user will be fetched and set by useAuthInit automatically
       console.log("✅ User sign in completed successfully!");
+      // Don't redirect here - let the component handle redirect via useEffect
       return { user: null, error: null }; // User will be set by auth listener
     } catch (error: any) {
       console.error("❌ User sign in failed:", error);
@@ -198,11 +200,13 @@ export const useAuth = () => {
       }
 
       console.log("✅ User signed out successfully");
+      redirectAfterLogout(); // Add redirect after successful logout
       return { error: null };
     } catch (error: any) {
       console.error("❌ Sign out failed:", error);
-      // Even if there's an error, clear the auth state
+      // Even if there's an error, clear the auth state and redirect
       clearAuth();
+      redirectAfterLogout();
       const errorMessage = error.message || "Sign out failed";
       setError(errorMessage);
       return { error: errorMessage };

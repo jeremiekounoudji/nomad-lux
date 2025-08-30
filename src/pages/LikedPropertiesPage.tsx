@@ -1,111 +1,146 @@
-import React, { useState } from 'react'
-import { Heart, Search } from 'lucide-react'
-import { Input } from '@heroui/react'
-import MainLayout from '../components/layout/MainLayout'
-import PropertyCard from '../components/shared/PropertyCard'
-import { mockProperties } from '../lib/mockData'
-import { LikedPropertiesPageProps, Property } from '../interfaces'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import PropertyCard from '../components/shared/PropertyCard';
+import { PropertyCardSkeleton } from '../components/shared/LoadingSkeleton';
+import { PageBanner } from '../components/shared';
+import { LikedPropertiesPageProps, Property } from '../interfaces';
+import { usePropertyStore } from '../lib/stores/propertyStore';
+import { usePropertyLike } from '../hooks/usePropertyLike';
+import { getBannerConfig } from '../utils/bannerConfig';
+import toast from 'react-hot-toast';
+import { useTranslation } from '../lib/stores/translationStore';
 
 const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange }) => {
-  const [searchQuery, setSearchQuery] = useState('')
-  
-  // Filter only liked properties
-  const likedProperties = mockProperties.filter(property => property.is_liked)
-  
-  // Filter by search query
-  const filteredProperties = likedProperties.filter(property =>
-    property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    property.location.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    property.location.country.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const { t } = useTranslation(['property', 'common'])
+  const navigate = useNavigate();
+  const { properties, likedPropertyIds, likedProperties, isLikeLoading, setSelectedProperty } = usePropertyStore();
+  const { fetchLikedProperties } = usePropertyLike();
+
+  useEffect(() => {
+    fetchLikedProperties();
+  }, [fetchLikedProperties]);
+
+  const likedList = ((likedProperties?.length || 0) > 0 ? (likedProperties || []) : (properties || []).filter(p => (likedPropertyIds || []).includes(p.id)))
+    .map(p => ({
+      ...p,
+      id: p.id || (p as any).property_id, // Type-safe fallback for property_id
+      // Ensure arrays are always defined
+      images: p.images || [],
+      videos: p.videos || [],
+      amenities: p.amenities || [],
+      // Ensure host object exists
+      host: p.host || {
+        id: '',
+        name: 'Unknown Host',
+        username: '',
+        avatar_url: '',
+        display_name: 'Unknown Host',
+        is_identity_verified: false,
+        is_email_verified: false,
+        email: '',
+        phone: '',
+        rating: 0,
+        response_rate: 0,
+        response_time: '',
+        bio: ''
+      }
+    }));
 
   const handleLike = (propertyId: string) => {
-    console.log('Unliked property:', propertyId)
+    console.log('Unliked property:', propertyId);
     // TODO: Implement unlike functionality
-  }
+  };
 
   const handleShare = (property: Property) => {
-    console.log('Share property:', property.title)
+    console.log('Share property:', property.title);
     // TODO: Implement share functionality
-  }
+  };
 
   const handleBook = (property: Property) => {
-    console.log('Book property:', property.title)
+    console.log('Book property:', property.title);
     // TODO: Implement booking functionality
-  }
+  };
 
-  const handlePropertyClick = (property: Property) => {
-    console.log('View property:', property.title)
-    // TODO: Navigate to property detail
-  }
+  const handlePropertyClick = (property: Property | any) => {
+    const resolvedId = property.id ?? property.property_id;
+    console.log('View property:', property, 'resolvedId:', resolvedId);
+    if (!resolvedId) {
+      toast.error(t('property.messages.propertyIdMissing'));
+      console.error('Property object missing id and property_id:', property);
+      return;
+    }
+    // handlePropertyView(resolvedId);
+    // Ensure we store a property with a valid id in state
+    const normalizedProperty = { ...property, id: resolvedId } as Property;
+    setSelectedProperty(normalizedProperty);
+    navigate(`/properties/${resolvedId}`);
+  };
 
   return (
-    <MainLayout currentPage="liked" onPageChange={onPageChange}>
-      <div className="col-span-1 md:col-span-2 lg:col-span-3 mb-6">
+          <div className="mx-auto max-w-7xl">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white p-8 rounded-lg mb-8">
-          <div className="text-left">
-            <h1 className="text-3xl font-bold mb-2">Liked Properties</h1>
-            <p className="text-primary-100 text-lg mb-4">Your favorite places to stay</p>
-            
-            {/* Search Bar */}
-            <div className="relative max-w-md">
-              <Input
-                placeholder="Search your liked properties..."
-                value={searchQuery}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                startContent={<Search className="w-4 h-4 text-gray-400" />}
-                classNames={{
-                  base: "max-w-full",
-                  mainWrapper: "h-full",
-                  input: "text-small",
-                  inputWrapper: "h-full font-normal text-default-500 bg-white/10 backdrop-blur-sm border-white/20",
-                }}
-              />
-            </div>
-          </div>
-        </div>
+        <div className="col-span-full mb-6">
+        <PageBanner
+          backgroundImage={getBannerConfig('likedProperties').image}
+          title={t('property.likedProperties')}
+          subtitle={t('property.favoritePlaces')}
+          imageAlt={t('common.pageBanner.likedProperties')}
+          overlayOpacity={getBannerConfig('likedProperties').overlayOpacity}
+          height={getBannerConfig('likedProperties').height}
+          className="mb-8"
+        >
+          <Heart className="size-6 fill-current text-red-400" />
+        </PageBanner>
       </div>
 
       {/* Properties Grid */}
-      {filteredProperties.length > 0 ? (
-        filteredProperties.map((property) => (
-          <div key={property.id} className="col-span-1">
-            <PropertyCard
-              property={property}
-              variant="feed"
-              onLike={handleLike}
-              onShare={handleShare}
-              onBook={handleBook}
-              onClick={handlePropertyClick}
-            />
+      <div className="col-span-full">
+        {isLikeLoading ? (
+          // Loading Skeleton Grid
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((index) => (
+              <PropertyCardSkeleton key={index} />
+            ))}
           </div>
-        ))
-      ) : (
-        <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          <div className="bg-white rounded-xl p-12 text-center border border-gray-200">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart className="w-8 h-8 text-gray-400" />
+        ) : likedList.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {likedList.map((property) => (
+              <PropertyCard
+                key={property.id}
+                property={property}
+                variant="feed"
+                onLike={handleLike}
+                onShare={handleShare}
+                onBook={handleBook}
+                onClick={handlePropertyClick}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-full bg-gray-100">
+              <Heart className="size-8 text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {searchQuery ? 'No properties found' : 'No liked properties yet'}
+            <h3 className="mb-2 text-lg font-semibold text-gray-900">
+              {t('property.noLikedProperties')}
             </h3>
-            <p className="text-gray-500 mb-6">
-              {searchQuery 
-                ? 'Try adjusting your search terms' 
-                : 'Start exploring and like properties to see them here'
-              }
+            <p className="mb-6 text-gray-500">
+              {t('property.startExploringAndLike')}
             </p>
-            {!searchQuery && (
-              <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
-                Explore Properties
-              </button>
-            )}
+            <button 
+              onClick={() => onPageChange?.('home')}
+              className="rounded-lg bg-primary-600 px-6 py-2 text-white transition-colors hover:bg-primary-700"
+            >
+              {t('property.exploreProperties')}
+            </button>
           </div>
-        </div>
-      )}
-    </MainLayout>
-  )
-}
+        )}
+      </div>
+      </div>
+    </div>
+  );
+};
 
-export default LikedPropertiesPage 
+export default LikedPropertiesPage; 

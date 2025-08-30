@@ -1,0 +1,312 @@
+{
+  "title": "Mon Profil",
+  "subtitle": "Afficher et gérer les informations de votre compte",
+  "memberSince": "Membre depuis",
+  "roles": {
+    "hostAndGuest": "Hôte et Invité"
+  },
+  "verified": "Vérifié",
+  "status": {
+    "active": "Actif"
+  },
+  "stats": {
+    "properties": "Propriétés",
+    "bookings": "Réservations",
+    "avgRating": "Note Moyenne",
+    "reviews": "Avis"
+  },
+  "contact": {
+    "email": "Email",
+    "phone": "Téléphone",
+    "location": "Emplacement"
+  },
+  "accountDetails": "Détails du Compte",
+  "account": {
+    "memberSince": "Membre depuis",
+    "lastActive": "Dernière activité",
+    "preferredLanguage": "Langue Préférée"
+  },
+  "accountSummary": "Résumé du Compte",
+  "summary": {
+    "verificationLevel": "Niveau de Vérification",
+    "complete": "Complet",
+    "accountStatus": "Statut du Compte",
+    "currency": "Devise"
+  },
+  "actions": {
+    "editProfile": "Modifier le Profil",
+    "editPersonalInfo": "Modifier les Informations Personnelles",
+    "changePassword": "Changer le Mot de Passe",
+    "editPrivacySettings": "Modifier les Paramètres de Confidentialité",
+    "editNotificationSettings": "Modifier les Paramètres de Notification",
+    "changePhoto": "Changer la Photo",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser aux Défauts",
+    "confirmReset": "Confirmer la Réinitialisation"
+  },
+  "revenue": {
+    "totalRevenue": "Revenu Total",
+    "hostSince": "Hôte depuis"
+  },
+  "contactInformation": "Informations de Contact",
+  "defaultLanguage": "Anglais",
+  "sections": {
+    "personalInfo": "Informations Personnelles",
+    "security": "Sécurité",
+    "privacy": "Confidentialité et Paramètres",
+    "notifications": "Notifications"
+  },
+  "fields": {
+    "firstName": "Prénom",
+    "lastName": "Nom de Famille",
+    "email": "Email",
+    "phone": "Téléphone",
+    "bio": "Bio",
+    "location": "Emplacement",
+    "dateOfBirth": "Date de Naissance",
+    "status": "Statut"
+  },
+  "placeholders": {
+    "firstName": "Entrez votre prénom",
+    "lastName": "Entrez votre nom de famille",
+    "phone": "Entrez votre numéro de téléphone",
+    "bio": "Parlez de vous...",
+    "location": "Entrez votre emplacement",
+    "dateOfBirth": "JJ/MM/AAAA"
+  },
+  "validation": {
+    "firstNameRequired": "Le prénom est requis",
+    "lastNameRequired": "Le nom de famille est requis",
+    "invalidPhone": "Veuillez entrer un numéro de téléphone valide",
+    "bioTooLong": "La bio doit contenir moins de 500 caractères"
+  },
+  "messages": {
+    "updateSuccess": "Profil mis à jour avec succès",
+    "passwordChangeSuccess": "Mot de passe changé avec succès",
+    "imageUploadSuccess": "Image de profil téléchargée avec succès"
+  },
+  "password": {
+    "description": "Choisissez un nouveau mot de passe pour votre compte",
+    "fields": {
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe"
+    },
+    "errors": {
+      "currentPasswordRequired": "Le mot de passe actuel est requis",
+      "newPasswordRequired": "Le nouveau mot de passe est requis",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+      "changeFailed": "Échec du changement de mot de passe"
+    }
+  },
+  "errors": {
+    "title": "Erreur de Chargement du Profil",
+    "loadFailed": "Échec du chargement des informations du profil",
+    "noProfile": "Aucun Profil Trouvé",
+    "profileNotFound": "Les informations du profil n'ont pas pu être trouvées"
+  },
+  "security": {
+    "description": "Gardez votre compte sécurisé en mettant régulièrement à jour votre mot de passe"
+  },
+  "privacy": {
+    "title": "Paramètres de Confidentialité",
+    "profileVisibility": "Visibilité du Profil",
+    "profileVisibilityDescription": "Contrôlez qui peut voir les informations de votre profil",
+    "showEmail": "Afficher l'Email",
+    "showEmailDescription": "Permettre aux autres de voir votre adresse email",
+    "showPhone": "Afficher le Téléphone",
+    "showPhoneDescription": "Permettre aux autres de voir votre numéro de téléphone",
+    "showLocation": "Afficher l'Emplacement",
+    "showLocationDescription": "Permettre aux autres de voir votre emplacement",
+    "visibility": {
+      "public": "Public",
+      "hostsOnly": "Hôtes Uniquement",
+      "private": "Privé",
+      "friends": "Amis"
+    }
+  },
+  "notifications": {
+    "title": "Paramètres de Notification",
+    "email": "Notifications par Email",
+    "emailDescription": "Recevoir les mises à jour de réservation et les messages par email",
+    "push": "Notifications Push",
+    "pushDescription": "Recevoir les notifications sur votre appareil",
+    "sms": "Notifications par SMS",
+    "smsDescription": "Recevoir les notifications urgentes par SMS"
+  },
+  "preferences": {
+    "title": "Préférences",
+    "language": "Langue",
+    "currency": "Devise",
+    "timezone": "Fuseau Horaire",
+    "theme": "Thème",
+    "theme": {
+      "auto": "Auto",
+      "light": "Clair",
+      "dark": "Sombre"
+    }
+  },
+  "image": {
+    "title": "Photo de Profil",
+    "uploadTitle": "Télécharger une Photo de Profil",
+    "uploadDescription": "Glissez-déposez une image ici, ou cliquez pour sélectionner",
+    "currentImage": "Photo de Profil Actuelle",
+    "currentImageDescription": "Votre photo de profil actuelle",
+    "preview": "Aperçu de l'Image",
+    "uploading": "Téléchargement...",
+    "uploadProgress": "Progression du Téléchargement",
+    "fileInput": "Sélectionner un fichier image",
+    "dragDropArea": "Zone de glisser-déposer pour le téléchargement d'image",
+    "cropCanvas": "Zone de recadrage d'image",
+    "supportedFormats": "Formats supportés : {{formats}}",
+    "maxSize": "Taille max : {{size}}MB",
+    "actions": {
+      "selectFile": "Sélectionner un Fichier",
+      "upload": "Télécharger",
+      "cancel": "Annuler",
+      "crop": "Recadrer",
+      "rotate": "Pivoter",
+      "download": "Télécharger",
+      "remove": "Supprimer",
+      "applyCrop": "Appliquer le Recadrage"
+    },
+    "errors": {
+      "fileTooLarge": "Le fichier est trop volumineux. Taille maximale : {{maxSize}}MB",
+      "invalidFormat": "Format de fichier invalide. Formats supportés : {{formats}}",
+      "uploadFailed": "Échec du téléchargement de l'image",
+      "removeFailed": "Échec de la suppression de l'image"
+    },
+    "cropTitle": "Recadrer l'Image",
+    "cropDescription": "Ajustez la zone de recadrage pour créer une photo de profil carrée"
+  },
+  "password": {
+    "formTitle": "Formulaire de Changement de Mot de Passe",
+    "fields": {
+      "current": "Mot de Passe Actuel",
+      "new": "Nouveau Mot de Passe",
+      "confirm": "Confirmer le Mot de Passe"
+    },
+    "placeholders": {
+      "current": "Entrez votre mot de passe actuel",
+      "new": "Entrez votre nouveau mot de passe",
+      "confirm": "Confirmez votre nouveau mot de passe"
+    },
+    "validation": {
+      "currentRequired": "Le mot de passe actuel est requis",
+      "newRequired": "Le nouveau mot de passe est requis",
+      "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+      "tooWeak": "Le mot de passe est trop faible",
+      "confirmRequired": "Veuillez confirmer votre mot de passe",
+      "mismatch": "Les mots de passe ne correspondent pas"
+    },
+    "strength": {
+      "label": "Force du Mot de Passe",
+      "veryWeak": "Très Faible",
+      "weak": "Faible",
+      "fair": "Moyen",
+      "good": "Bon",
+      "strong": "Fort"
+    },
+    "requirements": {
+      "title": "Exigences du Mot de Passe",
+      "length": "Au moins 8 caractères",
+      "lengthMissing": "Au moins 8 caractères requis",
+      "uppercase": "Au moins une lettre majuscule",
+      "uppercaseMissing": "Au moins une lettre majuscule requise",
+      "lowercase": "Au moins une lettre minuscule",
+      "lowercaseMissing": "Au moins une lettre minuscule requise",
+      "number": "Au moins un chiffre",
+      "numberMissing": "Au moins un chiffre requis",
+      "special": "Au moins un caractère spécial",
+      "specialMissing": "Au moins un caractère spécial requis"
+    },
+    "actions": {
+      "change": "Changer le Mot de Passe"
+    },
+    "security": {
+      "title": "Avis de Sécurité",
+      "description": "Votre mot de passe doit être unique et ne pas être utilisé sur d'autres sites web. Nous recommandons d'utiliser un gestionnaire de mots de passe."
+    },
+    "show": "Afficher le mot de passe",
+    "hide": "Masquer le mot de passe"
+  },
+  "settings": {
+    "saveSuccess": "Paramètres enregistrés avec succès",
+    "saveError": "Échec de l'enregistrement des paramètres",
+    "resetSuccess": "Paramètres réinitialisés aux défauts",
+    "resetTitle": "Réinitialiser les Paramètres",
+    "resetDescription": "Cela réinitialisera tous vos paramètres de confidentialité, de notification et de préférences à leurs valeurs par défaut. Cette action ne peut pas être annulée.",
+    "actions": {
+      "save": "Enregistrer les Modifications",
+      "reset": "Réinitialiser aux Défauts"
+    }
+  },
+  "edit": {
+    "title": "Modifier le profil",
+    "subtitle": "Mettez à jour vos informations personnelles et préférences",
+    "validation": {
+      "fillAllPasswordFields": "Veuillez remplir tous les champs de mot de passe",
+      "passwordsDoNotMatch": "Les nouveaux mots de passe ne correspondent pas",
+      "passwordTooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères"
+    },
+    "picture": {
+      "title": "Photo de profil",
+      "upload": "Téléchargez une nouvelle photo de profil",
+      "changePhoto": "Changer la photo"
+    },
+    "basic": {
+      "title": "Informations de base",
+      "fullName": "Nom complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Emplacement",
+      "dateOfBirth": "Date de naissance",
+      "preferredLanguage": "Langue préférée",
+      "bio": "Bio",
+      "bioPlaceholder": "Parlez de vous..."
+    },
+    "security": {
+      "title": "Sécurité",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe"
+    },
+    "privacy": {
+      "title": "Confidentialité et notifications",
+      "profileVisibility": "Visibilité du profil",
+      "profileVisibilityDescription": "Contrôlez qui peut voir les informations de votre profil",
+      "visibility": {
+        "public": "Public - Visible par tous",
+        "hostsOnly": "Hôtes uniquement - Seuls les hôtes peuvent voir les détails",
+        "private": "Privé - Seules les informations de base sont visibles"
+      },
+      "emailNotifications": "Notifications par email",
+      "emailDescription": "Recevez les mises à jour de réservation et les messages par email",
+      "smsNotifications": "Notifications par SMS",
+      "smsDescription": "Recevez les notifications urgentes par SMS"
+    },
+    "saveChanges": "Enregistrer les modifications"
+  },
+  "languages": {
+    "english": "Anglais",
+    "spanish": "Espagnol",
+    "french": "Français",
+    "german": "Allemand",
+    "italian": "Italien",
+    "portuguese": "Portugais",
+    "chinese": "Chinois",
+    "japanese": "Japonais",
+    "korean": "Coréen",
+    "arabic": "Arabe",
+    "hindi": "Hindi",
+    "russian": "Russe"
+  }
+}
+
+
+
+
+

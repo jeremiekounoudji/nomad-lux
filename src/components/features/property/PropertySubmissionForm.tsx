@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, Progress } from '@heroui/react';
+import { Button, Progress } from '@heroui/react';
+import PropertySettingsStep from './steps/PropertySettingsStep';
 import HostDetailsStep from './steps/HostDetailsStep';
 import PropertyDetailsStep from './steps/PropertyDetailsStep';
 import MediaUploadStep from './steps/MediaUploadStep';
@@ -9,6 +10,7 @@ import { useProperty } from '../../../hooks/useProperty';
 import { useAuthStore } from '../../../lib/stores/authStore';
 import { useAdminSettingsStore } from '../../../lib/stores/adminSettingsStore';
 import toast from 'react-hot-toast';
+import { useTranslation } from '../../../lib/stores/translationStore';
 
 const INITIAL_FORM_DATA: PropertySubmissionData = {
   title: '',
@@ -50,64 +52,100 @@ const INITIAL_FORM_DATA: PropertySubmissionData = {
   }
 };
 
-// Custom Stepper Component
+// Custom Stepper Component - Enhanced for Mobile
 const CustomStepper: React.FC<{
   currentStep: number;
   steps: Array<{ title: string; description: string }>;
 }> = ({ currentStep, steps }) => {
+  const { t } = useTranslation(['property']);
   const progressValue = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="mb-8">
-      <div className="flex justify-between items-center mb-4">
-        {steps.map((step, index) => (
-          <div
-            key={index}
-            className={`flex flex-col items-center flex-1 ${
-              index < steps.length - 1 ? 'relative' : ''
-            }`}
-          >
+    <div className="mb-6 sm:mb-8">
+      {/* Mobile: Vertical stepper for small screens */}
+      <div className="block sm:hidden">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {t('property.submission.progress.mobileTitle', { current: currentStep + 1, total: steps.length })}
+          </h3>
+          <div className="text-sm text-gray-500">
+            {t('property.submission.progress.completeLabel', { percent: Math.round(progressValue) })}
+          </div>
+        </div>
+        
+        <div className="mb-4 h-2 rounded-full bg-gray-200">
+          <div 
+            className="h-2 rounded-full bg-primary-600 transition-all duration-300"
+            style={{ width: `${progressValue}%` }}
+          />
+        </div>
+
+        <div className="rounded-lg border-l-4 border-primary-500 bg-primary-50 p-4">
+          <h4 className="mb-1 font-semibold text-primary-900">
+            {steps[currentStep].title}
+          </h4>
+          <p className="text-sm text-primary-700">
+            {steps[currentStep].description}
+          </p>
+        </div>
+      </div>
+
+      {/* Desktop: Horizontal stepper for larger screens */}
+      <div className="hidden sm:block">
+        <div className="mb-6 flex items-center justify-between">
+          {steps.map((step, index) => (
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium mb-2 ${
-                index <= currentStep
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-200 text-gray-500'
+              key={index}
+              className={`flex flex-1 flex-col items-center ${
+                index < steps.length - 1 ? 'relative' : ''
               }`}
             >
-              {index + 1}
-            </div>
-            <div className="text-center">
               <div
-                className={`text-sm font-medium ${
-                  index <= currentStep ? 'text-primary-600' : 'text-gray-500'
-                }`}
+                className={`mb-3 flex size-10 items-center justify-center rounded-full text-sm font-medium transition-all duration-300 lg:size-12 lg:text-base ${
+                  index <= currentStep
+                    ? 'scale-110 bg-primary-600 text-white shadow-lg'
+                    : 'bg-gray-200 text-gray-500'
+                } ${index === currentStep ? 'ring-4 ring-primary-200' : ''}`}
               >
-                {step.title}
+                {index + 1}
               </div>
-              <div className="text-xs text-gray-400">{step.description}</div>
+              <div className="max-w-[120px] text-center">
+                <div
+                  className={`mb-1 text-sm font-medium lg:text-base ${
+                    index <= currentStep ? 'text-primary-600' : 'text-gray-500'
+                  }`}
+                >
+                  {step.title}
+                </div>
+                <div className="text-xs leading-tight text-gray-400 lg:text-sm">
+                  {step.description}
+                </div>
+              </div>
+              {index < steps.length - 1 && (
+                <div
+                  className={`absolute left-1/2 top-5 -z-10 h-0.5 w-full transition-all duration-300 lg:top-6 ${
+                    index < currentStep ? 'bg-primary-600' : 'bg-gray-200'
+                  }`}
+                  style={{ transform: 'translateX(50%)' }}
+                />
+              )}
             </div>
-            {index < steps.length - 1 && (
-              <div
-                className={`absolute top-4 left-1/2 w-full h-0.5 -z-10 ${
-                  index < currentStep ? 'bg-primary-600' : 'bg-gray-200'
-                }`}
-                style={{ transform: 'translateX(50%)' }}
-              />
-            )}
-          </div>
-        ))}
+          ))}
+        </div>
+        
+        <Progress
+          value={progressValue}
+          color="primary"
+          className="mb-4 h-1.5"
+          aria-label={t('property.submission.progress.aria')}
+        />
       </div>
-      <Progress
-        value={progressValue}
-        color="primary"
-        className="mb-4"
-        aria-label="Form progress"
-      />
     </div>
   );
 };
 
 const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initialData, isEditMode, onSubmitSuccess, externalLoading }) => {
+  const { t } = useTranslation(['property', 'common']);
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<PropertySubmissionData>(INITIAL_FORM_DATA);
   
@@ -124,7 +162,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   });
 
   const handleNext = () => {
-    setCurrentStep((prev) => Math.min(prev + 1, 2));
+    setCurrentStep((prev) => Math.min(prev + 1, 3));
   };
 
   const handlePrevious = () => {
@@ -133,18 +171,23 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
 
   const steps = [
     {
-      title: 'Host Details',
-      description: 'Provide contact information',
+      title: t('property.submission.steps.settings.title'),
+      description: t('property.submission.steps.settings.description'),
+      component: <PropertySettingsStep formData={formData} setFormData={setFormData} />,
+    },
+    {
+      title: t('property.submission.steps.host.title'),
+      description: t('property.submission.steps.host.description'),
       component: <HostDetailsStep formData={formData} setFormData={setFormData} />,
     },
     {
-      title: 'Property Details',
-      description: 'Describe your property',
+      title: t('property.submission.steps.details.title'),
+      description: t('property.submission.steps.details.description'),
       component: <PropertyDetailsStep formData={formData} setFormData={setFormData} />,
     },
     {
-      title: 'Media Upload',
-      description: 'Add photos and video',
+      title: t('property.submission.steps.media.title'),
+      description: t('property.submission.steps.media.description'),
       component: <MediaUploadStep formData={formData} setFormData={setFormData} />,
     },
   ];
@@ -153,46 +196,57 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
     console.log('🚀 Submit button clicked', { isEditMode })
     
     if (!user) {
-      toast.error('Please sign in to submit a property');
+      toast.error(t('property.submission.errors.signInRequired'));
       return;
     }
     
     // Debug current upload progress
     console.log('📊 Current upload progress:', uploadProgress)
 
+    // Validate property settings (new first step)
+    if (!formData.existing_settings_id && !formData.create_new_settings) {
+      toast.error(t('property.submission.errors.selectOrCreateSettings'));
+      return;
+    }
+
+    if (formData.create_new_settings && (!formData.property_settings?.settings_name?.trim())) {
+      toast.error(t('property.submission.errors.completeSettingsForm'));
+      return;
+    }
+
     // Validate form data
     if (!formData.title.trim()) {
-      toast.error('Please enter a property title');
+      toast.error(t('property.submission.errors.titleRequired'));
       return;
     }
 
     if (!formData.description.trim()) {
-      toast.error('Please enter a property description');
+      toast.error(t('property.submission.errors.descriptionRequired'));
       return;
     }
 
     if (formData.price <= 0) {
-      toast.error('Please enter a valid price');
+      toast.error(t('property.submission.errors.validPriceRequired'));
       return;
     }
 
     if (!formData.location.city.trim() || !formData.location.country.trim()) {
-      toast.error('Please enter complete location information');
+      toast.error(t('property.submission.errors.locationRequired'));
       return;
     }
 
     if (formData.images.length < 4) {
-      toast.error('Please upload at least 4 images');
+      toast.error(t('property.submission.errors.minImages'));
       return;
     }
 
     if (!formData.videos || formData.videos.length === 0) {
-      toast.error('Please upload a video');
+      toast.error(t('property.submission.errors.videoRequired'));
       return;
     }
 
     if (!formData.property_type) {
-      toast.error('Please select a property type');
+      toast.error(t('property.submission.errors.propertyTypeRequired'));
       return;
     }
 
@@ -210,7 +264,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
                                  allowedVideoFormats.some(format => videoFile.type.includes(format));
         
         if (!isValidVideoFormat) {
-          toast.error(`Video format not supported. Please upload: ${allowedVideoFormats.join(', ')}`);
+          toast.error(t('property.submission.errors.videoFormatNotSupported', { formats: allowedVideoFormats.join(', ') }));
           return;
         }
 
@@ -261,7 +315,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
       
       if (result) {
         console.log('✅ Property submission successful:', result.id);
-        toast.success('Property submitted successfully! 🎉');
+        toast.success(t('property.submission.success'));
         // Reset form after successful submission
         setFormData(INITIAL_FORM_DATA);
         setCurrentStep(0);
@@ -273,13 +327,13 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
       const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       
       if (errorMessage.includes('timeout')) {
-        toast.error('Submission took too long. Please check your internet connection and try again.');
+        toast.error(t('property.submission.errors.timeout'));
       } else if (errorMessage.includes('upload')) {
-        toast.error('File upload failed. Please check your files and try again.');
+        toast.error(t('property.submission.errors.uploadFailed'));
       } else if (errorMessage.includes('network')) {
-        toast.error('Network error. Please check your connection and try again.');
+        toast.error(t('common.messages.networkError'));
       } else {
-        toast.error(`Submission failed: ${errorMessage}`);
+        toast.error(t('property.submission.errors.generic', { error: errorMessage }));
       }
     }
   };
@@ -352,44 +406,106 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   }, [user, formData.host.id]);
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <Card className="p-6">
+    <div className="w-full">
+      {/* Responsive container with proper padding */}
+      <div className="p-4 sm:p-6 lg:p-8">
         <CustomStepper currentStep={currentStep} steps={steps} />
 
-        <div className="mb-8 min-h-[400px]">{steps[currentStep].component}</div>
-
-        <div className="flex justify-between items-center pt-4 border-t border-gray-200 mt-8 bg-white relative z-10">
-          <Button
-            variant="bordered"
-            onClick={handlePrevious}
-            disabled={currentStep === 0}
-            className="min-w-[100px] border-secondary-300 text-secondary-600 hover:bg-secondary-50"
-          >
-            Previous
-          </Button>
-
-          {currentStep === steps.length - 1 ? (
-            <Button 
-              color="primary" 
-              onClick={handleSubmit} 
-              className="min-w-[140px] bg-primary-600 hover:bg-primary-700"
-              isLoading={isEditMode ? externalLoading : isLoading}
-              disabled={isEditMode ? externalLoading : isLoading}
-            >
-              {(isEditMode ? externalLoading : isLoading) ? 'Submitting...' : (isEditMode ? 'Update Property' : 'Submit Property')}
-            </Button>
-          ) : (
-            <Button 
-              color="primary" 
-              onClick={handleNext} 
-              className="min-w-[100px] bg-primary-600 hover:bg-primary-700"
-              disabled={isEditMode ? externalLoading : isLoading}
-            >
-              Next Step
-            </Button>
-          )}
+        {/* Form content with responsive min-height */}
+        <div className="mb-6 min-h-[300px] sm:mb-8 sm:min-h-[400px] lg:min-h-[500px]">
+          <div className="rounded-lg bg-gray-50 p-4 sm:rounded-none sm:bg-transparent sm:p-0">
+            {steps[currentStep].component}
+          </div>
         </div>
-      </Card>
+
+        {/* Navigation buttons - Responsive layout */}
+        <div className="sticky bottom-0 z-10 border-t border-gray-200 bg-white pt-4 sm:relative sm:pt-6">
+          {/* Mobile: Stack buttons vertically */}
+          <div className="flex flex-col gap-3 sm:hidden">
+            {currentStep === steps.length - 1 ? (
+              <Button 
+                color="primary" 
+                onClick={handleSubmit} 
+                size="lg"
+                className="w-full bg-primary-600 font-semibold hover:bg-primary-700"
+                isLoading={isEditMode ? externalLoading : isLoading}
+                disabled={isEditMode ? externalLoading : isLoading}
+              >
+                {(isEditMode ? externalLoading : isLoading) ? t('property.submission.buttons.submitting') : (isEditMode ? t('property.submission.buttons.updateProperty') : t('property.submission.buttons.submitProperty'))}
+              </Button>
+            ) : (
+              <Button 
+                color="primary" 
+                onClick={handleNext} 
+                size="lg"
+                className="w-full bg-primary-600 font-semibold hover:bg-primary-700"
+                disabled={isEditMode ? externalLoading : isLoading}
+              >
+                {t('property.submission.buttons.continue')}
+              </Button>
+            )}
+            
+            {currentStep > 0 && (
+              <Button
+                variant="bordered"
+                onClick={handlePrevious}
+                size="lg"
+                className="w-full border-gray-300 text-gray-600 hover:bg-gray-50"
+              >
+                {t('common.buttons.back')}
+              </Button>
+            )}
+          </div>
+
+          {/* Desktop: Horizontal layout */}
+          <div className="hidden items-center justify-between sm:flex">
+            <Button
+              variant="bordered"
+              onClick={handlePrevious}
+              disabled={currentStep === 0}
+              size="lg"
+              className="min-w-[120px] border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+            >
+              {t('common.buttons.back')}
+            </Button>
+
+            {currentStep === steps.length - 1 ? (
+              <Button 
+                color="primary" 
+                onClick={handleSubmit} 
+                size="lg"
+                className="min-w-[160px] bg-primary-600 font-semibold shadow-lg transition-all hover:bg-primary-700 hover:shadow-xl"
+                isLoading={isEditMode ? externalLoading : isLoading}
+                disabled={isEditMode ? externalLoading : isLoading}
+              >
+                {(isEditMode ? externalLoading : isLoading) ? t('property.submission.buttons.submitting') : (isEditMode ? t('property.submission.buttons.updateProperty') : t('property.submission.buttons.submitProperty'))}
+              </Button>
+            ) : (
+              <Button 
+                color="primary" 
+                onClick={handleNext} 
+                size="lg"
+                className="min-w-[120px] bg-primary-600 font-semibold shadow-lg transition-all hover:bg-primary-700 hover:shadow-xl"
+                disabled={isEditMode ? externalLoading : isLoading}
+              >
+                {t('property.submission.buttons.nextStep')}
+              </Button>
+            )}
+          </div>
+
+          {/* Step indicator for mobile */}
+          <div className="mt-4 flex justify-center space-x-2 sm:hidden">
+            {steps.map((_, index) => (
+              <div
+                key={index}
+                className={`size-2 rounded-full transition-all duration-300 ${
+                  index <= currentStep ? 'bg-primary-600' : 'bg-gray-300'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

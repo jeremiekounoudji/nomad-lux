@@ -8,12 +8,13 @@ import {
   Button
 } from '@heroui/react'
 import { CheckCircle } from 'lucide-react'
-import { Property } from './types'
+import { useTranslation } from '../../../../lib/stores/translationStore'
+import { DatabaseProperty } from '../../../../interfaces/DatabaseProperty'
 
 interface PropertyApprovalModalProps {
   isOpen: boolean
   onClose: () => void
-  property: Property | null
+  property: DatabaseProperty | null
   onApprove: () => void
 }
 
@@ -23,12 +24,14 @@ export const PropertyApprovalModal: React.FC<PropertyApprovalModalProps> = ({
   property,
   onApprove
 }) => {
+  const { t } = useTranslation('admin')
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader className="flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-success-500" />
-          Approve Property
+          <CheckCircle className="size-5 text-success-500" />
+          {t('propertyApprovalModal.title')}
         </ModalHeader>
         <ModalBody>
           <div className="space-y-4">
@@ -38,22 +41,21 @@ export const PropertyApprovalModal: React.FC<PropertyApprovalModalProps> = ({
                   <img
                     src={property.images[0]}
                     alt={property.title}
-                    className="w-20 h-20 object-cover rounded-lg"
+                    className="size-20 rounded-lg object-cover"
                   />
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900">{property.title}</h4>
-                    <p className="text-sm text-gray-600">{property.location}</p>
-                    <p className="text-sm text-gray-600">Host: {property.host.display_name}</p>
+                    <p className="text-sm text-gray-600">{property.location.city}, {property.location.country}</p>
+                    <p className="text-sm text-gray-600">{t('propertyApprovalModal.labels.hostId')} {property.host_id}</p>
                   </div>
                 </div>
-                <div className="bg-success-50 border border-success-200 rounded-lg p-4">
+                <div className="rounded-lg border border-success-200 bg-success-50 p-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-success-500 mt-0.5" />
+                    <CheckCircle className="mt-0.5 size-5 text-success-500" />
                     <div>
-                      <p className="font-medium text-success-800">Ready to approve this property?</p>
-                      <p className="text-sm text-success-700 mt-1">
-                        This will make the property visible to guests and allow bookings to be made.
-                        The host will be notified of the approval.
+                      <p className="font-medium text-success-800">{t('propertyApprovalModal.confirmations.readyToApprove')}</p>
+                      <p className="mt-1 text-sm text-success-700">
+                        {t('propertyApprovalModal.confirmations.description')}
                       </p>
                     </div>
                   </div>
@@ -64,14 +66,14 @@ export const PropertyApprovalModal: React.FC<PropertyApprovalModalProps> = ({
         </ModalBody>
         <ModalFooter>
           <Button variant="flat" onPress={onClose}>
-            Cancel
+            {t('propertyApprovalModal.buttons.cancel')}
           </Button>
           <Button
             color="success"
             onPress={onApprove}
-            startContent={<CheckCircle className="w-4 h-4" />}
+            startContent={<CheckCircle className="size-4" />}
           >
-            Confirm Approval
+            {t('propertyApprovalModal.buttons.approveProperty')}
           </Button>
         </ModalFooter>
       </ModalContent>

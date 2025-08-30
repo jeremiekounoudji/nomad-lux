@@ -78,13 +78,7 @@ export interface PropertyCardProps {
   onClick?: (property: import('./Property').Property) => void
 }
 
-export interface ProfileModalProps {
-  isOpen: boolean
-  onClose: () => void
-  user: import('./User').User
-  onEditProfile?: () => void
-  onLogout?: () => void
-}
+
 
 export interface PopularPlacesProps {
   places?: import('./Property').PopularPlace[]
@@ -107,7 +101,7 @@ export interface HostDetailsStepProps {
 }
 
 export interface PropertySubmissionFormProps {
-  initialData?: import('./Property').Property
+  initialData?: import('./PropertySubmissionData').PropertySubmissionData
   isEditMode?: boolean
   onSubmitSuccess?: (propertyData: any) => void
   onCancel?: () => void
@@ -253,10 +247,45 @@ export interface BookPropertyModalProps {
   }) => void
 }
 
+// Simplified interfaces for modals
+export interface SimpleBooking {
+  id: string
+  propertyName: string
+  propertyImage: string
+  location: string
+  checkIn: string
+  checkOut: string
+  guests: number
+  totalPrice: number
+  currency: string
+  status: import('./Booking').BookingStatus
+}
+
+export interface SimpleProperty {
+  id: string
+  title: string
+  images: string[]
+  location: {
+    city: string
+    country: string
+    coordinates: {
+      lat: number
+      lng: number
+    }
+  }
+  host: {
+    id: string
+    display_name: string
+    avatar_url: string
+    email: string
+    phone: string
+  }
+}
+
 export interface CancelBookingModalProps {
   isOpen: boolean
   onClose: () => void
-  booking: import('./Booking').Booking
+  booking: SimpleBooking
   onConfirmCancel: (reason: string) => void
 }
 
@@ -270,8 +299,8 @@ export interface PropertyStatsModalProps {
 export interface ContactHostModalProps {
   isOpen: boolean
   onClose: () => void
-  property: import('./Property').Property
-  onSendMessage: (message: string) => void
+  property: SimpleProperty
+  onSendMessage?: (message: string) => void
 }
 
 export interface SharePropertyModalProps {
@@ -339,4 +368,59 @@ export interface HeaderSkeletonProps {
 
 export interface TabsSkeletonProps {
   className?: string
+}
+
+export interface PropertyDetailsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperty: import('./DatabaseProperty').DatabaseProperty | null;
+  reviewChecklist: {
+    title: boolean;
+    description: boolean;
+    images: boolean;
+    location: boolean;
+    price: boolean;
+    amenities: boolean;
+    policies: boolean;
+  };
+  setReviewChecklist: React.Dispatch<React.SetStateAction<{
+    title: boolean;
+    description: boolean;
+    images: boolean;
+    location: boolean;
+    price: boolean;
+    amenities: boolean;
+    policies: boolean;
+  }>>;
+  allChecked: boolean;
+  onRejectOpen: () => void;
+  handleApproveConfirm: (property: import('./DatabaseProperty').DatabaseProperty) => void;
+}
+
+export interface ImageLightboxModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperty: import('./DatabaseProperty').DatabaseProperty | null;
+  currentImageIndex: number;
+  prevImage: () => void;
+  nextImage: () => void;
+}
+
+export interface BulkActionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  bulkActionType: 'approve' | 'reject' | null;
+  selectedProperties: string[];
+  rejectionReason: string;
+  setRejectionReason: (reason: string) => void;
+  handleBulkConfirm: () => void;
+  bulkLoading: boolean;
+}
+
+export interface BulkSuspendModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProperties: string[];
+  bulkSuspendLoading: boolean;
+  handleBulkSuspendConfirm: () => void;
 } 

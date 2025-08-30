@@ -5,8 +5,13 @@ import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../lib/stores/authStore'
 import { RegisterPageProps } from '../interfaces'
 import toast from 'react-hot-toast'
+import { useTranslation } from '../lib/stores/translationStore'
+import { useNavigate } from 'react-router-dom'
+import { ROUTES } from '../router/types'
 
 const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister }) => {
+  const { t } = useTranslation(['auth', 'common'])
+  const navigate = useNavigate()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -27,35 +32,35 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
 
   const validateForm = () => {
     if (!firstName.trim()) {
-      setError('First name is required')
+      setError(t('auth.signup.firstName') + ' ' + t('common.messages.error'))
       return false
     }
     if (!lastName.trim()) {
-      setError('Last name is required')
+      setError(t('auth.signup.lastName') + ' ' + t('common.messages.error'))
       return false
     }
     if (!email.trim()) {
-      setError('Email is required')
+      setError(t('auth.signup.email') + ' ' + t('common.messages.error'))
       return false
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Please enter a valid email address')
+      setError(t('auth.messages.invalidEmail'))
       return false
     }
     if (!password) {
-      setError('Password is required')
+      setError(t('auth.signup.password') + ' ' + t('common.messages.error'))
       return false
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters long')
+      setError(t('auth.messages.passwordTooShort'))
       return false
     }
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('auth.messages.passwordsDontMatch'))
       return false
     }
     if (!agreeToTerms) {
-      setError('Please agree to the terms and conditions')
+      setError(t('auth.messages.agreeTerms'))
       return false
     }
     return true
@@ -86,29 +91,44 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       }
 
       console.log('✅ User registration successful!')
-      toast.success('Account created successfully! Please sign in to continue.')
+      toast.success(t('auth.messages.signupSuccess') + ' ' + t('auth.login.signIn'))
       
       // Redirect to login page after successful registration
       setTimeout(() => {
-        onPageChange?.('login')
+        if (onPageChange) {
+          onPageChange('login')
+        } else {
+          navigate(ROUTES.LOGIN)
+        }
       }, 1500) // Small delay to show the success message
 
     } catch (err: any) {
       console.error('❌ Exception during user registration:', err)
-      setError(err.message || 'An unexpected error occurred')
-      toast.error(err.message || 'An unexpected error occurred')
+      setError(err.message || t('auth.messages.unexpectedError'))
+      toast.error(err.message || t('auth.messages.unexpectedError'))
     }
   }
 
   const handleBackToHome = () => {
-    onPageChange?.('home')
+    if (onPageChange) {
+      onPageChange('home')
+    } else {
+      navigate(ROUTES.HOME)
+    }
   }
+
+  // Show error toast when there's an error
+  useEffect(() => {
+    if (error) {
+      toast.error(error)
+    }
+  }, [error])
 
 
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 relative"
+      className="relative flex min-h-screen items-center justify-center p-4"
       style={{
         backgroundImage: 'url(https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&h=1080&fit=crop)',
         backgroundSize: 'cover',
@@ -123,41 +143,36 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
       <Button
         isIconOnly
         variant="flat"
-        className="absolute top-6 left-6 z-20 bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30"
+        className="absolute left-6 top-6 z-20 border border-white/30 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
         onPress={handleBackToHome}
       >
-        <ArrowLeft className="w-5 h-5" />
+        <ArrowLeft className="size-5" />
       </Button>
 
       {/* Register Form */}
-      <Card className="w-full max-w-md z-10 bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <Card className="z-10 w-full max-w-md border border-white/20 bg-white/10 shadow-2xl backdrop-blur-xl">
         <CardBody className="p-8">
           {/* Logo */}
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-xl">NL</span>
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-primary-500">
+              <span className="text-xl font-bold text-white">NL</span>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Create Account</h1>
-            <p className="text-white/80 text-sm">Join NomadLux and start your journey</p>
+            <h1 className="mb-2 text-2xl font-bold text-white">{t('auth.signup.title')}</h1>
+            <p className="text-sm text-white/80">{t('auth.signup.subtitle')}</p>
           </div>
 
-          {/* Error Message */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-400/30 rounded-lg">
-              <p className="text-red-100 text-sm">{error}</p>
-            </div>
-          )}
+
 
           {/* Form */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <Input
                 type="text"
-                label="First Name"
-                placeholder="John"
+                label={t('auth.signup.firstName')}
+                placeholder={t('auth.signup.firstNamePlaceholder')}
                 value={firstName}
                 onValueChange={setFirstName}
-                startContent={<User className="w-4 h-4 text-white/60" />}
+                startContent={<User className="size-4 text-white/60" />}
                 classNames={{
                   base: "max-w-full",
                   mainWrapper: "h-full",
@@ -169,8 +184,8 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
               />
               <Input
                 type="text"
-                label="Last Name"
-                placeholder="Doe"
+                label={t('auth.signup.lastName')}
+                placeholder={t('auth.signup.lastNamePlaceholder')}
                 value={lastName}
                 onValueChange={setLastName}
                 classNames={{
@@ -186,11 +201,11 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
 
             <Input
               type="email"
-              label="Email"
-              placeholder="john.doe@example.com"
+              label={t('auth.signup.email')}
+              placeholder={t('auth.signup.emailPlaceholder')}
               value={email}
               onValueChange={setEmail}
-              startContent={<Mail className="w-4 h-4 text-white/60" />}
+              startContent={<Mail className="size-4 text-white/60" />}
               classNames={{
                 base: "max-w-full",
                 mainWrapper: "h-full",
@@ -202,17 +217,17 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             />
 
             <Input
-              label="Password"
-              placeholder="Create a strong password"
+              label={t('auth.signup.password')}
+              placeholder={t('auth.signup.passwordPlaceholder')}
               value={password}
               onValueChange={setPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
                   {isVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -228,17 +243,17 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
             />
 
             <Input
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label={t('auth.signup.confirmPassword')}
+              placeholder={t('auth.signup.confirmPasswordPlaceholder')}
               value={confirmPassword}
               onValueChange={setConfirmPassword}
-              startContent={<Lock className="w-4 h-4 text-white/60" />}
+              startContent={<Lock className="size-4 text-white/60" />}
               endContent={
                 <button className="focus:outline-none" type="button" onClick={toggleConfirmVisibility}>
                   {isConfirmVisible ? (
-                    <EyeOff className="w-4 h-4 text-white/60" />
+                    <EyeOff className="size-4 text-white/60" />
                   ) : (
-                    <Eye className="w-4 h-4 text-white/60" />
+                    <Eye className="size-4 text-white/60" />
                   )}
                 </button>
               }
@@ -262,35 +277,41 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ onPageChange, onRegister })
                 wrapper: "before:border-white/30 after:bg-primary-500 after:text-white"
               }}
             >
-              I agree to the{' '}
-              <Link className="text-white font-semibold hover:text-white/80" href="#">
-                Terms of Service
+              {t('auth.signup.agreePrefix')}{' '}
+              <Link className="font-semibold text-white hover:text-white/80" href="#">
+                {t('auth.signup.terms')}
               </Link>
-              {' '}and{' '}
-              <Link className="text-white font-semibold hover:text-white/80" href="#">
-                Privacy Policy
+              {' '}{t('auth.signup.and')}{' '}
+              <Link className="font-semibold text-white hover:text-white/80" href="#">
+                {t('auth.signup.privacy')}
               </Link>
             </Checkbox>
 
             <Button
               color="primary"
               size="lg"
-              className="w-full font-semibold bg-primary-600 hover:bg-primary-700 text-white"
+              className="w-full bg-primary-600 font-semibold text-white hover:bg-primary-700"
               onPress={handleRegister}
               isLoading={isLoading}
               isDisabled={!firstName || !lastName || !email || !password || !confirmPassword || !agreeToTerms}
             >
-              {isLoading ? 'Creating Account...' : 'Create Account'}
+              {isLoading ? t('auth.signup.creating') : t('auth.signup.createAccount')}
             </Button>
 
             <div className="text-center">
-              <span className="text-white/80 text-sm">
-                Already have an account?{' '}
+              <span className="text-sm text-white/80">
+                {t('auth.signup.hasAccount')}{' '}
                 <Link 
-                  className="text-white font-semibold hover:text-white/80 cursor-pointer"
-                  onPress={() => onPageChange?.('login')}
+                  className="cursor-pointer font-semibold text-white hover:text-white/80"
+                  onPress={() => {
+                    if (onPageChange) {
+                      onPageChange('login')
+                    } else {
+                      navigate(ROUTES.LOGIN)
+                    }
+                  }}
                 >
-                  Sign in
+                  {t('auth.signup.signIn')}
                 </Link>
               </span>
             </div>

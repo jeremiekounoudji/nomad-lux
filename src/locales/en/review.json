@@ -1,0 +1,84 @@
+{
+  "createReview": "Create Review",
+  "editReview": "Edit Review",
+  "deleteReview": "Delete Review",
+  "rating": {
+    "title": "Rating",
+    "stars": "{{count}} stars",
+    "outOf": "out of 5",
+    "excellent": "Excellent",
+    "good": "Good",
+    "average": "Average",
+    "poor": "Poor",
+    "terrible": "Terrible"
+  },
+  "reviewText": {
+    "label": "Review",
+    "placeholder": "Share your experience...",
+    "minLength": "Minimum 10 characters",
+    "maxLength": "Maximum 1000 characters",
+    "charCount": "{{count}}/1000 characters"
+  },
+  "reviewType": {
+    "guestToHost": "Guest to Host",
+    "hostToGuest": "Host to Guest",
+    "property": "Property Review"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "noReviews": "No reviews yet",
+    "beFirst": "Be the first to review this property",
+    "totalReviews": "{{count}} reviews",
+    "averageRating": "{{rating}} average rating",
+    "newestFirst": "Newest first",
+    "oldestFirst": "Oldest first"
+  },
+  "reviewCard": {
+    "by": "by {{name}}",
+    "on": "on {{date}}",
+    "verified": "Verified stay",
+    "helpful": "Helpful",
+    "report": "Report",
+    "editingExpired": "Editing period expired"
+  },
+  "modals": {
+    "createTitle": "Write a Review",
+    "editTitle": "Edit Your Review",
+    "deleteTitle": "Delete Review",
+    "deleteMessage": "Are you sure you want to delete this review?",
+    "editingExpiredMessage": "This review can no longer be edited as it was created more than 30 days ago.",
+    "success": "Review submitted successfully",
+    "error": "Error submitting review",
+    "editSuccess": "Review updated successfully",
+    "deleteSuccess": "Review deleted successfully"
+  },
+  "validation": {
+    "ratingRequired": "Please select a rating",
+    "textRequired": "Please write a review",
+    "textMinLength": "Review must be at least 10 characters",
+    "textMaxLength": "Review cannot exceed 1000 characters",
+    "cannotReviewSelf": "You cannot review yourself",
+    "cannotDeleteReview": "You can only delete your own reviews",
+    "notAuthorizedToDelete": "You are not authorized to delete this review"
+  },
+  "verification": {
+    "checking": "Checking review status...",
+    "alreadyExists": "You have already reviewed this booking",
+    "duplicatePrevented": "Duplicate review prevented",
+    "verificationFailed": "Review verification failed"
+  },
+  "status": {
+    "completed": "Completed",
+    "pending": "Pending",
+    "unavailable": "Unavailable",
+    "completedTooltip": "Review has been submitted",
+    "pendingTooltip": "Review can be submitted",
+    "unavailableTooltip": "Review cannot be submitted"
+  },
+  "timing": {
+    "immediate": "Review now",
+    "reminder": "Remind me later",
+    "reminderSent": "Review reminder sent",
+    "expired": "Review period has expired"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "guests": "invités",
+  "guest": "invité", 
+  "beds": "lits",
+  "bed": "lit",
+  "baths": "sdb",
+  "bath": "sdb",
+  "bedrooms": "chambres",
+  "bedroom": "chambre", 
+  "bathrooms": "salles de bain",
+  "bathroom": "salle de bain",
+  "perNight": "par nuit",
+  "night": "nuit",
+  "nights": "nuits",
+  "propertiesCount": "{{count}} propriétés",
+  "propertyCount": "1 propriété",
+  "reviews": "avis",
+  "photos": "Photos",
+  "videos": "Vidéos"
+}

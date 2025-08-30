@@ -3,12 +3,7 @@ import { supabase } from '../lib/supabase'
 import { useAdminSettingsStore, groupSettingsByCategory } from '../lib/stores/adminSettingsStore'
 import { 
   AdminSettings, 
-  AdminSettingRecord,
-  PlatformSettings, 
-  BookingSettings, 
-  NotificationSettings, 
-  SecuritySettings, 
-  PaymentSettings 
+  AdminSettingRecord 
 } from '../interfaces/Settings'
 
 export const useAdminSettings = () => {
@@ -27,6 +22,7 @@ export const useAdminSettings = () => {
     updateDraftNotificationSettings,
     updateDraftSecuritySettings,
     updateDraftPaymentSettings,
+    updateDraftContentSettings,
     resetDrafts,
     clearDrafts,
     getCurrentSettings,
@@ -224,5 +220,8 @@ export const useAdminSettings = () => {
     updateNotificationSettings: updateDraftNotificationSettings,
     updateSecuritySettings: updateDraftSecuritySettings,
     updatePaymentSettings: updateDraftPaymentSettings,
+    updateContentSettings: updateDraftContentSettings,
   }
-} 
+}
+
+ 

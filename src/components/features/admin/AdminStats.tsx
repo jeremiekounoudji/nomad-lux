@@ -30,7 +30,7 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
   }
 
   return (
-    <Card className="shadow-sm border border-gray-200">
+    <Card className="border border-gray-200 shadow-sm">
       <CardBody className="p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -39,11 +39,11 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
               {typeof value === 'number' ? value.toLocaleString() : value}
             </p>
             {trend && (
-              <div className="flex items-center gap-1 mt-2">
+              <div className="mt-2 flex items-center gap-1">
                 {trend.isPositive ? (
-                  <TrendingUp className="w-4 h-4 text-green-500" />
+                  <TrendingUp className="size-4 text-green-500" />
                 ) : (
-                  <TrendingDown className="w-4 h-4 text-red-500" />
+                  <TrendingDown className="size-4 text-red-500" />
                 )}
                 <span className={`text-sm ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                   {trend.isPositive ? '+' : ''}{trend.value}%
@@ -52,8 +52,8 @@ export const AdminStats: React.FC<AdminStatsProps> = ({
               </div>
             )}
           </div>
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorClasses[color]}`}>
-            <Icon className="w-6 h-6" />
+          <div className={`flex size-12 items-center justify-center rounded-xl ${colorClasses[color]}`}>
+            <Icon className="size-6" />
           </div>
         </div>
       </CardBody>

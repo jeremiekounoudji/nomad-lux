@@ -1,0 +1,60 @@
+{
+  "title": "Welcome to Nomad Lux",
+  "description": "Learn how to use our platform to book properties, create listings, and manage your bookings.",
+  "stepCounter": "Step {{current}} of {{total}}",
+  "stepProgress": "Step {{current}} of {{total}}",
+  "stepId": "ID: {{id}}",
+  "progress": {
+    "label": "Progress",
+    "ariaLabel": "Tutorial progress",
+    "stepIndicator": "Step {{current}} of {{total}}",
+    "percentage": "{{percentage}}% complete",
+    "stepAriaLabel": "Go to step {{step}}"
+  },
+  "actions": {
+    "previous": "Previous",
+    "next": "Next",
+    "finish": "Finish Tutorial",
+    "skip": "Skip",
+    "skipTutorial": "Skip Tutorial",
+    "previousAria": "Go to previous step",
+    "nextAria": "Go to next step",
+    "finishAria": "Complete tutorial"
+  },
+  "preferences": {
+    "neverShowAgain": "Don't show this tutorial again"
+  },
+  "image": {
+    "error": "Image could not be loaded"
+  },
+  "highlight": "Highlight:",
+  "steps": {
+    "bookingProperties": {
+      "title": "Booking Properties",
+      "description": "Discover how to browse and book amazing properties on our platform. Learn the booking process from start to finish.",
+      "imageAlt": "Tutorial showing how to book properties with property cards and booking buttons"
+    },
+    "propertyCreation": {
+      "title": "Property Creation",
+      "description": "Learn how to create and list your own properties. Understand the submission process and requirements.",
+      "imageAlt": "Tutorial showing property creation form with fields for property details"
+    },
+    "managingSelfBookings": {
+      "title": "Managing Self Bookings",
+      "description": "Master the art of managing your own bookings. Learn how to view, modify, and cancel reservations.",
+      "imageAlt": "Tutorial showing booking dashboard with confirmed and pending bookings"
+    },
+    "bookingRequests": {
+      "title": "Booking Requests",
+      "description": "Understand how to handle booking requests from guests. Learn the approval process and communication.",
+      "imageAlt": "Tutorial showing booking requests panel with accept/decline options"
+    }
+  },
+  "analytics": {
+    "started": "Tutorial started",
+    "stepCompleted": "Step {{step}} completed",
+    "skipped": "Tutorial skipped",
+    "finished": "Tutorial finished",
+    "neverShowAgain": "Never show again selected"
+  }
+}

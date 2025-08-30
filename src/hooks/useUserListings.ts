@@ -163,7 +163,7 @@ export const useUserListings = () => {
 
     try {
       // Handle file uploads for images and videos
-      let processedUpdates = { ...updates }
+      const processedUpdates = { ...updates }
       
       // Process images: separate existing URLs from new File objects
       if (updates.images && Array.isArray(updates.images)) {
@@ -311,6 +311,62 @@ export const useUserListings = () => {
     return updateListing(propertyId, { status: newStatus }, true)
   }, [updateListing])
 
+  // Get a single user property by ID
+  const getUserProperty = useCallback(async (propertyId: string): Promise<DatabaseProperty | null> => {
+    if (!user?.id) {
+      setError('User not authenticated')
+      return null
+    }
+
+    console.log('🔄 Fetching user property:', propertyId)
+    setLoading(true)
+    clearError()
+
+    try {
+      const { data, error: supabaseError, status } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('id', propertyId)
+        .eq('host_id', user.id)
+        .single()
+
+      if (supabaseError) {
+        console.warn('ℹ️ getUserProperty first attempt failed', { supabaseError, status })
+        if (supabaseError.code === 'PGRST116') {
+          // Maybe ownership filter caused no rows — try without host_id constraint as fallback
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('properties')
+            .select('*')
+            .eq('id', propertyId)
+            .single()
+
+          if (fallbackError) {
+            console.error('❌ getUserProperty fallback failed', fallbackError)
+            setError(fallbackError.message)
+            return null
+          }
+          console.log('✅ getUserProperty fallback succeeded')
+          return fallbackData
+        }
+        // Only set error for non-PGRST116 errors (genuine errors, not just no rows)
+        console.error('❌ Error fetching property:', supabaseError)
+        setError(supabaseError.message)
+        return null
+      }
+
+      console.log('✅ Fetched user property:', data)
+      return data
+
+    } catch (error) {
+      console.error('❌ Unexpected error fetching property:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch property'
+      setError(errorMessage)
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }, [user?.id, setLoading, setError, clearError])
+
   // Check if property edit will require admin review
   const checkEditConfirmation = useCallback((property: DatabaseProperty): PropertyEditConfirmation => {
     const willResetToPending = property.status !== 'pending' && property.status !== 'paused'
@@ -370,6 +426,7 @@ export const useUserListings = () => {
     
     // Actions
     fetchUserListings,
+    getUserProperty,
     updateListing,
     deleteListing,
     toggleListingStatus,

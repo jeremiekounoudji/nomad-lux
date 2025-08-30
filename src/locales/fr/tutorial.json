@@ -1,0 +1,60 @@
+{
+  "title": "Bienvenue sur Nomad Lux",
+  "description": "Apprenez à utiliser notre plateforme pour réserver des propriétés, créer des annonces et gérer vos réservations.",
+  "stepCounter": "Étape {{current}} sur {{total}}",
+  "stepProgress": "Étape {{current}} sur {{total}}",
+  "stepId": "ID : {{id}}",
+  "progress": {
+    "label": "Progression",
+    "ariaLabel": "Progression du tutoriel",
+    "stepIndicator": "Étape {{current}} sur {{total}}",
+    "percentage": "{{percentage}}% terminé",
+    "stepAriaLabel": "Aller à l'étape {{step}}"
+  },
+  "actions": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "finish": "Terminer le tutoriel",
+    "skip": "Passer",
+    "skipTutorial": "Passer le tutoriel",
+    "previousAria": "Aller à l'étape précédente",
+    "nextAria": "Aller à l'étape suivante",
+    "finishAria": "Terminer le tutoriel"
+  },
+  "preferences": {
+    "neverShowAgain": "Ne plus afficher ce tutoriel"
+  },
+  "image": {
+    "error": "L'image n'a pas pu être chargée"
+  },
+  "highlight": "Mise en évidence :",
+  "steps": {
+    "bookingProperties": {
+      "title": "Réservation de propriétés",
+      "description": "Découvrez comment parcourir et réserver des propriétés incroyables sur notre plateforme. Apprenez le processus de réservation de A à Z.",
+      "imageAlt": "Tutoriel montrant comment réserver des propriétés avec des cartes de propriété et des boutons de réservation"
+    },
+    "propertyCreation": {
+      "title": "Création de propriété",
+      "description": "Apprenez à créer et lister vos propres propriétés. Comprenez le processus de soumission et les exigences.",
+      "imageAlt": "Tutoriel montrant le formulaire de création de propriété avec des champs pour les détails de la propriété"
+    },
+    "managingSelfBookings": {
+      "title": "Gestion de vos réservations",
+      "description": "Maîtrisez l'art de gérer vos propres réservations. Apprenez à voir, modifier et annuler les réservations.",
+      "imageAlt": "Tutoriel montrant le tableau de bord des réservations avec des réservations confirmées et en attente"
+    },
+    "bookingRequests": {
+      "title": "Demandes de réservation",
+      "description": "Comprenez comment gérer les demandes de réservation des invités. Apprenez le processus d'approbation et la communication.",
+      "imageAlt": "Tutoriel montrant le panneau des demandes de réservation avec les options d'acceptation/refus"
+    }
+  },
+  "analytics": {
+    "started": "Tutoriel commencé",
+    "stepCompleted": "Étape {{step}} terminée",
+    "skipped": "Tutoriel passé",
+    "finished": "Tutoriel terminé",
+    "neverShowAgain": "Ne plus afficher sélectionné"
+  }
+}

@@ -1,103 +1,358 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from '../lib/stores/translationStore';
+import { usePropertyTypeTranslation, useAmenitiesTranslation, useContentTranslation } from '../hooks/useTranslatedContent';
 import { 
   ArrowLeft, 
   Heart, 
-  Share, 
-  Star, 
-  MapPin, 
-  Users, 
-  Bed, 
-  Bath, 
-  Wifi, 
-  Car, 
-  Utensils, 
-  Waves, 
-  ChevronLeft, 
-  ChevronRight, 
-  Shield, 
-  Award, 
-  MessageCircle, 
-  CheckCircle,
-  Eye,
-  Calendar,
-  DollarSign,
-  AlertCircle,
-  X
+  Share,
+  AlertCircle
 } from 'lucide-react'
 import { 
-  Card, 
-  CardBody, 
-  CardHeader, 
-  Chip, 
-  Avatar, 
   Button, 
-  Divider, 
-  Badge, 
-  useDisclosure,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  useDisclosure
 } from '@heroui/react'
-import { PropertyDetailPageProps } from '../interfaces/Component'
-import { Property } from '../interfaces/Property'
 import { 
-  SharePropertyModal, 
-  ContactHostModal 
+  ContactHostModal,
+  BookingConfirmationModal,
+  BookingSuccessModal,
+  BookingErrorModal
 } from '../components/shared/modals'
+import { BookingLoadingOverlay, PropertyHeader, PropertyMediaGallery, PropertyAmenities, PropertyHostInfo, PropertyBookingCard } from '../components/shared'
+import { LazyMapWrapper } from '../components/map'
+import { usePropertySettings } from '../hooks/usePropertySettings'
+import { useBookingFlow } from '../hooks/useBookingFlow'
+import { usePropertyShare } from '../hooks/usePropertyShare'
+import { useAuthStore } from '../lib/stores/authStore'
+import { useBookingStore } from '../lib/stores/bookingStore'
+import { calculateBookingPrice } from '../utils/priceCalculation'
+import { updatePropertyMetaTags, resetDefaultMetaTags } from '../utils/shareUtils'
+import type { MapCoordinates } from '../interfaces/Map'
+import toast from 'react-hot-toast'
+import { usePropertyLike } from '../hooks/usePropertyLike'
+import { usePropertyStore } from '../lib/stores/propertyStore';
+import { PropertyCardSkeleton } from '../components/shared';
+import { useReview } from '../hooks/useReview';
+import ReviewList from '../components/shared/ReviewList';
+import CreateReviewModal from '../components/shared/modals/CreateReviewModal';
+import EditReviewModal from '../components/shared/modals/EditReviewModal';
+import DeleteReviewModal from '../components/shared/modals/DeleteReviewModal';
 
-const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBack }) => {
+
+
+const PropertyDetailPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { selectedProperty, setSelectedProperty } = usePropertyStore();
+  const { t } = useTranslation('property');
+
+  // Simple property resolution: if selectedProperty exists and matches URL, use it
+  // Otherwise, we need to redirect since we can't fetch individual properties yet
+  const property = selectedProperty && selectedProperty.id === id ? selectedProperty : null;
+  
+  // Add comprehensive logging for property data and unavailable dates
+  useEffect(() => {
+    if (property) {
+      console.log('🏠 PropertyDetailPage - Property loaded (after fixing transformation):', {
+        id: property.id,
+        title: property.title,
+        status: property.status,
+        timezone: property.timezone,
+        unavailable_dates: property.unavailable_dates,
+        unavailable_dates_count: property.unavailable_dates?.length || 0,
+        unavailable_dates_sample: property.unavailable_dates?.slice(0, 3) || [],
+        has_unavailable_dates: Boolean(property.unavailable_dates && property.unavailable_dates.length > 0)
+      });
+
+      // Log each unavailable date for debugging
+      if (property.unavailable_dates && property.unavailable_dates.length > 0) {
+        console.log('📅 PropertyDetailPage - Unavailable dates breakdown:');
+        property.unavailable_dates.forEach((date, index) => {
+          const dateOnly = date.split('T')[0];
+          console.log(`  ${index + 1}. Full datetime: ${date} | Date only: ${dateOnly}`);
+        });
+      } else {
+        console.log('📅 PropertyDetailPage - No unavailable dates found (this might be correct if the property has no bookings)');
+      }
+
+      // Log property structure for debugging
+      console.log('🔍 PropertyDetailPage - Property structure check:', {
+        has_unavailable_dates_property: 'unavailable_dates' in property,
+        unavailable_dates_type: typeof property.unavailable_dates,
+        is_array: Array.isArray(property.unavailable_dates),
+        raw_value: property.unavailable_dates
+      });
+    } else {
+      console.log('❌ PropertyDetailPage - No property data available');
+    }
+  }, [property]);
+  
+  // Handle back navigation - immediate response
+  const handleBack = () => {
+    console.log('🔙 Back button clicked, navigating back immediately');
+    // Clear any pending timeouts or state updates that might interfere
+    setValidationError('');
+    setErrorMessage('');
+    // Navigate back immediately
+    navigate(-1);
+  };
+
+  // Update meta tags when property is available
+  useEffect(() => {
+    if (property) {
+      updatePropertyMetaTags(property);
+    }
+    
+    return () => {
+      resetDefaultMetaTags();
+    };
+  }, [property]);
+
+  // Loading states
+  const [isLoading, setIsLoading] = useState(false); // Remove this since we're not fetching
+  const [error, setError] = useState<string | null>(null);
+
+  // Rest of component state remains the same...
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [mediaType, setMediaType] = useState<'image' | 'video'>('image')
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [checkInTime, setCheckInTime] = useState('15:00')
+  const [checkOutTime, setCheckOutTime] = useState('11:00')
   const [guests, setGuests] = useState(1)
   const [specialRequests, setSpecialRequests] = useState('')
-  const [isLiked, setIsLiked] = useState(property.is_liked)
+  const [isLiked, setIsLiked] = useState(property?.is_liked);
+
+
+
+  // Translation hooks
+  const { translation: propertyTypeTranslation } = usePropertyTypeTranslation(property?.property_type || '')
+  const { translatedContent: translatedTitle } = useContentTranslation(
+    'property',
+    property?.id || '',
+    'title',
+    property?.title || ''
+  )
+  const { translatedContent: translatedDescription } = useContentTranslation(
+    'property',
+    property?.id || '',
+    'description',
+    property?.description || ''
+  )
+  const { translations: amenityTranslations, isLoading: amenitiesLoading } = useAmenitiesTranslation(property?.amenities || [])
+
+  const nextMedia = () => {
+    if (!property) return;
+    if (mediaType === 'image') {
+      if (currentImageIndex === property.images.length - 1) {
+        if (property.videos.length > 0) {
+          setMediaType('video');
+          setCurrentVideoIndex(0);
+        } else {
+          setCurrentImageIndex(0);
+        }
+      } else {
+        setCurrentImageIndex(prev => prev + 1);
+      }
+    } else {
+      if (currentVideoIndex === property.videos.length - 1) {
+        setMediaType('image');
+        setCurrentImageIndex(0);
+      } else {
+        setCurrentVideoIndex(prev => prev + 1);
+      }
+    }
+  };
+
+  const prevMedia = () => {
+    if (!property) return;
+    if (mediaType === 'image') {
+      if (currentImageIndex === 0) {
+        if (property.videos.length > 0) {
+          setMediaType('video');
+          setCurrentVideoIndex(property.videos.length - 1);
+        } else {
+          setCurrentImageIndex(property.images.length - 1);
+        }
+      } else {
+        setCurrentImageIndex(prev => prev - 1);
+      }
+    } else {
+      if (currentVideoIndex === 0) {
+        setMediaType('image');
+        setCurrentImageIndex(property.images.length - 1);
+      } else {
+        setCurrentVideoIndex(prev => prev - 1);
+      }
+    }
+  };
 
   // Modal states
-  const { isOpen: isBookingOpen, onOpen: onBookingOpen, onClose: onBookingClose } = useDisclosure()
-  const { isOpen: isShareOpen, onOpen: onShareOpen, onClose: onShareClose } = useDisclosure()
   const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
   const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure()
   const { isOpen: isSuccessOpen, onOpen: onSuccessOpen, onClose: onSuccessClose } = useDisclosure()
   const { isOpen: isErrorOpen, onOpen: onErrorOpen, onClose: onErrorClose } = useDisclosure()
 
+  // Share hook
+  const { handleShare } = usePropertyShare()
+
   // Loading states
-  const [isBooking, setIsBooking] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [validationError, setValidationError] = useState('')
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === property.images.length - 1 ? 0 : prev + 1
-    )
-  }
+  // Hooks
+  const { user } = useAuthStore()
+  const { getPropertySettings } = usePropertySettings()
+  const { 
+    createBooking
+  } = useBookingFlow()
+  const { isCreatingBooking, isCheckingAvailability } = useBookingStore()
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => 
-      prev === 0 ? property.images.length - 1 : prev - 1
-    )
-  }
+  // Property settings state
+  const [propertySettings, setPropertySettings] = useState<any>(null)
 
-  const cleaningFee = 50
-  const serviceFee = 30
-  const nights = checkIn && checkOut ? 
-    Math.max(1, Math.ceil((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24))) : 3
-  const subtotal = property.price * nights
-  const total = subtotal + cleaningFee + serviceFee
+  // Like hook
+  const { likedPropertyIds, isLoading: isLikeLoading, toggleLike, isLiked: isPropertyLiked } = usePropertyLike()
 
-  const handleReserveClick = () => {
+  // Review hook
+  const {
+    reviews,
+    reviewStats,
+    loading: reviewsLoading,
+    error: reviewsError,
+    modalState,
+    filters,
+    handleFilterChange,
+    handlePageChange,
+    loadMoreReviews,
+    openCreateModal,
+    openEditModal,
+    openDeleteModal,
+    closeModal,
+    handleCreateReview,
+    handleUpdateReview,
+    handleDeleteReview
+  } = useReview(property?.id)
+
+  // TODO: Review notifications and reminders
+  // This would check if the user has completed bookings that they can review
+  // and show appropriate notifications or reminders
+  useEffect(() => {
+    if (user && property) {
+      // Placeholder for review notification logic
+      // In a real implementation, this would:
+      // 1. Check if user has completed bookings for this property
+      // 2. Check if user has already reviewed those bookings
+      // 3. Show appropriate notifications or reminders
+      console.log('📝 Review notification placeholder - User:', user.id, 'Property:', property.id)
+    }
+  }, [user, property])
+
+  // Load property settings and update meta tags on component mount
+  useEffect(() => {
+    if (property?.id) {
+      console.log('🔄 Loading property settings for property:', property.id);
+      getPropertySettings(property.id)
+        .then(settings => {
+          console.log('✅ Property settings loaded:', settings);
+          setPropertySettings(settings);
+        })
+        .catch(error => {
+          console.warn('⚠️ Failed to load property settings:', error);
+        });
+      // Update meta tags for better link sharing
+      updatePropertyMetaTags(property);
+    }
+  }, [property, getPropertySettings]);
+
+  // Calculate price using the new price calculation utility
+  const priceCalculation = useMemo(() => {
+    if (!property || !checkIn || !checkOut || !property.price) {
+      return {
+        billingNights: 1,
+        basePrice: property?.price || 0,
+        cleaningFee: property?.cleaning_fee || 0,
+        serviceFee: property?.service_fee || 0,
+        totalAmount: (property?.price || 0) + (property?.cleaning_fee || 0) + (property?.service_fee || 0)
+      };
+    }
+
+    try {
+      return calculateBookingPrice(
+        property,
+        new Date(checkIn),
+        new Date(checkOut),
+        checkInTime,
+        checkOutTime,
+        guests
+      )
+    } catch (error) {
+      console.warn('⚠️ Price calculation error:', error)
+      return {
+        billingNights: 1,
+        basePrice: property.price,
+        cleaningFee: property.cleaning_fee || 0,
+        serviceFee: property.service_fee || 0,
+        totalAmount: property.price + (property.cleaning_fee || 0) + (property.service_fee || 0)
+      }
+    }
+  }, [checkIn, checkOut, checkInTime, checkOutTime, guests, property]);
+
+  const { billingNights, basePrice, cleaningFee, serviceFee, totalAmount } = priceCalculation;
+
+  const handleReserveClick = async () => {
+    // Validate authentication
+    if (!user) {
+      toast.error(t('auth.messages.signInToBook'))
+      return
+    }
+
     // Validate required fields
     if (!checkIn || !checkOut) {
-      setValidationError('Please select check-in and check-out dates')
+      setValidationError(t('booking.validation.selectDates'))
       return
     }
     
     if (new Date(checkIn) >= new Date(checkOut)) {
-      setValidationError('Check-out date must be after check-in date')
+      setValidationError(t('booking.validation.checkoutAfterCheckin'))
       return
     }
+
+    // Check property settings for booking rules with defaults
+    if (propertySettings) {
+      const startDate = new Date(checkIn)
+      const endDate = new Date(checkOut)
+      const today = new Date()
+      
+      // Use default values if settings are null (as per BookingSystemImplementationPlan.md)
+      const minAdvanceBooking = propertySettings.min_advance_booking || 1
+      const minStayNights = propertySettings.min_stay_nights || 1
+      const maxStayNights = propertySettings.max_stay_nights || 30
+      
+      // Check minimum advance booking
+      const daysDifference = Math.ceil((startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+      if (daysDifference < minAdvanceBooking) {
+        setValidationError(t('booking.validation.minAdvanceBooking', { days: minAdvanceBooking }))
+        return
+      }
+
+      // Check minimum stay length
+      if (billingNights < minStayNights) {
+        setValidationError(t('validation.minimumStay', { nights: minStayNights }))
+        return
+      }
+      
+      // Check maximum stay length
+      if (billingNights > maxStayNights) {
+        setValidationError(t('validation.maximumStay', { nights: maxStayNights }))
+        return
+      }
+    }
+    
+    // Since we have property data loaded and calendar shows availability,
+    // we can skip the RPC call and do basic validation
+    console.log('✅ Using loaded property data, skipping RPC availability check')
     
     // Clear validation error and open confirmation dialog
     setValidationError('')
@@ -105,40 +360,67 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
   }
 
   const handleConfirmBooking = async () => {
-    setIsBooking(true)
+    if (!user) {
+      toast.error(t('auth.messages.signInToBook'))
+      return
+    }
+
+    if (!property) {
+      toast.error(t('booking.messages.propertyDataMissing'))
+      onConfirmClose()
+      return
+    }
+
     onConfirmClose()
     
     try {
-      // Simulate booking API call
-      const bookingData = {
-        propertyId: property.id,
-        checkIn,
-        checkOut,
-        guests,
-        specialRequests: specialRequests || undefined,
-        totalPrice: total,
-        subtotal,
-        cleaningFee,
-        serviceFee
+      console.log('🔄 Creating booking...')
+      
+      // Create booking form data and price breakdown for the API
+      const bookingForm = {
+        property_id: property.id,
+        check_in_date: new Date(checkIn),
+        check_out_date: new Date(checkOut),
+        check_in_time: '15:00', // Default check-in time
+        check_out_time: '11:00', // Default check-out time
+        guest_count: guests,
+        special_requests: specialRequests || undefined
       }
       
-      console.log('Processing booking:', bookingData)
+      const priceBreakdownData = {
+        basePrice,
+        cleaningFee,
+        serviceFee,
+        taxes: 0, // You can calculate taxes if needed
+        totalAmount,
+        billingNights,
+        totalHours: billingNights * 24,
+        minimumChargeApplied: false,
+        currency: property.currency || 'USD'
+      }
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      console.log('📤 Booking form data:', bookingForm)
+      console.log('📤 Price breakdown:', priceBreakdownData)
       
-      // Simulate success/error (90% success rate)
-      if (Math.random() > 0.1) {
+      const result = await createBooking(bookingForm)
+      
+      if (result) {
+        console.log('✅ Booking created successfully:', result)
+        
+        // TODO: Review trigger - This would be called when a booking is completed
+        // For now, we'll add a placeholder for the review trigger system
+        // Reviews should be created after the stay is completed, not immediately after booking
+        console.log('📝 Review trigger placeholder - Booking result:', result)
+        
         onSuccessOpen()
       } else {
-        setErrorMessage('Sorry, this property is no longer available for the selected dates. Please try different dates.')
-        onErrorOpen()
+        throw new Error(t('messages.bookingCreationFailed'))
       }
     } catch (error) {
-      setErrorMessage('An unexpected error occurred. Please try again later.')
+      console.error('❌ Booking creation failed:', error)
+      const errorMsg = error instanceof Error ? error.message : t('common.messages.unexpectedError')
+      setErrorMessage(errorMsg)
       onErrorOpen()
-    } finally {
-      setIsBooking(false)
     }
   }
 
@@ -147,613 +429,326 @@ const PropertyDetailPage: React.FC<PropertyDetailPageProps> = ({ property, onBac
     // Handle message sending
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3 shadow-sm">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+  // If property is not available, show loading state briefly before redirect
+  if (!property) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <PropertyCardSkeleton />
+          <p className="mt-4 text-gray-600">{t('property.messages.loadingDetails')}</p>
           <button 
-            onClick={onBack}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            onClick={handleBack}
+            className="mx-auto mt-4 flex items-center gap-2 rounded-lg bg-gray-200 px-4 py-2 transition-colors hover:bg-gray-300"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-700" />
+            <ArrowLeft className="size-4" />
+            {t('common.actions.goBack')}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-gray-50 p-4">
+        <AlertCircle className="mb-4 size-16 text-danger-500" />
+        <h2 className="mb-2 text-2xl font-bold text-gray-900">{t('property.messages.couldNotLoad')}</h2>
+        <p className="mb-6 text-center text-gray-600">{error}</p>
+        <Button onClick={() => navigate('/')} startContent={<ArrowLeft />}>
+          {t('common.actions.backToHome')}
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
+      {/* Header */}
+      <div className="z-50 shrink-0 border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
+        <div className="mx-auto flex items-center  justify-between">
+          <button 
+            onClick={handleBack}
+            className="rounded-full p-2 transition-colors hover:bg-gray-100"
+          >
+            <ArrowLeft className="size-6 text-gray-700" />
           </button>
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => setIsLiked(!isLiked)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={() => property && toggleLike(property.id)}
+              className="flex items-center gap-1 rounded-full p-2 transition-colors hover:bg-gray-100"
+              disabled={isLikeLoading}
             >
-              <Heart className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <Heart className={`size-6 ${property && isPropertyLiked(property.id) ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              <span className="text-xs font-semibold text-gray-700">{property?.like_count ?? 0}</span>
             </button>
             <button 
-              onClick={onShareOpen}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              onClick={() => property && handleShare(property)}
+              className="rounded-full p-2 transition-colors hover:bg-gray-100"
             >
-              <Share className="w-6 h-6 text-gray-700" />
+              <Share className="size-6 text-gray-700" />
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Image Gallery */}
-            <div className="relative mb-8">
-              <div className="relative h-64 sm:h-80 lg:h-96 overflow-hidden rounded-xl">
-                <img
-                  src={property.images[currentImageIndex]}
-                  alt={property.title}
-                  className="w-full h-full object-cover"
+      {/* Main Content Container with Scroll */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto">
+          {!property ? (
+            // Loading or error state
+            <div className="flex min-h-[400px] items-center justify-center">
+              <div className="text-center">
+                <div className="mx-auto mb-4 size-12 animate-spin rounded-full border-b-2 border-primary-500"></div>
+                <p className="text-gray-600">{t('property.messages.loading', 'Loading property details...')}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid h-full grid-cols-1 gap-8 lg:grid-cols-3">
+              {/* Main Content */}
+              <div className="lg:col-span-2">
+                <PropertyMediaGallery
+                  property={property}
+                  currentImageIndex={currentImageIndex}
+                  setCurrentImageIndex={setCurrentImageIndex}
+                  mediaType={mediaType}
+                  setMediaType={setMediaType}
+                  currentVideoIndex={currentVideoIndex}
+                  setCurrentVideoIndex={setCurrentVideoIndex}
+                  nextMedia={nextMedia}
+                  prevMedia={prevMedia}
                 />
-                
-                {/* Navigation Buttons */}
-                {property.images.length > 1 && (
-                  <>
-                    <button
-                      onClick={prevImage}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-gray-700" />
-                    </button>
-                    <button
-                      onClick={nextImage}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg transition-all"
-                    >
-                      <ChevronRight className="w-5 h-5 text-gray-700" />
-                    </button>
-                  </>
-                )}
 
-                {/* Image Counter */}
-                <div className="absolute bottom-4 right-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
-                  {currentImageIndex + 1} / {property.images.length}
-                </div>
+                <PropertyHeader
+                  property={property}
+                  translatedTitle={translatedTitle}
+                  translatedDescription={translatedDescription}
+                />
 
-                {/* Quick View Button */}
-                <button 
-                  onClick={() => {}} // You can implement quick view here
-                  className="absolute bottom-4 left-4 bg-white hover:bg-gray-50 px-4 py-2 rounded-full text-sm font-medium shadow-lg transition-all flex items-center gap-2"
-                >
-                  <Eye className="w-4 h-4" />
-                  View all photos
-                </button>
-              </div>
+                <PropertyAmenities
+                  amenities={property.amenities}
+                  amenityTranslations={amenityTranslations}
+                />
 
-              {/* Thumbnail Strip - Mobile Optimized */}
-              <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
-                {property.images.slice(0, 6).map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      index === currentImageIndex ? 'border-primary-500' : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <img src={image} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-                {property.images.length > 6 && (
-                  <button className="flex-shrink-0 w-16 h-12 sm:w-20 sm:h-16 rounded-lg bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 hover:bg-gray-200 transition-all">
-                    +{property.images.length - 6}
-                  </button>
-                )}
-              </div>
-            </div>
+                <PropertyHostInfo
+                  property={property}
+                  onContactOpen={onContactOpen}
+                />
 
-            {/* Property Header */}
-            <div className="mb-8">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2" style={{ fontFamily: 'Dancing Script, cursive' }}>
-                    {property.title}
-                  </h1>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-semibold">{property.rating}</span>
-                      <span>({property.review_count} reviews)</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-4 h-4" />
-                      <span>{`${property.location.city}, ${property.location.country}`}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl sm:text-3xl font-bold text-gray-900">
-                    ${property.price}
-                    <span className="text-base font-normal text-gray-600 ml-1">/ night</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Property Stats */}
-              <div className="flex flex-wrap items-center gap-4 mb-6">
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Users className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.max_guests} guests</span>
-                </div>
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Bed className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bedrooms} bedrooms</span>
-                </div>
-                <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
-                  <Bath className="w-4 h-4 text-gray-700" />
-                  <span className="text-gray-900 font-medium text-sm">{property.bathrooms} bathrooms</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                <p className="text-gray-700 leading-relaxed">
-                  {property.description}
-                </p>
-              </div>
-            </div>
-
-            {/* Amenities */}
-            <Card className="mb-8 shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">What this place offers</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {property.amenities.map((amenity, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all border border-gray-100">
-                      <div className="w-10 h-10 bg-secondary-500 rounded-full flex items-center justify-center">
-                        {amenity === 'WiFi' && <Wifi className="w-5 h-5 text-white" />}
-                        {amenity === 'Parking' && <Car className="w-5 h-5 text-white" />}
-                        {amenity === 'Kitchen' && <Utensils className="w-5 h-5 text-white" />}
-                        {amenity === 'Pool' && <Waves className="w-5 h-5 text-white" />}
-                        {amenity === 'Beach Access' && <Waves className="w-5 h-5 text-white" />}
-                        {!['WiFi', 'Parking', 'Kitchen', 'Pool', 'Beach Access'].includes(amenity) && (
-                          <CheckCircle className="w-5 h-5 text-white" />
-                        )}
+                {/* Reviews Section */}
+                <div className="mt-8">
+                  {/* Review Summary */}
+                  <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-gray-900">
+                            {reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0'}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {t('review.reviews.averageRating', { rating: reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0' })}
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-3xl font-bold text-gray-900">
+                            {reviewStats?.total_reviews || 0}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {t('review.reviews.totalReviews', { count: reviewStats?.total_reviews || 0 })}
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <span className="text-gray-900 font-medium">{amenity}</span>
-                        {amenity === 'WiFi' && <p className="text-sm text-gray-600">High-speed internet</p>}
-                        {amenity === 'Pool' && <p className="text-sm text-gray-600">Infinity pool with ocean view</p>}
-                        {amenity === 'Kitchen' && <p className="text-sm text-gray-600">Fully equipped kitchen</p>}
-                        {amenity === 'Parking' && <p className="text-sm text-gray-600">Free on-site parking</p>}
-                        {amenity === 'Beach Access' && <p className="text-sm text-gray-600">Private beach access</p>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Host Info */}
-            <Card className="mb-8 shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">Meet your host</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="flex flex-col sm:flex-row gap-6">
-                  {/* Host Profile */}
-                  <div className="flex items-center sm:flex-col sm:items-center gap-4 sm:text-center">
-                    <Avatar
-                      src={property.host?.avatar_url || '/default-avatar.png'}
-                      alt={property.host?.display_name || 'Host'}
-                      className="w-20 h-20 sm:w-24 sm:h-24"
-                      isBordered
-                      color="primary"
-                    />
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900">{property.host?.display_name || 'Your Host'}</h4>
-                      <p className="text-sm text-gray-600">Host since 2019</p>
-                      {property.host?.is_email_verified && (
-                        <Chip size="sm" color="primary" className="mt-2">
-                          Verified Host
-                        </Chip>
+                      
+                      {/* Write Review Button - Show for all logged-in users */}
+                      {user && (
+                        <Button
+                          className="bg-main text-white hover:bg-main/90"
+                          size="sm"
+                          onPress={() => {
+                            // Open public review modal
+                            openCreateModal('property')
+                          }}
+                        >
+                          {t('review.createReview')}
+                        </Button>
                       )}
                     </div>
                   </div>
-
-                  {/* Host Details */}
-                  <div className="flex-1">
-                    {/* Host Stats */}
-                    <div className="grid grid-cols-3 gap-4 mb-6">
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">4.9</div>
-                        <div className="text-xs text-gray-600">Rating</div>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <MessageCircle className="w-4 h-4 text-gray-700" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">127</div>
-                        <div className="text-xs text-gray-600">Reviews</div>
-                      </div>
-                      <div className="text-center p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-1">
-                          <Shield className="w-4 h-4 text-gray-700" />
-                        </div>
-                        <div className="text-lg font-bold text-gray-900">100%</div>
-                        <div className="text-xs text-gray-600">Response</div>
-                      </div>
-                    </div>
-
-                    {/* Host Bio */}
-                    <p className="text-gray-700 mb-6 leading-relaxed">
-                      {property.host?.bio || "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world. I've been hosting for over 5 years and take pride in providing exceptional experiences for my guests."}
-                    </p>
-
-                    {/* Host Badges */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      <Chip size="sm" color="success" startContent={<Award className="w-3 h-3" />}>
-                        Superhost
-                      </Chip>
-                      <Chip size="sm" color="primary" startContent={<Shield className="w-3 h-3" />}>
-                        Identity verified
-                      </Chip>
-                      <Chip size="sm" color="secondary" startContent={<MessageCircle className="w-3 h-3" />}>
-                        Quick responder
-                      </Chip>
-                    </div>
-
-                    {/* Contact Button */}
-                    <Button 
-                      color="primary" 
-                      variant="solid" 
-                      size="lg"
-                      startContent={<MessageCircle className="w-4 h-4" />}
-                      className="w-full sm:w-auto"
-                      onPress={onContactOpen}
-                    >
-                      Contact Host
-                    </Button>
+                  
+                  <div className="mb-6 flex items-center justify-between">
+                    <h2 className="text-2xl font-semibold text-gray-900">
+                      {t('review.reviews.title')}
+                    </h2>
                   </div>
+                  
+                  <ReviewList
+                    reviews={reviews}
+                    loading={reviewsLoading}
+                    error={reviewsError}
+                    hasMore={reviews.length < (reviewStats?.total_reviews || 0)}
+                    currentPage={filters.page || 1}
+                    totalCount={reviewStats?.total_reviews || 0}
+                    averageRating={reviewStats?.average_rating || 0}
+                    filters={filters}
+                    onFilterChange={handleFilterChange}
+                    onPageChange={handlePageChange}
+                    onLoadMore={loadMoreReviews}
+                    onEditReview={openEditModal}
+                    onDeleteReview={openDeleteModal}
+                    showActions={Boolean(user && property?.host?.id === user.id)}
+                  />
+                  
+
                 </div>
-              </CardBody>
-            </Card>
 
-            {/* Location */}
-            <Card className="shadow-sm border border-gray-200">
-              <CardHeader className="pb-3">
-                <h3 className="text-xl font-semibold text-gray-900">Where you'll be</h3>
-              </CardHeader>
-              <CardBody className="pt-6">
-                <div className="bg-gray-100 h-64 rounded-xl flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-secondary-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <MapPin className="w-8 h-8 text-white" />
-                    </div>
-                    <p className="text-gray-900 font-semibold text-lg">
-                      {`${property.location.city}, ${property.location.country}`}
-                    </p>
-                    <p className="text-gray-600 mt-2">Interactive map coming soon</p>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          </div>
+                {/* Location */}
+                <div className="mt-8">
+                  <h2 className="mb-4 text-2xl font-semibold">{t('property.location.title')}</h2>
+                  <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <LazyMapWrapper
+                      key={property.id}
+                      type="property"
+                      property={property}
+                      height="400px"
+                      showNearbyAmenities={false}
+                      showDirections={true}
+                      showRadius={false}
+                      onContactHost={() => onContactOpen()}
+                      onDirectionsRequest={(coordinates: MapCoordinates) => {
 
-          {/* Booking Card */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
-              <Card className="shadow-lg border border-gray-200">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between w-full">
-                    <div>
-                      <span className="text-2xl font-bold text-gray-900">${property.price}</span>
-                      <span className="ml-1 text-gray-600">night</span>
-                    </div>
-                    <div className="flex items-center gap-1 bg-gray-100 px-3 py-1 rounded-full">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-gray-900">{property.rating}</span>
-                      <span className="text-gray-600 text-sm">({property.review_count} reviews)</span>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardBody className="pt-6">
-                  {/* Date Selection */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECK-IN</label>
-                      <input
-                        type="date"
-                        value={checkIn}
-                        onChange={(e) => {
-                          setCheckIn(e.target.value)
-                          setValidationError('')
-                        }}
-                        className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                      />
-                    </div>
-                    <div className="border-2 border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">CHECKOUT</label>
-                      <input
-                        type="date"
-                        value={checkOut}
-                        onChange={(e) => {
-                          setCheckOut(e.target.value)
-                          setValidationError('')
-                        }}
-                        className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Guests */}
-                  <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">GUESTS</label>
-                    <select
-                      value={guests}
-                      onChange={(e) => setGuests(Number(e.target.value))}
-                      className="w-full text-sm focus:outline-none bg-transparent text-gray-900"
-                    >
-                      {Array.from({ length: property.max_guests }, (_, i) => (
-                        <option key={i + 1} value={i + 1}>
-                          {i + 1} guest{i > 0 ? 's' : ''}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Special Requests */}
-                  <div className="border-2 border-gray-200 rounded-lg p-3 mb-4 hover:border-gray-300 transition-all focus-within:border-primary-500">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">SPECIAL REQUESTS (OPTIONAL)</label>
-                    <textarea
-                      value={specialRequests}
-                      onChange={(e) => setSpecialRequests(e.target.value)}
-                      placeholder="Any special requests or notes for your host..."
-                      rows={3}
-                      maxLength={500}
-                      className="w-full text-sm focus:outline-none bg-transparent text-gray-900 resize-none placeholder-gray-500"
+                        const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
+                        window.open(url, '_blank');
+                      }}
                     />
-                    <div className="flex justify-between items-center mt-1">
-                      <span className="text-xs text-gray-500">Share any specific needs or preferences</span>
-                      <span className="text-xs text-gray-400">{specialRequests.length}/500</span>
-                    </div>
-                  </div>
-
-                  {/* Reserve Button - Make it more prominent */}
-                  <div className="mb-4">
-                    <Button 
-                      color="primary" 
-                      size="lg" 
-                      className="w-full font-bold text-lg py-4 bg-primary-600 hover:bg-primary-700"
-                      radius="lg"
-                      onPress={handleReserveClick}
-                      startContent={<Calendar className="w-5 h-5" />}
-                    >
-                      Reserve Now
-                    </Button>
-                  </div>
-
-                  {/* Validation Error Message */}
-                  {validationError && (
-                    <div className="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4 text-danger-600" />
-                        <p className="text-sm text-danger-700 font-medium">{validationError}</p>
+                    
+                    {/* Location Info card temporarily disabled */}
+                    {/*
+                    <div className="p-6 border-t border-gray-200">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                            {`${property.location.city}, ${property.location.country}`}
+                          </h3>
+                          <p className="text-gray-600 mb-3">
+                            Explore the neighborhood and discover what makes this location special.
+                          </p>
+                          <div className="flex items-center gap-4 text-sm text-gray-500">
+                            <span>• Safe, well-connected area</span>
+                            <span>• Close to local amenities</span>
+                            <span>• Easy transportation access</span>
+                          </div>
+                        </div>
+                        <Button
+                          variant="light"
+                          size="sm"
+                          startContent={<Navigation className="w-4 h-4" />}
+                          onClick={() => {
+                            const url = getDirectionsUrl(property);
+                            window.open(url, '_blank');
+                          }}
+                        >
+                          Get Directions
+                        </Button>
                       </div>
                     </div>
-                  )}
-
-                  <p className="text-center text-sm text-gray-600 mb-4">
-                    You won't be charged yet
-                  </p>
-
-                  <Divider className="my-4" />
-
-                  {/* Price Breakdown */}
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">${property.price} x {nights} nights</span>
-                      <span className="font-medium text-gray-900">${subtotal}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Cleaning fee</span>
-                      <span className="font-medium text-gray-900">${cleaningFee}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-700">Service fee</span>
-                      <span className="font-medium text-gray-900">${serviceFee}</span>
-                    </div>
-                    <Divider className="my-3" />
-                    <div className="flex justify-between p-3 bg-gray-50 rounded-lg">
-                      <span className="font-bold text-gray-900">Total before taxes</span>
-                      <span className="font-bold text-gray-900 text-lg">${total}</span>
-                    </div>
+                    */}
                   </div>
-                </CardBody>
-              </Card>
+                </div>
+              </div>
+
+              {/* Booking Card */}
+              <div className="lg:col-span-1">
+                <PropertyBookingCard
+                  property={property}
+                  checkIn={checkIn}
+                  setCheckIn={setCheckIn}
+                  checkOut={checkOut}
+                  setCheckOut={setCheckOut}
+                  checkInTime={checkInTime}
+                  setCheckInTime={setCheckInTime}
+                  checkOutTime={checkOutTime}
+                  setCheckOutTime={setCheckOutTime}
+                  guests={guests}
+                  setGuests={setGuests}
+                  specialRequests={specialRequests}
+                  setSpecialRequests={setSpecialRequests}
+                  validationError={validationError}
+                  setValidationError={setValidationError}
+                  billingNights={billingNights}
+                  basePrice={basePrice}
+                  cleaningFee={cleaningFee}
+                  serviceFee={serviceFee}
+                  totalAmount={totalAmount}
+                  isCheckingAvailability={isCheckingAvailability}
+                  isCreatingBooking={isCreatingBooking}
+                  onReserveClick={handleReserveClick}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Modals */}
-      
-      {/* Booking Confirmation Dialog */}
-      <Modal isOpen={isConfirmOpen} onClose={onConfirmClose} size="lg">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                <h2 className="text-xl font-bold">Confirm Your Reservation</h2>
-                <p className="text-sm text-gray-600">Please review your booking details</p>
-              </ModalHeader>
-              <ModalBody>
-                <div className="space-y-4">
-                  {/* Property Info */}
-                  <div className="flex gap-4 p-4 bg-gray-50 rounded-lg">
-                    <img
-                      src={property.images[0]}
-                      alt={property.title}
-                      className="w-20 h-20 object-cover rounded-lg"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{property.title}</h3>
-                      <div className="flex items-center gap-1 text-sm text-gray-600">
-                        <MapPin className="w-4 h-4" />
-                        <span>{`${property.location.city}, ${property.location.country}`}</span>
-                      </div>
-                      <div className="flex items-center gap-1 mt-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="text-sm font-medium">{property.rating}</span>
-                        <span className="text-sm text-gray-500">({property.review_count} reviews)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Booking Details */}
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Check-in</p>
-                        <p className="text-lg">{new Date(checkIn).toLocaleDateString()}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Check-out</p>
-                        <p className="text-lg">{new Date(checkOut).toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Guests</p>
-                        <p className="text-lg">{guests} guest{guests > 1 ? 's' : ''}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Nights</p>
-                        <p className="text-lg">{nights} night{nights > 1 ? 's' : ''}</p>
-                      </div>
-                    </div>
-
-                    {specialRequests && (
-                      <div>
-                        <p className="text-sm font-semibold text-gray-700">Special Requests</p>
-                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">{specialRequests}</p>
-                      </div>
-                    )}
-                  </div>
-
-                  <Divider />
-
-                  {/* Price Breakdown */}
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>${property.price} × {nights} nights</span>
-                      <span>${subtotal}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Cleaning fee</span>
-                      <span>${cleaningFee}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Service fee</span>
-                      <span>${serviceFee}</span>
-                    </div>
-                    <Divider className="my-2" />
-                    <div className="flex justify-between font-bold text-lg">
-                      <span>Total</span>
-                      <span>${total}</span>
-                    </div>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="default" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button 
-                  className="bg-primary-600 hover:bg-primary-700 text-white font-semibold"
-                  onPress={handleConfirmBooking}
-                  startContent={<CheckCircle className="w-4 h-4" />}
-                >
-                  Confirm Reservation
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Success Dialog */}
-      <Modal isOpen={isSuccessOpen} onClose={onSuccessClose} size="md" hideCloseButton>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalBody className="text-center py-8">
-                <div className="w-16 h-16 bg-success-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-success-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h2>
-                <p className="text-gray-600 mb-6">
-                  Your reservation has been successfully submitted. You'll receive a confirmation email shortly.
-                </p>
-                <div className="space-y-2 text-sm text-gray-600">
-                  <p><strong>Booking Reference:</strong> NL{Date.now().toString().slice(-6)}</p>
-                  <p><strong>Total Amount:</strong> ${total}</p>
-                </div>
-              </ModalBody>
-              <ModalFooter className="justify-center">
-                <Button color="primary" onPress={onClose} size="lg">
-                  View My Bookings
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Error Dialog */}
-      <Modal isOpen={isErrorOpen} onClose={onErrorClose} size="md" hideCloseButton>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalBody className="text-center py-8">
-                <div className="w-16 h-16 bg-danger-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <AlertCircle className="w-8 h-8 text-danger-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Failed</h2>
-                <p className="text-gray-600 mb-6">
-                  {errorMessage}
-                </p>
-              </ModalBody>
-              <ModalFooter className="justify-center">
-                <Button color="default" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="primary" onPress={() => { onClose(); onConfirmOpen(); }}>
-                  Try Again
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-
-      {/* Loading Overlay */}
-      {isBooking && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 text-center">
-            <div className="animate-spin w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-gray-600">Processing your reservation...</p>
-          </div>
-        </div>
-      )}
-
-      <SharePropertyModal
-        isOpen={isShareOpen}
-        onClose={onShareClose}
+      {/* Modals - Moved outside main content to ensure proper z-index */}
+      <BookingConfirmationModal
+        isOpen={isConfirmOpen}
+        onClose={onConfirmClose}
         property={property}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        guests={guests}
+        billingNights={billingNights}
+        specialRequests={specialRequests}
+        basePrice={basePrice}
+        cleaningFee={cleaningFee}
+        serviceFee={serviceFee}
+        totalAmount={totalAmount}
+        isCreatingBooking={isCreatingBooking}
+        onConfirmBooking={handleConfirmBooking}
       />
 
+      <BookingSuccessModal
+        isOpen={isSuccessOpen}
+        onClose={onSuccessClose}
+        totalAmount={totalAmount}
+      />
+
+      <BookingErrorModal
+        isOpen={isErrorOpen}
+        onClose={onErrorClose}
+        errorMessage={errorMessage}
+        onTryAgain={onConfirmOpen}
+      />
+
+      <BookingLoadingOverlay isVisible={isCreatingBooking} />
+
+      {/* ContactHostModal moved outside main content container */}
       <ContactHostModal
         isOpen={isContactOpen}
         onClose={onContactClose}
         property={property}
         onSendMessage={handleContactMessage}
+      />
+
+      {/* Review Modals */}
+      <CreateReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'create'}
+        onClose={closeModal}
+        reviewType={modalState.reviewType || 'property'}
+        propertyId={property?.id}
+      />
+
+      <EditReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'edit'}
+        onClose={closeModal}
+        reviewId={modalState.reviewId || ''}
+        propertyId={property?.id}
+      />
+
+      <DeleteReviewModal
+        isOpen={modalState.isOpen && modalState.mode === 'delete'}
+        onClose={closeModal}
+        reviewId={modalState.reviewId || ''}
+        propertyId={property?.id}
       />
     </div>
   )

@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { Property } from '../../interfaces'
+// Removed direct Supabase and toast usage; database calls moved to hooks
 
 interface PropertyState {
   // State
@@ -50,6 +51,21 @@ interface PropertyState {
   getPropertyById: (id: string) => Property | undefined
   getPropertiesByHost: (hostId: string) => Property[]
   clearAll: () => void
+  
+  likedPropertyIds: string[]
+  likedProperties: Property[]
+  isLikeLoading: boolean
+  
+  // Pure setters for liked state
+  setLikedPropertyIds: (ids: string[]) => void
+  setLikedProperties: (props: Property[]) => void
+  setIsLikeLoading: (loading: boolean) => void
+  
+  // Removed async logic: these placeholders will be handled in hooks
+  toggleLike: () => Promise<void>
+  fetchLikedProperties: () => Promise<void>
+  clearLikedProperties: () => void
+  isPropertyLiked: (propertyId: string) => boolean
 }
 
 export const usePropertyStore = create<PropertyState>((set, get) => ({
@@ -68,118 +84,66 @@ export const usePropertyStore = create<PropertyState>((set, get) => ({
   totalPages: 1,
   totalCount: 0,
   
-  // Actions
-  setProperties: (properties) => {
-    console.log('🏠 Setting properties in store:', properties.length, 'properties')
-    set({ properties, error: null })
+  likedPropertyIds: [],
+  likedProperties: [],
+  isLikeLoading: false,
+
+  // Core synchronous actions (pure)
+  setProperties: (properties) => set({ properties }),
+  addProperty: (property) => set((state) => ({ properties: [property, ...state.properties] })),
+  updateProperty: (updatedProperty) => set((state) => ({
+    properties: state.properties.map((p) => (p.id === updatedProperty.id ? updatedProperty : p)),
+    selectedProperty: state.selectedProperty?.id === updatedProperty.id ? updatedProperty : state.selectedProperty,
+  })),
+  removeProperty: (propertyId) => set((state) => ({
+    properties: state.properties.filter((p) => p.id !== propertyId),
+    selectedProperty: state.selectedProperty?.id === propertyId ? null : state.selectedProperty,
+  })),
+  setSelectedProperty: (property) => set({ selectedProperty: property }),
+  setLoading: (loading) => set({ isLoading: loading }),
+  setError: (error) => set({ error }),
+  clearError: () => set({ error: null }),
+  setSearchTerm: (term) => set({ searchTerm: term }),
+  setFilters: (filters) => set({ filters }),
+  clearFilters: () => set({ filters: {}, searchTerm: '' }),
+  setCurrentPage: (page) => set({ currentPage: page }),
+  setPagination: (currentPage, totalPages, totalCount) => set({ currentPage, totalPages, totalCount }),
+  getPropertyById: (id) => get().properties.find((p) => p.id === id),
+  getPropertiesByHost: (hostId) => get().properties.filter((p) => p.host.id === hostId),
+  clearAll: () => set({
+    properties: [],
+    selectedProperty: null,
+    isLoading: false,
+    error: null,
+    searchTerm: '',
+    filters: {},
+    currentPage: 1,
+    totalPages: 1,
+    totalCount: 0,
+    likedPropertyIds: [],
+    likedProperties: [],
+  }),
+
+  // Pure setters for liked state
+  setLikedPropertyIds: (ids: string[]) => set({ likedPropertyIds: ids }),
+  setLikedProperties: (props: Property[]) => set({ likedProperties: props }),
+  setIsLikeLoading: (loading: boolean) => set({ isLikeLoading: loading }),
+
+  // Removed async logic: these placeholders will be handled in hooks
+  toggleLike: async () => {
+    console.error('toggleLike should be handled in usePropertyLike hook');
   },
-  
-  addProperty: (property) => {
-    console.log('➕ Adding property to store:', property.id)
-    set((state) => ({
-      properties: [property, ...state.properties],
-      error: null
-    }))
+  fetchLikedProperties: async () => {
+    console.error('fetchLikedProperties should be handled in usePropertyLike hook');
   },
-  
-  updateProperty: (updatedProperty) => {
-    console.log('📝 Updating property in store:', updatedProperty.id)
-    set((state) => ({
-      properties: state.properties.map((property) =>
-        property.id === updatedProperty.id ? updatedProperty : property
-      ),
-      selectedProperty: state.selectedProperty?.id === updatedProperty.id 
-        ? updatedProperty 
-        : state.selectedProperty,
-      error: null
-    }))
+
+  clearLikedProperties: () => {
+    set({ likedPropertyIds: [], likedProperties: [] })
   },
-  
-  removeProperty: (propertyId) => {
-    console.log('🗑️ Removing property from store:', propertyId)
-    set((state) => ({
-      properties: state.properties.filter((property) => property.id !== propertyId),
-      selectedProperty: state.selectedProperty?.id === propertyId 
-        ? null 
-        : state.selectedProperty,
-      error: null
-    }))
-  },
-  
-  setSelectedProperty: (property) => {
-    console.log('🎯 Setting selected property:', property?.id || 'null')
-    set({ selectedProperty: property })
-  },
-  
-  // Loading and error state
-  setLoading: (loading) => {
-    set({ isLoading: loading })
-  },
-  
-  setError: (error) => {
-    console.log('❌ Setting property store error:', error)
-    set({ error, isLoading: false })
-  },
-  
-  clearError: () => {
-    set({ error: null })
-  },
-  
-  // Search and filters
-  setSearchTerm: (term) => {
-    console.log('🔍 Setting search term:', term)
-    set({ searchTerm: term })
-  },
-  
-  setFilters: (filters) => {
-    console.log('🔧 Setting property filters:', filters)
-    set({ filters })
-  },
-  
-  clearFilters: () => {
-    console.log('🧹 Clearing property filters')
-    set({ 
-      filters: {},
-      searchTerm: '',
-      currentPage: 1
-    })
-  },
-  
-  // Pagination
-  setCurrentPage: (page) => {
-    console.log('📄 Setting current page:', page)
-    set({ currentPage: page })
-  },
-  
-  setPagination: (currentPage, totalPages, totalCount) => {
-    console.log('📊 Setting pagination:', { currentPage, totalPages, totalCount })
-    set({ currentPage, totalPages, totalCount })
-  },
-  
-  // Utilities
-  getPropertyById: (id) => {
-    const { properties } = get()
-    return properties.find((property) => property.id === id)
-  },
-  
-  getPropertiesByHost: (hostId) => {
-    const { properties } = get()
-    return properties.filter((property) => property.host.id === hostId)
-  },
-  
-  clearAll: () => {
-    console.log('🧹 Clearing all property store data')
-    set({
-      properties: [],
-      selectedProperty: null,
-      isLoading: false,
-      error: null,
-      searchTerm: '',
-      filters: {},
-      currentPage: 1,
-      totalPages: 1,
-      totalCount: 0
-    })
+
+  isPropertyLiked: (propertyId: string) => {
+    const { likedPropertyIds } = get()
+    return likedPropertyIds.includes(propertyId)
   }
 }))
 

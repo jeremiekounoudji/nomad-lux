@@ -1,0 +1,355 @@
+{
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "edit": "Edit",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "apply": "Apply",
+    "upload": "Upload",
+    "download": "Download",
+    "view": "View",
+    "explore": "Explore",
+    "share": "Share",
+    "like": "Like",
+    "unlike": "Unlike",
+    "list": "List",
+    "map": "Map",
+    "tryAgain": "Try Again",
+    "updateLocation": "Update Location",
+    "refreshFeed": "Refresh Feed",
+    "refreshForNewListings": "Refresh for new listings",
+    "submitReview": "Submit Review",
+    "editReview": "Edit Review",
+    "deleteReview": "Delete Review",
+    "cancelReview": "Cancel",
+    "saveReview": "Save Changes"
+  },
+  "labels": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "city": "City",
+    "country": "Country",
+    "date": "Date",
+    "time": "Time",
+    "price": "Price",
+    "currency": "Currency",
+    "status": "Status",
+    "description": "Description",
+    "title": "Title",
+    "category": "Category",
+    "type": "Type",
+    "location": "Location",
+    "rating": "Rating",
+    "reviews": "Reviews",
+    "selectedCount": "{{count}} selected",
+    "language": "Language",
+    "user": "User",
+    "target": "Target",
+    "ip": "IP",
+    "from": "From:",
+    "to": "To:",
+    "verifiedStay": "Verified stay"
+  },
+  "status": {
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "failed": "Failed",
+    "processing": "Processing",
+    "suspended": "Suspended",
+    "unknown": "Unknown"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "uploading": "Uploading...",
+    "success": "Success!",
+    "error": "An error occurred",
+    "processing": "Processing...",
+    "noData": "No data available",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "sessionExpired": "Your session has expired. Please log in again.",
+    "settingUp": "Setting up your experience",
+    "takingTooLong": "Taking too long? Click here to continue",
+    "failed": "Failed",
+    "notSpecified": "Not specified",
+    "notProvided": "Not provided",
+    "signInRequired": "Please sign in to continue",
+    "signInToBook": "Please sign in to book this property",
+    "signInToAccessProfile": "Please sign in to access your profile",
+    "bookingComingSoon": "Booking feature coming soon!",
+    "feedRefreshed": "Feed refreshed successfully",
+    "failedToLoad": "Failed to load properties",
+    "noProperties": "No properties found",
+    "noPropertiesInArea": "No properties found in your area",
+    "noPropertiesInCity": "No properties found in {{city}}",
+    "failedToLoadProperties": "Failed to load properties. Please try again.",
+    "seenAllProperties": "You've seen all available properties",
+    "unexpectedError": "An unexpected error occurred. Please try again later.",
+    "reviewSubmitted": "Review submitted successfully",
+    "reviewUpdated": "Review updated successfully",
+    "reviewDeleted": "Review deleted successfully",
+    "reviewError": "Error processing review"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "goToPage": "Go to page",
+    "itemsPerPage": "Items per page"
+  },
+  "actions": {
+    "close": "Close",
+    "retry": "Retry",
+    "clear": "Clear",
+    "reset": "Reset to Default"
+  },
+  "time": {
+    "thisMonth": "This month"
+  },
+  "debug": {
+    "info": "Debug Info",
+    "userAuthStatus": "User Auth Status",
+    "isLoading": "isLoading",
+    "isAuthenticated": "isAuthenticated",
+    "isAdmin": "isAdmin",
+    "user": "user",
+    "userId": "userId"
+  },
+  "upload": {
+    "uploaded": "✓ UPLOADED",
+    "failed": "✗ FAILED",
+    "uploadFailedWithReason": "Upload Failed: {{reason}}",
+    "header": "Uploading Files ({{completed}}/{{total}})",
+    "error": "Error",
+    "progressAria": "Upload progress for {{fileName}}",
+    "errorWithReason": "Error: {{reason}}",
+    "allUploaded": "All files uploaded successfully",
+    "someFailed": "Some uploads failed",
+    "uploadingFiles": "Uploading files...",
+    "progress": "Upload Progress",
+    "completedOfTotal": "{{completed}}/{{total}} completed",
+    "unknown": "Unknown",
+    "overallProgress": "Overall upload progress",
+    "completed": "100%"
+  },
+  "actions": {
+    "close": "Close",
+    "retry": "Retry",
+    "clear": "Clear",
+    "enable": "Enable",
+    "disable": "Disable",
+    "backToHome": "Back to Home"
+  },
+  "notSpecified": "Not specified",
+  "notProvided": "Not provided",
+  "pageBanner": {
+    "alt": "Page banner background",
+    "bannerLabel": "{{title}} page banner",
+    "home": "Luxury property discovery background",
+    "search": "Property search and discovery background",
+    "createProperty": "Modern house architecture background",
+    "editProperty": "Property editing and updates background",
+    "myListings": "Property management background",
+    "myBookings": "Travel and booking background",
+    "likedProperties": "Favorite properties background",
+    "bookingRequests": "Communication and requests background",
+    "notifications": "Notifications and alerts background",
+    "wallet": "Financial and wallet management background",
+    "admin": "Admin dashboard and management background",
+    "help": "Help and support background"
+  },
+  "time": {
+    "now": "Now",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "thisWeek": "This week",
+    "lastWeek": "Last week",
+    "thisMonth": "This month",
+    "lastMonth": "Last month",
+    "minute": "minute",
+    "minutes": "minutes",
+    "hour": "hour",
+    "hours": "hours",
+    "day": "day",
+    "days": "days",
+    "week": "week",
+    "weeks": "weeks",
+    "month": "month",
+    "months": "months",
+    "year": "year",
+    "years": "years",
+    "ago": "ago",
+    "zones": {
+      "est": "Eastern Time",
+      "pst": "Pacific Time"
+    },
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly"
+  },
+  "languages": {
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "de": "German"
+  },
+  "map": {
+    "loading": "Loading map...",
+    "initializing": "Initializing map...",
+    "loadingLibraries": "Loading map libraries...",
+    "progress": {
+      "loading": "Loading {{current}}... ({{loaded}}/{{total}})",
+      "complete": "Complete"
+    },
+    "error": {
+      "initialization": "Failed to initialize map",
+      "tileLoading": "Tile loading failed: {{message}}",
+      "retry": "Failed to load map after {{count}} attempts. Please refresh the page.",
+      "timeout": "Map taking longer than expected to load",
+      "generic": "Map loading failed",
+      "network": {
+        "title": "Network Connection Error",
+        "description": "Unable to load map tiles due to network issues.",
+        "suggestions": {
+          "0": "Check your internet connection",
+          "1": "Try refreshing the page",
+          "2": "Switch to a different network if available"
+        }
+      },
+      "tiles": {
+        "title": "Map Tiles Unavailable",
+        "description": "The map service is currently unavailable.",
+        "suggestions": {
+          "0": "Map tiles may be temporarily unavailable",
+          "1": "Try again in a few moments",
+          "2": "Contact support if the issue persists"
+        }
+      },
+      "initialization": {
+        "title": "Map Initialization Failed",
+        "description": "Failed to initialize the map component.",
+        "suggestions": {
+          "0": "Refresh the page to reload the map",
+          "1": "Clear browser cache and try again",
+          "2": "Contact support if the problem continues"
+        }
+      },
+      "location": {
+        "title": "Location Error",
+        "description": "Unable to determine or display the location.",
+        "suggestions": {
+          "0": "Check location permissions in your browser",
+          "1": "Verify the coordinates are valid",
+          "2": "Try entering a different location"
+        }
+      },
+      "unknown": {
+        "title": "Map Error",
+        "description": "An unexpected error occurred while loading the map.",
+        "suggestions": {
+          "0": "Try refreshing the page",
+          "1": "Clear browser cache if the issue persists",
+          "2": "Contact support for assistance"
+        }
+      }
+    },
+    "retry": {
+      "attempt": "Retrying map load ({{current}}/{{max}})",
+      "maxReached": "Maximum retry attempts reached"
+    },
+    "tiles": {
+      "loading": "Loading map tiles...",
+      "loaded": "Map tiles loaded successfully",
+      "error": "Tile loading error"
+    },
+    "actions": {
+      "tryAgain": "Try Again",
+      "reloadPage": "Reload Page",
+      "openInOpenStreetMap": "Open in OpenStreetMap"
+    },
+    "labels": {
+      "technicalDetails": "Technical Details",
+      "tryFollowing": "Try the following:",
+      "needToViewLocation": "Need to view the location?"
+    },
+    "measurement": {
+      "title": "Measurement Tools",
+      "distance": "Distance",
+      "area": "Area",
+      "cancel": "Cancel",
+      "measurements": "Measurements",
+      "instructions": {
+        "distance": "Click on the map to add points for distance measurement. Double-click to finish.",
+        "area": "Click on the map to create an area. Minimum 3 points required. Double-click to finish."
+      },
+      "current": {
+        "points": "Points",
+        "currentDistance": "Current distance",
+        "needMorePoints": "Need 3+ points"
+      },
+      "items": {
+        "distance": "Distance #{{index}}",
+        "area": "Area #{{index}}",
+        "points": "{{count}} points",
+        "perimeter": "Perimeter"
+      },
+      "summary": {
+        "totalDistanceLines": "Total Distance Lines",
+        "totalAreas": "Total Areas"
+      },
+      "actions": {
+        "copyData": "Copy measurement data",
+        "exportMeasurements": "Export measurements",
+        "clearAll": "Clear all measurements",
+        "deleteMeasurement": "Delete measurement"
+      },
+      "messages": {
+        "distanceCompleted": "Distance measurement completed: {{distance}}",
+        "areaCompleted": "Area measurement completed: {{area}}",
+        "allCleared": "All measurements cleared",
+        "deleted": "Measurement deleted",
+        "dataCopied": "Measurement data copied to clipboard",
+        "exported": "Measurements exported"
+      }
+    },
+    "virtualization": {
+      "performance": {
+        "total": "Total",
+        "visible": "Visible",
+        "clusters": "Clusters",
+        "reduction": "Reduction",
+        "zoom": "Zoom",
+        "mode": "Mode"
+      },
+      "messages": {
+        "updatingMarkers": "Updating visible markers for viewport",
+        "renderedMarkers": "Rendered {{markers}} markers and {{clusters}} clusters",
+        "errorUpdating": "Error updating visible content"
+      }
+    }
+  }
+}
