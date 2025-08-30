@@ -69,10 +69,10 @@ export const AdminMapToolbar: React.FC<AdminMapToolbarProps> = ({
   // Calculate statistics
   const stats = {
     total: properties.length,
-    approved: properties.filter(p => p.approval_status === 'approved').length,
-    pending: properties.filter(p => p.approval_status === 'pending').length,
-    rejected: properties.filter(p => p.approval_status === 'rejected').length,
-    suspended: properties.filter(p => p.approval_status === 'suspended').length,
+    approved: properties.filter(p => p.status === 'approved').length,
+    pending: properties.filter(p => p.status === 'pending').length,
+    rejected: properties.filter(p => p.status === 'rejected').length,
+    suspended: properties.filter(p => p.status === 'paused').length,
     selected: selectedProperties.length
   };
 

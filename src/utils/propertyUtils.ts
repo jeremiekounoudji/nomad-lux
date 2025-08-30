@@ -350,7 +350,7 @@ export const generateDateRange = (
   startDate: string,
   endDate: string,
   startTime: string = '15:00:00',
-  timezone: string = 'UTC'
+  // timezone: string = 'UTC' // Commented out to avoid unused variable warning
 ): string[] => {
   const dates: string[] = []
   const start = new Date(startDate)

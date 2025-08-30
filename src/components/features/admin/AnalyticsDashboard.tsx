@@ -29,9 +29,9 @@ import {
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { formatPrice } from '../../../utils/currencyUtils'
 
-interface AnalyticsDashboardProps {
-  onPageChange: (page: string) => void
-}
+// interface AnalyticsDashboardProps { // Commented out to avoid unused interface warning
+//   onPageChange: (page: string) => void
+// }
 
 interface MetricCard {
   title: string
@@ -422,10 +422,10 @@ export const AnalyticsDashboard: React.FC = () => {
             onChange={(e) => setSelectedPeriod(e.target.value)}
             className="min-w-[150px]"
           >
-            <SelectItem key="7days" value="7days">{t('admin.analytics.period.last7', { defaultValue: 'Last 7 days' })}</SelectItem>
-            <SelectItem key="30days" value="30days">{t('admin.analytics.period.last30', { defaultValue: 'Last 30 days' })}</SelectItem>
-            <SelectItem key="90days" value="90days">{t('admin.analytics.period.last90', { defaultValue: 'Last 90 days' })}</SelectItem>
-            <SelectItem key="1year" value="1year">{t('admin.analytics.period.lastYear', { defaultValue: 'Last year' })}</SelectItem>
+            <SelectItem key="7days">{t('admin.analytics.period.last7', { defaultValue: 'Last 7 days' })}</SelectItem>
+            <SelectItem key="30days">{t('admin.analytics.period.last30', { defaultValue: 'Last 30 days' })}</SelectItem>
+            <SelectItem key="90days">{t('admin.analytics.period.last90', { defaultValue: 'Last 90 days' })}</SelectItem>
+            <SelectItem key="1year">{t('admin.analytics.period.lastYear', { defaultValue: 'Last year' })}</SelectItem>
           </Select>
           <Button 
             variant="flat"

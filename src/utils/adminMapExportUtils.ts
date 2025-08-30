@@ -67,14 +67,14 @@ const calculatePropertyStats = (properties: DatabaseProperty[]) => {
 
   properties.forEach(property => {
     // Status breakdown
-    statusBreakdown[property.approval_status] = (statusBreakdown[property.approval_status] || 0) + 1;
+    statusBreakdown[property.status] = (statusBreakdown[property.status] || 0) + 1;
 
     // Location breakdown
     const location = `${property.location.city}, ${property.location.country}`;
     locationBreakdown[location] = (locationBreakdown[location] || 0) + 1;
 
     // Price statistics
-    prices.push(property.price);
+    prices.push(property.price_per_night);
 
     // Revenue statistics
     const revenue = property.total_revenue || 0;
@@ -157,8 +157,8 @@ export const exportPropertiesAsCSV = (
       property.id,
       `"${property.title.replace(/"/g, '""')}"`,
       `"${property.description.replace(/"/g, '""')}"`,
-      property.approval_status,
-      property.price,
+      property.status,
+      property.price_per_night,
       property.currency || 'USD',
       property.max_guests,
       property.bedrooms,
@@ -171,23 +171,23 @@ export const exportPropertiesAsCSV = (
     ];
 
     const hostData = includeHost ? [
-      property.host.display_name,
-      property.host.email || '',
-      property.host.rating || 0,
-      property.host.is_identity_verified ? 'Yes' : 'No'
+      property.host_id, // Using host_id instead of host.display_name
+      '', // Email not available in DatabaseProperty
+      0, // Rating not available
+      'Unknown' // Verification status not available
     ] : [];
 
     const metricsData = includeMetrics ? [
       property.rating || 0,
       property.review_count || 0,
-      property.total_bookings || 0,
+      property.booking_count || 0,
       property.view_count || 0,
       property.total_revenue || 0
     ] : [];
 
     const coordinateData = includeCoordinates ? [
-      property.coordinates.lat,
-      property.coordinates.lng
+      property.location.coordinates.lat,
+      property.location.coordinates.lng
     ] : [];
 
     return [...baseData, ...hostData, ...metricsData, ...coordinateData];
@@ -233,10 +233,10 @@ export const exportPropertiesAsJSON = (
     properties: includeFullData ? properties : properties.map(p => ({
       id: p.id,
       title: p.title,
-      price: p.price,
-      status: p.approval_status,
+      price: p.price_per_night,
+      status: p.status,
       location: p.location,
-      coordinates: p.coordinates,
+      coordinates: p.location.coordinates,
       created_at: p.created_at
     } as any)),
     summary: includeStatistics ? calculatePropertyStats(properties) : {} as any
@@ -406,12 +406,12 @@ const generatePropertiesSheet = (properties: DatabaseProperty[]): string => {
   const rows = properties.map(p => [
     p.id,
     `"${p.title.replace(/"/g, '""')}"`,
-    p.approval_status,
-    p.price,
+    p.status,
+    p.price_per_night,
     p.location.city,
     p.location.country,
     p.rating || 0,
-    p.total_bookings || 0,
+    p.booking_count || 0,
     p.total_revenue || 0,
     new Date(p.created_at).toLocaleDateString()
   ]);

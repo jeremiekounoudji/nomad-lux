@@ -132,11 +132,11 @@ const BulkActionModal: React.FC<BulkActionModalProps> = ({
                     </p>
                   </div>
                   <Chip size="sm" variant="flat" color={
-                    property.approval_status === 'approved' ? 'success' :
-                    property.approval_status === 'pending' ? 'warning' :
-                    property.approval_status === 'rejected' ? 'danger' : 'default'
+                    property.status === 'approved' ? 'success' :
+                    property.status === 'pending' ? 'warning' :
+                    property.status === 'rejected' ? 'danger' : 'default'
                   }>
-                    {property.approval_status}
+                    {property.status}
                   </Chip>
                 </div>
               ))}
@@ -211,13 +211,13 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
 
     // Status filter
     if (activeFilters.status.length > 0 && activeFilters.status.length < 4) {
-      filtered = filtered.filter(p => activeFilters.status.includes(p.approval_status as any));
+      filtered = filtered.filter(p => activeFilters.status.includes(p.status as any));
     }
 
     // Price range filter
     filtered = filtered.filter(p => 
-      p.price >= activeFilters.priceRange.min && 
-      p.price <= activeFilters.priceRange.max
+      p.price_per_night >= activeFilters.priceRange.min && 
+      p.price_per_night <= activeFilters.priceRange.max
     );
 
     // Location filter
@@ -263,8 +263,8 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
   // Handle bulk selection by area
   const handleAreaSelection = useCallback((bounds: any) => {
     const propertiesInArea = filteredProperties.filter(property => {
-      const lat = property.coordinates.lat;
-      const lng = property.coordinates.lng;
+      const lat = property.location.coordinates.lat;
+      const lng = property.location.coordinates.lng;
       return lat >= bounds.south && lat <= bounds.north && 
              lng >= bounds.west && lng <= bounds.east;
     });
@@ -285,7 +285,7 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
     }
   }, []);
 
-  const handleBulkAction = useCallback((action: 'approve' | 'reject' | 'suspend' | 'delete', properties: DatabaseProperty[]) => {
+  const handleBulkAction = useCallback((action: 'approve' | 'reject' | 'suspend' | 'delete', _properties: DatabaseProperty[]) => {
     setBulkAction(action);
     onBulkActionOpen();
   }, [onBulkActionOpen]);
@@ -336,8 +336,8 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
           `"${p.title}"`,
           p.location.city,
           p.location.country,
-          p.price,
-          p.approval_status,
+          p.price_per_night,
+          p.status,
           new Date(p.created_at).toLocaleDateString()
         ].join(','))
       ].join('\n');
@@ -390,8 +390,8 @@ export const AdminPropertiesMap: React.FC<AdminPropertiesMapProps> = ({
           onAreaSelection={handleAreaSelection}
           showPropertyDetails={true}
           showFilters={false}
-          customMarkerRenderer={(property) => ({
-            status: property.approval_status,
+          customMarkerRenderer={(property: any) => ({
+            status: property.status,
             selected: selectedProperties.some(p => p.id === property.id)
           })}
         />

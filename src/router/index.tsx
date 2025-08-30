@@ -1,3 +1,4 @@
+import React from 'react';
 import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { AppRoute, ROUTES } from './types';
 import { AuthGuard } from './guards/AuthGuard';
