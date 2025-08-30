@@ -66,7 +66,6 @@ const HomePage: React.FC = () => {
   const tutorialSteps = getAllTutorialSteps()
   const {
     tutorialState,
-    shouldShowTutorial,
     startTutorial,
     closeTutorial
   } = useTutorial()
