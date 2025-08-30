@@ -283,11 +283,11 @@ export const ActivityLog: React.FC<ActivityLogProps> = ({ onBack }) => {
                 onChange={(e) => setSeverityFilter(e.target.value)}
                 className="min-w-[120px]"
               >
-                <SelectItem key="all" value="all">{t('admin.activity.severity.all', { defaultValue: 'All Severities' })}</SelectItem>
-                <SelectItem key="low" value="low">{t('admin.activity.severity.low', { defaultValue: 'Low' })}</SelectItem>
-                <SelectItem key="medium" value="medium">{t('admin.activity.severity.medium', { defaultValue: 'Medium' })}</SelectItem>
-                <SelectItem key="high" value="high">{t('admin.activity.severity.high', { defaultValue: 'High' })}</SelectItem>
-                <SelectItem key="critical" value="critical">{t('admin.activity.severity.critical', { defaultValue: 'Critical' })}</SelectItem>
+                <SelectItem key="all">{t('admin.activity.severity.all', { defaultValue: 'All Severities' })}</SelectItem>
+                <SelectItem key="low">{t('admin.activity.severity.low', { defaultValue: 'Low' })}</SelectItem>
+                <SelectItem key="medium">{t('admin.activity.severity.medium', { defaultValue: 'Medium' })}</SelectItem>
+                <SelectItem key="high">{t('admin.activity.severity.high', { defaultValue: 'High' })}</SelectItem>
+                <SelectItem key="critical">{t('admin.activity.severity.critical', { defaultValue: 'Critical' })}</SelectItem>
               </Select>
             </div>
           </div>

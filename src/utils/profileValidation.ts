@@ -12,7 +12,7 @@ export interface ValidationRules {
 // Common validation patterns
 const PATTERNS = {
   EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  PHONE: /^\+?[\d\s\-\(\)]+$/,
+  PHONE: /^\+?[\d\s\-()]+$/,
   NAME: /^[a-zA-Z\s\-']+$/,
   DATE: /^\d{4}-\d{2}-\d{2}$/,
   URL: /^https?:\/\/.+/

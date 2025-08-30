@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Card, CardBody, Image, Skeleton } from '@heroui/react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import { TutorialStep as TutorialStepInterface } from '../../interfaces/Tutorial'

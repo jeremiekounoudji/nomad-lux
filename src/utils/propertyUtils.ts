@@ -171,44 +171,45 @@ const defaultHost: PropertyHost = {
   experience: 0
 }
 
-const defaultProperty: Property = {
-  id: 'default-property',
-  title: 'Default Property',
-  description: 'A default property description',
-  price: 0,
-  price_per_night: 0,
-  currency: 'USD',
-  location: {
-    city: 'Default City',
-    country: 'Default Country',
-    address: 'Default Address',
-    coordinates: { lat: 0, lng: 0 }
-  },
-  images: [],
-  videos: [],
-  host: defaultHost,
-  rating: 0,
-  review_count: 0,
-  view_count: 0,
-  booking_count: 0,
-  total_revenue: 0,
-  property_type: 'Default',
-  amenities: [],
-  max_guests: 1,
-  bedrooms: 1,
-  bathrooms: 1,
-  cleaning_fee: 0,
-  service_fee: 0,
-  is_liked: false,
-  instant_book: true,
-  additional_fees: [],
-  distance: '0 km away',
-  created_at: new Date().toISOString(),
-  status: 'pending',
-  like_count: 0,
-  unavailable_dates: [],
-  timezone: 'UTC'
-}
+// Example default property - commented out to avoid unused variable warning
+// const defaultProperty: Property = {
+//   id: 'default-property',
+//   title: 'Default Property',
+//   description: 'A default property description',
+//   price: 0,
+//   price_per_night: 0,
+//   currency: 'USD',
+//   location: {
+//     city: 'Default City',
+//     country: 'Default Country',
+//     address: 'Default Address',
+//     coordinates: { lat: 0, lng: 0 }
+//   },
+//   images: [],
+//   videos: [],
+//   host: defaultHost,
+//   rating: 0,
+//   review_count: 0,
+//   view_count: 0,
+//   booking_count: 0,
+//   total_revenue: 0,
+//   property_type: 'Default',
+//   amenities: [],
+//   max_guests: 1,
+//   bedrooms: 1,
+//   bathrooms: 1,
+//   cleaning_fee: 0,
+//   service_fee: 0,
+//   is_liked: false,
+//   instant_book: true,
+//   additional_fees: [],
+//   distance: '0 km away',
+//   created_at: new Date().toISOString(),
+//   status: 'pending',
+//   like_count: 0,
+//   unavailable_dates: [],
+//   timezone: 'UTC'
+// }
 
 // ================================================
 // NEW AVAILABILITY & TIMEZONE UTILITIES
@@ -220,7 +221,7 @@ const defaultProperty: Property = {
 export const createPropertyDateTime = (
   date: string, // YYYY-MM-DD
   time: string, // HH:MM:SS
-  timezone: string = 'UTC'
+  timezoneParam: string = 'UTC'
 ): string => {
   try {
     const dateTimeString = `${date}T${time}`
@@ -240,13 +241,13 @@ export const createPropertyDateTime = (
  */
 export const formatDateTimeInTimezone = (
   datetime: string,
-  timezone: string = 'UTC',
+  timezoneParam: string = 'UTC',
   locale: string = 'en-US'
 ): string => {
   try {
     const date = new Date(datetime)
     return new Intl.DateTimeFormat(locale, {
-      timeZone: timezone,
+      timeZone: timezoneParam,
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -262,7 +263,7 @@ export const formatDateTimeInTimezone = (
 /**
  * Get timezone display information
  */
-export const getTimezoneInfo = (timezone: string = 'UTC'): {
+export const getTimezoneInfo = (timezoneParam: string = 'UTC'): {
   timezone: string
   displayName: string
   currentTime: string
@@ -271,7 +272,7 @@ export const getTimezoneInfo = (timezone: string = 'UTC'): {
   try {
     const now = new Date()
     const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
+      timeZone: timezoneParam,
       hour: '2-digit',
       minute: '2-digit',
       timeZoneName: 'short'
@@ -280,17 +281,18 @@ export const getTimezoneInfo = (timezone: string = 'UTC'): {
     const parts = formatter.formatToParts(now)
     const timePart = parts.find(part => part.type === 'hour')?.value + ':' + 
                     parts.find(part => part.type === 'minute')?.value
-    const timezonePart = parts.find(part => part.type === 'timeZoneName')?.value || timezone
+    // Note: timezonePart and targetTime commented out to avoid unused variable warnings
+    // const timezonePart = parts.find(part => part.type === 'timeZoneName')?.value || timezoneParam
     
-    // Calculate offset
-    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000)
-    const targetTime = new Date(utcTime + (getTimezoneOffset(timezone) * 60000))
-    const offset = getTimezoneOffset(timezone) / 60
+    // Calculate offset - commented out unused variables
+    // const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000)
+    // const targetTime = new Date(utcTime + (getTimezoneOffset(timezoneParam) * 60000))
+    const offset = getTimezoneOffset(timezoneParam) / 60
     const offsetString = `UTC${offset >= 0 ? '+' : ''}${offset}`
     
     return {
-      timezone,
-      displayName: getTimezoneDisplayName(timezone),
+      timezone: timezoneParam,
+      displayName: getTimezoneDisplayName(timezoneParam),
       currentTime: timePart || now.toLocaleTimeString(),
       offsetFromUTC: offsetString
     }

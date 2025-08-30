@@ -1,4 +1,5 @@
 import React from 'react'
+import React from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react'
 import { useTranslation } from '../../../../lib/stores/translationStore'
 import { BulkSuspendModalProps } from '../../../interfaces/Component'

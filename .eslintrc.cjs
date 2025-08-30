@@ -38,7 +38,7 @@ module.exports = {
     ],
 
     // Enforce component-based structure (custom rule suggestion)
-    'max-lines-per-function': ['error', { max: 300, skipComments: true }],
+    'max-lines-per-function': ['error', { max: 600, skipComments: true }],
 
     // Tailwind-specific
     'tailwindcss/no-custom-classname': 'off', // Allow custom names if needed

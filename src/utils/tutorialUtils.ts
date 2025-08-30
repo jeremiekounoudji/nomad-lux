@@ -52,11 +52,9 @@ export const preloadTutorialImages = async (imageUrls: string[]): Promise<void> 
  * @returns Optimized image URL
  */
 export const optimizeImageUrl = (
-  originalUrl: string,
-  options: ImageOptimizationOptions = {}
+  originalUrl: string
+  // options: ImageOptimizationOptions = {} // Commented out to avoid unused variable warning
 ): string => {
-  const { width, height, quality = 80, format = 'webp', lazy = true } = options
-
   // For SVG files, return as-is since they're already optimized
   if (originalUrl.endsWith('.svg')) {
     return originalUrl
@@ -197,7 +195,7 @@ export const isValidImageUrl = (url: string): boolean => {
  * @param originalUrl - Original image URL
  * @returns Fallback image URL
  */
-export const getFallbackImageUrl = (originalUrl: string): string => {
+export const getFallbackImageUrl = (): string => {
   // Return a placeholder image URL
   return '/src/assets/tutorial/placeholder.svg'
 }

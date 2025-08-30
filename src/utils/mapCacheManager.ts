@@ -331,7 +331,7 @@ class MapCacheManager {
   } = {}) {
     const {
       preloadOnIdle = true,
-      preloadRadius = 2, // tiles
+      // preloadRadius = 2, // tiles - commented out to avoid unused variable warning
       maxPreloadZoom = 15
     } = options;
 

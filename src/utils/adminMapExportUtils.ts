@@ -266,7 +266,7 @@ export const exportPropertiesAsExcel = (
 ) => {
   const {
     filename = `properties-export-${new Date().toISOString().split('T')[0]}`,
-    includeCharts = false,
+    // includeCharts = false, // Commented out to avoid unused variable warning
     multipleSheets = true
   } = options;
 
