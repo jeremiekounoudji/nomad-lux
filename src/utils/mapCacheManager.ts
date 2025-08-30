@@ -287,7 +287,7 @@ class MapCacheManager {
     const originalFetch = window.fetch;
     window.fetch = async (...args) => {
       const request = args[0];
-      const url = typeof request === 'string' ? request : request.url;
+      const url = typeof request === 'string' ? request : (request as Request).url;
       
       // Check if it's a tile request
       const isTile = /tile\.openstreetmap\.org|basemaps\.cartocdn\.com/.test(url);

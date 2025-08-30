@@ -83,7 +83,7 @@ export const getResponsiveImageUrls = (
   const urls: Record<number, string> = {}
 
   sizes.forEach(size => {
-    urls[size] = optimizeImageUrl(baseUrl, { width: size })
+    urls[size] = optimizeImageUrl(baseUrl)
   })
 
   return urls
@@ -100,7 +100,7 @@ export const generateSrcset = (
   sizes: number[] = [320, 640, 1024, 1920]
 ): string => {
   return sizes
-    .map(size => `${optimizeImageUrl(baseUrl, { width: size })} ${size}w`)
+    .map(size => `${optimizeImageUrl(baseUrl)} ${size}w`)
     .join(', ')
 }
 

@@ -1,4 +1,4 @@
-import { DatabaseProperty, Property, PropertyHost, PropertySubmissionData } from '../interfaces'
+import { DatabaseProperty, Property, PropertySubmissionData } from '../interfaces'
 import type { MapCoordinates } from '../interfaces/Map'
 
 // Convert DatabaseProperty to Property for UI components
@@ -154,22 +154,23 @@ export const getStatusColor = (status: string) => {
   }
 }
 
-const defaultHost: PropertyHost = {
-  id: 'default-host',
-  name: 'Default Host',
-  username: 'defaulthost',
-  avatar_url: '/default-avatar.jpg',
-  display_name: 'Default Host',
-  is_identity_verified: false,
-  is_email_verified: false,
-  email: 'host@example.com',
-  phone: '+1234567890',
-  rating: 0,
-  response_rate: 0,
-  response_time: 'N/A',
-  bio: '',
-  experience: 0
-}
+// Example default host - commented out to avoid unused variable warning
+// const defaultHost: PropertyHost = {
+//   id: 'default-host',
+//   name: 'Default Host',
+//   username: 'defaulthost',
+//   avatar_url: '/default-avatar.jpg',
+//   display_name: 'Default Host',
+//   is_identity_verified: false,
+//   is_email_verified: false,
+//   email: 'host@example.com',
+//   phone: '+1234567890',
+//   rating: 0,
+//   response_rate: 0,
+//   response_time: 'N/A',
+//   bio: '',
+//   experience: 0
+// }
 
 // Example default property - commented out to avoid unused variable warning
 // const defaultProperty: Property = {
@@ -220,8 +221,8 @@ const defaultHost: PropertyHost = {
  */
 export const createPropertyDateTime = (
   date: string, // YYYY-MM-DD
-  time: string, // HH:MM:SS
-  timezoneParam: string = 'UTC'
+  time: string // HH:MM:SS
+  // timezoneParam: string = 'UTC' - commented out as not used in current implementation
 ): string => {
   try {
     const dateTimeString = `${date}T${time}`
@@ -359,7 +360,7 @@ export const generateDateRange = (
   
   while (currentDate < end) {
     const dateString = currentDate.toISOString().split('T')[0]
-    const dateTime = createPropertyDateTime(dateString, startTime, timezone)
+    const dateTime = createPropertyDateTime(dateString, startTime)
     dates.push(dateTime)
     currentDate.setDate(currentDate.getDate() + 1)
   }
