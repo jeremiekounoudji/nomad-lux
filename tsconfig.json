@@ -21,5 +21,6 @@
     }
   },
   "include": ["src"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "src/**/__tests__/**/*", "src/setupTests.ts", "jest.config.cjs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 } 
