@@ -11,6 +11,13 @@ interface TutorialStepProps {
 
 export const TutorialStep: React.FC<TutorialStepProps> = ({ step, stepNumber, totalSteps }) => {
   const { t } = useTranslation(['tutorial', 'common']);
+  console.log('🎓 TutorialStep received:', {
+    step,
+    stepNumber,
+    totalSteps,
+    titleTranslation: t(`tutorial.${step.title}`),
+    descTranslation: t(`tutorial.${step.description}`)
+  });
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 

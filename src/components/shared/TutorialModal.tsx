@@ -23,6 +23,10 @@ interface TutorialModalProps {
 
 export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onClose }) => {
   const { t } = useTranslation(['tutorial', 'common']);
+  console.log('🎓 TutorialModal translation test:', {
+    title: t('tutorial.title'),
+    stepCounter: t('tutorial.stepCounter', { current: 1, total: 4 })
+  });
   const {
     tutorialState,
     config,
@@ -77,6 +81,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
   }, [isOpen, tutorialState.currentStep]);
 
   const currentStep = getCurrentStep(steps);
+  console.log('🎓 TutorialModal currentStep:', currentStep);
   const isLast = isLastStep(steps.length);
   const isFirst = isFirstStep();
 
@@ -193,12 +198,14 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
 
           {/* Content */}
           <ModalBody className="p-6">
-            {currentStep && (
+            {currentStep ? (
               <TutorialStepComponent
                 step={currentStep}
                 stepNumber={tutorialState.currentStep + 1}
                 totalSteps={steps.length}
               />
+            ) : (
+              <div className="text-red-500">No current step found!</div>
             )}
           </ModalBody>
 

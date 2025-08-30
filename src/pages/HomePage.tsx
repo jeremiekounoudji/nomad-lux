@@ -163,23 +163,16 @@ const HomePage: React.FC = () => {
     }
   }, [isAuthenticated, isLoading]) // Only essential dependencies
 
-  // Tutorial trigger logic
+  // Tutorial trigger logic - ALWAYS SHOW FOR TESTING
   useEffect(() => {
     if (isAuthenticated && !isLoading && currentPage === 'home') {
-      console.log('🎓 Checking tutorial trigger conditions', {
-        shouldShow: shouldShowTutorial(),
-        hasBeenShown: tutorialState.hasBeenShown,
-        isVisible: tutorialState.isVisible
-      })
-      
-      // Check if tutorial should be shown for first-time user
-      if (shouldShowTutorial() && !tutorialState.isVisible) {
-        console.log('🎓 Triggering tutorial for first-time user')
-        setShowTutorial(true)
-        startTutorial()
+      console.log('🎓 Always showing tutorial for testing');
+      setShowTutorial(true);
+      if (!tutorialState.isVisible) {
+        startTutorial();
       }
     }
-  }, [isAuthenticated, isLoading, currentPage, shouldShowTutorial, tutorialState.hasBeenShown, tutorialState.isVisible, startTutorial])
+  }, [isAuthenticated, isLoading, currentPage, tutorialState.isVisible, startTutorial]);
 
   // Fetch city properties when a city is selected
   const fetchCityProperties = useCallback(async (city: PopularPlace) => {
