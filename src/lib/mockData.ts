@@ -242,6 +242,8 @@ export const mockProperties: Property[] = [
     title: 'Luxury Beachfront Villa with Infinity Pool',
     description: 'Wake up to stunning ocean views in this modern beachfront villa. Features include infinity pool, private beach access, and world-class amenities.',
     price: 450,
+    price_per_night: 450,
+    like_count: 35,
     currency: 'USD',
     location: {
       city: 'Seminyak',
@@ -293,6 +295,8 @@ export const mockProperties: Property[] = [
     title: 'Cozy Mountain Cabin with Fireplace',
     description: 'Escape to this charming mountain retreat perfect for a romantic getaway or family vacation. Features fireplace, hot tub, and hiking trails nearby.',
     price: 180,
+    price_per_night: 180,
+    like_count: 22,
     currency: 'USD',
     location: {
       city: 'Aspen',
@@ -344,6 +348,8 @@ export const mockProperties: Property[] = [
     title: 'Modern City Loft in Downtown',
     description: 'Stylish loft apartment in the heart of the city. Walking distance to restaurants, shops, and nightlife. Perfect for business travelers.',
     price: 220,
+    price_per_night: 220,
+    like_count: 15,
     currency: 'USD',
     location: {
       city: 'New York',
@@ -395,6 +401,8 @@ export const mockProperties: Property[] = [
     title: 'Oceanfront Penthouse with Panoramic Views',
     description: 'Breathtaking penthouse with 360-degree ocean views. Features private terrace, jacuzzi, and premium furnishings throughout.',
     price: 680,
+    price_per_night: 680,
+    like_count: 24,
     currency: 'USD',
     location: {
       city: 'Santorini',
@@ -446,6 +454,8 @@ export const mockProperties: Property[] = [
     title: 'Rustic Farmhouse with Vineyard Views',
     description: 'Charming farmhouse surrounded by rolling vineyards. Perfect for wine lovers with private tastings and farm-to-table dining experiences.',
     price: 320,
+    price_per_night: 320,
+    like_count: 18,
     currency: 'USD',
     location: {
       city: 'Tuscany',
@@ -497,6 +507,8 @@ export const mockProperties: Property[] = [
     title: 'Tropical Overwater Bungalow',
     description: 'Experience paradise in this overwater bungalow with direct lagoon access. Includes glass floor panels and private deck for snorkeling.',
     price: 890,
+    price_per_night: 890,
+    like_count: 32,
     currency: 'USD',
     location: {
       city: 'Bora Bora',

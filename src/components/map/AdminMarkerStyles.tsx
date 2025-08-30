@@ -127,7 +127,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
 }) => {
   const { t } = useTranslation('admin');
   const finalConfig = { ...defaultConfig, ...config };
-  const status = property.approval_status as keyof typeof statusConfig;
+  const status = property.status as keyof typeof statusConfig;
   const statusInfo = statusConfig[status] || statusConfig.pending;
   const priorityInfo = priorityConfig[priority];
   const sizeInfo = sizeConfig[finalConfig.size];
@@ -137,7 +137,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
   // Calculate metrics for display
   const metrics = {
     rating: property.rating || 0,
-    bookings: property.total_bookings || 0,
+    bookings: property.booking_count || 0,
     views: property.view_count || 0,
     revenue: property.total_revenue || 0
   };
@@ -262,7 +262,7 @@ export const AdminMarkerStyles: React.FC<AdminMarkerStylesProps> = ({
               </p>
               <div className="mt-1 flex items-center justify-between">
                 <span className="text-sm font-semibold text-primary-600">
-                  ${property.currency} ${property.price}/night
+                  ${property.currency} ${property.price_per_night}/night
                 </span>
                 <div className="flex items-center gap-1">
                   <Star className="size-3 fill-current text-yellow-500" />

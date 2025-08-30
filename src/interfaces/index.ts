@@ -12,13 +12,13 @@ export * from './Component'
 export * from './Notification'
 export * from './Analytics'
 export * from './Auth'
-export * from './DatabaseProperty'
-export * from './ListingStats'
-export * from './PropertyCardProps'
+// export * from './DatabaseProperty' // Commented out - already exported from Property
+// export * from './ListingStats' // Commented out - already exported from Property
+// export * from './PropertyCardProps' // Commented out - already exported from Component
 export * from './Settings'
 export * from './PayoutRequest'
 export * from './Map'
-export * from './Profile'
+// export * from './Profile' // Commented out - conflicts with Settings export
 export * from './Tutorial'
 
 // Pagination interfaces

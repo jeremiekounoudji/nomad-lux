@@ -1,5 +1,4 @@
 import React from 'react'
-import React from 'react'
 import { Progress, Button } from '@heroui/react'
 import { useTranslation } from '../../lib/stores/translationStore'
 
@@ -78,7 +77,7 @@ export const TutorialProgress: React.FC<TutorialProgressProps> = ({
                 ? 'bg-primary-300 dark:bg-primary-600 hover:bg-primary-400 dark:hover:bg-primary-500'
                 : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
             }`}
-            aria-label={t('tutorial.progress.stepAriaLabel', 'Go to step {{step}}', {
+            aria-label={t('tutorial.progress.stepAriaLabel', {
               step: index + 1
             })}
             disabled={!onStepClick}
@@ -119,14 +118,14 @@ export const TutorialProgress: React.FC<TutorialProgressProps> = ({
   const renderStepIndicator = () => (
     <div className="flex items-center justify-center gap-2 text-sm text-gray-600 dark:text-gray-400">
       <span className="font-medium">
-        {t('tutorial.progress.stepIndicator', 'Step {{current}} of {{total}}', {
+        {t('tutorial.progress.stepIndicator', {
           current: currentStep + 1,
           total: totalSteps
         })}
       </span>
       <span className="text-xs">•</span>
       <span>
-        {t('tutorial.progress.percentage', '{{percentage}}% complete', {
+        {t('tutorial.progress.percentage', {
           percentage: Math.round(percentage)
         })}
       </span>

@@ -177,7 +177,7 @@ export const useTutorialStore = create<TutorialStoreState>()(
       },
 
       nextStep: () => {
-        const { tutorialState, analytics } = get()
+        const { tutorialState /*, analytics*/ } = get()
         const nextStepId = tutorialState.currentStep + 1
         
         console.log('🏪 TutorialStore: Moving to next step:', nextStepId)

@@ -61,10 +61,11 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
   // Hooks
   const { user } = useAuthStore()
   const { settings: adminSettings } = useAdminSettingsStore()
+  void adminSettings; // Suppress unused variable warning
   const { 
     hostSettings, 
     isLoadingHostSettings, 
-    isCreatingSettings, 
+    isCreatingSettings,
     error 
   } = usePropertySettingsStore()
   

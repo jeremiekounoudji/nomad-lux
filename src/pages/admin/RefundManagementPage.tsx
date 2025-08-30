@@ -28,7 +28,7 @@ import {
 } from 'lucide-react'
 import { useAdminBookings } from '../../hooks/useAdminBookings'
 import { AdminRefundRequest } from '../../interfaces/PaymentRecord'
-import { useTranslation } from '../../lib/stores/translationStore'
+// import { useTranslation } from '../../lib/stores/translationStore' // Unused import
 import { formatPrice } from '../../utils/currencyUtils'
 import toast from 'react-hot-toast'
 
@@ -37,8 +37,8 @@ type RefundStatus = 'pending' | 'approved' | 'processed' | 'failed' | 'rejected'
 const ITEMS_PER_PAGE = 10
 
 const RefundManagementPage: React.FC = () => {
-  const { t } = useTranslation(['admin', 'common'])
-  const { loadRefundRequests, processRefund, error, clearError } = useAdminBookings()
+  // const { t } = useTranslation(['admin', 'common']) // Unused variable
+  const { loadRefundRequests, processRefund /*, error, clearError*/ } = useAdminBookings()
   
   const [selectedTab, setSelectedTab] = useState<RefundStatus>('pending')
   const [refundRequests, setRefundRequests] = useState<AdminRefundRequest[]>([])
@@ -223,13 +223,13 @@ const RefundManagementPage: React.FC = () => {
                       <div className="text-right">
                         <p className="text-sm text-gray-600">Requested Amount</p>
                         <p className="text-lg font-semibold text-primary-600">
-                          {formatPrice(refund.requested_amount, refund.currency || 'USD')}
+                          {formatPrice(refund.requested_amount, (refund as any).currency || 'USD')}
                         </p>
                         {refund.approved_amount && (
                           <>
                             <p className="mt-1 text-sm text-gray-600">Approved Amount</p>
                             <p className="text-lg font-semibold text-success-600">
-                              {formatPrice(refund.approved_amount, refund.currency || 'USD')}
+                              {formatPrice(refund.approved_amount, (refund as any).currency || 'USD')}
                             </p>
                           </>
                         )}
@@ -354,7 +354,7 @@ const RefundManagementPage: React.FC = () => {
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold">{selectedRefund.booking.properties.title}</h3>
                             <p className="text-sm text-gray-600">{selectedRefund.booking.guest_user.display_name}</p>
-                            <p className="text-sm text-gray-500">Requested: {formatPrice(selectedRefund.requested_amount, selectedRefund.currency || 'USD')}</p>
+                            <p className="text-sm text-gray-500">Requested: {formatPrice(selectedRefund.requested_amount, (selectedRefund as any).currency || 'USD')}</p>
                           </div>
                         </div>
                       </CardBody>
@@ -378,7 +378,7 @@ const RefundManagementPage: React.FC = () => {
                         step="0.01"
                       />
                       <p className="mt-1 text-xs text-gray-500">
-                        Maximum: {formatPrice(selectedRefund.requested_amount, selectedRefund.currency || 'USD')}
+                        Maximum: {formatPrice(selectedRefund.requested_amount, (selectedRefund as any).currency || 'USD')}
                       </p>
                     </div>
 

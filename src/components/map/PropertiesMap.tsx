@@ -57,6 +57,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
   selectedProperty,
   enableClustering = false // Default to false since clustering is not available
 }) => {
+  void enableClustering; // Suppress unused variable warning
   const navigate = useNavigate();
   const { t } = useTranslation('property');
   // Calculate map center and bounds

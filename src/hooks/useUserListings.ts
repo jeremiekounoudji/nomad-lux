@@ -21,10 +21,10 @@ export const useUserListings = () => {
     statusFilter,
     statusCounts,
     setStatusData,
-    updateStatusListings,
-    setStatusPagination,
+    // updateStatusListings, // Unused function
+    // setStatusPagination, // Unused function
     setStatusLoading,
-    addUserListing,
+    // addUserListing, // Unused function
     updateUserListing,
     removeUserListing,
     setListingStats,
@@ -36,10 +36,10 @@ export const useUserListings = () => {
     setStatusFilter,
     getCurrentListings,
     getCurrentPagination,
-    getListingStats,
+    // getListingStats, // Unused function
     getTotalStats,
     shouldFetchStatus,
-    clearStatus
+    // clearStatus // Commented out - unused function
   } = useUserListingsStore()
 
   // Fetch user's property listings with pagination and smart caching

@@ -58,7 +58,7 @@ export const PropertyDetailsModal: React.FC<PropertyDetailsModalProps> = ({
             {/* Location Details with Map */}
             <div>
               <LocationVerificationMap
-                property={selectedProperty}
+                property={selectedProperty as any}
                 onVerify={(verified) => {
                   setReviewChecklist(prev => ({ ...prev, location: verified }))
                 }}

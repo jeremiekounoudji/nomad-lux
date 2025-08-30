@@ -11,7 +11,7 @@ export const usePropertySettings = () => {
   const {
     setHostSettings,
     setCurrentSettings,
-    setHostSettingsWithUsage,
+    // setHostSettingsWithUsage, // Unused function
     setIsLoadingHostSettings,
     setIsCreatingSettings,
     setIsUpdatingSettings,

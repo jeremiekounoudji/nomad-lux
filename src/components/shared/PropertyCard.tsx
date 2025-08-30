@@ -7,15 +7,15 @@ import { usePropertyTypeTranslation, useContentTranslation } from '../../hooks/u
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   property,
-  onView,
+  // onView, // Unused parameter
   onLike,
-  onShare,
-  onBook,
+  // onShare, // Unused parameter
+  // onBook, // Unused parameter
   onClick,
   showStats = false,
   showActions = true,
   className = '',
-  variant
+  // variant // Unused parameter
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0)
   const { t } = useTranslation('property')

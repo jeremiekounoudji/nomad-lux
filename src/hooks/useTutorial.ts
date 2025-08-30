@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef } from 'react'
 import { useTutorialStore } from '../lib/stores/tutorialStore'
-import { TutorialStep, TutorialEvent } from '../interfaces/Tutorial'
+import { TutorialStep /*, TutorialEvent*/ } from '../interfaces/Tutorial'
 
 export const useTutorial = () => {
   const {

@@ -6,18 +6,18 @@ import { Property } from '../interfaces'
 import toast from 'react-hot-toast'
 import { usePropertyLike } from './usePropertyLike'
 
-interface PopularPlace {
-  id: string
-  name: string
-  country: string
-  property_count: number
-  average_price: number
-  featured_image: string
-  coordinates: {
-    lat: number
-    lng: number
-  }
-}
+// interface PopularPlace { // Unused interface
+//   id: string
+//   name: string
+//   country: string
+//   property_count: number
+//   average_price: number
+//   featured_image: string
+//   coordinates: {
+//     lat: number
+//     lng: number
+//   }
+// }
 
 interface HomeFeedResponse {
   data: Property[]

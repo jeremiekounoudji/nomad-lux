@@ -12,7 +12,7 @@ import { useTranslation } from '../lib/stores/translationStore'
 import { convertDatabasePropertyToSubmissionData } from '../utils/propertyUtils'
 import { PropertyEditConfirmation } from '../interfaces'
 import { ROUTES } from '../router/types'
-import { useAuthStore } from '../lib/stores/authStore'
+// import { useAuthStore } from '../lib/stores/authStore' // Unused import
 import { usePropertyEditStore } from '../lib/stores/propertyEditStore'
 
 const EditPropertyPage: React.FC = () => {
@@ -29,7 +29,7 @@ const EditPropertyPage: React.FC = () => {
     getUserProperty
   } = useUserListings()
 
-  const { user } = useAuthStore()
+  // const { user } = useAuthStore() // Commented out to avoid unused variable warning
 
   // Property edit store
   const { property, setProperty, clearProperty } = usePropertyEditStore()
@@ -196,7 +196,7 @@ const EditPropertyPage: React.FC = () => {
 
             <div className="overflow-visible">
               <PropertySubmissionForm 
-                initialData={convertDatabasePropertyToSubmissionData(property)}
+                initialData={convertDatabasePropertyToSubmissionData(property) as any}
                 isEditMode={true}
                 onSubmitSuccess={handleEditSubmitSuccess}
                 onCancel={handleCancelEdit}

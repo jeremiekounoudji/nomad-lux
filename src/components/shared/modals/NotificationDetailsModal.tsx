@@ -56,7 +56,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
   }
 
   const handleClose = () => {
-    if (!notification.read && onMarkAsRead) {
+    if (!notification.is_read && onMarkAsRead) {
       onMarkAsRead()
     }
     onClose()
@@ -70,7 +70,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
       scrollBehavior="inside"
     >
       <ModalContent>
-        {(onClose) => (
+        {(/* onClose */) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                     >
                       {t(`notifications.types.${notification.type}`, { defaultValue: notification.type })}
                     </Chip>
-                    {!notification.read && (
+                    {!notification.is_read && (
                       <Chip size="sm" color="primary" variant="solid">
                         {t('notifications.labels.new')}
                       </Chip>
@@ -99,7 +99,7 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
               <div className="space-y-4">
                 {/* Timestamp */}
                 <div className="text-sm text-gray-600">
-                  {t('notifications.labels.timestamp', { ts: new Date(notification.timestamp).toLocaleString() })}
+                  {t('notifications.labels.timestamp', { ts: new Date(notification.created_at).toLocaleString() })}
                 </div>
 
                 <Divider />
@@ -111,21 +111,21 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   </p>
 
                   {/* Additional Details */}
-                  {notification.propertyName && (
+                  {(notification.metadata as any)?.propertyName && (
                     <div className="rounded-lg bg-gray-50 p-4">
                       <h4 className="mb-2 font-semibold">{t('notifications.details.relatedProperty')}</h4>
                       <div className="flex items-center gap-3">
-                        {notification.propertyImage && (
+                        {(notification.metadata as any)?.propertyImage && (
                           <img
-                            src={notification.propertyImage}
-                            alt={notification.propertyName}
+                            src={(notification.metadata as any).propertyImage}
+                            alt={(notification.metadata as any).propertyName}
                             className="size-12 rounded-lg object-cover"
                           />
                         )}
                         <div>
-                          <p className="font-medium">{notification.propertyName}</p>
-                          {notification.propertyLocation && (
-                            <p className="text-sm text-gray-600">{notification.propertyLocation}</p>
+                          <p className="font-medium">{(notification.metadata as any).propertyName}</p>
+                          {(notification.metadata as any)?.propertyLocation && (
+                            <p className="text-sm text-gray-600">{(notification.metadata as any).propertyLocation}</p>
                           )}
                         </div>
                       </div>
@@ -133,50 +133,50 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   )}
 
                   {/* Guest/Host Information */}
-                  {notification.guestName && (
+                  {(notification.metadata as any)?.guestName && (
                     <div className="rounded-lg bg-gray-50 p-4">
                       <h4 className="mb-2 font-semibold">{t('notifications.details.guestInformation')}</h4>
                       <div className="flex items-center gap-3">
-                        <Avatar src={notification.guestAvatar} size="md" />
+                        <Avatar src={(notification.metadata as any)?.guestAvatar} size="md" />
                         <div>
-                          <p className="font-medium">{notification.guestName}</p>
-                          <p className="text-sm text-gray-600">{notification.guestEmail}</p>
+                          <p className="font-medium">{(notification.metadata as any).guestName}</p>
+                          <p className="text-sm text-gray-600">{(notification.metadata as any)?.guestEmail}</p>
                         </div>
                       </div>
                     </div>
                   )}
 
                   {/* Booking Details */}
-                  {notification.bookingDetails && (
+                  {(notification.metadata as any)?.bookingDetails && (
                     <div className="rounded-lg bg-gray-50 p-4">
                       <h4 className="mb-2 font-semibold">{t('notifications.details.bookingDetails')}</h4>
                       <div className="grid grid-cols-2 gap-4 text-sm">
-                        {notification.bookingDetails.checkIn && (
+                        {(notification.metadata as any)?.bookingDetails?.checkIn && (
                           <div>
                             <p className="text-gray-600">{t('booking.labels.checkIn')}</p>
                             <p className="font-medium">
-                              {new Date(notification.bookingDetails.checkIn).toLocaleDateString()}
+                              {new Date((notification.metadata as any).bookingDetails.checkIn).toLocaleDateString()}
                             </p>
                           </div>
                         )}
-                        {notification.bookingDetails.checkOut && (
+                        {(notification.metadata as any)?.bookingDetails?.checkOut && (
                           <div>
                             <p className="text-gray-600">{t('booking.labels.checkOut')}</p>
                             <p className="font-medium">
-                              {new Date(notification.bookingDetails.checkOut).toLocaleDateString()}
+                              {new Date((notification.metadata as any).bookingDetails.checkOut).toLocaleDateString()}
                             </p>
                           </div>
                         )}
-                        {notification.bookingDetails.guests && (
+                        {(notification.metadata as any)?.bookingDetails?.guests && (
                           <div>
                             <p className="text-gray-600">{t('booking.labels.guests')}</p>
-                            <p className="font-medium">{notification.bookingDetails.guests}</p>
+                            <p className="font-medium">{(notification.metadata as any).bookingDetails.guests}</p>
                           </div>
                         )}
-                        {notification.bookingDetails.totalPrice && (
+                        {(notification.metadata as any)?.bookingDetails?.totalPrice && (
                           <div>
                             <p className="text-gray-600">{t('booking.labels.totalPrice')}</p>
-                            <p className="font-medium">${notification.bookingDetails.totalPrice}</p>
+                            <p className="font-medium">${(notification.metadata as any).bookingDetails.totalPrice}</p>
                           </div>
                         )}
                       </div>
@@ -184,30 +184,30 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
                   )}
 
                   {/* Payment Information */}
-                  {notification.paymentAmount && (
+                  {(notification.metadata as any)?.paymentAmount && (
                     <div className="rounded-lg border border-green-200 bg-green-50 p-4">
                       <h4 className="mb-2 font-semibold text-green-800">{t('notifications.details.paymentInformation')}</h4>
                       <div className="text-sm text-green-700">
-                        <p>{t('notifications.details.amount', { amount: notification.paymentAmount })}</p>
-                        {notification.paymentMethod && (
-                          <p>{t('notifications.details.method', { method: notification.paymentMethod })}</p>
+                        <p>{t('notifications.details.amount', { amount: (notification.metadata as any).paymentAmount })}</p>
+                        {(notification.metadata as any)?.paymentMethod && (
+                          <p>{t('notifications.details.method', { method: (notification.metadata as any).paymentMethod })}</p>
                         )}
-                        {notification.paymentDate && (
-                          <p>{t('notifications.details.date', { date: new Date(notification.paymentDate).toLocaleDateString() })}</p>
+                        {(notification.metadata as any)?.paymentDate && (
+                          <p>{t('notifications.details.date', { date: new Date((notification.metadata as any).paymentDate).toLocaleDateString() })}</p>
                         )}
                       </div>
                     </div>
                   )}
 
                   {/* Action Items */}
-                  {notification.actionRequired && (
+                  {(notification.metadata as any)?.actionRequired && (
                     <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
                       <div className="flex items-start gap-2">
                         <AlertTriangle className="mt-0.5 size-5 text-warning-600" />
                         <div>
                           <h4 className="font-semibold text-warning-800">{t('notifications.details.actionRequired')}</h4>
                           <p className="mt-1 text-sm text-warning-700">
-                            {notification.actionDescription || t('notifications.details.defaultActionDescription')}
+                            {(notification.metadata as any)?.actionDescription || t('notifications.details.defaultActionDescription')}
                           </p>
                         </div>
                       </div>
@@ -220,17 +220,23 @@ export const NotificationDetailsModal: React.FC<NotificationDetailsModalProps> =
               <Button color="default" variant="light" onPress={handleClose}>
                 {t('common.buttons.close')}
               </Button>
-              {notification.actionRequired && (
+              {(notification.metadata as any)?.actionRequired && (
                 <Button color="primary">
                   {t('notifications.actions.takeAction')}
                 </Button>
               )}
-              {notification.type === 'booking' && (
+              {(notification.type === 'booking_request_created' || 
+                notification.type === 'new_booking_request' ||
+                notification.type === 'booking_approved' ||
+                notification.type === 'booking_rejected' ||
+                notification.type === 'booking_cancelled') && (
                 <Button color="secondary" variant="flat">
                   {t('booking.actions.viewBooking')}
                 </Button>
               )}
-              {notification.type === 'message' && (
+              {(notification.type === 'property_approved' ||
+                notification.type === 'property_rejected' ||
+                notification.type === 'property_suspended') && (
                 <Button color="secondary" variant="flat">
                   {t('notifications.actions.reply')}
                 </Button>

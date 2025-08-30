@@ -24,7 +24,7 @@ interface PropertyRejectionModalProps {
 export const PropertyRejectionModal: React.FC<PropertyRejectionModalProps> = ({
   isOpen,
   onClose,
-  property,
+  // property, // Commented out to avoid unused variable warning
   rejectionReason,
   onReasonChange,
   onReject

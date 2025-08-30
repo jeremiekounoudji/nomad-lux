@@ -103,16 +103,16 @@ const ReviewList: React.FC<ReviewListProps> = ({
             size="sm"
             className="w-32"
           >
-            <SelectItem key="newest" value="newest">
+            <SelectItem key="newest">
               {t('review.reviews.newestFirst')}
             </SelectItem>
-            <SelectItem key="oldest" value="oldest">
+            <SelectItem key="oldest">
               {t('review.reviews.oldestFirst')}
             </SelectItem>
-            <SelectItem key="rating_high" value="rating_high">
+            <SelectItem key="rating_high">
               Highest rated
             </SelectItem>
-            <SelectItem key="rating_low" value="rating_low">
+            <SelectItem key="rating_low">
               Lowest rated
             </SelectItem>
           </Select>
@@ -124,9 +124,9 @@ const ReviewList: React.FC<ReviewListProps> = ({
             size="sm"
             className="w-20"
           >
-            <SelectItem key="5" value="5">5</SelectItem>
-            <SelectItem key="10" value="10">10</SelectItem>
-            <SelectItem key="20" value="20">20</SelectItem>
+            <SelectItem key="5">5</SelectItem>
+            <SelectItem key="10">10</SelectItem>
+            <SelectItem key="20">20</SelectItem>
           </Select>
         </div>
       </div>

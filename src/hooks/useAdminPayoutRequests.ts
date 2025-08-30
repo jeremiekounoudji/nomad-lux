@@ -48,20 +48,25 @@ export const useAdminPayoutRequests = () => {
   const handleAction = useCallback(async (request: PayoutRequest, action: 'approve' | 'reject', note: string) => {
     setIsLoading(true)
     setError(null)
-    const { data, error } = await supabase.functions.invoke('approvePayout', {
-      body: {
-        payoutRequestId: request.id,
-        action,
-        note
+    try {
+      const { error } = await supabase.functions.invoke('approvePayout', {
+        body: {
+          payoutRequestId: request.id,
+          action,
+          note
+        }
+      })
+      if (error) {
+        setError(error.message)
+        toast.error(error.message)
+      } else {
+        toast.success(`Payout ${action === 'approve' ? 'approved' : 'rejected'} successfully!`)
+        // Refresh list
+        await fetchPayoutRequests()
       }
-    })
-    if (error) {
-      setError(error.message)
-      toast.error(error.message)
-    } else {
-      toast.success(`Payout ${action === 'approve' ? 'approved' : 'rejected'} successfully!`)
-      // Refresh list
-      await fetchPayoutRequests()
+    } catch (err: any) {
+      setError(err.message)
+      toast.error(err.message)
     }
     setIsLoading(false)
   }, [fetchPayoutRequests])

@@ -150,19 +150,19 @@ const StatusChangeModal: React.FC<StatusChangeModalProps> = ({
                     {property.location.city}, {property.location.country}
                   </p>
                   <p className="text-sm font-semibold text-primary-600">
-                    ${property.currency} ${property.price}/night
+                    ${property.currency} ${property.price_per_night}/night
                   </p>
                 </div>
                 <Chip 
                   size="sm" 
                   variant="flat" 
                   color={
-                    property.approval_status === 'approved' ? 'success' :
-                    property.approval_status === 'pending' ? 'warning' :
-                    property.approval_status === 'rejected' ? 'danger' : 'default'
+                    property.status === 'approved' ? 'success' :
+                    property.status === 'pending' ? 'warning' :
+                    property.status === 'rejected' ? 'danger' : 'default'
                   }
                 >
-                  {t('marker.statusChange.current')}: {property.approval_status}
+                  {t('marker.statusChange.current')}: {property.status}
                 </Chip>
               </div>
             </div>
@@ -271,10 +271,10 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
             <Chip 
               size="sm" 
               variant="flat" 
-              color={getStatusColor(property.approval_status) as any}
-              startContent={getStatusIcon(property.approval_status)}
+              color={getStatusColor(property.status) as any}
+              startContent={getStatusIcon(property.status)}
             >
-              {property.approval_status}
+              {property.status}
             </Chip>
           </div>
         </CardHeader>
@@ -317,7 +317,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
 
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
-                {property.currency} {property.price}
+                {property.currency} {property.price_per_night}
                 <span className="text-sm font-normal text-gray-600">{t('marker.night')}</span>
               </div>
               <div className="text-sm text-gray-600">
@@ -325,16 +325,15 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
               </div>
             </div>
 
-            {/* Host Info */}
+            {/* Host Info - Placeholder since DatabaseProperty only has host_id */}
             <div className="flex items-center gap-2 rounded-lg bg-gray-50 p-2">
               <Avatar 
-                src={property.host.avatar_url} 
-                name={property.host.display_name}
+                name="Host"
                 size="sm"
               />
               <div className="flex-1">
-                <p className="text-sm font-medium">{property.host.display_name}</p>
-                <p className="text-xs text-gray-600">{t('marker.hostSince')} {new Date(property.host.created_at).getFullYear()}</p>
+                <p className="text-sm font-medium">{t('marker.hostInfo')}</p>
+                <p className="text-xs text-gray-600">{t('marker.hostId')}: {property.host_id}</p>
               </div>
             </div>
 
@@ -368,7 +367,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                   
                   {/* Status Change Buttons */}
                   <div className="grid grid-cols-2 gap-2">
-                    {property.approval_status !== 'approved' && (
+                    {property.status !== 'approved' && (
                       <Button
                         size="sm"
                         color="success"
@@ -379,7 +378,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         {t('marker.statusChange.actions.approve')}
                       </Button>
                     )}
-                    {property.approval_status !== 'rejected' && (
+                    {property.status !== 'rejected' && (
                       <Button
                         size="sm"
                         color="danger"
@@ -390,7 +389,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         {t('marker.statusChange.actions.reject')}
                       </Button>
                     )}
-                    {property.approval_status !== 'suspended' && (
+                    {property.status !== 'suspended' && (
                       <Button
                         size="sm"
                         color="warning"
@@ -401,7 +400,7 @@ export const AdminPropertyMarker: React.FC<AdminPropertyMarkerProps> = ({
                         {t('marker.statusChange.actions.suspend')}
                       </Button>
                     )}
-                    {property.approval_status !== 'pending' && (
+                    {property.status !== 'pending' && (
                       <Button
                         size="sm"
                         color="default"

@@ -187,7 +187,7 @@ describe('TutorialStore', () => {
         result.current.markStepComplete(1, 30)
       })
       
-      expect(result.current.userPreferences.stepCompletionTimes[1]).toBe(30)
+      expect(result.current.userPreferences.stepCompletionTimes?.[1]).toBe(30)
       expect(result.current.analytics.timeSpentOnSteps[1]).toBe(30)
     })
   })

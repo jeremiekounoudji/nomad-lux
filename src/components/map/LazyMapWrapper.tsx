@@ -168,6 +168,11 @@ interface BaseLazyMapWrapperProps {
    * Loading progress callback
    */
   onLoadingProgress?: (progress: { loaded: string[]; total: number; current: string }) => void;
+  
+  /**
+   * Error handler
+   */
+  onError?: (error: Error) => void;
 }
 
 type LazyMapWrapperProps = 
@@ -217,7 +222,7 @@ class MapErrorBoundary extends React.Component<
 // Enhanced loading component with progress
 const EnhancedLoadingComponent: React.FC<{ 
   originalComponent: React.ComponentType; 
-  progress?: { loaded: string[]; total: number; current: string };
+  progress?: { loaded: string[]; total: number; current: string } | undefined;
   loadingMessage?: string;
 }> = ({ 
   originalComponent: OriginalComponent, 
@@ -270,7 +275,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
   const { t } = useTranslation('common');
   const [isPreloaded, setIsPreloaded] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState<{ loaded: string[]; total: number; current: string } | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState<{ loaded: string[]; total: number; current: string } | undefined>(undefined);
 
   // Eager loading on mount if requested
   useEffect(() => {
@@ -308,7 +313,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
           
           // Clear progress after a short delay
           setTimeout(() => {
-            setLoadingProgress(null);
+            setLoadingProgress(undefined);
           }, 500);
         })
         .catch(console.error);
@@ -361,7 +366,7 @@ const LazyMapWrapper: React.FC<LazyMapWrapperProps> = ({
             )
           }
         >
-          <MapComponent {...mapProps} />
+          <MapComponent {...mapProps as any} />
         </Suspense>
       </MapErrorBoundary>
     </div>

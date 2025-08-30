@@ -4,7 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { ROUTES } from '../../router/types'
 import { CompactLanguageSelector } from '../shared/LanguageSelector'
 import { useTranslation } from '../../lib/stores/translationStore'
-import { User as UserType } from '../../interfaces/Auth'
+import { User as UserType } from '../../interfaces/User'
 
 interface MobileDrawerProps {
   isOpen: boolean

@@ -286,7 +286,7 @@ export const SystemSettings: React.FC = () => {
   const handleClearCache = async () => {
     try {
       console.log('🗑️ Cache clearing is temporarily disabled')
-      toast.info('Cache clearing is temporarily disabled')
+      toast('Cache clearing is temporarily disabled')
     } catch (error) {
       console.error('❌ Error:', error)
       toast.error('Operation failed')
@@ -296,7 +296,7 @@ export const SystemSettings: React.FC = () => {
   const handleClearAllCache = async () => {
     try {
       console.log('🗑️ Cache clearing is temporarily disabled')
-      toast.info('Cache clearing is temporarily disabled')
+      toast('Cache clearing is temporarily disabled')
     } catch (error) {
       console.error('❌ Error:', error)
       toast.error('Operation failed')
@@ -306,7 +306,7 @@ export const SystemSettings: React.FC = () => {
   const handleForceRefresh = () => {
     try {
       console.log('🔄 Force refresh is temporarily disabled')
-      toast.info('Force refresh is temporarily disabled')
+      toast('Force refresh is temporarily disabled')
     } catch (error) {
       console.error('❌ Error:', error)
       toast.error('Operation failed')
@@ -316,7 +316,7 @@ export const SystemSettings: React.FC = () => {
   const handleCheckCacheHealth = () => {
     try {
       console.log('🔍 Cache health check is temporarily disabled')
-      toast.info('Cache health check is temporarily disabled')
+      toast('Cache health check is temporarily disabled')
     } catch (error) {
       console.error('❌ Error:', error)
       toast.error('Operation failed')

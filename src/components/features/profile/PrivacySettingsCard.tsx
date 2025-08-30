@@ -233,13 +233,13 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                     aria-label={t('profile.privacy.profileVisibility')}
                     onFocus={() => announceToScreenReader(`${t('profile.privacy.profileVisibility')}: ${privacySettings.profileVisibility}`)}
                   >
-                    <SelectItem key="public" value="public">
+                    <SelectItem key="public">
                       {t('profile.privacy.visibility.public')}
                     </SelectItem>
-                    <SelectItem key="private" value="private">
+                    <SelectItem key="private">
                       {t('profile.privacy.visibility.private')}
                     </SelectItem>
-                    <SelectItem key="friends" value="friends">
+                    <SelectItem key="friends">
                       {t('profile.privacy.visibility.friends')}
                     </SelectItem>
                   </Select>
@@ -378,10 +378,10 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                     aria-label={t('profile.preferences.language')}
                     onFocus={() => announceToScreenReader(`${t('profile.preferences.language')}: ${preferences.language}`)}
                   >
-                    <SelectItem key="en" value="en">English</SelectItem>
-                    <SelectItem key="es" value="es">Español</SelectItem>
-                    <SelectItem key="fr" value="fr">Français</SelectItem>
-                    <SelectItem key="de" value="de">Deutsch</SelectItem>
+                    <SelectItem key="en">English</SelectItem>
+                    <SelectItem key="es">Español</SelectItem>
+                    <SelectItem key="fr">Français</SelectItem>
+                    <SelectItem key="de">Deutsch</SelectItem>
                   </Select>
                 </div>
 
@@ -398,10 +398,10 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                     aria-label={t('profile.preferences.currency')}
                     onFocus={() => announceToScreenReader(`${t('profile.preferences.currency')}: ${preferences.currency}`)}
                   >
-                    <SelectItem key="USD" value="USD">USD ($)</SelectItem>
-                    <SelectItem key="EUR" value="EUR">EUR (€)</SelectItem>
-                    <SelectItem key="GBP" value="GBP">GBP (£)</SelectItem>
-                    <SelectItem key="JPY" value="JPY">JPY (¥)</SelectItem>
+                    <SelectItem key="USD">USD ($)</SelectItem>
+                    <SelectItem key="EUR">EUR (€)</SelectItem>
+                    <SelectItem key="GBP">GBP (£)</SelectItem>
+                    <SelectItem key="JPY">JPY (¥)</SelectItem>
                   </Select>
                 </div>
 
@@ -418,10 +418,10 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                     aria-label={t('profile.preferences.timezone')}
                     onFocus={() => announceToScreenReader(`${t('profile.preferences.timezone')}: ${preferences.timezone}`)}
                   >
-                    <SelectItem key="UTC" value="UTC">UTC</SelectItem>
-                    <SelectItem key="EST" value="EST">EST</SelectItem>
-                    <SelectItem key="PST" value="PST">PST</SelectItem>
-                    <SelectItem key="GMT" value="GMT">GMT</SelectItem>
+                    <SelectItem key="UTC">UTC</SelectItem>
+                    <SelectItem key="EST">EST</SelectItem>
+                    <SelectItem key="PST">PST</SelectItem>
+                    <SelectItem key="GMT">GMT</SelectItem>
                   </Select>
                 </div>
 
@@ -438,9 +438,9 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({
                     aria-label={t('profile.preferences.theme')}
                     onFocus={() => announceToScreenReader(`${t('profile.preferences.theme')}: ${preferences.theme}`)}
                   >
-                    <SelectItem key="auto" value="auto">{t('profile.preferences.theme.auto')}</SelectItem>
-                    <SelectItem key="light" value="light">{t('profile.preferences.theme.light')}</SelectItem>
-                    <SelectItem key="dark" value="dark">{t('profile.preferences.theme.dark')}</SelectItem>
+                    <SelectItem key="auto">{t('profile.preferences.theme.auto')}</SelectItem>
+                    <SelectItem key="light">{t('profile.preferences.theme.light')}</SelectItem>
+                    <SelectItem key="dark">{t('profile.preferences.theme.dark')}</SelectItem>
                   </Select>
                 </div>
               </div>

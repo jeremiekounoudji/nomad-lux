@@ -55,8 +55,8 @@ export const useBookingFlow = () => {
       const propertyTimezone = propertyData.timezone || 'UTC'
 
       // Create datetime strings in property timezone
-      const checkInDateTime = createPropertyDateTime(checkInDateString, checkInTime, propertyTimezone)
-      const checkOutDateTime = createPropertyDateTime(checkOutDateString, checkOutTime, propertyTimezone)
+      const checkInDateTime = createPropertyDateTime(checkInDateString, checkInTime)
+      const checkOutDateTime = createPropertyDateTime(checkOutDateString, checkOutTime)
 
       // Use RPC function for complex availability check
       const { data, error } = await supabase

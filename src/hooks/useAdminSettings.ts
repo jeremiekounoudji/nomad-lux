@@ -24,7 +24,7 @@ export const useAdminSettings = () => {
     updateDraftPaymentSettings,
     updateDraftContentSettings,
     resetDrafts,
-    clearDrafts,
+    // clearDrafts, // Unused function
     getCurrentSettings,
     shouldRefresh,
     invalidateCache

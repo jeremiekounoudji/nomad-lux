@@ -21,7 +21,7 @@ export const useAuthRedirect = () => {
 
     // Handle authenticated user redirects
     if (isAuthenticated) {
-      if ([ROUTES.LOGIN, ROUTES.REGISTER].includes(location.pathname)) {
+      if ([ROUTES.LOGIN, ROUTES.REGISTER].includes(location.pathname as any)) {
         console.log('🔄 Redirecting authenticated user from auth page to:', from);
         navigate(from, { replace: true });
       }
@@ -29,7 +29,7 @@ export const useAuthRedirect = () => {
 
     // Handle admin redirects
     if (isAdmin) {
-      if ([ROUTES.ADMIN_LOGIN, ROUTES.ADMIN_REGISTER].includes(location.pathname)) {
+      if ([ROUTES.ADMIN_LOGIN, ROUTES.ADMIN_REGISTER].includes(location.pathname as any)) {
         console.log('🔄 Redirecting admin from auth page to admin dashboard');
         navigate(ROUTES.ADMIN, { replace: true });
       }

@@ -58,7 +58,7 @@ const defaultStrategy: CacheStrategy = {
 export const useMapCache = (options: UseMapCacheOptions = {}): UseMapCacheReturn => {
   const {
     strategy: userStrategy = {},
-    mapType = 'container',
+    // mapType = 'container', // Unused parameter
     enableMetrics = true,
     autoOptimize = true
   } = options;
@@ -215,8 +215,8 @@ export const useMapCache = (options: UseMapCacheOptions = {}): UseMapCacheReturn
   const performAutoCleanup = useCallback(async () => {
     if (!isReady || !cacheInfo) return;
 
-    const now = Date.now();
-    const maxAge = strategy.maxCacheAge * 24 * 60 * 60 * 1000;
+    // const now = Date.now(); // Unused variable
+    // const maxAge = strategy.maxCacheAge * 24 * 60 * 60 * 1000; // Unused variable
     const maxSize = strategy.maxCacheSize * 1024 * 1024;
 
     // Check if cleanup is needed

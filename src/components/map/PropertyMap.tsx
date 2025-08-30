@@ -126,15 +126,15 @@ const PropertyMap: React.FC<PropertyMapProps> = ({
   const {
     mapRef,
     mapState,
-    isReady,
-    setCenter,
-    setZoom,
-    addMarker,
-    removeMarker,
-    addMarkerCluster,
-    fitBounds,
-    clearMap,
-    getDirections
+    /* isReady, */ // Commented out unused variable
+    /* setCenter, */ // Commented out unused variable
+    /* setZoom, */ // Commented out unused variable
+    /* addMarker, */ // Commented out unused variable
+    /* removeMarker, */ // Commented out unused
+    /* addMarkerCluster, */ // Commented out unused
+    /* fitBounds, */ // Commented out unused
+    /* clearMap, */ // Commented out unused
+    /* getDirections */ // Commented out unused
   } = useMap({
     center: propertyCoords ? [propertyCoords.lat, propertyCoords.lng] : [0, 0],
     zoom: 15

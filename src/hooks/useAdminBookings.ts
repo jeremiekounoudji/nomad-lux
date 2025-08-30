@@ -4,14 +4,14 @@ import { AdminBooking } from '../interfaces/Booking'
 import { useAdminBookingStore } from '../lib/stores/adminBookingStore';
 import { AdminRefundRequest } from '../interfaces/PaymentRecord';
 
-interface PaginationData {
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  hasNextPage: boolean
-  hasPreviousPage: boolean
-  pageSize: number
-}
+// interface PaginationData { // Unused interface
+//   currentPage: number
+//   totalPages: number
+//   totalItems: number
+//   hasNextPage: boolean
+//   hasPreviousPage: boolean
+//   pageSize: number
+// }
 
 interface BookingFilters {
   status?: string

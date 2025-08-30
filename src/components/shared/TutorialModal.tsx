@@ -1,11 +1,9 @@
-import React, { useEffect, useRef } from 'react'
 import React, { useRef, useEffect } from 'react'
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Button,
   Checkbox,
   Divider
@@ -151,7 +149,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
       aria-describedby="tutorial-description"
       role="dialog"
     >
-      <ModalContent ref={modalRef}>
+      <ModalContent>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
           {/* Header */}
           <ModalHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 sm:p-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
@@ -167,7 +165,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
                 className="text-sm text-gray-600 dark:text-gray-400"
                 aria-live="polite"
               >
-                {t('tutorial.stepCounter', 'Step {{current}} of {{total}}', {
+                {t('tutorial.stepCounter', {
                   current: tutorialState.currentStep + 1,
                   total: steps.length
                 })}
@@ -257,7 +255,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
                           variant="bordered"
                           color="primary"
                           size="md"
-                          sm="lg"
                           onPress={handlePrevious}
                           startContent={<ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />}
                           className="w-full sm:w-auto"
@@ -274,7 +271,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
                           variant="light"
                           color="default"
                           size="md"
-                          sm="lg"
                           onPress={handleSkip}
                           className="w-full sm:w-auto"
                         >
@@ -285,7 +281,6 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({
                       <Button
                         color="primary"
                         size="md"
-                        sm="lg"
                         onPress={handleNext}
                         endContent={!isLast ? <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" /> : undefined}
                         className="w-full sm:w-auto"

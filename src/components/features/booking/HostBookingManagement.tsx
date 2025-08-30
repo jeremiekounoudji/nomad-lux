@@ -32,6 +32,7 @@ import {
   Filter,
   Eye
 } from 'lucide-react'
+import { useBookingStore } from '../../../lib/stores/bookingStore'
 import { useBookingManagement } from '../../../hooks/useBookingManagement'
 import { useAuthStore } from '../../../lib/stores/authStore'
 import { BookingRequest, BookingStatus } from '../../../interfaces'
@@ -57,21 +58,22 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
 
   // Hooks
   const { user } = useAuthStore()
+  const { hostBookings, isLoadingHostBookings: isLoadingBookings, isUpdatingBooking } = useBookingStore()
   const {
-    hostBookings,
-    isLoadingBookings,
-    isUpdatingBooking,
+    // hostBookings, // Available from store
+    // isLoadingBookings, // Available from store as isLoadingHostBookings
+    // isUpdatingBooking, // Available from store
     loadHostBookings,
     approveBooking,
     declineBooking,
-    contactGuest
+    // contactGuest // Function not available in useBookingManagement
   } = useBookingManagement()
 
   // Load bookings on component mount
   useEffect(() => {
     if (user?.id) {
       console.log('🔄 Loading host bookings...')
-      loadHostBookings(user.id, propertyId).catch(console.error)
+      loadHostBookings(user.id).catch(console.error)
     }
   }, [user?.id, propertyId, loadHostBookings])
 
@@ -81,19 +83,19 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
 
     // Filter by tab (status)
     if (selectedTab !== 'all') {
-      filtered = filtered.filter(booking => booking.status === selectedTab)
+      filtered = filtered.filter((booking: any) => booking.status === selectedTab)
     }
 
     // Filter by status dropdown
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(booking => booking.status === statusFilter)
+      filtered = filtered.filter((booking: any) => booking.status === statusFilter)
     }
 
     // Filter by search term
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
-      filtered = filtered.filter(booking => 
-        booking.guest_name.toLowerCase().includes(searchLower) ||
+      filtered = filtered.filter((booking: any) => 
+        booking.guest_display_name.toLowerCase().includes(searchLower) ||
         booking.property_title.toLowerCase().includes(searchLower) ||
         booking.id.toLowerCase().includes(searchLower)
       )
@@ -114,7 +116,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
       cancelled: 0
     }
 
-    hostBookings.forEach(booking => {
+    hostBookings.forEach((booking: any) => {
       if (booking.status in counts) {
         counts[booking.status as keyof typeof counts]++
       }
@@ -143,7 +145,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
   const handleDeclineBooking = async (bookingId: string, reason?: string) => {
     try {
       console.log('🔄 Declining booking:', bookingId)
-      await declineBooking(bookingId, reason)
+      await declineBooking(bookingId, reason || 'No reason provided')
       toast.success(t('booking.host.declineSuccess', { defaultValue: 'Booking declined' }))
       onDeclineClose()
     } catch (error) {
@@ -152,25 +154,27 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
     }
   }
 
-  const handleContactGuest = async (booking: BookingRequest, message: string) => {
-    try {
-      console.log('🔄 Contacting guest for booking:', booking.id)
-      await contactGuest(booking.id, message)
-      toast.success(t('booking.host.messageSent', { defaultValue: 'Message sent to guest!' }))
-    } catch (error) {
-      console.error('❌ Error contacting guest:', error)
-      toast.error(t('booking.host.messageFailed', { defaultValue: 'Failed to send message' }))
-    }
-  }
+  // const handleContactGuest = async (booking: BookingRequest, message: string) => {
+  //   try {
+  //     console.log('🔄 Contacting guest for booking:', booking.id)
+  //     // TODO: Implement contactGuest functionality
+  //     // await contactGuest(booking.id, message)
+  //     toast.success(t('booking.host.messageSent', { defaultValue: 'Message sent to guest!' }))
+  //   } catch (error) {
+  //     console.error('❌ Error contacting guest:', error)
+  //     toast.error(t('booking.host.messageFailed', { defaultValue: 'Failed to send message' }))
+  //   }
+  // } // Unused function
 
   const getStatusColor = (status: BookingStatus) => {
     switch (status) {
+      case 'confirmed': return 'success'
       case 'pending': return 'warning'
-      case 'approved': return 'success'
-      case 'confirmed': return 'primary'
       case 'completed': return 'success'
-      case 'declined': return 'danger'
       case 'cancelled': return 'default'
+      case 'rejected': return 'danger'
+      case 'accepted-and-waiting-for-payment': return 'warning'
+      case 'payment-failed': return 'danger'
       default: return 'default'
     }
   }
@@ -178,11 +182,12 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
   const getStatusIcon = (status: BookingStatus) => {
     switch (status) {
       case 'pending': return <Clock className="size-4" />
-      case 'approved': return <CheckCircle className="size-4" />
       case 'confirmed': return <CheckCircle className="size-4" />
       case 'completed': return <CheckCircle className="size-4" />
-      case 'declined': return <XCircle className="size-4" />
       case 'cancelled': return <XCircle className="size-4" />
+      case 'rejected': return <XCircle className="size-4" />
+      case 'accepted-and-waiting-for-payment': return <Clock className="size-4" />
+      case 'payment-failed': return <XCircle className="size-4" />
       default: return <AlertTriangle className="size-4" />
     }
   }
@@ -255,7 +260,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               title={
                 <div className="flex items-center gap-2">
                   <span>{t('booking.host.tabs.all', { defaultValue: 'All Bookings' })}</span>
-                  <Badge content={bookingCounts.all} color="default" size="sm" />
+                  <Badge color="default" size="sm">{bookingCounts.all}</Badge>
                 </div>
               }
             />
@@ -264,7 +269,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               title={
                 <div className="flex items-center gap-2">
                   <span>{t('booking.host.tabs.pending', { defaultValue: 'Pending' })}</span>
-                  <Badge content={bookingCounts.pending} color="warning" size="sm" />
+                  <Badge color="warning" size="sm">{bookingCounts.pending}</Badge>
                 </div>
               }
             />
@@ -273,7 +278,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               title={
                 <div className="flex items-center gap-2">
                   <span>{t('booking.host.tabs.approved', { defaultValue: 'Approved' })}</span>
-                  <Badge content={bookingCounts.approved} color="success" size="sm" />
+                  <Badge color="success" size="sm">{bookingCounts.approved}</Badge>
                 </div>
               }
             />
@@ -282,7 +287,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               title={
                 <div className="flex items-center gap-2">
                   <span>{t('booking.host.tabs.confirmed', { defaultValue: 'Confirmed' })}</span>
-                  <Badge content={bookingCounts.confirmed} color="primary" size="sm" />
+                  <Badge color="primary" size="sm">{bookingCounts.confirmed}</Badge>
                 </div>
               }
             />
@@ -291,7 +296,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
               title={
                 <div className="flex items-center gap-2">
                   <span>{t('booking.host.tabs.completed', { defaultValue: 'Completed' })}</span>
-                  <Badge content={bookingCounts.completed} color="success" size="sm" />
+                  <Badge color="success" size="sm">{bookingCounts.completed}</Badge>
                 </div>
               }
             />
@@ -314,24 +319,27 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
             </CardBody>
           </Card>
         ) : (
-          filteredBookings.map((booking) => (
-            <Card key={booking.id} className="transition-shadow hover:shadow-md">
+          filteredBookings.map((booking) => {
+            // Type assertion to handle BookingRequest properties
+            const bookingRequest = booking as unknown as BookingRequest
+            return (
+            <Card key={bookingRequest.id} className="transition-shadow hover:shadow-md">
               <CardBody className="p-6">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                   {/* Guest Info */}
                   <div className="flex flex-1 items-center gap-4">
                     <Avatar
-                      src={booking.guest_avatar}
-                      alt={booking.guest_name}
+                      src={bookingRequest.guest_avatar_url}
+                      alt={bookingRequest.guest_display_name}
                       size="lg"
                       className="shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900">{booking.guest_name}</h3>
-                      <p className="text-gray-600">{booking.property_title}</p>
+                      <h3 className="text-lg font-semibold text-gray-900">{bookingRequest.guest_display_name}</h3>
+                      <p className="text-gray-600">{bookingRequest.property_title}</p>
                       <div className="mt-1 flex items-center gap-1 text-sm text-gray-500">
                         <MapPin className="size-3" />
-                        <span>{booking.property_location}</span>
+                        <span>{bookingRequest.property_location}</span>
                       </div>
                     </div>
                   </div>
@@ -340,31 +348,31 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                   <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{t('booking.host.labels.checkIn', { defaultValue: 'Check-in' })}</p>
-                      <p className="font-semibold">{new Date(booking.check_in).toLocaleDateString()}</p>
+                      <p className="font-semibold">{new Date(bookingRequest.check_in_date).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{t('booking.host.labels.checkOut', { defaultValue: 'Check-out' })}</p>
-                      <p className="font-semibold">{new Date(booking.check_out).toLocaleDateString()}</p>
+                      <p className="font-semibold">{new Date(bookingRequest.check_out_date).toLocaleDateString()}</p>
                     </div>
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{t('booking.host.labels.guests', { defaultValue: 'Guests' })}</p>
-                      <p className="font-semibold">{booking.guest_count}</p>
+                      <p className="font-semibold">{bookingRequest.guest_count}</p>
                     </div>
                     <div>
                       <p className="text-xs font-medium uppercase tracking-wide text-gray-500">{t('booking.host.labels.total', { defaultValue: 'Total' })}</p>
-                      <p className="font-semibold text-green-600">{formatPrice(booking.total_amount, booking.currency || 'USD')}</p>
+                      <p className="font-semibold text-green-600">{formatPrice(bookingRequest.total_amount, bookingRequest.currency || 'USD')}</p>
                     </div>
                   </div>
 
                   {/* Status & Actions */}
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-4">
                     <Chip
-                      color={getStatusColor(booking.status)}
+                      color={getStatusColor(bookingRequest.status)}
                       variant="flat"
-                      startContent={getStatusIcon(booking.status)}
+                      startContent={getStatusIcon(bookingRequest.status)}
                       className="w-fit"
                     >
-                      {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                      {bookingRequest.status.charAt(0).toUpperCase() + bookingRequest.status.slice(1)}
                     </Chip>
 
                     <div className="flex items-center gap-2">
@@ -372,12 +380,12 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         size="sm"
                         variant="light"
                         startContent={<Eye className="size-4" />}
-                        onPress={() => handleViewDetails(booking)}
+                        onPress={() => handleViewDetails(bookingRequest)}
                       >
                         {t('booking.host.actions.details', { defaultValue: 'Details' })}
                       </Button>
 
-                      {booking.status === 'pending' && (
+                      {bookingRequest.status === 'pending' && (
                         <>
                           <Button
                             size="sm"
@@ -385,7 +393,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                             variant="light"
                             startContent={<CheckCircle className="size-4" />}
                             onPress={() => {
-                              setSelectedBooking(booking)
+                              setSelectedBooking(bookingRequest)
                               onApproveOpen()
                             }}
                             isLoading={isUpdatingBooking}
@@ -398,7 +406,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                             variant="light"
                             startContent={<XCircle className="size-4" />}
                             onPress={() => {
-                              setSelectedBooking(booking)
+                              setSelectedBooking(bookingRequest)
                               onDeclineOpen()
                             }}
                             isLoading={isUpdatingBooking}
@@ -413,7 +421,7 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         variant="light"
                         startContent={<MessageCircle className="size-4" />}
                         onPress={() => {
-                          setSelectedBooking(booking)
+                          setSelectedBooking(bookingRequest)
                           // Open contact modal (you can implement this)
                         }}
                       >
@@ -424,7 +432,8 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                 </div>
               </CardBody>
             </Card>
-          ))
+            )
+          })
         )}
       </div>
 
@@ -444,12 +453,12 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                       <h3 className="mb-3 text-lg font-semibold">{t('booking.host.modals.details.guestInfo', { defaultValue: 'Guest Information' })}</h3>
                       <div className="mb-4 flex items-center gap-4">
                         <Avatar
-                          src={selectedBooking.guest_avatar}
-                          alt={selectedBooking.guest_name}
+                          src={selectedBooking.guest_avatar_url}
+                          alt={selectedBooking.guest_display_name}
                           size="lg"
                         />
                         <div>
-                          <h4 className="font-semibold">{selectedBooking.guest_name}</h4>
+                          <h4 className="font-semibold">{selectedBooking.guest_display_name}</h4>
                           <p className="text-gray-600">{selectedBooking.guest_email}</p>
                           {selectedBooking.guest_phone && (
                             <p className="text-gray-600">{selectedBooking.guest_phone}</p>
@@ -474,11 +483,11 @@ const HostBookingManagement: React.FC<HostBookingManagementProps> = ({ propertyI
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.checkIn', { defaultValue: 'Check-in' })}</p>
-                          <p className="font-semibold">{new Date(selectedBooking.check_in).toLocaleDateString()}</p>
+                          <p className="font-semibold">{new Date(selectedBooking.check_in_date).toLocaleDateString()}</p>
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.checkOut', { defaultValue: 'Check-out' })}</p>
-                          <p className="font-semibold">{new Date(selectedBooking.check_out).toLocaleDateString()}</p>
+                          <p className="font-semibold">{new Date(selectedBooking.check_out_date).toLocaleDateString()}</p>
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-500">{t('booking.host.modals.details.labels.guests', { defaultValue: 'Guests' })}</p>

@@ -407,7 +407,7 @@ export const useReviewStore = create<ReviewStoreState>((set, get) => ({
   },
 
   // Check if a review already exists for a review type (simplified for public reviews)
-  checkExistingReview: async (reviewType: string, reviewerId?: string): Promise<{
+  checkExistingReview: async (/*reviewType: string, reviewerId?: string*/): Promise<{
     exists: boolean
     review?: Review
     canReview?: boolean

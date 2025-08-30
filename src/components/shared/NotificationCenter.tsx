@@ -58,11 +58,12 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({
           <Bell className={`size-5 ${className.includes('bg-primary-600') ? 'text-white' : ''}`} />
           {showBadge && unreadCount > 0 && (
             <Badge
-              content={unreadCount > 99 ? '99+' : unreadCount.toString()}
               color="danger"
               size="sm"
               className="absolute -right-1 -top-1"
-            />
+            >
+              {unreadCount > 99 ? '99+' : unreadCount.toString()}
+            </Badge>
           )}
         </Button>
       </PopoverTrigger>

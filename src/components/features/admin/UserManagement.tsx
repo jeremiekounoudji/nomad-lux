@@ -28,7 +28,7 @@ import {
   UserDeletionModal,
   SendMessageModal,
   BulkUserActionsModal,
-  User
+  // User // Import not found
 } from './modals'
 import { Search, MoreHorizontal, Eye, Ban, UserCheck, Trash2, MessageSquare, Calendar, DollarSign, Home, Star, Download } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
@@ -36,30 +36,51 @@ import { useTranslation } from '../../../lib/stores/translationStore'
 
 
 // Mock user data
+interface User {
+  id: string
+  name: string
+  email: string
+  phone: string
+  avatar_url: string
+  display_name: string
+  status: 'active' | 'suspended' | 'pending'
+  role: 'host' | 'guest' | 'admin'
+  joinDate: string
+  lastLogin: string
+  totalBookings: number
+  totalProperties: number
+  revenue: number
+  rating: number
+}
+
 const mockUsers: User[] = [
   {
     id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    phone: '+1 (555) 123-4567',
-    status: 'active',
-    role: 'both',
+    name: 'John Doe',
+    email: 'john@example.com',
+    phone: '+1-555-0101',
+    avatar_url: '/avatars/john.jpg',
+    display_name: 'John Doe',
+    status: 'active' as const,
+    role: 'guest', // Changed from 'both' to valid role
     joinDate: '2024-01-15',
-    lastLogin: '2 hours ago',
+    lastLogin: '2024-02-10 16:45',
     totalBookings: 12,
-    totalProperties: 3,
-    revenue: 15600,
+    totalProperties: 0,
+    revenue: 0,
     rating: 4.8
   },
   {
     id: '2',
-    name: 'Michael Chen',
-    email: 'michael.chen@email.com',
-    phone: '+1 (555) 234-5678',
-    status: 'active',
-    role: 'guest',
-    joinDate: '2024-02-20',
-    lastLogin: '1 day ago',
+    name: 'Jane Smith',
+    email: 'jane@example.com',
+    phone: '+1-555-0102',
+    avatar_url: '/avatars/jane.jpg',
+    display_name: 'Jane Smith',
+    status: 'active' as const,
+    role: 'guest' as const,
+    joinDate: '2024-01-20',
+    lastLogin: '2024-02-10 14:30',
     totalBookings: 8,
     totalProperties: 0,
     revenue: 0,
@@ -67,31 +88,51 @@ const mockUsers: User[] = [
   },
   {
     id: '3',
-    name: 'Emma Rodriguez',
-    email: 'emma.rodriguez@email.com',
-    phone: '+1 (555) 345-6789',
-    status: 'suspended',
-    role: 'host',
-    joinDate: '2023-11-10',
-    lastLogin: '5 days ago',
+    name: 'Mike Johnson',
+    email: 'mike@example.com',
+    phone: '+1-555-0103',
+    avatar_url: '/avatars/mike.jpg',
+    display_name: 'Mike Johnson',
+    status: 'suspended' as const,
+    role: 'host' as const,
+    joinDate: '2024-01-10',
+    lastLogin: '2024-02-08 09:15',
     totalBookings: 0,
-    totalProperties: 2,
-    revenue: 8900,
-    rating: 3.2
+    totalProperties: 3,
+    revenue: 2450,
+    rating: 0
   },
   {
     id: '4',
-    name: 'David Thompson',
-    email: 'david.thompson@email.com',
-    phone: '+1 (555) 456-7890',
-    status: 'active',
-    role: 'host',
-    joinDate: '2024-03-05',
-    lastLogin: '30 minutes ago',
-    totalBookings: 0,
-    totalProperties: 5,
-    revenue: 23400,
-    rating: 4.9
+    name: 'Sarah Wilson',
+    email: 'sarah@example.com',
+    phone: '+1-555-0104',
+    avatar_url: '/avatars/sarah.jpg',
+    display_name: 'Sarah Wilson',
+    status: 'active' as const,
+    role: 'guest' as const,
+    joinDate: '2024-02-01',
+    lastLogin: '2024-02-09 11:20',
+    totalBookings: 5,
+    totalProperties: 0,
+    revenue: 0,
+    rating: 4.8
+  },
+  {
+    id: '2',
+    name: 'David Brown',
+    email: 'david@example.com',
+    phone: '+1-555-0105',
+    avatar_url: '/avatars/david.jpg',
+    display_name: 'David Brown',
+    status: 'active' as const,
+    role: 'guest' as const,
+    joinDate: '2024-01-25',
+    lastLogin: '2024-02-09 15:45',
+    totalBookings: 3,
+    totalProperties: 0,
+    revenue: 0,
+    rating: 4.5
   }
 ]
 
@@ -222,8 +263,8 @@ export const UserManagement: React.FC = () => {
     active: mockUsers.filter(u => u.status === 'active').length,
     suspended: mockUsers.filter(u => u.status === 'suspended').length,
     pending: mockUsers.filter(u => u.status === 'pending').length,
-    hosts: mockUsers.filter(u => u.role === 'host' || u.role === 'both').length,
-    guests: mockUsers.filter(u => u.role === 'guest' || u.role === 'both').length
+    hosts: mockUsers.filter(u => u.role === 'host').length,
+    guests: mockUsers.filter(u => u.role === 'guest').length
   }
 
   return (
@@ -287,10 +328,10 @@ export const UserManagement: React.FC = () => {
             placeholder={t('common.buttons.filter')}
             className="sm:max-w-xs"
           >
-            <SelectItem key="all" value="all">{t('admin.users.allUsers')}</SelectItem>
-            <SelectItem key="active" value="active">{t('common.status.active')}</SelectItem>
-            <SelectItem key="suspended" value="suspended">{t('common.status.suspended')}</SelectItem>
-            <SelectItem key="pending" value="pending">{t('common.status.pending')}</SelectItem>
+            <SelectItem key="all">{t('admin.users.allUsers')}</SelectItem>
+            <SelectItem key="active">{t('common.status.active')}</SelectItem>
+            <SelectItem key="suspended">{t('common.status.suspended')}</SelectItem>
+            <SelectItem key="pending">{t('common.status.pending')}</SelectItem>
           </Select>
         </div>
         <div className="flex gap-2">

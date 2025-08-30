@@ -23,8 +23,8 @@ export const PayoutRequestsTable: React.FC<PayoutRequestsTableProps> = ({
   error,
   currentPage,
   totalPages,
-  totalCount,
-  itemsPerPage,
+  // totalCount, // Unused prop
+  // itemsPerPage, // Unused prop
   onApprove,
   onReject,
   onPageChange

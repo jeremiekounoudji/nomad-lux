@@ -82,13 +82,13 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
   }
 
   // Helper function to format hours into readable text
-  const formatHoursToText = (hours: number): string => {
-    if (hours >= 24) {
-      const days = Math.floor(hours / 24)
-      return `${days} day${days > 1 ? 's' : ''}`
-    }
-    return `${hours} hour${hours > 1 ? 's' : ''}`
-  }
+  // const formatHoursToText = (hours: number): string => {
+  //   if (hours >= 24) {
+  //     const days = Math.floor(hours / 24)
+  //     return `${days} day${days > 1 ? 's' : ''}`
+  //   }
+  //   return `${hours} hour${hours > 1 ? 's' : ''}`
+  // }
 
   // Get refund amount from RPC result or fallback to 0
   const refundAmount = refundData?.net_refund || 0
@@ -108,7 +108,7 @@ export const CancelBookingModal: React.FC<CancelBookingModalProps> = ({
       }}
     >
       <ModalContent>
-        {(onClose) => (
+        {(/* onClose */) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">

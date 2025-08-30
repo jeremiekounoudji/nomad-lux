@@ -17,7 +17,7 @@ const PropertyMarker: React.FC<PropertyMarkerProps> = ({
   showPrice = true,
   showImage = false
 }) => {
-  const { t } = useTranslation('property');
+  const { /* t */ } = useTranslation('property'); // Commented out unused variable
   // Placeholder implementation - will be implemented in task 3.2
   return (
     <div 

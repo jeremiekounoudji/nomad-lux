@@ -6,7 +6,7 @@ import { useTranslation } from '../lib/stores/translationStore';
 
 import { CreatePropertyPageProps } from '../interfaces'
 
-const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange }) => {
+const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange: /* _onPageChange */ }) => {
   const { t } = useTranslation(['property', 'common'])
   return (
     <div className="mx-auto max-w-7xl">

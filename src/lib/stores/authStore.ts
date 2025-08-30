@@ -22,7 +22,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set, get) => ({
+    (set /*, get*/) => ({
       // Initial state
       user: null,
       supabaseUser: null,

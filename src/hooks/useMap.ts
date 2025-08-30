@@ -37,8 +37,8 @@ export const useMap = (options: MapOptions = {}): UseMapReturn => {
   const {
     center = [14.6937, -17.4441], // Dakar, Senegal (default center for West Africa)
     zoom = 13,
-    minZoom = 3,
-    maxZoom = 18,
+    // minZoom = 3, // Unused parameter
+    // maxZoom = 18, // Unused parameter
     enableClustering = false,
     enableRouting = false
   } = options

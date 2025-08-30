@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import React, { useState } from 'react'
 import { Card, CardBody, Image, Skeleton } from '@heroui/react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import { TutorialStep as TutorialStepInterface } from '../../interfaces/Tutorial'
@@ -113,14 +112,11 @@ export const TutorialStep: React.FC<TutorialStepProps> = ({
       <div className="text-center mt-6">
         <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
           <span>
-            {t('tutorial.stepProgress', 'Step {{current}} of {{total}}', {
-              current: stepNumber,
-              total: totalSteps
-            })}
+            {t('tutorial.stepProgress', { current: stepNumber, total: totalSteps })}
           </span>
           <span>•</span>
           <span>
-            {t('tutorial.stepId', 'ID: {{id}}', { id: step.id })}
+            {t('tutorial.stepId', { id: step.id })}
           </span>
         </div>
       </div>

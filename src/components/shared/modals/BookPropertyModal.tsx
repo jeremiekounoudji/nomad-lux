@@ -82,7 +82,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
       scrollBehavior="inside"
     >
       <ModalContent>
-        {(onClose) => (
+        {(/* onClose */) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <h2 className="text-xl font-bold">{t('booking.actions.bookNow', 'Book this Property')}</h2>
@@ -157,7 +157,7 @@ export const BookPropertyModal: React.FC<BookPropertyModalProps> = ({
                     isRequired
                   >
                     {Array.from({ length: property.max_guests }, (_, i) => (
-                      <SelectItem key={`${i + 1}`} value={`${i + 1}`}>
+                      <SelectItem key={`${i + 1}`}>
                         {t('booking.labels.guestsCount', { count: i + 1 })}
                       </SelectItem>
                     ))}

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react'; // useCallback removed as unused
 import { 
   Button, 
   ButtonGroup, 
@@ -121,10 +121,13 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
   const [selectedMeasurement, setSelectedMeasurement] = useState<string | null>(null);
 
   // Generate random color for new measurements
+  // Generate random color for measurements (unused but kept for future use)
+  /*
   const generateColor = (): string => {
     const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#F97316'];
     return colors[Math.floor(Math.random() * colors.length)];
   };
+  */
 
   // Handle tool activation
   const handleToolActivation = (tool: 'distance' | 'area') => {
@@ -141,7 +144,8 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
     }
   };
 
-  // Complete current measurement
+  // Complete current measurement (unused but kept for future use)
+  /*
   const completeMeasurement = useCallback(() => {
     if (activeTool === 'distance' && currentLine.length >= 2) {
       const newLine: MeasurementLine = {
@@ -182,6 +186,7 @@ export const MapMeasurementTools: React.FC<MapMeasurementToolsProps> = ({
     
     setIsDrawing(false);
   }, [activeTool, currentLine, currentArea, measurements, onMeasurementsChange]);
+  */
 
   // Cancel current measurement
   const cancelMeasurement = () => {

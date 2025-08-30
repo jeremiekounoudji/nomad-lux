@@ -1,7 +1,7 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react'; // useMemo removed as unused
 import { Property } from '../../../interfaces/Property';
 import { LazyMapWrapper } from '../../map';
-import { MapCoordinates } from '../../../interfaces/Map';
+// import { MapCoordinates } from '../../../interfaces/Map'; // Unused import
 import { useNavigate } from 'react-router-dom';
 import { usePropertyStore } from '../../../lib/stores/propertyStore';
 
@@ -21,7 +21,8 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
 
-  // Calculate map bounds based on property coordinates
+  // Calculate map bounds based on property coordinates (unused)
+  /*
   const bounds = useMemo(() => {
     if (!properties.length) return undefined;
 
@@ -40,6 +41,7 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
       west: Math.min(...longitudes) - 0.1
     };
   }, [properties]);
+  */
 
   // Handle property click
   const handlePropertyClick = useCallback((property: Property) => {
@@ -51,11 +53,11 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
     }
   }, [onPropertyClick, setSelectedProperty, navigate]);
 
-  // Handle directions request
-  const handleDirectionsRequest = useCallback((coordinates: MapCoordinates) => {
-    const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
-    window.open(url, '_blank');
-  }, []);
+  // Handle directions request (unused but kept for future use)
+  // const handleDirectionsRequest = useCallback((coordinates: MapCoordinates) => {
+  //   const url = `https://www.google.com/maps/dir/?api=1&destination=${coordinates.lat},${coordinates.lng}`;
+  //   window.open(url, '_blank');
+  // }, []);
 
   return (
     <div className={`relative overflow-hidden rounded-xl border border-gray-200 ${className}`}>
@@ -63,14 +65,8 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
         type="properties"
         properties={properties}
         height={height}
-        showNearbyAmenities={false}
-        showDirections={true}
-        showRadius={false}
-        bounds={bounds}
         onPropertyClick={handlePropertyClick}
-        onDirectionsRequest={handleDirectionsRequest}
         enableClustering={true}
-        showPriceOnMarker={true}
       />
     </div>
   );

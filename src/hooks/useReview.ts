@@ -14,7 +14,7 @@ export const useReview = (propertyId?: string) => {
     modalState,
     formState,
     fetchPropertyReviews,
-    fetchUserReviews,
+    // fetchUserReviews, // Unused function
     createReview,
     updateReview,
     deleteReview,
@@ -187,7 +187,7 @@ export const useReview = (propertyId?: string) => {
   }, [propertyId, loading])
 
   // Check if user can review a property (public review)
-  const canReviewProperty = useCallback((propertyId: string) => {
+  const canReviewProperty = useCallback((/*propertyId: string*/) => {
     if (!user) return false
     // Anyone can review any property
     return true

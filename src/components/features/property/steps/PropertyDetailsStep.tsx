@@ -77,6 +77,8 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ formData, set
 
   // Get translated property types and amenities
   const { propertyTypes: translatedPropertyTypes, isLoading: propertyTypesLoading } = usePropertyTypes();
+  // propertyTypesLoading could be used for loading states if needed
+  void propertyTypesLoading; // Explicitly mark as intentionally unused
   const { amenities: translatedAmenities, isLoading: amenitiesLoading } = useAmenities();
 
   // Get property types from admin settings, filtered for enabled ones

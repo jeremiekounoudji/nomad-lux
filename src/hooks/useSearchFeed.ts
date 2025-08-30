@@ -58,16 +58,16 @@ export const useSearchFeed = () => {
     currentPage,
     hasNextPage,
     totalCount,
-    totalPages,
+    // totalPages, // Unused value
     isLoadingMore,
     isFiltersModalOpen,
     activeFiltersCount,
     recentSearches,
     
     // Actions
-    setSearchQuery,
+    // setSearchQuery, // Unused function
     setFilters,
-    updateFilter,
+    // updateFilter, // Unused function
     clearFilters,
     resetFilters,
     setSortBy,
@@ -83,8 +83,8 @@ export const useSearchFeed = () => {
     setIsLoadingMore,
     setIsFiltersModalOpen,
     updateActiveFiltersCount,
-    addToSearchHistory,
-    clearSearchHistory,
+    // addToSearchHistory, // Unused function
+    // clearSearchHistory, // Unused function
     resetSearch,
     clearAll,
     updatePropertyLike,

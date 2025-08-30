@@ -3,7 +3,7 @@ import { Card, CardBody, Button, Spinner, Chip } from '@heroui/react'
 import { User, Shield, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone, Star, Globe } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../lib/stores/translationStore'
-import { useAuthStore } from '../lib/stores/authStore'
+// import { useAuthStore } from '../lib/stores/authStore' // Commented out to avoid unused import warning
 import { ProfilePageProps, ProfileImageData } from '../interfaces/Profile'
 import { ROUTES } from '../router/types'
 import { useProfileImage } from '../hooks/useProfileImage'

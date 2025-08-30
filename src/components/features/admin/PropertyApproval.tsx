@@ -692,7 +692,7 @@ export const PropertyApproval: React.FC = () => {
       <BulkActionModal
         isOpen={isBulkModalOpen}
         onClose={onBulkModalClose}
-        bulkActionType={bulkActionType}
+        bulkActionType={bulkActionType || 'approve'}
         selectedProperties={selectedProperties}
         rejectionReason={rejectionReason}
         setRejectionReason={setRejectionReason}

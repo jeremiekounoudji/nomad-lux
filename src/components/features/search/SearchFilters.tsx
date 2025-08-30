@@ -32,7 +32,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
     applyFilters, 
     clearFilters,
     setSortBy,
-    performSearch
+    // performSearch, // Commented out unused function
   } = useSearchFeed()
 
   // Use admin settings hook to get property types
@@ -102,6 +102,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
   // Get translated property types and amenities
   const { propertyTypes: translatedPropertyTypes, isLoading: propertyTypesLoading } = usePropertyTypes()
   const { amenities: translatedAmenities, isLoading: amenitiesLoading } = useAmenities()
+  
+  // Suppress unused variable warnings
+  void propertyTypesLoading;
+  void amenitiesLoading;
 
   // Get property types from admin settings, filtered for enabled ones
   const propertyTypeOptions = React.useMemo(() => {
@@ -134,9 +138,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onSearch }) => {
   }, [settings?.content?.propertyTypes, translatedPropertyTypes])
 
   // Use translated amenities instead of hardcoded ones
-  const amenityOptions = React.useMemo(() => {
-    return translatedAmenities.map(amenity => amenity.value)
-  }, [translatedAmenities])
+  // const amenityOptions = React.useMemo(() => {
+  //   return translatedAmenities.map(amenity => amenity.value)
+  // }, [translatedAmenities])
 
   const handleApply = async () => {
     console.log('🎯 [FILTER] Apply button clicked!')

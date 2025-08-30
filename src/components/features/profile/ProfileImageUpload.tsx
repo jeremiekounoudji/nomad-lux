@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
 import { Card, CardBody, Button, Progress, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Chip } from '@heroui/react'
-import { Upload, Camera, X, Crop, RotateCw, Download, Trash2, Image, AlertCircle } from 'lucide-react'
+import { Upload, Camera, X, Crop, RotateCw, Download, Trash2, AlertCircle } from 'lucide-react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 import { ProfileImageData } from '../../../interfaces/Profile'
 
@@ -120,7 +120,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       const imageData: ProfileImageData = {
         file: selectedFile,
         previewUrl: previewUrl || '',
-        cropData: cropData || null
+        croppedData: cropData || undefined
       }
 
       await onImageUpload(imageData)
@@ -164,7 +164,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const img = new Image()
+    const img = new (window as any).Image()
     img.onload = () => {
       // Set canvas size for square crop
       const size = Math.min(img.width, img.height)
@@ -194,7 +194,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    const img = new Image()
+    const img = new (window as any).Image()
     img.onload = () => {
       // Swap dimensions for rotation
       canvas.width = img.height

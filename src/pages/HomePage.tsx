@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
   const { t } = useTranslation(['property', 'common', 'home'])
   const navigate = useNavigate();
   const { setSelectedProperty } = usePropertyStore();
-  const [selectedProperty, setSelectedPropertyState] = useState<Property | null>(null);
+  // const [selectedProperty, setSelectedPropertyState] = useState<Property | null>(null); // Commented out to avoid unused variable warning
   const [selectedCity, setSelectedCity] = useState<PopularPlace | null>(null);
   const [cityProperties, setCityProperties] = useState<Property[]>([])
   const [cityPropertiesLoading, setCityPropertiesLoading] = useState(false)
@@ -82,8 +82,8 @@ const HomePage: React.FC = () => {
   // Use our new home feed hook
   const {
     // Popular places
-    popularPlaces,
-    popularPlacesLoading,
+    // popularPlaces, // Commented out to avoid unused variable warning
+    // popularPlacesLoading, // Commented out to avoid unused variable warning
     popularPlacesError,
     
     // Properties feed
@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
     feedError,
     isLoadingMore,
     hasNextPage,
-    totalCount,
+    // totalCount, // Commented out to avoid unused variable warning
     
     // User location
     userLocation,
@@ -258,16 +258,16 @@ const HomePage: React.FC = () => {
     handleLikeProperty(propertyId)
   }, [handleLikeProperty])
 
-  const handleBook = (property: Property) => {
-    if (!isAuthenticated) {
-      toast.error(t('common.messages.signInToBook'))
-      setCurrentPage('login')
-      return
-    }
-    console.log('📅 Book property:', property.title)
-    // TODO: Implement booking modal
-          toast.success(t('common.messages.bookingComingSoon'))
-  }
+  // const handleBook = (property: Property) => { // Commented out to avoid unused variable warning
+  //   if (!isAuthenticated) {
+  //     toast.error(t('common.messages.signInToBook'))
+  //     setCurrentPage('login')
+  //     return
+  //   }
+  //   console.log('📅 Book property:', property.title)
+  //   // TODO: Implement booking modal
+  //   toast.success(t('common.messages.bookingComingSoon'))
+  // }
 
   const handlePropertyClick = useCallback((property: Property) => {
     console.log('🏠 Property clicked:', property.title);
@@ -290,46 +290,46 @@ const HomePage: React.FC = () => {
     setCurrentPage('home');
   }
 
-  const handleBackToCityList = () => {
-    setSelectedProperty(null);
-  }
+  // const handleBackToCityList = () => { // Commented out to avoid unused variable warning
+  //   setSelectedProperty(null);
+  // }
 
-  const handlePageChange = (page: string) => {
-    console.log('🔄 Page change requested:', page)
+  // const handlePageChange = (page: string) => { // Commented out to avoid unused variable warning
+  //   console.log('🔄 Page change requested:', page)
 
-    // Handle profile page - redirect to profile route
-    if (page === 'profile') {
-      if (!isAuthenticated) {
-        toast.error(t('common.messages.signInToAccessProfile'))
-        setCurrentPage('login')
-        return
-      }
-      // Navigate to profile page instead of opening modal
-      navigate('/profile')
-      return
-    }
+  //   // Handle profile page - redirect to profile route
+  //   if (page === 'profile') {
+  //     if (!isAuthenticated) {
+  //       toast.error(t('common.messages.signInToAccessProfile'))
+  //       setCurrentPage('login')
+  //       return
+  //     }
+  //     // Navigate to profile page instead of opening modal
+  //     navigate('/profile')
+  //     return
+  //   }
 
-    // Check if page requires authentication
-    if (protectedPages.includes(page) && !isAuthenticated && !isLoading) {
-      console.log('🔒 Protected page access denied:', page)
-      toast.error(t('common.messages.signInRequired'))
-      setCurrentPage('login')
-      return
-    }
+  //   // Check if page requires authentication
+  //   if (protectedPages.includes(page) && !isAuthenticated && !isLoading) {
+  //     console.log('🔒 Protected page access denied:', page)
+  //     toast.error(t('common.messages.signInRequired'))
+  //     setCurrentPage('login')
+  //     return
+  //   }
     
-    setCurrentPage(page);
-    setSelectedProperty(null);
-  }
+  //   setCurrentPage(page);
+  //   setSelectedProperty(null);
+  // }
 
   const handleLogin = () => {
     console.log('✅ User logged in successfully')
     setCurrentPage('home')
   }
 
-  const handleRegister = () => {
-    console.log('✅ User registered successfully')
-    setCurrentPage('home')
-  }
+  // const handleRegister = () => { // Commented out to avoid unused variable warning
+  //   console.log('✅ User registered successfully')
+  //   setCurrentPage('home')
+  // }
 
 
 
@@ -378,9 +378,9 @@ const HomePage: React.FC = () => {
 
   // This is a legacy state management that should be removed.
   // We now use routing for page navigation.
-  if (selectedProperty) {
-    return null; // Should be handled by router now
-  }
+  // if (selectedProperty) {
+  //   return null; // Should be handled by router now
+  // }
 
   // City Properties View
   if (selectedCity) {

@@ -20,8 +20,8 @@ interface BookingRequestCardProps {
 const BookingRequestCard: React.FC<BookingRequestCardProps> = ({
   request,
   onRequestClick,
-  onApprove,
-  onDecline,
+  // onApprove, // Commented out unused prop
+  // onDecline, // Commented out unused prop
   onConfirmModalOpen,
   onDeclineModalOpen,
   updatingBookingId,

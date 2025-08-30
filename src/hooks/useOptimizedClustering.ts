@@ -2,15 +2,15 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { DatabaseProperty } from '../interfaces/DatabaseProperty';
 import { MapCoordinates } from '../interfaces/Map';
 
-interface ClusteringOptions {
-  minZoom: number;
-  maxZoom: number;
-  radius: number;
-  extent: number;
-  nodeSize: number;
-  log: boolean;
-  generate: (zoom: number, properties: DatabaseProperty[]) => ClusterNode[];
-}
+// interface ClusteringOptions { // Unused interface
+//   minZoom: number;
+//   maxZoom: number;
+//   radius: number;
+//   extent: number;
+//   nodeSize: number;
+//   log: boolean;
+//   generate: (zoom: number, properties: DatabaseProperty[]) => ClusterNode[];
+// }
 
 interface ClusterNode {
   id: string;
@@ -69,7 +69,7 @@ export const useOptimizedClustering = (
   const {
     minClusterSize = 2,
     clusterRadius = 60,
-    maxZoom = 15,
+    // maxZoom = 15, // Unused parameter
     debounceDelay = 200,
     enableAdaptiveRadius = true,
     performanceMode = 'balanced',
@@ -98,7 +98,7 @@ export const useOptimizedClustering = (
   // Create a hash of properties for caching
   const propertiesHash = useMemo(() => {
     return properties
-      .map(p => `${p.id}-${p.coordinates.lat}-${p.coordinates.lng}`)
+      .map(p => `${p.id}-${p.location.coordinates.lat}-${p.location.coordinates.lng}`)
       .join('|');
   }, [properties]);
 
@@ -130,7 +130,7 @@ export const useOptimizedClustering = (
   const performClustering = useCallback((
     inputProperties: DatabaseProperty[],
     zoom: number,
-    bounds: any
+    // bounds: any // Unused parameter
   ): ClusterNode[] => {
     if (inputProperties.length === 0) return [];
 
@@ -148,7 +148,7 @@ export const useOptimizedClustering = (
       if (processed.has(property.id)) return;
 
       const nearbyProperties: DatabaseProperty[] = [property];
-      const center = { ...property.coordinates };
+      const center = { ...property.location.coordinates };
 
       // Find nearby properties within radius
       for (let i = index + 1; i < inputProperties.length; i++) {
@@ -156,8 +156,8 @@ export const useOptimizedClustering = (
         if (processed.has(other.id)) continue;
 
         const distance = Math.sqrt(
-          Math.pow(property.coordinates.lat - other.coordinates.lat, 2) +
-          Math.pow(property.coordinates.lng - other.coordinates.lng, 2)
+          Math.pow(property.location.coordinates.lat - other.location.coordinates.lat, 2) +
+          Math.pow(property.location.coordinates.lng - other.location.coordinates.lng, 2)
         );
 
         if (distance <= radiusInDegrees) {
@@ -171,8 +171,8 @@ export const useOptimizedClustering = (
       // Create cluster or marker
       if (nearbyProperties.length >= minClusterSize) {
         // Calculate weighted center for cluster
-        const totalLat = nearbyProperties.reduce((sum, p) => sum + p.coordinates.lat, 0);
-        const totalLng = nearbyProperties.reduce((sum, p) => sum + p.coordinates.lng, 0);
+        const totalLat = nearbyProperties.reduce((sum, p) => sum + p.location.coordinates.lat, 0);
+        const totalLng = nearbyProperties.reduce((sum, p) => sum + p.location.coordinates.lng, 0);
         
         center.lat = totalLat / nearbyProperties.length;
         center.lng = totalLng / nearbyProperties.length;
@@ -184,10 +184,10 @@ export const useOptimizedClustering = (
           coordinates: center,
           numPoints: nearbyProperties.length,
           bounds: {
-            minX: Math.min(...nearbyProperties.map(p => p.coordinates.lng)),
-            minY: Math.min(...nearbyProperties.map(p => p.coordinates.lat)),
-            maxX: Math.max(...nearbyProperties.map(p => p.coordinates.lng)),
-            maxY: Math.max(...nearbyProperties.map(p => p.coordinates.lat))
+            minX: Math.min(...nearbyProperties.map(p => p.location.coordinates.lng)),
+            minY: Math.min(...nearbyProperties.map(p => p.location.coordinates.lat)),
+            maxX: Math.max(...nearbyProperties.map(p => p.location.coordinates.lng)),
+            maxY: Math.max(...nearbyProperties.map(p => p.location.coordinates.lat))
           }
         });
       } else {
@@ -196,7 +196,7 @@ export const useOptimizedClustering = (
           id: `marker-${property.id}`,
           type: 'marker',
           properties: [property],
-          coordinates: property.coordinates,
+          coordinates: property.location.coordinates,
           numPoints: 1
         });
       }
@@ -214,8 +214,8 @@ export const useOptimizedClustering = (
     const lngBuffer = (bounds.getEast() - bounds.getWest()) * 0.1;
 
     return properties.filter(property => {
-      const lat = property.coordinates.lat;
-      const lng = property.coordinates.lng;
+      const lat = property.location.coordinates.lat;
+      const lng = property.location.coordinates.lng;
       
       return lat >= bounds.getSouth() - latBuffer &&
              lat <= bounds.getNorth() + latBuffer &&
@@ -279,7 +279,7 @@ export const useOptimizedClustering = (
           : propertiesInView;
 
         // Perform clustering
-        const newClusters = performClustering(limitedProperties, zoom, bounds);
+        const newClusters = performClustering(limitedProperties, zoom);
         
         const endTime = performance.now();
         console.log(`✅ Clustering completed in ${(endTime - startTime).toFixed(2)}ms - ${newClusters.length} clusters from ${limitedProperties.length} properties`);

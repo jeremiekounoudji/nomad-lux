@@ -2,7 +2,16 @@ import React from 'react'
 import { Modal, ModalContent, ModalBody } from '@heroui/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useTranslation } from '../../../../lib/stores/translationStore'
-import { ImageLightboxModalProps } from '../../../interfaces/Component'
+// import { ImageLightboxModalProps } from '../../../interfaces/Component' // Interface not found
+
+interface ImageLightboxModalProps {
+  isOpen: boolean
+  onClose: () => void
+  selectedProperty: any
+  currentImageIndex: number
+  prevImage: () => void
+  nextImage: () => void
+}
 
 export const ImageLightboxModal: React.FC<ImageLightboxModalProps> = ({
   isOpen,

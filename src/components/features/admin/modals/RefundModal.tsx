@@ -99,15 +99,15 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                   <div className="flex gap-4">
                     <img
                       src={booking.propertyImage || 'https://via.placeholder.com/80x80?text=Property'}
-                      alt={booking.propertyName}
+                      alt={booking.propertyId || 'Property'}
                       className="size-16 rounded-lg object-cover"
                     />
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{booking.propertyName}</h3>
-                      <p className="text-sm text-gray-600">{booking.location}</p>
+                      <h3 className="text-lg font-semibold">{booking.propertyId || 'Property'}</h3>
+                      <p className="text-sm text-gray-600">{booking.propertyId}</p>
                       <div className="mt-1 flex items-center gap-4 text-sm">
-                        <span>Check-in: {new Date(booking.checkInDate).toLocaleDateString()}</span>
-                        <span>Total: {formatPrice(booking.totalAmount, booking.currency || 'USD')}</span>
+                        <span>Check-in: {new Date(booking.checkIn).toLocaleDateString()}</span>
+                        <span>Total: {formatPrice(booking.totalAmount, 'USD')}</span>
                       </div>
                     </div>
                   </div>
@@ -140,16 +140,16 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                   <div className="space-y-3 rounded-lg bg-gray-50 p-4">
                     <div className="flex justify-between text-sm">
                       <span>Original Payment:</span>
-                      <span>{formatPrice(calculatedRefund.total_paid, booking.currency || 'USD')}</span>
+                      <span>{formatPrice(calculatedRefund.total_paid, 'USD')}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span>Processing Fee:</span>
-                      <span>-{formatPrice(calculatedRefund.processing_fee, booking.currency || 'USD')}</span>
+                      <span>-{formatPrice(calculatedRefund.processing_fee, 'USD')}</span>
                     </div>
                     <Divider />
                     <div className="flex justify-between font-semibold">
                       <span>Maximum Refund:</span>
-                      <span className="text-success-600">{formatPrice(calculatedRefund.net_refund, booking.currency || 'USD')}</span>
+                      <span className="text-success-600">{formatPrice(calculatedRefund.net_refund, 'USD')}</span>
                     </div>
                     {calculatedRefund.policy_applied && (
                       <div className="mt-1 text-xs text-gray-500">
@@ -176,7 +176,7 @@ export const RefundModal: React.FC<RefundModalProps> = ({
                   min="0"
                   max={maxRefundAmount}
                   step="0.01"
-                  description={`Maximum: ${formatPrice(maxRefundAmount, booking.currency || 'USD')}`}
+                  description={`Maximum: ${formatPrice(maxRefundAmount, 'USD')}`}
                 />
               </div>
 

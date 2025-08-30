@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Card, CardBody, Input, Button, Textarea } from '@heroui/react'
 import { Crown, Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone } from 'lucide-react'
 import { useAdminAuth } from '../hooks/useAdminAuth'
-import { useAuthStore } from '../lib/stores/authStore'
+// import { useAuthStore } from '../lib/stores/authStore' // Unused import
 import { AdminRegisterPageProps } from '../interfaces'
 import { useTranslation } from '../lib/stores/translationStore'
 
@@ -21,7 +21,7 @@ export const AdminRegisterPage: React.FC<AdminRegisterPageProps> = ({ onPageChan
   const [error, setError] = useState('')
 
   const { registerAdmin, isLoading } = useAdminAuth()
-  const { isAdmin } = useAuthStore()
+  // const { isAdmin } = useAuthStore() // Commented out to avoid unused variable warning
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))

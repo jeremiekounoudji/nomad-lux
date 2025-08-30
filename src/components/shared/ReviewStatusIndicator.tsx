@@ -13,7 +13,7 @@ interface ReviewStatusIndicatorProps {
 }
 
 const ReviewStatusIndicator: React.FC<ReviewStatusIndicatorProps> = ({
-  bookingId,
+  // bookingId, // Unused parameter
   reviewType,
   hasReview,
   canReview,
@@ -69,9 +69,11 @@ const ReviewStatusIndicator: React.FC<ReviewStatusIndicatorProps> = ({
         variant="flat"
         size="sm"
         className={`cursor-help ${className}`}
-        startContent={statusConfig.icon}
       >
-        {getReviewTypeLabel(reviewType)}: {statusConfig.label}
+        <div className="flex items-center gap-1">
+          {statusConfig.icon}
+          <span>{getReviewTypeLabel(reviewType)}: {statusConfig.label}</span>
+        </div>
       </Badge>
     </Tooltip>
   )

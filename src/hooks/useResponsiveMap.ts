@@ -52,7 +52,8 @@ export const useResponsiveMap = (options: ResponsiveMapOptions = {}): UseRespons
 
   // Last touch time for double-tap detection
   const [lastTouchTime, setLastTouchTime] = useState(0)
-  const [touchCount, setTouchCount] = useState(0)
+  // const [touchCount, setTouchCount] = useState(0) // Unused state
+  const setTouchCount = (/* _: number */) => {} // Placeholder function
 
   // Update screen dimensions and device info
   const updateMapState = useCallback(() => {

@@ -60,14 +60,14 @@ export const useProfileImage = (): UseProfileImageReturn => {
 
       console.log('🔄 Starting image upload for user:', user.id)
       console.log('📁 File details:', {
-        name: imageData.file.name,
-        type: imageData.file.type,
-        size: imageData.file.size
+        name: imageData.file?.name || 'unknown',
+        type: imageData.file?.type || 'unknown',
+        size: imageData.file?.size || 0
       })
 
       // Validate file type
-      if (!imageData.file.type.startsWith('image/')) {
-        console.error('❌ Invalid file type detected:', imageData.file.type)
+      if (!imageData.file?.type?.startsWith('image/')) {
+        console.error('❌ Invalid file type detected:', imageData.file?.type)
         throw new Error('Invalid file type. Please select an image file.')
       }
 
@@ -84,7 +84,7 @@ export const useProfileImage = (): UseProfileImageReturn => {
       console.log('📤 Uploading file:', fileName)
 
       // Upload to Supabase Storage
-      const { data, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('profile-images')
         .upload(fileName, imageData.file, {
           cacheControl: '3600',

@@ -23,7 +23,7 @@ export const useAuth = () => {
 
   const { createUser, fetchUserByAuthId } = useUser();
   const { setAuthData, clearAuth, setLoading } = useAuthStore();
-  const { redirectAfterLogin, redirectAfterLogout } = useAuthRedirect();
+  const { /*redirectAfterLogin,*/ redirectAfterLogout } = useAuthRedirect();
 
   console.log("🔐 useAuth hook initialized", {
     timestamp: new Date().toISOString(),
@@ -272,7 +272,7 @@ export const useAuth = () => {
       }
 
       // Update user in database
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("users")
         .update(updates)
         .eq("auth_id", supabaseUser.id)

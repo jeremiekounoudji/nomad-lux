@@ -123,6 +123,10 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
 
   const handleCopyLink = async () => {
     try {
+      if (!shareData.url) {
+        toast.error(t('property.share.urlNotAvailable'))
+        return
+      }
       await navigator.clipboard.writeText(shareData.url)
       setCopied(true)
       toast.success(t('property.share.linkCopied'))
@@ -152,7 +156,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
       scrollBehavior="inside"
     >
       <ModalContent>
-        {(onClose) => (
+        {(/* onClose */) => (
           <>
             <ModalHeader className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -229,7 +233,7 @@ export const SharePropertyModal: React.FC<SharePropertyModalProps> = ({
                   <label className="font-semibold text-gray-700">{t('property.share.propertyLink')}</label>
                   <div className="flex gap-2">
                     <Input
-                      value={shareData.url}
+                      value={shareData.url || ''}
                       readOnly
                       startContent={<Link className="size-4 text-gray-400" />}
                       className="flex-1"

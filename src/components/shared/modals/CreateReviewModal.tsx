@@ -21,7 +21,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
 }) => {
   const { t } = useTranslation(['review', 'common'])
   const { user } = useAuthStore()
-  const [existingReview, setExistingReview] = useState<Review | null>(null)
+  const [/* existingReview */, setExistingReview] = useState<Review | null>(null)
   const [verificationError, setVerificationError] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
   
@@ -30,7 +30,7 @@ const CreateReviewModal: React.FC<CreateReviewModalProps> = ({
     setFormState,
     handleCreateReview,
     closeModal,
-    checkExistingReview
+    /* checkExistingReview */ // Commented out unused function
   } = useReview(propertyId)
 
   // For public reviews, no verification needed

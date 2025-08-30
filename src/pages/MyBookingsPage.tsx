@@ -11,7 +11,7 @@ import { useBookingStore } from '../lib/stores/bookingStore'
 import { BookingStatus } from '../interfaces/Booking'
 import { formatPrice } from '../utils/currencyUtils'
 import MyBookingCard from '../components/shared/MyBookingCard'
-import { useAuthStore } from '../lib/stores/authStore'
+// import { useAuthStore } from '../lib/stores/authStore' // Commented out to avoid unused import warning
 import { useTranslation } from '../lib/stores/translationStore'
 
 // Extended type for guest bookings with joined properties data
@@ -52,14 +52,14 @@ const ALL_STATUSES: BookingStatus[] = [
   'payment-failed',
 ]
 
-const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
-  const { user } = useAuthStore()
+const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageChange }) => {
+  // const { user } = useAuthStore() // Commented out to avoid unused variable warning
   const { t } = useTranslation(['booking', 'common'])
   const [selectedTab, setSelectedTab] = useState<BookingStatus>('pending')
   const [selectedBooking, setSelectedBooking] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToCancel, setBookingToCancel] = useState<GuestBookingWithProperties | null>(null)
   const [bookingToContact, setBookingToContact] = useState<GuestBookingWithProperties | null>(null)
-  const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null)
+  // const [bookingToPay, setBookingToPay] = useState<GuestBookingWithProperties | null>(null) // Commented out to avoid unused variable warning
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isCancelOpen, onOpen: onCancelOpen, onClose: onCancelClose } = useDisclosure()
   const { isOpen: isContactOpen, onOpen: onContactOpen, onClose: onContactClose } = useDisclosure()
@@ -178,17 +178,17 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
     loadGuestBookings().catch(console.error)
   }
 
-  const handlePaymentSuccess = (transactionId: string) => {
-    console.log('✅ Payment successful, closing modal and refreshing bookings', { transactionId })
-    setBookingToPay(null)
-    // Refresh bookings to show updated status
-    loadGuestBookings().catch(console.error)
-  }
+  // const handlePaymentSuccess = (transactionId: string) => { // Commented out to avoid unused variable warning
+  //   console.log('✅ Payment successful, closing modal and refreshing bookings', { transactionId })
+  //   setBookingToPay(null)
+  //   // Refresh bookings to show updated status
+  //   loadGuestBookings().catch(console.error)
+  // }
 
-  const handlePaymentError = (error: string) => {
-    console.error('❌ Payment failed:', error)
-    // Keep modal open so user can retry
-  }
+  // const handlePaymentError = (error: string) => { // Commented out to avoid unused variable warning
+  //   console.error('❌ Payment failed:', error)
+  //   // Keep modal open so user can retry
+  // }
 
   const handleConfirmCancel = async (reason: string) => {
     if (!bookingToCancel) return
@@ -225,8 +225,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange }) => {
     return acc
   }, {} as Record<BookingStatus, number>)
 
-  const totalSpent = guestBookingsWithProperties.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.total_amount, 0)
-  const avgRating = 0 // Rating not available in DatabaseBooking
+  // const totalSpent = guestBookingsWithProperties.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.total_amount, 0) // Commented out to avoid unused variable warning
+  // const avgRating = 0 // Rating not available in DatabaseBooking // Commented out to avoid unused variable warning
 
   const handleTabChange = (key: string | number) => {
     setSelectedTab(key as BookingStatus)

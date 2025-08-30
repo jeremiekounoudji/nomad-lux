@@ -33,7 +33,7 @@ export const useAdminProperty = () => {
     getCurrentProperties,
     getCurrentPagination,
     shouldFetchStatus,
-    clearStatus
+    // clearStatus // Unused function
   } = useAdminPropertyStore()
 
   console.log('👨‍💼 useAdminProperty hook initialized')

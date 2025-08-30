@@ -96,8 +96,8 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
     const gridSize = 0.01; // ~1km at equator
     
     properties.forEach(property => {
-      const gridX = Math.floor(property.coordinates.lat / gridSize);
-      const gridY = Math.floor(property.coordinates.lng / gridSize);
+      const gridX = Math.floor(property.location.coordinates.lat / gridSize);
+      const gridY = Math.floor(property.location.coordinates.lng / gridSize);
       const key = `${gridX},${gridY}`;
       
       if (!index.has(key)) {
@@ -111,23 +111,23 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
 
   // Check if property is within viewport bounds
   const isInViewport = useCallback((property: DatabaseProperty, bounds: ViewportBounds): boolean => {
-    const { lat, lng } = property.coordinates;
+    const { lat, lng } = property.location.coordinates;
     return lat >= bounds.south && lat <= bounds.north && 
            lng >= bounds.west && lng <= bounds.east;
   }, []);
 
   // Calculate distance between two coordinates
-  const calculateDistance = useCallback((coord1: MapCoordinates, coord2: MapCoordinates): number => {
-    const R = 6371; // Earth's radius in km
-    const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
-    const dLng = (coord2.lng - coord1.lng) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(coord1.lat * Math.PI / 180) * Math.cos(coord2.lat * Math.PI / 180) * 
-      Math.sin(dLng/2) * Math.sin(dLng/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  }, []);
+  // const calculateDistance = useCallback((coord1: MapCoordinates, coord2: MapCoordinates): number => {
+  //   const R = 6371; // Earth's radius in km
+  //   const dLat = (coord2.lat - coord1.lat) * Math.PI / 180;
+  //   const dLng = (coord2.lng - coord1.lng) * Math.PI / 180;
+  //   const a = 
+  //     Math.sin(dLat/2) * Math.sin(dLat/2) +
+  //     Math.cos(coord1.lat * Math.PI / 180) * Math.cos(coord2.lat * Math.PI / 180) * 
+  //     Math.sin(dLng/2) * Math.sin(dLng/2);
+  //   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  //   return R * c;
+  // }, []);
 
   // Create clusters from properties
   const createClusters = useCallback((
@@ -154,8 +154,8 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
       const nearbyProperties = propertiesInView.filter(other => {
         if (processed.has(other.id) || other.id === property.id) return false;
         
-        const distance = Math.abs(property.coordinates.lat - other.coordinates.lat) +
-                        Math.abs(property.coordinates.lng - other.coordinates.lng);
+        const distance = Math.abs(property.location.coordinates.lat - other.location.coordinates.lat) +
+                        Math.abs(property.location.coordinates.lng - other.location.coordinates.lng);
         return distance <= clusterDistance;
       });
 
@@ -164,12 +164,12 @@ export const VirtualizedMarkerRenderer: React.FC<VirtualizedMarkerProps> = ({
         const clusterProperties = [property, ...nearbyProperties];
         
         // Calculate cluster center
-        const centerLat = clusterProperties.reduce((sum, p) => sum + p.coordinates.lat, 0) / clusterProperties.length;
-        const centerLng = clusterProperties.reduce((sum, p) => sum + p.coordinates.lng, 0) / clusterProperties.length;
+        const centerLat = clusterProperties.reduce((sum, p) => sum + p.location.coordinates.lat, 0) / clusterProperties.length;
+        const centerLng = clusterProperties.reduce((sum, p) => sum + p.location.coordinates.lng, 0) / clusterProperties.length;
         
         // Calculate cluster bounds
-        const lats = clusterProperties.map(p => p.coordinates.lat);
-        const lngs = clusterProperties.map(p => p.coordinates.lng);
+        const lats = clusterProperties.map(p => p.location.coordinates.lat);
+        const lngs = clusterProperties.map(p => p.location.coordinates.lng);
         
         const cluster: MarkerCluster = {
           id: `cluster_${clusters.length}_${zoom}`,
