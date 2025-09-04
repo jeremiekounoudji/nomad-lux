@@ -48,12 +48,12 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
 
   // Auto-start tutorial when modal opens
   useEffect(() => {
-    if (isOpen && !tutorialState.isVisible) {
+    if (isOpen && !tutorialState.isVisible && !tutorialState.isCompleted) {
       console.log('🎓 TutorialModal: Auto-starting tutorial');
       startTutorial();
       trackTutorialStarted(steps.length);
     }
-  }, [isOpen, tutorialState.isVisible, startTutorial, trackTutorialStarted, steps.length]);
+  }, [isOpen, tutorialState.isVisible, tutorialState.isCompleted, startTutorial, trackTutorialStarted, steps.length]);
 
   // Focus management for accessibility
   useEffect(() => {
@@ -78,6 +78,8 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ steps, isOpen, onC
       if (neverShowAgain) {
         console.log('🎓 Setting never show again preference on completion');
       }
+      // Close the modal first, then complete the tutorial
+      onClose?.();
       completeTutorial();
       trackTutorialFinished(steps.length);
     } else {

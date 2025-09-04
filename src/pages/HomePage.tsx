@@ -172,17 +172,20 @@ const HomePage: React.FC = () => {
       // - NOT if user completed tutorial AND it's actually marked as completed
       // - NOT if user explicitly set "never show again"
       // - NOT if tutorial is already visible (avoid duplicate triggers)
+      // - NOT if tutorial is already completed in the current session
       const hasReallyCompleted = userPreferences?.hasCompletedTutorial && tutorialState.isCompleted;
       const userNeverWantsToSee = userPreferences?.neverShowAgain;
       const isAlreadyShowing = tutorialState.isVisible;
+      const isCompletedThisSession = tutorialState.isCompleted;
       
-      const shouldShow = !hasReallyCompleted && !userNeverWantsToSee && !isAlreadyShowing;
+      const shouldShow = !hasReallyCompleted && !userNeverWantsToSee && !isAlreadyShowing && !isCompletedThisSession;
       
       if (shouldShow) {
         console.log('🎓 Triggering tutorial - conditions met:', {
           hasReallyCompleted,
           userNeverWantsToSee,
           isAlreadyShowing,
+          isCompletedThisSession,
           shouldShow
         });
         setShowTutorial(true);
@@ -192,6 +195,7 @@ const HomePage: React.FC = () => {
           hasReallyCompleted,
           userNeverWantsToSee,
           isAlreadyShowing,
+          isCompletedThisSession,
           tutorialStateCompleted: tutorialState.isCompleted,
           userPrefsCompleted: userPreferences?.hasCompletedTutorial,
           tutorialVisible: tutorialState.isVisible
@@ -199,6 +203,14 @@ const HomePage: React.FC = () => {
       }
     }
   }, [isAuthenticated, isLoading, currentPage, tutorialState.isCompleted, tutorialState.isVisible, userPreferences?.hasCompletedTutorial, userPreferences?.neverShowAgain, startTutorial]);
+
+  // Sync local showTutorial state with global tutorialState.isVisible
+  useEffect(() => {
+    if (!tutorialState.isVisible && showTutorial) {
+      console.log('🎓 Syncing local tutorial state - closing modal');
+      setShowTutorial(false);
+    }
+  }, [tutorialState.isVisible, showTutorial]);
 
   // Developer utility: Add global reset function for testing
   useEffect(() => {

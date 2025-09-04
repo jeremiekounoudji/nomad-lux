@@ -504,7 +504,7 @@ const PropertyDetailPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="grid h-full grid-cols-1 gap-8 lg:grid-cols-3">
+            <div className="grid h-full grid-cols-1 gap-8 lg:grid-cols-3 my-2">
               {/* Main Content */}
               <div className="lg:col-span-2">
                 <PropertyMediaGallery
