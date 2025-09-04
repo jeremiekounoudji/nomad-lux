@@ -483,6 +483,11 @@ const HomePage: React.FC = () => {
     case 'terms':
       return <TermsPage  />
     case 'login':
+      // Don't render LoginPage if user is authenticated and loading is complete
+      // This prevents the white screen blink during auth transition
+      if (isAuthenticated && !isLoading) {
+        return null; // Let the default home page render
+      }
       return <LoginPage  onLogin={handleLogin} />
     case 'register':
       return <RegisterPage />

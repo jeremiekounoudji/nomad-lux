@@ -186,8 +186,9 @@ export const useAuth = () => {
   const signOut = async (): Promise<{ error: string | null }> => {
     try {
       console.log("🚪 Signing out user...");
-      setIsLoading(true);
-      setLoading(true);
+      // Don't set loading state for logout - it causes white screen blink
+      // setIsLoading(true);
+      // setLoading(true);
 
       // Clear auth state immediately to prevent UI issues
       clearAuth();
@@ -210,10 +211,8 @@ export const useAuth = () => {
       const errorMessage = error.message || "Sign out failed";
       setError(errorMessage);
       return { error: errorMessage };
-    } finally {
-      setIsLoading(false);
-      setLoading(false);
     }
+    // No finally block needed since we're not setting loading state
   };
 
   // Refresh user data

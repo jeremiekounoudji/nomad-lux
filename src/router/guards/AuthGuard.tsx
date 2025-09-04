@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { Spinner } from '@heroui/react';
 import { useAuthStore } from '../../lib/stores/authStore';
 import { ROUTES } from '../types';
 
@@ -17,9 +18,19 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   const location = useLocation();
   const { isAuthenticated, isAdmin, isLoading } = useAuthStore();
 
-  // Show nothing while loading auth state
+  // Show loading spinner while loading auth state
   if (isLoading) {
-    return null;
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Spinner 
+            size="lg" 
+            color="primary" 
+            className="mx-auto mb-4"
+          />
+        </div>
+      </div>
+    );
   }
 
   // If auth is required and user is not authenticated

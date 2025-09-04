@@ -102,14 +102,15 @@ export const TabsSkeleton: React.FC = () => {
 export const CityPropertySkeleton: React.FC = () => {
   return (
     <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white">
-      <div className="flex h-32">
-        {/* Left side - Image skeleton */}
-        <div className="relative m-2 w-40 shrink-0">
+      {/* Mobile-first responsive skeleton */}
+      <div className="flex flex-col sm:flex-row sm:h-32">
+        {/* Left side - Image skeleton - Full width on mobile, fixed width on desktop */}
+        <div className="relative w-full shrink-0 sm:m-2 sm:w-40 sm:h-32">
           <div className="size-full animate-pulse rounded-lg bg-gray-200" />
         </div>
 
-        {/* Right side - Details skeleton */}
-        <div className="flex min-w-0 flex-1 flex-col justify-between p-4">
+        {/* Right side - Details skeleton - Responsive padding */}
+        <div className="flex min-w-0 flex-1 flex-col justify-between p-3 sm:p-4">
           {/* Top section */}
           <div className="space-y-2">
             {/* Title and location */}
@@ -119,15 +120,15 @@ export const CityPropertySkeleton: React.FC = () => {
             </div>
 
             {/* Property specs */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <div className="h-3 w-16 animate-pulse rounded bg-gray-200" />
               <div className="h-3 w-14 animate-pulse rounded bg-gray-200" />
               <div className="h-3 w-14 animate-pulse rounded bg-gray-200" />
             </div>
           </div>
 
-          {/* Bottom section - Price and button */}
-          <div className="mt-2 flex items-center justify-between">
+          {/* Bottom section - Price and button - Responsive layout */}
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="h-5 w-20 animate-pulse rounded bg-gray-200" />
             <div className="h-7 w-20 animate-pulse rounded bg-gray-200" />
           </div>

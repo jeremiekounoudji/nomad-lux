@@ -43,9 +43,10 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
       className={`cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 hover:border-gray-300 hover:shadow-lg ${className}`}
       onClick={handleCardClick}
     >
-      <div className="flex h-32">
-        {/* Left side - Image */}
-        <div className="relative m-2 w-40 shrink-0">
+      {/* Mobile-first responsive layout */}
+      <div className="flex flex-col sm:flex-row sm:h-32">
+        {/* Left side - Image - Full width on mobile, fixed width on desktop */}
+        <div className="relative w-full shrink-0 sm:m-2 sm:w-40 sm:h-28">
           <img
             src={firstImage}
             alt={property.title}
@@ -80,46 +81,46 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
           </div>
         </div>
 
-        {/* Right side - Details */}
-        <div className="flex flex-1 flex-col justify-between p-4">
+        {/* Right side - Details - Responsive padding and text */}
+        <div className="flex flex-1 flex-col justify-between p-3 sm:p-4">
           {/* Top section */}
           <div className="space-y-2">
             {/* Title and location */}
             <div className="text-left">
-              <h3 className="line-clamp-1 text-base font-semibold text-gray-900">
+              <h3 className="line-clamp-2 sm:line-clamp-1 text-base sm:text-lg font-semibold text-gray-900">
                 {property.title}
               </h3>
               <div className="flex items-center gap-1 text-gray-600">
-                <MapPin className="size-3" />
-                <span className="text-xs">{property.location.city}, {property.location.country}</span>
+                <MapPin className="size-4" />
+                <span className="text-sm">{property.location.city}, {property.location.country}</span>
               </div>
             </div>
 
-            {/* Property specs */}
-            <div className="flex items-center gap-3 text-xs text-gray-600">
+            {/* Property specs - Responsive layout */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gray-600">
               <div className="flex items-center gap-1">
-                <Users className="size-3" />
+                <Users className="size-4" />
                 <span>{property.max_guests} {t('labels.guests')}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Bed className="size-3" />
+                <Bed className="size-4" />
                 <span>{property.bedrooms} {t('labels.beds')}</span>
               </div>
               <div className="flex items-center gap-1">
-                <Bath className="size-3" />
+                <Bath className="size-4" />
                 <span>{property.bathrooms} {t('labels.baths')}</span>
               </div>
             </div>
           </div>
 
-          {/* Bottom section - Price and actions */}
-          <div className="mt-2 flex items-center justify-between">
+          {/* Bottom section - Price and actions - Responsive layout */}
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="text-left">
               <div className="flex items-baseline gap-1">
-                <span className="text-lg font-bold text-gray-900">
+                <span className="text-lg sm:text-xl font-bold text-gray-900">
                   {property.currency} {property.price}
                 </span>
-                <span className="text-xs text-gray-600">{t('perNight')}</span>
+                <span className="text-sm text-gray-600">{t('labels.perNight')}</span>
               </div>
             </div>
 
@@ -128,7 +129,7 @@ const CityPropertyCard: React.FC<CityPropertyCardProps> = ({
               color="primary"
               variant="solid"
               onPress={handleCardClick}
-              className="bg-main px-3 py-1 text-xs hover:bg-primary-600"
+              className="w-full sm:w-auto bg-main px-3 py-2 text-sm hover:bg-primary-600"
             >
               {t('actions.viewDetails')}
             </Button>

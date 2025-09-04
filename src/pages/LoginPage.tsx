@@ -22,12 +22,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
 
   // Auto-redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isLoading) {
       console.log('✅ Already authenticated - redirecting to home')
       toast.success(t('auth.messages.loginSuccess'))
-      onLogin?.()
+      // Don't call onLogin - let the routing system handle the redirect
+      // This prevents the page blink/white screen
     }
-  }, [isAuthenticated, onLogin, t])
+  }, [isAuthenticated, isLoading, t])
 
   const toggleVisibility = () => setIsVisible(!isVisible)
 
@@ -52,8 +53,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
       }
 
       console.log('✅ User sign in initiated - waiting for auth state update')
-      // Don't show success toast here - let the useEffect handle it after redirect
-      // The redirect will happen automatically via useEffect when auth state updates
+      // Show loading state - the redirect will happen automatically via useEffect when auth state updates
+      // and loading is complete
       
     } catch (err: any) {
       console.error('❌ Exception during user sign in:', err)
@@ -97,6 +98,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
     >
       {/* Background Overlay */}
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      
+
       
       {/* Back Button */}
       <Button

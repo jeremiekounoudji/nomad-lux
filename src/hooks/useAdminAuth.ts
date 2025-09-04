@@ -170,8 +170,9 @@ export const useAdminAuth = () => {
   const signOut = async () => {
     try {
       console.log('🚪 Signing out admin user...')
-      setIsLoading(true)
-      setLoading(true)
+      // Don't set loading state for logout - it causes white screen blink
+      // setIsLoading(true)
+      // setLoading(true)
 
       // Clear auth state immediately to prevent UI issues
       clearAuth()
@@ -194,10 +195,8 @@ export const useAdminAuth = () => {
       const errorMessage = error.message || 'Sign out failed'
       setError(errorMessage)
       return { error: errorMessage }
-    } finally {
-      setIsLoading(false)
-      setLoading(false)
     }
+    // No finally block needed since we're not setting loading state
   }
 
   const clearError = () => setError(null)

@@ -103,7 +103,7 @@ export const CityPropertiesView = ({
       {/* City Properties Grid */}
       {!cityPropertiesError && (
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid w-full grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
             {cityPropertiesLoading ? (
               // Loading skeletons
               Array(6).fill(null).map((_, index) => (

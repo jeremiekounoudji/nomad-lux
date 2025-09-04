@@ -51,9 +51,12 @@ export const useAuthInit = () => {
     // Listen for sign-in/out events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_IN') {
           handleSessionUpdate(session);
-      }
+        } else if (event === 'SIGNED_OUT') {
+          // For logout, just clear auth without setting loading state
+          clearAuth();
+        }
       }
     );
 
