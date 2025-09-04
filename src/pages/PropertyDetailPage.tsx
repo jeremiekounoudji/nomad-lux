@@ -37,7 +37,7 @@ import ReviewList from '../components/shared/ReviewList';
 import CreateReviewModal from '../components/shared/modals/CreateReviewModal';
 import EditReviewModal from '../components/shared/modals/EditReviewModal';
 import DeleteReviewModal from '../components/shared/modals/DeleteReviewModal';
-
+import PropertyReviewSummary from '../components/shared/PropertyReviewSummary';
 
 
 const PropertyDetailPage: React.FC = () => {
@@ -494,7 +494,7 @@ const PropertyDetailPage: React.FC = () => {
 
       {/* Main Content Container with Scroll */}
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {!property ? (
             // Loading or error state
             <div className="flex min-h-[400px] items-center justify-center">
@@ -519,62 +519,39 @@ const PropertyDetailPage: React.FC = () => {
                   prevMedia={prevMedia}
                 />
 
-                <PropertyHeader
-                  property={property}
-                  translatedTitle={translatedTitle}
-                  translatedDescription={translatedDescription}
-                />
+                {/* Property Header and Amenities Cards - Side by side on tablet+ */}
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <PropertyHeader
+                    property={property}
+                    translatedTitle={translatedTitle}
+                    translatedDescription={translatedDescription}
+                  />
 
-                <PropertyAmenities
-                  amenities={property.amenities}
-                  amenityTranslations={amenityTranslations}
-                />
+                  <PropertyAmenities
+                    amenities={property.amenities}
+                    amenityTranslations={amenityTranslations}
+                  />
+                </div>
 
-                <PropertyHostInfo
-                  property={property}
-                  onContactOpen={onContactOpen}
-                />
+                {/* Host Info and Review Summary Cards - Side by side on tablet+ */}
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <PropertyHostInfo
+                    property={property}
+                    onContactOpen={onContactOpen}
+                  />
+                  
+                  <PropertyReviewSummary
+                    property={property}
+                    reviewStats={reviewStats}
+                    onWriteReview={() => {
+                      // Open public review modal
+                      openCreateModal('property')
+                    }}
+                  />
+                </div>
 
                 {/* Reviews Section */}
                 <div className="mt-8">
-                  {/* Review Summary */}
-                  <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-gray-900">
-                            {reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0'}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {t('review.reviews.averageRating', { rating: reviewStats?.average_rating ? reviewStats.average_rating.toFixed(1) : '0.0' })}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-3xl font-bold text-gray-900">
-                            {reviewStats?.total_reviews || 0}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {t('review.reviews.totalReviews', { count: reviewStats?.total_reviews || 0 })}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      {/* Write Review Button - Show for all logged-in users */}
-                      {user && (
-                        <Button
-                          className="bg-main text-white hover:bg-main/90"
-                          size="sm"
-                          onPress={() => {
-                            // Open public review modal
-                            openCreateModal('property')
-                          }}
-                        >
-                          {t('review.createReview')}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                  
                   <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-2xl font-semibold text-gray-900">
                       {t('review.reviews.title')}

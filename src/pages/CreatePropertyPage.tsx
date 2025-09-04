@@ -12,7 +12,7 @@ const CreatePropertyPage: React.FC<CreatePropertyPageProps> = ({ onPageChange: _
   return (
     <div className="mx-auto max-w-7xl">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="col-span-1 min-h-screen md:col-span-2 lg:col-span-3">
+        <div className="col-span-1 md:col-span-2 lg:col-span-3">
           {/* Mobile-first responsive container */}
           <div className="mx-auto w-full max-w-none lg:max-w-6xl">
             {/* Header Banner */}

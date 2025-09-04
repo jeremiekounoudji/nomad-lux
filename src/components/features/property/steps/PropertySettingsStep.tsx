@@ -42,9 +42,9 @@ const DEFAULT_SETTINGS: PropertySettingsFormData = {
   max_advance_booking: 365,
   min_stay_nights: 1,
   max_stay_nights: 30,
-  checkin_time: '15:00:00',
-  checkout_time: '11:00:00',
-  cleaning_time_hours: 2,
+  checkin_time: '00:00:00',
+  checkout_time: '00:00:00',
+  cleaning_time_hours: 0,
   payment_timing: 'before_checkin',
   auto_approve_bookings: false,
   preferred_payment_methods: ['card'],
@@ -430,7 +430,7 @@ const PropertySettingsStep: React.FC<PropertySettingsStepProps> = ({ formData, s
                     type="number"
                     label={t('property.settings.cleaningTime')}
                     value={newSettings.cleaning_time_hours.toString()}
-                    onChange={(e) => handleSettingsFormChange('cleaning_time_hours', parseInt(e.target.value) || 2)}
+                    onChange={(e) => handleSettingsFormChange('cleaning_time_hours', parseInt(e.target.value) || 0)}
                     min={0}
                     max={24}
                     description={t('property.settings.cleaningTimeDescription')}

@@ -28,8 +28,8 @@ export const useBookingFlow = () => {
     propertyId: string,
     checkInDate: Date,
     checkOutDate: Date,
-    checkInTime: string = '15:00:00',
-    checkOutTime: string = '11:00:00'
+    checkInTime: string = '00:00:00',
+    checkOutTime: string = '00:00:00'
   ): Promise<AvailabilityResult> => {
     setIsCheckingAvailability(true)
     clearError()

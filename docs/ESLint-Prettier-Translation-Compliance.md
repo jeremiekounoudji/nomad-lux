@@ -147,3 +147,5 @@ npx husky add .husky/pre-commit "npx lint-staged"
 - Consider using `--cache` flag for faster subsequent runs
 - Limit linting to specific directories when needed
 
+
+

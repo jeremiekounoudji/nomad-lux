@@ -14,8 +14,8 @@ export interface PropertySettings {
   max_stay_nights: number
   
   // Timing Settings
-  checkin_time: string // TIME format: "15:00:00"
-  checkout_time: string // TIME format: "11:00:00"
+  checkin_time: string // TIME format: "00:00:00"
+  checkout_time: string // TIME format: "00:00:00"
   cleaning_time_hours: number
   
   // Payment & Approval Preferences

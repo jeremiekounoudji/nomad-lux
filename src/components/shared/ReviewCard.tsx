@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Avatar, Badge } from '@heroui/react'
+import { Card, CardHeader, CardBody, CardFooter, Avatar, Button, Badge, Divider } from '@heroui/react'
 import { MoreVertical, CheckCircle, Flag, Trash2 } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import StarRating from './StarRating'
@@ -55,45 +55,29 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   }
 
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-gray-300 hover:shadow-lg ${className}`}>
-      {/* Header */}
-      <div className="mb-4 flex items-start justify-between">
-        <div className="flex items-center gap-4">
+    <Card className={`h-full shadow-sm border border-gray-200 ${className}`}>
+      <CardHeader className="justify-between">
+        <div className="flex gap-3">
           <Avatar
             src={review.reviewer_avatar}
             name={getReviewerName()}
             size="md"
             className="shrink-0 ring-2 ring-gray-100"
           />
-          
-          <div className="min-w-0 flex-1">
-            <div className="mb-2 flex items-center gap-2">
-              <h4 className="truncate text-base font-semibold text-gray-900">
+          <div className="flex flex-col gap-1 items-start justify-center">
+            <div className="flex items-center gap-2">
+              <h4 className="text-small font-semibold leading-none text-gray-900 truncate max-w-[200px]">
                 {getReviewerName()}
               </h4>
-              
-              <Badge
-                content={<CheckCircle className="size-3" />}
-                color="success"
-                size="sm"
-                className="shrink-0"
-              >
-                <span className="text-xs font-medium text-green-600">
-                  {t('review.reviewCard.verified')}
-                </span>
-              </Badge>
-            </div>
             
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span>{formatDate(review.created_at)}</span>
-              <span>•</span>
-              <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium">
-                {getReviewTypeLabel()}
-              </span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-xs text-gray-500">{formatDate(review.created_at)}</span>
+             
             </div>
           </div>
         </div>
-
+        
         {/* Actions Menu */}
         {showActions && (
           <div className="relative">
@@ -108,31 +92,34 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             {/* TODO: Add dropdown menu with edit/delete/report options */}
           </div>
         )}
-      </div>
+      </CardHeader>
 
-      {/* Rating */}
-      <div className="mb-4">
-        <StarRating
-          rating={review.rating}
-          size="md"
-          readonly={true}
-          showLabel={true}
-        />
-      </div>
+      <Divider />
 
-      {/* Review Text */}
-      <div className="mb-6">
-        <p className="whitespace-pre-wrap text-left text-sm leading-relaxed text-gray-700">
+      <CardBody className="px-3 py-0 text-small text-gray-600 flex-1">
+        {/* Rating */}
+        <div className="mb-3">
+          <StarRating
+            rating={review.rating}
+            size="sm"
+            readonly={true}
+            showLabel={true}
+          />
+        </div>
+
+        {/* Review Text */}
+        <p className="line-clamp-4 text-left leading-relaxed text-gray-700">
           {review.review_text}
         </p>
-      </div>
+      </CardBody>
 
-      {/* Footer Actions */}
-      <div className="flex items-center justify-between border-t border-gray-100 pt-4">
+      <Divider />
+
+      <CardFooter className="px-3 py-3 gap-3">
         <div className="flex items-center gap-4">
           <button
             type="button"
-            className="text-sm font-medium text-gray-500 transition-colors duration-200 hover:text-main"
+            className="text-xs font-medium text-gray-500 transition-colors duration-200 hover:text-main"
           >
             {t('review.reviewCard.helpful')}
           </button>
@@ -141,7 +128,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             <button
               type="button"
               onClick={onReport}
-              className="flex items-center gap-1 text-sm font-medium text-gray-500 transition-colors duration-200 hover:text-red-600"
+              className="flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors duration-200 hover:text-red-600"
             >
               <Flag className="size-3" />
               {t('review.reviewCard.report')}
@@ -149,13 +136,20 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
           )}
         </div>
 
+        {/* Review Category */}
+        <div className="flex items-center gap-2 ml-auto">
+          <span className="rounded-full bg-main/10 px-2 py-1 text-xs font-medium text-main border border-main/20">
+            {getReviewTypeLabel()}
+          </span>
+        </div>
+
         {/* Action Buttons */}
         {showActions && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 ml-auto">
             {onEdit && canEditReview(review) && (
               <Button
                 size="sm"
-                className="border-0 bg-blue-500 text-white shadow-sm hover:bg-blue-600"
+                className="border-0 bg-main text-white shadow-sm hover:bg-main/90"
                 onPress={onEdit}
               >
                 {t('common.buttons.edit')}
@@ -180,8 +174,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
             )}
           </div>
         )}
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
 

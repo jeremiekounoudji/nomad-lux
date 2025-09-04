@@ -245,24 +245,22 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
   }
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Banner Header - Full Width */}
-        <div className="col-span-1 mb-6 md:col-span-2 lg:col-span-4">
+    <>
+      <div className="col-span-1 space-y-6 p-2 md:col-span-2 lg:col-span-4">
+        {/* Banner Header */}
         <PageBanner
           backgroundImage={getBannerConfig('myBookings').image}
-                      title={t('booking.myBookings.banner.title')}
-            subtitle={t('booking.myBookings.banner.subtitle')}
+          title={t('booking.myBookings.banner.title')}
+          subtitle={t('booking.myBookings.banner.subtitle')}
           imageAlt={t('common.pageBanner.myBookings')}
           overlayOpacity={getBannerConfig('myBookings').overlayOpacity}
           height={getBannerConfig('myBookings').height}
           className="mb-8"
         />
-        </div>
 
-        {/* Tabs - Full Width */}
-        <div className="col-span-1 md:col-span-2 lg:col-span-4">
-          <div className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        {/* Tabs */}
+        <div className="w-full">
+          <div className="scrollbar-none -mx-5 overflow-x-auto px-5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <Tabs
               selectedKey={selectedTab}
               onSelectionChange={handleTabChange}
@@ -280,31 +278,51 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
             </Tabs>
           </div>
         </div>
+      </div>
 
-        {/* Loading State - Full Width */}
-      {isLoadingGuestBookings ? (
-          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+      {/* Loading State */}
+      {isLoadingGuestBookings && (
+        <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
           <span className="text-lg text-gray-500">{t('booking.messages.loading')}</span>
         </div>
-      ) : paginatedBookings.length > 0 ? (
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-6">
+            <h3 className="mb-2 text-lg font-medium text-red-800">{t('booking.errors.loadingBookings')}</h3>
+            <Button color="primary" onPress={() => loadGuestBookings()}>
+              {t('booking.errors.tryAgain')}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Bookings Grid */}
+      {!isLoadingGuestBookings && !error && paginatedBookings.length > 0 && (
         <>
-            {/* Booking Cards - Each card takes one grid column */}
-          {paginatedBookings.map((booking) => (
-             
-            <MyBookingCard
-              booking={booking}
-              onClick={handleBookingClick}
-              getStatusColor={getStatusColor}
-              getStatusActions={getStatusActions}
-              onPayNow={handlePayNow}
-              onCancelBooking={handleCancelBooking}
-            />
-           
-          ))}
+          {/* Bookings Container */}
+          <div className="col-span-1 p-2 md:col-span-2 lg:col-span-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {paginatedBookings.map((booking) => (
+                <div key={booking.id} className="w-full">
+                  <MyBookingCard
+                    booking={booking}
+                    onClick={handleBookingClick}
+                    getStatusColor={getStatusColor}
+                    getStatusActions={getStatusActions}
+                    onPayNow={handlePayNow}
+                    onCancelBooking={handleCancelBooking}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
           
-          {/* Pagination - Full Width */}
+          {/* Pagination */}
           {totalPages > 1 && (
-              <div className="col-span-1 mt-6 flex items-center justify-between border-t border-gray-100 pt-4 md:col-span-2 lg:col-span-4">
+            <div className="col-span-1 mt-6 flex items-center justify-between border-t border-gray-100 pt-4 md:col-span-2 lg:col-span-4">
               <button
                 onClick={() => handlePageChange(page - 1)}
                 disabled={page === 1 || isLoadingGuestBookings}
@@ -333,8 +351,11 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
             </div>
           )}
         </>
-      ) : (
-          <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
+      )}
+      
+      {/* Empty State */}
+      {!isLoadingGuestBookings && !error && paginatedBookings.length === 0 && (
+        <div className="col-span-1 py-12 text-center md:col-span-2 lg:col-span-4">
           <Calendar className="mx-auto mb-4 size-16 text-gray-300" />
           <h3 className="mb-2 text-lg font-medium text-gray-900">
             {(() => {
@@ -489,7 +510,7 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
                       <p className="font-medium">{selectedBooking.guest_count} {selectedBooking.guest_count > 1 ? t('booking.details.guestsPlural') : t('booking.details.guest')}</p>
                         </div>
                         <div>
-                          <p className="text-gray-600">{t('booking.details.bookingDate')}</p>
+                          <span>{t('booking.details.bookingDate')}</span>
                           <p className="font-medium">{new Date(selectedBooking.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
@@ -561,8 +582,8 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
         </ModalContent>
       </Modal>
 
-        {/* Cancel Booking Modal */}
-        {bookingToCancel && (
+      {/* Cancel Booking Modal */}
+      {bookingToCancel && (
         <CancelBookingModal
           isOpen={isCancelOpen}
           onClose={onCancelClose}
@@ -582,30 +603,29 @@ const MyBookingsPage: React.FC<MyBookingsPageProps> = ({ onPageChange: _onPageCh
             }}
           onConfirmCancel={handleConfirmCancel}
         />
-        )}
+      )}
 
-        {/* Contact Host Modal */}
-        {bookingToContact && (
-          <ContactHostModal
-            isOpen={isContactOpen}
-            onClose={handleContactHostClose}
-            property={{
-              id: bookingToContact.property_id,
-              title: bookingToContact.properties?.title || '',
-              images: bookingToContact.properties?.images || [],
-              location: bookingToContact.properties?.location || { city: '', country: '', coordinates: { lat: 0, lng: 0 } },
-              host: {
-                id: bookingToContact.hosts?.id || '',
-                display_name: bookingToContact.hosts?.display_name || '',
-                avatar_url: bookingToContact.hosts?.avatar_url || '',
-                email: bookingToContact.hosts?.email || '',
-                phone: bookingToContact.hosts?.phone || ''
-              }
-            }}
-          />
-        )}
-      </div>
-    </div>
+      {/* Contact Host Modal */}
+      {bookingToContact && (
+        <ContactHostModal
+          isOpen={isContactOpen}
+          onClose={handleContactHostClose}
+          property={{
+            id: bookingToContact.property_id,
+            title: bookingToContact.properties?.title || '',
+            images: bookingToContact.properties?.images || [],
+            location: bookingToContact.properties?.location || { city: '', country: '', coordinates: { lat: 0, lng: 0 } },
+            host: {
+              id: bookingToContact.hosts?.id || '',
+              display_name: bookingToContact.hosts?.display_name || '',
+              avatar_url: bookingToContact.hosts?.avatar_url || '',
+              email: bookingToContact.hosts?.email || '',
+              phone: bookingToContact.hosts?.phone || ''
+            }
+          }}
+        />
+      )}
+    </>
   )
 }
 

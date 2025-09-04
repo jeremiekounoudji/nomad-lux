@@ -90,10 +90,10 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
               <span className="text-2xl font-bold text-gray-900">{property.currency} {property.price}</span>
               <span className="ml-1 text-gray-600">{t('booking.labels.night')}</span>
             </div>
-            <div className="flex items-center gap-1 rounded-full bg-gray-100 px-3 py-1">
+            <div className="flex items-center gap-1 rounded-full px-1 py-1">
               <Star className="size-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium text-gray-900">{property.rating}</span>
-              <span className="text-sm text-gray-600">({property.review_count} {t('booking.labels.reviews')})</span>
+              <span className="font-medium text-black">{property.rating}</span>
+              <span className="text-sm text-black">({property.review_count} {t('booking.labels.reviews')})</span>
             </div>
           </div>
         </CardHeader>
@@ -284,7 +284,7 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
               <div className="flex items-center gap-2">
                 <Calendar className="size-4 text-primary-600" />
                 <p className="text-sm text-primary-700">
-                  {billingNights} {billingNights > 1 ? t('booking.labels.nights') : t('booking.labels.night')} · {guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}
+                  {billingNights} {billingNights > 1 ? t('booking.labels.nights') : t('booking.labels.night')} {t('common.symbols.middleDot', '·')} {guests} {guests > 1 ? t('booking.labels.guests') : t('booking.labels.guest')}
                 </p>
               </div>
             </div>

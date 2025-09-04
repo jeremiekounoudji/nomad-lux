@@ -9,7 +9,7 @@ export const calculateHoursBetween = (
   checkInTime: string,
   checkOutTime: string
 ): number => {
-  // Parse times (format: "15:00:00")
+  // Parse times (format: "00:00:00")
   const [checkInHour, checkInMinute] = checkInTime.split(':').map(Number)
   const [checkOutHour, checkOutMinute] = checkOutTime.split(':').map(Number)
   
@@ -33,8 +33,8 @@ export const calculateBookingPrice = (
   property: Property,
   checkIn: Date,
   checkOut: Date,
-  checkInTime: string = '15:00:00',
-  checkOutTime: string = '11:00:00',
+  checkInTime: string = '00:00:00',
+  checkOutTime: string = '00:00:00',
   guestCount: number = 1,
   taxRate: number = 0.1
 ): PriceBreakdown => {

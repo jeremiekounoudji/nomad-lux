@@ -408,7 +408,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
   return (
     <div className="w-full">
       {/* Responsive container with proper padding */}
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="p-4 pb-8 sm:p-6 sm:pb-8 lg:p-8 lg:pb-8">
         <CustomStepper currentStep={currentStep} steps={steps} />
 
         {/* Form content with responsive min-height */}
@@ -419,7 +419,7 @@ const PropertySubmissionForm: React.FC<PropertySubmissionFormProps> = ({ initial
         </div>
 
         {/* Navigation buttons - Responsive layout */}
-        <div className="sticky bottom-0 z-10 border-t border-gray-200 bg-white pt-4 sm:relative sm:pt-6">
+        <div className="border-t border-gray-200 bg-white pt-4 sm:pt-6">
           {/* Mobile: Stack buttons vertically */}
           <div className="flex flex-col gap-3 sm:hidden">
             {currentStep === steps.length - 1 ? (

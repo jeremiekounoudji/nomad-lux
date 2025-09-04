@@ -21,6 +21,47 @@ Your mission is to build a **scalable, mobile-first web application** inspired b
 - **NEVER** leave unused imports or variables.  
 - **AVOID** large monolithic components and inline logic in JSX.
 
+### Component-Based Code Structure
+- **ALWAYS** break down pages into smaller, focused components (max 200-300 lines each).
+- **NEVER** let any single file exceed 500 lines - this is a hard limit.
+- **ALWAYS** create separate component files for major page sections:
+  - `HeaderSection.tsx` for page headers
+  - `ContentSection.tsx` for main content
+  - `ActionSection.tsx` for buttons/actions
+  - `FormSection.tsx` for forms
+  - `ListSection.tsx` for data lists
+- **ALWAYS** use composition over inheritance - import and compose smaller components.
+- **ALWAYS** extract reusable logic into custom hooks (max 100 lines per hook).
+- **ALWAYS** separate business logic from UI components.
+- **PREFER** functional components with clear, single responsibilities.
+- **ALWAYS** create component interfaces that define clear props contracts.
+
+### Page Structure Example
+```tsx
+// ✅ GOOD - Page composed of smaller components
+const PropertyDetailPage: React.FC = () => {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <PropertyHeader />
+      <PropertyImageGallery />
+      <PropertyInfo />
+      <PropertyActions />
+      <PropertyReviews />
+    </div>
+  );
+};
+
+// ❌ BAD - Monolithic page with everything inline
+const PropertyDetailPage: React.FC = () => {
+  // 500+ lines of inline JSX, state, and logic
+  return (
+    <div>
+      {/* Massive amount of inline JSX */}
+    </div>
+  );
+};
+```
+
 ---
 
 ## Translation Rules
@@ -78,6 +119,64 @@ Your mission is to build a **scalable, mobile-first web application** inspired b
 
 ---
 
+## ESLint Guidelines & Code Standards
+- **ALWAYS** follow the project's ESLint configuration for consistent code style.
+- **ALWAYS** use proper TypeScript types and avoid `any` type usage.
+- **ALWAYS** use meaningful variable and function names (camelCase for variables/functions, PascalCase for components).
+- **ALWAYS** add proper JSDoc comments for complex functions and components.
+- **ALWAYS** use destructuring for props and state objects.
+- **ALWAYS** prefer `const` over `let`, use `let` only when reassignment is necessary.
+- **ALWAYS** use arrow functions for component definitions and event handlers.
+- **ALWAYS** avoid inline arrow functions in JSX when possible (extract to named functions).
+- **ALWAYS** use proper React hooks order and dependencies in useEffect.
+- **ALWAYS** handle async operations with proper error handling and loading states.
+- **ALWAYS** use proper event handler naming (e.g., `handleClick`, `handleSubmit`).
+- **ALWAYS** avoid nested ternary operators - use early returns or extract to variables.
+- **ALWAYS** use template literals instead of string concatenation.
+- **ALWAYS** prefer object spread over Object.assign.
+- **ALWAYS** use optional chaining (`?.`) and nullish coalescing (`??`) when appropriate.
+- **ALWAYS** avoid magic numbers - extract to named constants.
+- **ALWAYS** use proper import ordering: React imports first, then third-party, then local imports.
+- **ALWAYS** remove unused imports and variables before committing code.
+- **ALWAYS** use proper spacing around operators and after commas.
+- **ALWAYS** ensure proper indentation (2 spaces) and consistent formatting.
+
+### ESLint Error Prevention Examples
+```tsx
+// ✅ GOOD - Proper TypeScript, destructuring, meaningful names
+interface PropertyCardProps {
+  property: Property;
+  onFavorite: (id: string) => void;
+}
+
+const PropertyCard: React.FC<PropertyCardProps> = ({ property, onFavorite }) => {
+  const handleFavoriteClick = () => {
+    onFavorite(property.id);
+  };
+
+  return (
+    <div className="property-card">
+      <button onClick={handleFavoriteClick}>
+        {property.isFavorite ? '❤️' : '🤍'}
+      </button>
+    </div>
+  );
+};
+
+// ❌ BAD - Any type, inline functions, poor naming
+const PropertyCard = (props: any) => {
+  return (
+    <div>
+      <button onClick={() => props.onFavorite(props.property.id)}>
+        {props.property.isFavorite ? '❤️' : '🤍'}
+      </button>
+    </div>
+  );
+};
+```
+
+---
+
 ## Task Example
 > **Build a `PropertyDetailPage`** by composing:  
 > - `ImageCarousel`  
@@ -114,6 +213,16 @@ Project State & Summaries Maintenance
 - **PREFER** using a centralized logger utility instead of `console.log` directly. Example:
   ```ts
   import { logInfo, logError } from '../utils/logger';
+
+  logInfo('Property list fetched successfully', { data });
+  logError('Failed to fetch properties', { error });
+
+  
+
+  logInfo('Property list fetched successfully', { data });
+  logError('Failed to fetch properties', { error });
+
+  
 
   logInfo('Property list fetched successfully', { data });
   logError('Failed to fetch properties', { error });

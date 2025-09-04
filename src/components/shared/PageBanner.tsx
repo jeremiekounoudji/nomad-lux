@@ -84,7 +84,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
 
       {/* Content Layer */}
       <div className="relative z-10 flex h-full items-center justify-center p-4 text-center text-white sm:p-6 lg:p-8">
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-4xl flex flex-col items-center justify-center">
           {/* Title */}
           <h1 className="mb-2 text-2xl font-bold leading-tight sm:mb-3 sm:text-3xl lg:text-4xl">
             {title}

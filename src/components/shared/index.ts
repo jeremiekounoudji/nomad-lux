@@ -9,6 +9,7 @@ export { default as PropertyHeader } from './PropertyHeader'
 export { default as PropertyMediaGallery } from './PropertyMediaGallery'
 export { default as PropertyAmenities } from './PropertyAmenities'
 export { default as PropertyHostInfo } from './PropertyHostInfo'
+export { default as PropertyReviewSummary } from './PropertyReviewSummary'
 export { default as PropertyBookingCard } from './PropertyBookingCard'
 export { default as BookingRequestCard } from './BookingRequestCard'
 

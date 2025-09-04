@@ -1,26 +1,31 @@
 import React from 'react';
-import { Mail, Phone } from 'lucide-react';
+import { Star, MessageSquare } from 'lucide-react';
 import { Card, CardHeader, CardBody, CardFooter, Avatar, Button } from '@heroui/react';
 import { useTranslation } from '../../lib/stores/translationStore';
 import { Property } from '../../interfaces/Property';
 
-interface PropertyHostInfoProps {
+interface PropertyReviewSummaryProps {
   property: Property;
-  onContactOpen: () => void;
+  reviewStats: {
+    average_rating: number;
+    total_reviews: number;
+  } | null;
+  onWriteReview: () => void;
 }
 
-const PropertyHostInfo: React.FC<PropertyHostInfoProps> = ({
+const PropertyReviewSummary: React.FC<PropertyReviewSummaryProps> = ({
   property,
-  onContactOpen
+  reviewStats,
+  onWriteReview
 }) => {
   const { t } = useTranslation(['property', 'common']);
 
-  // Early return if property or host is not available
-  if (!property || !property.host) {
+  // Early return if no review stats
+  if (!reviewStats) {
     return (
       <Card className="h-full shadow-sm border border-gray-200">
         <CardBody className="py-8 text-center">
-          <p className="text-gray-500">{t('property.host.notAvailable', 'Host information not available')}</p>
+          <p className="text-gray-500">{t('review.reviews.noReviews', 'No reviews available')}</p>
         </CardBody>
       </Card>
     );
@@ -34,64 +39,60 @@ const PropertyHostInfo: React.FC<PropertyHostInfoProps> = ({
             isBordered
             radius="full"
             size="md"
-            src={property.host?.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(property.host?.display_name || property.host?.name || 'Host')}&background=3B82F6&color=fff`}
+            src={property.images?.[0] || `https://ui-avatars.com/api/?name=${encodeURIComponent(property.title || 'Property')}&background=3B82F6&color=fff`}
           />
           <div className="flex flex-col gap-1 items-start justify-center">
             <h4 className="text-small font-semibold leading-none text-gray-900 truncate max-w-[200px]">
-              {property.host?.display_name || property.host?.name || t('property.host.defaultName', 'Host')}
+              {property.title || t('property.defaultTitle', 'Property')}
             </h4>
             <h5 className="text-small tracking-tight text-gray-600">
-              {(property.host?.rating || 0).toFixed(1)}{t('common.symbols.percent', '%')}
+              {reviewStats.average_rating.toFixed(1)}{t('common.symbols.percent', '%')}
             </h5>
           </div>
         </div>
       </CardHeader>
       <CardBody className="px-3 py-0 text-small text-gray-600 flex-1">
-        <p className="line-clamp-4">{property.host?.bio || t('property.host.defaultBio', 'Experienced host committed to providing exceptional stays.')}</p>
+        <p className="line-clamp-4">{property.description || t('property.defaultDescription', 'Beautiful property with amazing amenities and great location.')}</p>
         <span className="pt-2 flex flex-col items-start gap-2">
-          {property.host?.is_email_verified && (
-            <span className="flex items-center gap-1">
-              <Mail className="size-4 text-main" />
-              {t('property.host.emailVerified')}
-            </span>
-          )}
-          {property.host?.phone && (
-            <span className="flex items-center gap-1">
-              <Phone className="size-4 text-main" />
-              {t('property.host.phoneVerified')}
-            </span>
-          )}
+          <span className="flex items-center gap-1">
+            <Star className="size-4 text-main" />
+            {t('review.reviews.averageRating', { rating: reviewStats.average_rating.toFixed(1) })}
+          </span>
+          <span className="flex items-center gap-1">
+            <MessageSquare className="size-4 text-main" />
+            <span>{t('review.reviews.totalReviews', { count: reviewStats.total_reviews })}</span>
+          </span>
         </span>
         
-        {/* Contact Host Button */}
+        {/* Write Review Button */}
         <div className="mt-4 flex justify-start">
           <Button
             className="bg-main text-white hover:bg-main/90"
             radius="md"
             size="sm"
             variant="solid"
-            onPress={onContactOpen}
+            onPress={onWriteReview}
           >
-            {t('property.actions.contactHost')}
+            {t('review.createReview')}
           </Button>
         </div>
       </CardBody>
       <CardFooter className="gap-3">
         <div className="flex gap-1">
           <p className="font-semibold text-gray-600 text-small">
-            {(property.host?.rating || 0).toFixed(1)}
+            {reviewStats.average_rating.toFixed(1)}
           </p>
-          <p className="text-gray-600 text-small">{t('property.host.rating')}</p>
+          <p className="text-sm text-gray-600">{t('review.reviews.rating')}</p>
         </div>
         <div className="flex gap-1">
           <p className="font-semibold text-gray-600 text-small">
-            {new Date(property.created_at).getFullYear()}
+            {reviewStats.total_reviews}
           </p>
-          <p className="text-gray-600 text-small">{t('property.host.hostSince')}</p>
+          <p className="text-sm text-gray-600">{t('review.reviews.reviews')}</p>
         </div>
       </CardFooter>
     </Card>
   );
 };
 
-export default PropertyHostInfo;
+export default PropertyReviewSummary;
