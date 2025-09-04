@@ -1,6 +1,6 @@
 import React from 'react'
-import { Card, CardHeader, CardBody, CardFooter, Avatar, Button, Badge, Divider } from '@heroui/react'
-import { MoreVertical, CheckCircle, Flag, Trash2 } from 'lucide-react'
+import { Card, CardHeader, CardBody, CardFooter, Avatar, Button, Divider } from '@heroui/react'
+import { MoreVertical, Flag, Trash2 } from 'lucide-react'
 import { useTranslation } from '../../lib/stores/translationStore'
 import StarRating from './StarRating'
 import { ReviewWithUser } from '../../interfaces/Review'
