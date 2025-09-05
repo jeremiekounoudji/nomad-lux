@@ -37,7 +37,8 @@
     "admin": "Admin",
     "super_admin": "Super Admin",
     "properties": "Properties",
-    "bookings": "Bookings"
+    "bookings": "Bookings",
+    "viewProfile": "View Profile"
   },
   "settings": {
     "language": "Language"
