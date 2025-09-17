@@ -74,6 +74,14 @@
     "suspended": "Suspended",
     "unknown": "Unknown"
   },
+  "sort": {
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "name": "Name",
+    "priceLowHigh": "Price: Low to High",
+    "priceHighLow": "Price: High to Low",
+    "rating": "Rating"
+  },
   "messages": {
     "loading": "Loading...",
     "saving": "Saving...",
@@ -125,61 +133,6 @@
     "retry": "Retry",
     "clear": "Clear",
     "reset": "Reset to Default"
-  },
-  "time": {
-    "thisMonth": "This month"
-  },
-  "debug": {
-    "info": "Debug Info",
-    "userAuthStatus": "User Auth Status",
-    "isLoading": "isLoading",
-    "isAuthenticated": "isAuthenticated",
-    "isAdmin": "isAdmin",
-    "user": "user",
-    "userId": "userId"
-  },
-  "upload": {
-    "uploaded": "✓ UPLOADED",
-    "failed": "✗ FAILED",
-    "uploadFailedWithReason": "Upload Failed: {{reason}}",
-    "header": "Uploading Files ({{completed}}/{{total}})",
-    "error": "Error",
-    "progressAria": "Upload progress for {{fileName}}",
-    "errorWithReason": "Error: {{reason}}",
-    "allUploaded": "All files uploaded successfully",
-    "someFailed": "Some uploads failed",
-    "uploadingFiles": "Uploading files...",
-    "progress": "Upload Progress",
-    "completedOfTotal": "{{completed}}/{{total}} completed",
-    "unknown": "Unknown",
-    "overallProgress": "Overall upload progress",
-    "completed": "100%"
-  },
-  "actions": {
-    "close": "Close",
-    "retry": "Retry",
-    "clear": "Clear",
-    "enable": "Enable",
-    "disable": "Disable",
-    "backToHome": "Back to Home"
-  },
-  "notSpecified": "Not specified",
-  "notProvided": "Not provided",
-  "pageBanner": {
-    "alt": "Page banner background",
-    "bannerLabel": "{{title}} page banner",
-    "home": "Luxury property discovery background",
-    "search": "Property search and discovery background",
-    "createProperty": "Modern house architecture background",
-    "editProperty": "Property editing and updates background",
-    "myListings": "Property management background",
-    "myBookings": "Travel and booking background",
-    "likedProperties": "Favorite properties background",
-    "bookingRequests": "Communication and requests background",
-    "notifications": "Notifications and alerts background",
-    "wallet": "Financial and wallet management background",
-    "admin": "Admin dashboard and management background",
-    "help": "Help and support background"
   },
   "time": {
     "now": "Now",

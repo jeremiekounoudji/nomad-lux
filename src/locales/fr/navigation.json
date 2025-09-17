@@ -38,7 +38,12 @@
     "super_admin": "Super Administrateur",
     "properties": "Propriétés",
     "bookings": "Réservations",
-    "viewProfile": "Voir le profil"
+    "viewProfile": "Voir le profil",
+    "tabs": {
+      "posts": "Publications",
+      "tagged": "Tagué"
+    },
+    "noContent": "Aucun contenu pour le moment"
   },
   "settings": {
     "language": "Langue"

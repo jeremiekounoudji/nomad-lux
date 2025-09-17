@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '../router/types'
 import toast from 'react-hot-toast'
 
-const LoginPage: React.FC<LoginPageProps> = ({ onPageChange, onLogin }) => {
+const LoginPage: React.FC<LoginPageProps> = ({ onPageChange }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isVisible, setIsVisible] = useState(false)

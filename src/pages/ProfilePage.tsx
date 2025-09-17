@@ -1,30 +1,37 @@
-import React, { useState, useRef } from 'react'
-import { Card, CardBody, Button, Spinner, Chip } from '@heroui/react'
-import { User, Shield, Camera, Edit3, CheckCircle, MapPin, Calendar, Mail, Phone, Star, Globe } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
+import { Card, CardBody, Button, Spinner } from '@heroui/react'
+import { User, Shield, Grid3X3, ClipboardList, Calendar as CalendarIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../lib/stores/translationStore'
-// import { useAuthStore } from '../lib/stores/authStore' // Commented out to avoid unused import warning
 import { ProfilePageProps, ProfileImageData } from '../interfaces/Profile'
 import { ROUTES } from '../router/types'
 import { useProfileImage } from '../hooks/useProfileImage'
 import { useProfile } from '../hooks/useProfile'
+import { useUserListings } from '../hooks/useUserListings'
+import { useBookingManagement } from '../hooks/useBookingManagement'
 import { ProfileEditModal } from '../components/features/profile/ProfileEditModal'
 import { PasswordChangeModal } from '../components/features/profile/PasswordChangeModal'
 import { ImagePreviewModal } from '../components/features/profile/ImagePreviewModal'
 import toast from 'react-hot-toast'
 
+import { BookingRequest } from '../interfaces/Booking'
+
+// New components for the updated profile page
+import ProfileHeader from '../components/features/profile/ProfileHeaderNew'
+import TabContent from '../components/features/profile/TabContentNew'
+import { Select, SelectItem } from '@heroui/react'
+
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
   onProfileUpdate, 
-  // onPasswordChange, // Commented out to avoid unused variable warning 
   onImageUpload 
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const { t } = useTranslation(['profile', 'common'])
-  // const { user } = useAuthStore() // Commented out to avoid unused variable warning
+  const { t } = useTranslation(['profile', 'common', 'property', 'booking'])
   const navigate = useNavigate()
   const { isUploading, uploadProgress, uploadImage, processImage } = useProfileImage()
   const { profile, isLoading, error, updateProfile } = useProfile()
+  const { filteredListings, fetchUserListings, isLoading: listingsLoading, totalStats } = useUserListings()
+  const { loadHostBookingRequests } = useBookingManagement()
   
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
@@ -32,10 +39,43 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false)
   const [previewImageData, setPreviewImageData] = useState<ProfileImageData | null>(null)
   
+  // Tab states
+  const [activeTab, setActiveTab] = useState<'properties' | 'bookings' | 'requests'>('properties')
+  
+  // Filter states
+  const [sortBy, setSortBy] = useState('newest')
+  
+  // Booking requests state
+  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([])
+  const [requestsLoading, setRequestsLoading] = useState(false)
+  
   // Store the actual file in a ref to avoid serialization issues
   const currentFileRef = useRef<File | null>(null)
 
-  // Profile loading is handled by the useProfile hook
+  // Load data when component mounts or tab changes
+  useEffect(() => {
+    if (!profile) return
+    
+    switch (activeTab) {
+      case 'properties':
+        fetchUserListings({ force: true })
+        break
+      case 'requests':
+        setRequestsLoading(true)
+        loadHostBookingRequests(profile.userId).then((requests) => {
+          setBookingRequests(requests || [])
+          setRequestsLoading(false)
+        }).catch((error) => {
+          console.error('Error loading booking requests:', error)
+          setRequestsLoading(false)
+        })
+        break
+      case 'bookings':
+        // For bookings, we would load guest bookings
+        // This would require implementing a loadGuestBookings function
+        break
+    }
+  }, [activeTab, profile, fetchUserListings, loadHostBookingRequests])
 
   const handleBackToHome = () => {
     navigate(ROUTES.HOME)
@@ -159,6 +199,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     event.target.value = ''
   }
 
+  const handleFilterChange = (value: any) => {
+    setSortBy(value)
+    // In a real implementation, we would re-sort the data based on this filter
+  }
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
@@ -223,6 +268,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     )
   }
 
+  // Calculate statistics
+  const propertiesCount = totalStats ? Object.keys(totalStats).length : 0
+  const bookingsCount = 0 // Would be calculated from actual bookings data
+  const reviewsCount = 0 // Would be calculated from actual reviews data
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" role="main" aria-label={t('profile.title')}>
       {/* Hidden file input for avatar upload */}
@@ -237,239 +287,135 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
       
       {/* Main Content */}
       <main className="w-full">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900 sm:text-4xl">
-            {t('profile.title')}
-          </h1>
-          <p className="text-lg text-gray-600">
-            {t('profile.subtitle')}
-          </p>
+        {/* Profile Header */}
+        <div className="mb-6">
+          <ProfileHeader 
+            profile={profile} 
+            isUploading={isUploading}
+            onCameraClick={handleCameraClick}
+            onEditProfile={() => setIsEditModalOpen(true)}
+            propertiesCount={propertiesCount}
+            bookingsCount={bookingsCount}
+            reviewsCount={reviewsCount}
+          />
         </div>
 
-        {/* Profile Cards Grid */}
-        <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
-          {/* Profile Header Card - Full Height */}
-          <div className="lg:col-span-1">
-            <Card className="size-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
-              <CardBody className="flex flex-col justify-center p-6 sm:p-8">
-                <div className="text-center">
-                  <div className="mb-6 text-center">
-                                         <div className="mx-auto mb-4 flex size-56 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-blue-100 to-purple-100 shadow-sm sm:size-64">
-                       {profile.avatarUrl ? (
-                         <img 
-                           src={profile.avatarUrl} 
-                           alt={`${profile.firstName} ${profile.lastName} profile picture`}
-                           className="size-full rounded-full object-cover"
-                           loading="lazy"
-                         />
-                       ) : (
-                         <User className="size-28 text-gray-400 sm:size-32" aria-hidden="true" />
-                       )}
-                     </div>
-                    <Button
-                      size="sm"
-                      className="bg-main font-semibold text-white hover:bg-main/90"
-                      startContent={<Camera className="size-4 text-white" />}
-                      onPress={handleCameraClick}
-                      isLoading={isUploading}
-                      disabled={isUploading}
-                      aria-label={t('profile.actions.changePhoto')}
-                    >
-                      {t('profile.actions.changePhoto')}
-                    </Button>
-                  </div>
-                  <div className="space-y-2">
-                    <h2 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                      {profile.firstName} {profile.lastName}
-                    </h2>
-                    <div className="flex items-center justify-center space-x-2">
-                      {profile.isVerified && (
-                        <CheckCircle className="size-4 text-blue-600" aria-hidden="true" />
-                      )}
-                      <span className="text-sm font-medium text-green-600">
-                        {profile.isVerified ? t('profile.verified') : t('profile.status.active')}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          </div>
-
-          {/* Bio & Details Card */}
-          <div className="lg:col-span-2">
-            <Card className="h-fit w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
-              <CardBody className="p-6 sm:p-8">
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-                      {t('profile.accountDetails')}
-                    </h3>
-                    <div className="size-2 rounded-full bg-green-500"></div>
-                  </div>
-                                     <Button 
-                     size="sm" 
-                     color="primary" 
-                     variant="flat"
-                     startContent={<Edit3 className="size-4" />}
-                     className="font-semibold"
-                     aria-label={t('profile.actions.editPersonalInfo')}
-                     onPress={() => setIsEditModalOpen(true)}
-                   >
-                     {t('common.edit')}
-                   </Button>
-                </div>
-                
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <User className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.firstName')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {profile.firstName || t('common.notProvided')}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <Mail className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.email')}</span>
-                      </label>
-                      <p className="break-all rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {profile.email}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <Phone className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.phone')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {profile.phone || t('common.notProvided')}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <MapPin className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.location')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {profile.location || t('common.notProvided')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <User className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.lastName')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {profile.lastName || t('common.notProvided')}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <Calendar className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.account.memberSince')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {new Date(profile.joinDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <Globe className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.account.preferredLanguage')}</span>
-                      </label>
-                      <p className="rounded-lg bg-gray-50 px-3 py-2 text-base text-gray-900">
-                        {t(`profile.languages.${profile.preferences.language}`)}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
-                        <Star className="size-4 text-gray-500" aria-hidden="true" />
-                        <span>{t('profile.fields.status')}</span>
-                      </label>
-                      <Chip 
-                        size="sm" 
-                        color="success"
-                        variant="flat"
-                        startContent={<div className="size-2 rounded-full bg-green-500"></div>}
-                      >
-                        {t('profile.status.active')}
-                      </Chip>
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-          </div>
+        {/* Action Buttons */}
+        <div className="mb-6 flex flex-wrap gap-3">
+          <Button 
+            color="primary" 
+            variant="bordered"
+            className="font-semibold"
+            onPress={handlePasswordChange}
+            aria-label={t('profile.actions.changePassword')}
+          >
+            {t('profile.actions.changePassword')}
+          </Button>
+          <Button 
+            color="secondary" 
+            variant="bordered"
+            className="font-semibold"
+            onPress={() => setIsEditModalOpen(true)}
+            aria-label={t('profile.actions.editProfile')}
+          >
+            {t('profile.actions.editProfile')}
+          </Button>
         </div>
 
-        {/* Settings Cards Row */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-1 lg:grid-cols-1">
-          {/* Security Card */}
+        {/* Filter Dropdown */}
+        <div className="mb-6 flex justify-end">
+          <Select 
+            placeholder={t('common.filter')}
+            className="w-48"
+            selectedKeys={[sortBy]}
+            onSelectionChange={(keys) => handleFilterChange(Array.from(keys)[0])}
+          >
+            <SelectItem key="newest">{t('common.sort.newest')}</SelectItem>
+            <SelectItem key="oldest">{t('common.sort.oldest')}</SelectItem>
+            <SelectItem key="name">{t('common.sort.name')}</SelectItem>
+          </Select>
+        </div>
+
+        {/* Tab Navigation */}
+        <div className="mb-6">
           <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
-            <CardBody className="p-6 sm:p-8">
-              <div className="mb-6 flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-green-100">
-                    <Shield className="size-5 text-green-600" aria-hidden="true" />
-                  </div>
-                  <h3 className="text-lg font-bold text-gray-900">
-                    {t('profile.sections.security')}
-                  </h3>
-                </div>
+            <CardBody className="p-0">
+              <div className="flex border-t border-gray-200">
+                <button
+                  className={`flex flex-1 items-center justify-center py-4 ${
+                    activeTab === 'properties' 
+                      ? 'border-t-2 border-primary-500 text-primary-500' 
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('properties')}
+                >
+                  <Grid3X3 className="mr-2 size-5" aria-hidden="true" />
+                  <span className="font-medium">{t('property.listings.tabs.all')}</span>
+                </button>
+                <button
+                  className={`flex flex-1 items-center justify-center py-4 ${
+                    activeTab === 'bookings' 
+                      ? 'border-t-2 border-primary-500 text-primary-500' 
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('bookings')}
+                >
+                  <CalendarIcon className="mr-2 size-5" aria-hidden="true" />
+                  <span className="font-medium">{t('booking.myBookings.banner.title')}</span>
+                </button>
+                <button
+                  className={`flex flex-1 items-center justify-center py-4 ${
+                    activeTab === 'requests' 
+                      ? 'border-t-2 border-primary-500 text-primary-500' 
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                  onClick={() => setActiveTab('requests')}
+                >
+                  <ClipboardList className="mr-2 size-5" aria-hidden="true" />
+                  <span className="font-medium">{t('booking.bookingRequests.banner.title')}</span>
+                </button>
               </div>
-              <p className="mb-4 text-sm leading-relaxed text-gray-600">
-                {t('profile.security.description')}
-              </p>
-              <Button 
-                color="success" 
-                variant="flat"
-                onPress={handlePasswordChange}
-                className="w-full font-semibold"
-                aria-label={t('profile.actions.changePassword')}
-              >
-                {t('profile.actions.changePassword')}
-              </Button>
             </CardBody>
           </Card>
-                 </div>
-       </main>
+        </div>
 
-       {/* Modals */}
-       <ProfileEditModal
-         isOpen={isEditModalOpen}
-         onClose={() => setIsEditModalOpen(false)}
-         profile={profile!}
-         onSave={handleProfileUpdate}
-       />
+        {/* Tab Content */}
+        <TabContent 
+          activeTab={activeTab}
+          properties={filteredListings as any[]}
+          bookings={[]} // In a real implementation, this would be guest bookings
+          requests={bookingRequests}
+          isLoading={listingsLoading || requestsLoading}
+        />
+      </main>
 
-       <PasswordChangeModal
-         isOpen={isPasswordModalOpen}
-         onClose={() => setIsPasswordModalOpen(false)}
-       />
+      {/* Modals */}
+      <ProfileEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        profile={profile!}
+        onSave={handleProfileUpdate}
+      />
 
-       <ImagePreviewModal
-         isOpen={isImagePreviewModalOpen}
-         onClose={() => {
-           setIsImagePreviewModalOpen(false)
-           setPreviewImageData(null)
-           currentFileRef.current = null
-         }}
-         imageData={previewImageData}
-         onConfirm={handleImageUpload}
-         isUploading={isUploading}
-         uploadProgress={uploadProgress}
-       />
-     </div>
-   )
- }
+      <PasswordChangeModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
+
+      <ImagePreviewModal
+        isOpen={isImagePreviewModalOpen}
+        onClose={() => {
+          setIsImagePreviewModalOpen(false)
+          setPreviewImageData(null)
+          currentFileRef.current = null
+        }}
+        imageData={previewImageData}
+        onConfirm={handleImageUpload}
+        isUploading={isUploading}
+        uploadProgress={uploadProgress}
+      />
+    </div>
+  )
+}
 
 export default ProfilePage
-
-

@@ -146,8 +146,12 @@
     "cancelled": "Annulé",
     "completed": "Terminé",
     "rejected": "Rejeté",
+    "noShow": "Absence",
+    "no-show": "Absence",
     "accepted-and-waiting-for-payment": "Accepté et en attente de paiement",
-    "payment-failed": "Paiement échoué"
+    "acceptedWaitingPayment": "Accepté et en attente de paiement",
+    "payment-failed": "Paiement échoué",
+    "paymentFailed": "Paiement échoué"
   },
   "reviews": {
     "count": "{{count}} avis"

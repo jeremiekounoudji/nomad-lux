@@ -27,7 +27,7 @@ export const useWalletMetrics = () => {
       .from('user_wallets')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (error) {
       console.error('❌ Error fetching wallet metrics:', error)
@@ -48,6 +48,45 @@ export const useWalletMetrics = () => {
           nextPayoutAllowedAt: data.next_payout_allowed_at as string | null
         }
         setMetrics(mapped)
+      } else {
+        // No wallet record found, create one with default values
+        console.log('🔄 No wallet record found, creating default wallet metrics')
+        const defaultMetrics = {
+          totalBalance: 0,
+          pendingAmount: 0,
+          pendingCount: 0,
+          failedAmount: 0,
+          failedCount: 0,
+          successfulAmount: 0,
+          successfulCount: 0,
+          payoutBalance: 0,
+          lastPayoutDate: null,
+          nextPayoutAllowedAt: null
+        }
+        setMetrics(defaultMetrics)
+        
+        // Optionally, create the wallet record in the database
+        try {
+          await supabase
+            .from('user_wallets')
+            .insert({
+              user_id: user.id,
+              currency: 'XOF',
+              total_balance: 0,
+              pending_amount: 0,
+              pending_count: 0,
+              failed_amount: 0,
+              failed_count: 0,
+              successful_amount: 0,
+              successful_count: 0,
+              payout_balance: 0,
+              last_payout_date: null,
+              next_payout_allowed_at: null
+            })
+          console.log('✅ Created wallet record for user:', user.id)
+        } catch (insertError) {
+          console.warn('⚠️ Failed to create wallet record:', insertError)
+        }
       }
     }
 

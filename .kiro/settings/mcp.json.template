@@ -1,0 +1,66 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "uvx",
+      "args": ["mcp-server-supabase"],
+      "env": {
+        "SUPABASE_URL": "YOUR_SUPABASE_URL_HERE",
+        "SUPABASE_ANON_KEY": "YOUR_SUPABASE_ANON_KEY_HERE"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "mcp_supabase_list_projects",
+        "mcp_supabase_get_project",
+        "mcp_supabase_list_tables",
+        "mcp_supabase_execute_sql",
+        "mcp_supabase_apply_migration",
+        "mcp_supabase_list_migrations",
+        "mcp_supabase_get_logs",
+        "mcp_supabase_get_advisors"
+      ]
+    },
+    "github": {
+      "command": "uvx",
+      "args": ["mcp-server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "mcp_github_search_repositories",
+        "mcp_github_get_file_contents",
+        "mcp_github_list_commits",
+        "mcp_github_search_code",
+        "mcp_github_search_issues",
+        "mcp_github_get_issue",
+        "mcp_github_list_issues",
+        "mcp_github_create_issue",
+        "mcp_github_update_issue",
+        "mcp_github_add_issue_comment"
+      ]
+    },
+    "playwright": {
+      "command": "uvx",
+      "args": ["mcp-server-playwright"],
+      "disabled": false,
+      "autoApprove": [
+        "mcp_playwright_browser_navigate",
+        "mcp_playwright_browser_snapshot",
+        "mcp_playwright_browser_click",
+        "mcp_playwright_browser_type",
+        "mcp_playwright_browser_scroll",
+        "mcp_playwright_browser_wait_for",
+        "mcp_playwright_browser_take_screenshot"
+      ]
+    },
+    "figma": {
+      "command": "uvx",
+      "args": ["@modelcontextprotocol/server-figma"],
+      "env": {
+        "FIGMA_ACCESS_TOKEN": "YOUR_FIGMA_TOKEN_HERE"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

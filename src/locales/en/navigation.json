@@ -38,7 +38,12 @@
     "super_admin": "Super Admin",
     "properties": "Properties",
     "bookings": "Bookings",
-    "viewProfile": "View Profile"
+    "viewProfile": "View Profile",
+    "tabs": {
+      "posts": "Posts",
+      "tagged": "Tagged"
+    },
+    "noContent": "No content yet"
   },
   "settings": {
     "language": "Language"

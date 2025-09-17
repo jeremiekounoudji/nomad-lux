@@ -27,29 +27,48 @@ export const isWebShareSupported = (): boolean => {
 export const updatePropertyMetaTags = (property: Property): void => {
   const baseUrl = window.location.origin
   const propertyUrl = `${baseUrl}/property/${property.id}`
-  const propertyImage = property.images && property.images.length > 0 ? property.images[0] : '/og-image.jpg'
+  // Use the first property image if available, otherwise fallback to the logo
+  const propertyImage = property.images && property.images.length > 0 
+    ? property.images[0] 
+    : `${baseUrl}/favicon.jpg`
   
   // Update title
   document.title = `${property.title} - NomadLux`
   
+  // Create rich description with amenities
+  const amenitiesText = property.amenities && property.amenities.length > 0 
+    ? ` Features: ${property.amenities.slice(0, 3).join(', ')}${property.amenities.length > 3 ? ' and more' : ''}.`
+    : ''
+  
+  const description = `${property.title} in ${property.location.city}, ${property.location.country}. Starting at ${property.currency || '$'}${property.price}/night${property.rating ? ` with ${property.rating}⭐ rating` : ''}.${amenitiesText} Book now on NomadLux!`
+  
   // Update meta tags
   const metaUpdates = [
     { selector: 'meta[name="title"]', content: `${property.title} - NomadLux` },
-    { selector: 'meta[name="description"]', content: `${property.title} in ${property.location.city}, ${property.location.country}. Starting at $${property.price}/night with ${property.rating}⭐ rating. Book now on NomadLux!` },
+    { selector: 'meta[name="description"]', content: description },
     
     // Open Graph tags
     { selector: 'meta[property="og:title"]', content: `${property.title} - NomadLux` },
-    { selector: 'meta[property="og:description"]', content: `${property.title} in ${property.location.city}, ${property.location.country}. Starting at $${property.price}/night with ${property.rating}⭐ rating. Book now on NomadLux!` },
+    { selector: 'meta[property="og:description"]', content: description },
     { selector: 'meta[property="og:url"]', content: propertyUrl },
     { selector: 'meta[property="og:image"]', content: propertyImage },
     { selector: 'meta[property="og:image:alt"]', content: `${property.title} - Property photo` },
+    { selector: 'meta[property="og:image:width"]', content: '1200' },
+    { selector: 'meta[property="og:image:height"]', content: '630' },
+    { selector: 'meta[property="og:type"]', content: 'website' },
+    { selector: 'meta[property="og:site_name"]', content: 'NomadLux' },
     
     // Twitter tags
+    { selector: 'meta[property="twitter:card"]', content: 'summary_large_image' },
     { selector: 'meta[property="twitter:title"]', content: `${property.title} - NomadLux` },
-    { selector: 'meta[property="twitter:description"]', content: `${property.title} in ${property.location.city}, ${property.location.country}. Starting at $${property.price}/night with ${property.rating}⭐ rating. Book now on NomadLux!` },
+    { selector: 'meta[property="twitter:description"]', content: description },
     { selector: 'meta[property="twitter:url"]', content: propertyUrl },
     { selector: 'meta[property="twitter:image"]', content: propertyImage },
     { selector: 'meta[property="twitter:image:alt"]', content: `${property.title} - Property photo` },
+    
+    // Additional meta tags for better SEO
+    { selector: 'meta[name="keywords"]', content: `${property.title}, ${property.location.city}, ${property.location.country}, luxury rental, vacation home, ${property.property_type}, accommodation, travel` },
+    { selector: 'meta[name="author"]', content: 'NomadLux' },
     
     // Canonical URL
     { selector: 'link[rel="canonical"]', content: propertyUrl, attribute: 'href' }
@@ -94,14 +113,14 @@ export const resetDefaultMetaTags = (): void => {
     { selector: 'meta[property="og:title"]', content: 'NomadLux - Luxury Property Rentals' },
     { selector: 'meta[property="og:description"]', content: 'Discover and book luxury properties worldwide. From stunning villas to cozy apartments, find your perfect getaway with NomadLux.' },
     { selector: 'meta[property="og:url"]', content: 'https://nomadlux.com/' },
-    { selector: 'meta[property="og:image"]', content: 'https://nomadlux.com/og-image.jpg' },
+    { selector: 'meta[property="og:image"]', content: `${window.location.origin}/favicon.jpg` },
     { selector: 'meta[property="og:image:alt"]', content: 'NomadLux - Luxury property rental platform' },
     
     // Twitter tags
     { selector: 'meta[property="twitter:title"]', content: 'NomadLux - Luxury Property Rentals' },
     { selector: 'meta[property="twitter:description"]', content: 'Discover and book luxury properties worldwide. From stunning villas to cozy apartments, find your perfect getaway with NomadLux.' },
     { selector: 'meta[property="twitter:url"]', content: 'https://nomadlux.com/' },
-    { selector: 'meta[property="twitter:image"]', content: 'https://nomadlux.com/og-image.jpg' },
+    { selector: 'meta[property="twitter:image"]', content: `${window.location.origin}/favicon.jpg` },
     { selector: 'meta[property="twitter:image:alt"]', content: 'NomadLux - Luxury property rental platform' },
     
     // Canonical URL
@@ -165,7 +184,7 @@ export const createPropertyShareData = (property: Property): ShareData => {
   
   return {
     title: `${property.title} - Nomad Lux`,
-    text: `Check out this amazing property: ${property.title} in ${property.location.city}, ${property.location.country}. Starting at $${property.price}/night with ${property.rating}⭐ rating!`,
+    text: `Check out this amazing property: ${property.title} in ${property.location.city}, ${property.location.country}. Starting at ${property.price}/night with ${property.rating}⭐ rating!`,
     url: propertyUrl
   }
 }
@@ -202,4 +221,4 @@ export const openSocialShare = (url: string): void => {
   if (popup) {
     popup.focus()
   }
-} 
+}

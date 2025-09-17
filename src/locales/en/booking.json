@@ -140,8 +140,12 @@
     "cancelled": "Cancelled",
     "completed": "Completed",
     "rejected": "Rejected",
+    "noShow": "No Show",
+    "no-show": "No Show",
     "accepted-and-waiting-for-payment": "Accepted and waiting for payment",
-    "payment-failed": "Payment failed"
+    "acceptedWaitingPayment": "Accepted and waiting for payment",
+    "payment-failed": "Payment failed",
+    "paymentFailed": "Payment failed"
   },
   "reviews": {
     "count": "{{count}} reviews"

@@ -10,6 +10,9 @@ lerna-debug.log*
 dist/
 build/
 .vite/
+# Kiro settings (may contain API keys)
+.kiro/settings/mcp.json
+/C:/Users/HP/.kiro/settings/mcp.json
 
 # Environment variables
 .env
