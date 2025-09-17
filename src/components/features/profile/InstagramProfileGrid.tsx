@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from '../../../lib/stores/translationStore'
 
 interface InstagramProfileGridProps {
-  items: any[] // Will be updated with proper type when we have actual data
+  items: unknown[] // Will be updated with proper type when we have actual data
 }
 
 const InstagramProfileGrid: React.FC<InstagramProfileGridProps> = () => {

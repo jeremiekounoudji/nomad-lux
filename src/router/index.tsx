@@ -120,7 +120,7 @@ const routes = [
 
 // Convert AppRoute to RouteObject by removing custom properties
 const convertToRouteObject = (appRoute: AppRoute): RouteObject => {
-  const { requireAuth, requireAdmin, layout, children, ...routeObject } = appRoute;
+  const { requireAuth: _requireAuth, requireAdmin: _requireAdmin, layout: _layout, children, ...routeObject } = appRoute;
 
   const converted: RouteObject = {
     ...routeObject,
