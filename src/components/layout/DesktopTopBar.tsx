@@ -1,23 +1,19 @@
-import React from 'react'
-import { Search, Crown, Plus, LogOut } from 'lucide-react'
-import { NavLink } from 'react-router-dom'
-import { ROUTES } from '../../router/types'
-import { CompactLanguageSelector } from '../shared/LanguageSelector'
-import { NotificationCenter } from '../shared/NotificationCenter'
-import { useTranslation } from '../../lib/stores/translationStore'
+import React from 'react';
+import { Search, Plus, LogOut } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { ROUTES } from '../../router/types';
+import { CompactLanguageSelector } from '../shared/LanguageSelector';
+import { NotificationCenter } from '../shared/NotificationCenter';
+import { useTranslation } from '../../lib/stores/translationStore';
 
 interface DesktopTopBarProps {
-  isAuthenticated: boolean
-  onLogout: () => void
-  onSearch: () => void
+  isAuthenticated: boolean;
+  onLogout: () => void;
+  onSearch: () => void;
 }
 
-const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
-  isAuthenticated,
-  onLogout,
-  onSearch
-}) => {
-  const { t } = useTranslation(['navigation', 'common'])
+const DesktopTopBar: React.FC<DesktopTopBarProps> = ({ isAuthenticated, onLogout, onSearch }) => {
+  const { t } = useTranslation(['navigation', 'common']);
 
   return (
     <div className="sticky top-0 z-40 hidden border-b border-gray-200 bg-white px-6 py-4 lg:flex">
@@ -30,7 +26,7 @@ const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
             className="h-12 w-full rounded-full border border-gray-200 bg-gray-50 pl-12 pr-4 text-sm transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-500"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                onSearch()
+                onSearch();
               }
             }}
           />
@@ -39,16 +35,9 @@ const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
       <div className="ml-6 flex items-center gap-4">
         {/* Language Selector */}
         <CompactLanguageSelector />
-        {/* Admin Panel - always visible */}
-        <NavLink 
-          to={ROUTES.ADMIN_LOGIN}
-          className="rounded-lg p-2 transition-colors hover:bg-gray-100"
-        >
-          <Crown className="size-5" />
-        </NavLink>
         {/* Create Post - authenticated only */}
         {isAuthenticated && (
-          <NavLink 
+          <NavLink
             to={ROUTES.CREATE_PROPERTY}
             className="rounded-lg p-2 transition-colors hover:bg-gray-100"
           >
@@ -61,7 +50,7 @@ const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
         )}
         {/* Sign Out - authenticated only */}
         {isAuthenticated && (
-          <button 
+          <button
             onClick={onLogout}
             className="rounded-lg p-2 transition-colors hover:bg-red-50"
             title={t('navigation.actions.signOut')}
@@ -71,7 +60,7 @@ const DesktopTopBar: React.FC<DesktopTopBarProps> = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DesktopTopBar
+export default DesktopTopBar;
