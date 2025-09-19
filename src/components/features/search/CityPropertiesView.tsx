@@ -59,10 +59,10 @@ export const CityPropertiesView = ({
             <img
               src={selectedCity.featured_image}
               alt={selectedCity.name}
-              className="size-20 rounded-xl object-cover"
+              className="md:size-40 rounded-xl object-cover"
             />
-            <div>
-              <h1 className="mb-2 text-start font-script text-3xl font-bold text-gray-900">
+           <div className="hidden md:block">
+              <h1 className="mb-2 md:mt-2 text-start font-script md:text-3xl text-2xl font-bold text-gray-900">
                 {selectedCity.name}, {selectedCity.country}
               </h1>
               <div className="flex items-center gap-4 text-gray-600">
@@ -76,6 +76,20 @@ export const CityPropertiesView = ({
               </div>
             </div>
           </div>
+           <div className="md:hidden">
+              <h1 className="mb-2 mt-2 text-start font-script text-2xl font-bold text-gray-900">
+                {selectedCity.name}, {selectedCity.country}
+              </h1>
+              <div className="flex items-center gap-4 text-gray-600">
+                <div className="flex items-center gap-1">
+                  <MapPin className="size-4" />
+                  <span>{selectedCity.property_count} {t('search.propertiesAvailable', { defaultValue: 'properties available' })}</span>
+                </div>
+                <div>
+                  <span>{t('search.averagePrice', { defaultValue: 'Average' })} {formatPrice(selectedCity.average_price, 'USD')}/{t('search.perNight', { defaultValue: 'night' })}</span>
+                </div>
+              </div>
+            </div>
         </div>
       </div>
 

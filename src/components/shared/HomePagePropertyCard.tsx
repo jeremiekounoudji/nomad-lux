@@ -70,17 +70,17 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
       </div>
 
       {/* Image */}
-      <div className="relative p-3">
+      <div className="relative p-1">
         <img
           src={currentImage}
           alt={property.title}
-          className="h-40 w-full rounded-lg object-cover"
+          className="h-[400px] md:h-[200px] w-full rounded-lg object-cover"
           onClick={nextImage}
         />
         
         {/* Image indicators */}
         {images.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1">
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1 mb-2">
             {images.map((_, index) => (
               <div
                 key={index}
@@ -105,7 +105,7 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
           >
             <div className="flex items-center gap-1">
               <Heart
-                className={`size-6 ${
+                className={`size-4 ${
                   property.is_liked ? 'fill-red-500 text-red-500' : 'text-gray-700'
                 } transition-colors hover:text-gray-500`}
               />
@@ -116,13 +116,13 @@ const HomePagePropertyCard: React.FC<HomePagePropertyCardProps> = ({
             onClick={handleShare}
             className="border-none bg-transparent p-0"
           >
-            <Share2 className="size-6 text-gray-700 transition-colors hover:text-gray-500" />
+            <Share2 className="size-4 text-gray-700 transition-colors hover:text-gray-500" />
           </button>
         </div>
 
         {/* Property details */}
         <div className="space-y-2 text-left">
-          <h3 className="truncate text-left text-lg font-semibold leading-tight text-gray-900">
+          <h3 className="truncate text-left text-md font-semibold leading-tight text-gray-900">
             {property.title}
           </h3>
 
