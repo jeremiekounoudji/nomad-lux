@@ -97,7 +97,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
             eventHandlers={{
               click: () => {
                 if (onPropertyClick) onPropertyClick(property);
-                else navigate(`/properties/${property.id}`);
+                else navigate(`/property/${property.id}`);
               }
             }}
           >
@@ -124,7 +124,7 @@ const PropertiesMap: React.FC<PropertiesMapProps> = ({
                   <Button
                     size="sm"
                     color="primary"
-                    onClick={() => navigate(`/properties/${property.id}`)}
+                    onClick={() => navigate(`/property/${property.id}`)}
                   >
                     {t('actions.viewDetails')}
                   </Button>

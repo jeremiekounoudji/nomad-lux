@@ -74,7 +74,7 @@ const LikedPropertiesPage: React.FC<LikedPropertiesPageProps> = ({ onPageChange 
     // Ensure we store a property with a valid id in state
     const normalizedProperty = { ...property, id: resolvedId } as Property;
     setSelectedProperty(normalizedProperty);
-    navigate(`/properties/${resolvedId}`);
+    navigate(`/property/${resolvedId}`);
   };
 
   return (

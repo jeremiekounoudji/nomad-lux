@@ -49,7 +49,7 @@ export const PropertiesMap: React.FC<PropertiesMapProps> = ({
       onPropertyClick(property);
     } else {
       setSelectedProperty(property);
-      navigate(`/properties/${property.id}`);
+      navigate(`/property/${property.id}`);
     }
   }, [onPropertyClick, setSelectedProperty, navigate]);
 

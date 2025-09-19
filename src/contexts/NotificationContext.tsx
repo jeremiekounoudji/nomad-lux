@@ -227,7 +227,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
         }
         return '/bookings';
       case 'property':
-        return `/properties/${notification.related_id}`;
+        return `/property/${notification.related_id}`;
       case 'payout':
       case 'payment':
         return '/wallet';

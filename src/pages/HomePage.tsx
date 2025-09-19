@@ -334,7 +334,7 @@ const HomePage: React.FC = () => {
     console.log('🏠 Property clicked:', property.title);
     handlePropertyView(property.id);
     setSelectedProperty(property); // Set in Zustand store
-    navigate(`/properties/${property.id}`);
+    navigate(`/property/${property.id}`);
   }, [handlePropertyView, setSelectedProperty, navigate]);
 
   const handleCityClick = useCallback((place: PopularPlace) => {

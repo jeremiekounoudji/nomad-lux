@@ -84,7 +84,7 @@ const SearchPage: React.FC<SearchPageProps> = ({ onPageChange: _onPageChange }) 
     console.log('🏠 Property clicked:', property.title);
     handlePropertyView(property.id);
     setSelectedProperty(property); // Set in Zustand store
-    navigate(`/properties/${property.id}`);
+    navigate(`/property/${property.id}`);
   }, [handlePropertyView, setSelectedProperty, navigate]);
 
   // Handler to use for filter search (auto-hide filters after search)
