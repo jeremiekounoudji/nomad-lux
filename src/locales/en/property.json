@@ -125,6 +125,8 @@
     "availability": "Availability",
     "checkIn": "Check-in",
     "checkOut": "Check-out",
+    "availableCheckInTimes": "Available Check-in Times",
+    "latestCheckOutTime": "Latest Check-out Time",
     "minStay": "Minimum Stay",
     "maxStay": "Maximum Stay",
     "instantBook": "Instant Book",
@@ -171,7 +173,13 @@
     "suspendProperty": "Suspend Property",
     "directions": "Directions",
     "contact": "Contact",
-    "getDirections": "Get Directions"
+    "getDirections": "Get Directions",
+    "backToListings": "Back to My Listings",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stats": "Stats",
+    "edit": "Edit",
+    "delete": "Delete"
   },
   "messages": {
     "noProperties": "No properties found",
@@ -254,9 +262,6 @@
     "title": "Edit Property Details",
     "description": "Make changes to your property information. Note that some changes may require admin review before being published."
   },
-  "actions": {
-    "backToListings": "Back to My Listings"
-  },
   "messages": {
     "invalidPropertyId": "Invalid property ID",
     "propertyNotFound": "Property not found",
@@ -305,7 +310,16 @@
   "modal": {
     "contactHost": {
       "title": "Contact Host",
-      "subtitle": "Choose how you'd like to contact the host"
+      "subtitle": "Choose how you'd like to contact the host",
+      "error": "Contact Error",
+      "noHostData": "Host information is not available at the moment.",
+      "chooseMethod": "Choose how you'd like to contact the host",
+      "noPhone": "Phone number not available",
+      "noEmail": "Email address not available",
+      "callError": "Unable to make call. Please try again.",
+      "emailError": "Unable to open email. Please try again.",
+      "whatsappError": "Unable to open WhatsApp. Please try again.",
+      "noContactMethods": "No contact methods available for this host."
     }
   },
   "filters": {
@@ -456,13 +470,6 @@
       "paused": "Paused",
       "rejected": "Rejected"
     },
-    "actions": {
-      "pause": "Pause",
-      "resume": "Resume",
-      "stats": "Stats",
-      "edit": "Edit",
-      "delete": "Delete"
-    },
     "modals": {
       "deleteTitle": "Delete Listing",
       "deleteConfirmation": "This action cannot be undone",
@@ -476,6 +483,11 @@
       "views": "Views",
       "bookings": "Bookings", 
       "revenue": "Revenue"
+    },
+    "actions": {
+      "stats": "Stats",
+      "edit": "Edit",
+      "delete": "Delete"
     },
     "errors": {
       "loadingListings": "Error Loading Listings",
@@ -507,7 +519,9 @@
   },
   "host": {
     "title": "Meet your host",
-    "defaultBio": "I'm a passionate host who loves sharing beautiful spaces with travelers from around the world.",
+    "notAvailable": "Host information not available",
+    "defaultName": "Host",
+    "defaultBio": "Experienced host committed to providing exceptional stays.",
     "emailVerified": "Email verified",
     "phoneVerified": "Phone verified",
     "verified": "Verified",

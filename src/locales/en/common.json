@@ -134,6 +134,9 @@
     "clear": "Clear",
     "reset": "Reset to Default"
   },
+  "pageBanner": {
+    "myListings": "My Listings"
+  },
   "time": {
     "now": "Now",
     "today": "Today",

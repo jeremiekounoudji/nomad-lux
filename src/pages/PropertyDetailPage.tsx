@@ -659,6 +659,7 @@ const PropertyDetailPage: React.FC = () => {
                   isCheckingAvailability={isCheckingAvailability}
                   isCreatingBooking={isCreatingBooking}
                   onReserveClick={handleReserveClick}
+                  propertySettings={propertySettings}
                 />
               </div>
             </div>

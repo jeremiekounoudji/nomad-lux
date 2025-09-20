@@ -30,6 +30,8 @@ interface PropertyBookingCardProps {
   isCheckingAvailability: boolean;
   isCreatingBooking: boolean;
   onReserveClick: () => void;
+  // Property settings for time-based booking
+  propertySettings?: any; // TODO: Type this properly with PropertySettings interface
 }
 
 const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
@@ -55,7 +57,8 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
   totalAmount,
   isCheckingAvailability,
   isCreatingBooking,
-  onReserveClick
+  onReserveClick,
+  propertySettings
 }) => {
   const { t } = useTranslation(['booking', 'property']);
 
@@ -130,6 +133,11 @@ const PropertyBookingCard: React.FC<PropertyBookingCardProps> = ({
                   toast.success(t('booking.messages.timeUpdated'))
                 }
               }}
+              // Time-based booking props
+              showTimeSlots={true}
+              timeSlotDuration={60}
+              checkinTime={propertySettings?.checkin_time || '15:00:00'}
+              checkoutTime={propertySettings?.checkout_time || '11:00:00'}
             />
           </div>
 

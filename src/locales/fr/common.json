@@ -134,6 +134,9 @@
     "clear": "Effacer",
     "reset": "Réinitialiser aux valeurs par défaut"
   },
+  "pageBanner": {
+    "myListings": "Mes Annonces"
+  },
   "time": {
     "now": "Maintenant",
     "today": "Aujourd'hui",

@@ -165,7 +165,13 @@
     "suspendProperty": "Suspendre la propriété",
     "directions": "Itinéraire",
     "contact": "Contact",
-    "getDirections": "Obtenir l'itinéraire"
+    "getDirections": "Obtenir l'itinéraire",
+    "backToListings": "Retour à mes annonces",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "stats": "Statistiques",
+    "edit": "Modifier",
+    "delete": "Supprimer"
   },
   "messages": {
     "noProperties": "Aucune propriété trouvée",
@@ -246,9 +252,6 @@
     "title": "Modifier les détails de la propriété",
     "description": "Apportez des modifications aux informations de votre propriété. Notez que certaines modifications peuvent nécessiter une révision par l'administrateur avant d'être publiées."
   },
-  "actions": {
-    "backToListings": "Retour à mes annonces"
-  },
   "messages": {
     "invalidPropertyId": "ID de propriété invalide",
     "propertyNotFound": "Propriété non trouvée",
@@ -297,7 +300,16 @@
   "modal": {
     "contactHost": {
       "title": "Contacter l'hôte",
-      "subtitle": "Choisissez comment vous souhaitez contacter l'hôte"
+      "subtitle": "Choisissez comment vous souhaitez contacter l'hôte",
+      "error": "Erreur de contact",
+      "noHostData": "Les informations de l'hôte ne sont pas disponibles pour le moment.",
+      "chooseMethod": "Choisissez comment vous souhaitez contacter l'hôte",
+      "noPhone": "Numéro de téléphone non disponible",
+      "noEmail": "Adresse email non disponible",
+      "callError": "Impossible de passer l'appel. Veuillez réessayer.",
+      "emailError": "Impossible d'ouvrir l'email. Veuillez réessayer.",
+      "whatsappError": "Impossible d'ouvrir WhatsApp. Veuillez réessayer.",
+      "noContactMethods": "Aucune méthode de contact disponible pour cet hôte."
     }
   },
   "filters": {
@@ -448,13 +460,6 @@
       "paused": "En pause",
       "rejected": "Rejetées"
     },
-    "actions": {
-      "pause": "Pause",
-      "resume": "Reprendre",
-      "stats": "Statistiques",
-      "edit": "Modifier",
-      "delete": "Supprimer"
-    },
     "modals": {
       "deleteTitle": "Supprimer l'annonce",
       "deleteConfirmation": "Cette action ne peut pas être annulée",
@@ -468,6 +473,11 @@
       "views": "Vues",
       "bookings": "Réservations",
       "revenue": "Revenus"
+    },
+    "actions": {
+      "stats": "Statistiques",
+      "edit": "Modifier",
+      "delete": "Supprimer"
     },
     "errors": {
       "loadingListings": "Erreur lors du chargement des annonces",
@@ -499,7 +509,9 @@
   },
   "host": {
     "title": "Rencontrez votre hôte",
-    "defaultBio": "Je suis un hôte passionné qui aime partager de beaux espaces avec des voyageurs du monde entier.",
+    "notAvailable": "Informations de l'hôte non disponibles",
+    "defaultName": "Hôte",
+    "defaultBio": "Hôte expérimenté engagé à fournir des séjours exceptionnels.",
     "emailVerified": "Email vérifié",
     "phoneVerified": "Téléphone vérifié",
     "verified": "Vérifié",

@@ -155,6 +155,9 @@
     "byType": "Par type",
     "byStatus": "Par statut"
   },
+  "emptyState": {
+    "noNew": "Aucune nouvelle notification"
+  },
   "time": {
     "justNow": "À l'instant",
     "minutesAgo": "Il y a {{minutes}} minutes",
