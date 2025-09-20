@@ -161,7 +161,6 @@ const BookingCalendar: React.FC<BookingCalendarProps> = ({
     
     // Generate time slots based on property settings and slot duration
     const availableTimes: string[] = [];
-    const slotDurationHours = timeSlotDuration / 60;
     
     // Start from property's check-in time and go until late evening (23:00)
     let currentHour = propertyCheckinHour;

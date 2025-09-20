@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardBody, Avatar, Button, Chip } from '@heroui/react';
+import { Card, CardBody, Avatar, Chip } from '@heroui/react';
 import { Clock } from 'lucide-react';
 import { Notification } from '../../../interfaces';
 import { useTranslation } from '../../../lib/stores/translationStore';
@@ -12,20 +12,14 @@ import {
 interface NotificationCardProps {
   notification: Notification;
   isNavigating: boolean;
-  isProcessing: boolean;
   onNotificationClick: (notification: Notification) => void;
-  onAcceptBooking: (bookingId: string, notificationId: string) => void;
-  onDeclineBooking: (bookingId: string, notificationId: string) => void;
   formatTime: (dateString: string) => string;
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   notification,
   isNavigating,
-  isProcessing,
   onNotificationClick,
-  onAcceptBooking,
-  onDeclineBooking,
   formatTime,
 }) => {
   const { t } = useTranslation(['notifications']);
