@@ -102,11 +102,11 @@ export const usePropertyLike = () => {
       setIsLikeLoading(true)
       const alreadyLiked = likedPropertyIds.includes(propertyId)
       if (!alreadyLiked) {
-        const { error } = await supabase.from('property_likes').insert({ property_id: propertyId, user_id: user.id })
+        const { error } = await supabase.from('property_likes').insert({ property_id: propertyId, user_id: user.auth_id })
         if (error) throw error
         setLikedPropertyIds([...likedPropertyIds, propertyId])
       } else {
-        const { error } = await supabase.from('property_likes').delete().eq('property_id', propertyId).eq('user_id', user.id)
+        const { error } = await supabase.from('property_likes').delete().eq('property_id', propertyId).eq('user_id', user.auth_id)
         if (error) throw error
         setLikedPropertyIds(likedPropertyIds.filter((id) => id !== propertyId))
       }
