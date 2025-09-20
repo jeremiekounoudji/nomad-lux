@@ -25,13 +25,13 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
 
   const {
     loadingMore,
-    processingBooking,
+    // processingBooking,
     navigatingNotification,
     handleNotificationClick,
     handleLoadMore,
     handleMarkAllAsRead,
-    handleAcceptBooking,
-    handleDeclineBooking,
+    // handleAcceptBooking,
+    // handleDeclineBooking,
     handleFilterChange,
     handleRetry,
   } = useNotificationActions();
@@ -95,10 +95,10 @@ const NotificationsPage: React.FC<NotificationsPageProps> = () => {
                 key={notification.id}
                 notification={notification}
                 isNavigating={navigatingNotification === notification.id}
-                isProcessing={processingBooking === notification.related_id}
+                // isProcessing={processingBooking === notification.related_id}
                 onNotificationClick={handleNotificationClick}
-                onAcceptBooking={handleAcceptBooking}
-                onDeclineBooking={handleDeclineBooking}
+                // onAcceptBooking={handleAcceptBooking}
+                // onDeclineBooking={handleDeclineBooking}
                 formatTime={formatTime}
               />
             ))}
