@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef,  } from 'react'
 import { Card, CardBody, Button, Spinner } from '@heroui/react'
-import { User, Shield, Grid3X3, ClipboardList, Calendar as CalendarIcon } from 'lucide-react'
+import { User, Shield,  } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '../lib/stores/translationStore'
 import { ProfilePageProps, ProfileImageData } from '../interfaces/Profile'
@@ -8,18 +8,15 @@ import { ROUTES } from '../router/types'
 import { useProfileImage } from '../hooks/useProfileImage'
 import { useProfile } from '../hooks/useProfile'
 import { useUserListings } from '../hooks/useUserListings'
-import { useBookingManagement } from '../hooks/useBookingManagement'
 import { ProfileEditModal } from '../components/features/profile/ProfileEditModal'
 import { PasswordChangeModal } from '../components/features/profile/PasswordChangeModal'
 import { ImagePreviewModal } from '../components/features/profile/ImagePreviewModal'
 import toast from 'react-hot-toast'
 
-import { BookingRequest } from '../interfaces/Booking'
 
 // New components for the updated profile page
 import ProfileHeader from '../components/features/profile/ProfileHeaderNew'
-import TabContent from '../components/features/profile/TabContentNew'
-import { Select, SelectItem } from '@heroui/react'
+
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ 
   onProfileUpdate, 
@@ -30,52 +27,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const navigate = useNavigate()
   const { isUploading, uploadProgress, uploadImage, processImage } = useProfileImage()
   const { profile, isLoading, error, updateProfile } = useProfile()
-  const { filteredListings, fetchUserListings, isLoading: listingsLoading, totalStats } = useUserListings()
-  const { loadHostBookingRequests } = useBookingManagement()
+  const {  totalStats } = useUserListings()
   
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [isImagePreviewModalOpen, setIsImagePreviewModalOpen] = useState(false)
   const [previewImageData, setPreviewImageData] = useState<ProfileImageData | null>(null)
-  
-  // Tab states
-  const [activeTab, setActiveTab] = useState<'properties' | 'bookings' | 'requests'>('properties')
-  
-  // Filter states
-  const [sortBy, setSortBy] = useState('newest')
-  
-  // Booking requests state
-  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([])
-  const [requestsLoading, setRequestsLoading] = useState(false)
-  
+
   // Store the actual file in a ref to avoid serialization issues
   const currentFileRef = useRef<File | null>(null)
 
-  // Load data when component mounts or tab changes
-  useEffect(() => {
-    if (!profile) return
-    
-    switch (activeTab) {
-      case 'properties':
-        fetchUserListings({ force: true })
-        break
-      case 'requests':
-        setRequestsLoading(true)
-        loadHostBookingRequests(profile.userId).then((requests) => {
-          setBookingRequests(requests || [])
-          setRequestsLoading(false)
-        }).catch((error) => {
-          console.error('Error loading booking requests:', error)
-          setRequestsLoading(false)
-        })
-        break
-      case 'bookings':
-        // For bookings, we would load guest bookings
-        // This would require implementing a loadGuestBookings function
-        break
-    }
-  }, [activeTab, profile, fetchUserListings, loadHostBookingRequests])
+ 
 
   const handleBackToHome = () => {
     navigate(ROUTES.HOME)
@@ -199,10 +162,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
     event.target.value = ''
   }
 
-  const handleFilterChange = (value: any) => {
-    setSortBy(value)
-    // In a real implementation, we would re-sort the data based on this filter
-  }
+  
 
   if (isLoading) {
     return (
