@@ -46,7 +46,7 @@ const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
                 onPress={onCameraClick}
                 isLoading={isUploading}
                 disabled={isUploading}
-                aria-label={t('profile.actions.changePhoto')}
+                aria-label={t('profile:actions.changePhoto')}
                 isIconOnly
               >
                 <Camera className="size-4 text-white" />
@@ -66,10 +66,10 @@ const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
                   color="primary" 
                   variant="bordered"
                   className="font-semibold"
-                  aria-label={t('profile.actions.editPersonalInfo')}
+                  aria-label={t('profile:actions.editPersonalInfo')}
                   onPress={onEditProfile}
                 >
-                  {t('common.edit')}
+                  {t('common:buttons.edit')}
                 </Button>
               </div>
             </div>
@@ -78,27 +78,27 @@ const InstagramProfileHeader: React.FC<InstagramProfileHeaderProps> = ({
             <div className="mb-4 flex space-x-8">
               <div className="text-center">
                 <span className="block text-lg font-bold">0</span>
-                <span className="text-sm text-gray-600">{t('profile.properties')}</span>
+                <span className="text-sm text-gray-600">{t('profile:stats.properties')}</span>
               </div>
               <div className="text-center">
                 <span className="block text-lg font-bold">0</span>
-                <span className="text-sm text-gray-600">{t('profile.bookings')}</span>
+                <span className="text-sm text-gray-600">{t('profile:stats.bookings')}</span>
               </div>
             </div>
 
             {/* Bio and Additional Info */}
             <div className="space-y-2">
               <p className="text-gray-900">
-                {profile.bio || t('common.notProvided')}
+                {profile.bio || t('common:messages.notProvided')}
               </p>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 <div className="flex items-center">
                   <MapPin className="mr-1 size-4" aria-hidden="true" />
-                  <span>{profile.location || t('common.notProvided')}</span>
+                  <span>{profile.location || t('common:messages.notProvided')}</span>
                 </div>
                 <div className="flex items-center">
                   <Calendar className="mr-1 size-4" aria-hidden="true" />
-                  <span>{t('profile.account.memberSince')} {new Date(profile.joinDate).toLocaleDateString()}</span>
+                  <span>{t('profile:account.memberSince')} {new Date(profile.joinDate).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>

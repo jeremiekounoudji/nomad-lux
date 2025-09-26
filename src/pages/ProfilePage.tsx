@@ -312,9 +312,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
             {t('profile.actions.changePassword')}
           </Button>
           <Button 
-            color="secondary" 
+            color="primary" 
             variant="bordered"
-            className="font-semibold"
+            className="font-semibold bg-main text-white"
             onPress={() => setIsEditModalOpen(true)}
             aria-label={t('profile.actions.editProfile')}
           >
@@ -322,71 +322,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
           </Button>
         </div>
 
-        {/* Filter Dropdown */}
-        <div className="mb-6 flex justify-end">
-          <Select 
-            placeholder={t('common.filter')}
-            className="w-48"
-            selectedKeys={[sortBy]}
-            onSelectionChange={(keys) => handleFilterChange(Array.from(keys)[0])}
-          >
-            <SelectItem key="newest">{t('common.sort.newest')}</SelectItem>
-            <SelectItem key="oldest">{t('common.sort.oldest')}</SelectItem>
-            <SelectItem key="name">{t('common.sort.name')}</SelectItem>
-          </Select>
-        </div>
-
-        {/* Tab Navigation */}
-        <div className="mb-6">
-          <Card className="w-full border-0 bg-white/80 shadow-lg backdrop-blur-sm">
-            <CardBody className="p-0">
-              <div className="flex border-t border-gray-200">
-                <button
-                  className={`flex flex-1 items-center justify-center py-4 ${
-                    activeTab === 'properties' 
-                      ? 'border-t-2 border-primary-500 text-primary-500' 
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('properties')}
-                >
-                  <Grid3X3 className="mr-2 size-5" aria-hidden="true" />
-                  <span className="font-medium">{t('property.listings.tabs.all')}</span>
-                </button>
-                <button
-                  className={`flex flex-1 items-center justify-center py-4 ${
-                    activeTab === 'bookings' 
-                      ? 'border-t-2 border-primary-500 text-primary-500' 
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('bookings')}
-                >
-                  <CalendarIcon className="mr-2 size-5" aria-hidden="true" />
-                  <span className="font-medium">{t('booking.myBookings.banner.title')}</span>
-                </button>
-                <button
-                  className={`flex flex-1 items-center justify-center py-4 ${
-                    activeTab === 'requests' 
-                      ? 'border-t-2 border-primary-500 text-primary-500' 
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                  onClick={() => setActiveTab('requests')}
-                >
-                  <ClipboardList className="mr-2 size-5" aria-hidden="true" />
-                  <span className="font-medium">{t('booking.bookingRequests.banner.title')}</span>
-                </button>
-              </div>
-            </CardBody>
-          </Card>
-        </div>
-
-        {/* Tab Content */}
-        <TabContent 
-          activeTab={activeTab}
-          properties={filteredListings as any[]}
-          bookings={[]} // In a real implementation, this would be guest bookings
-          requests={bookingRequests}
-          isLoading={listingsLoading || requestsLoading}
-        />
+       
       </main>
 
       {/* Modals */}

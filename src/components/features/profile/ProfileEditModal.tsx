@@ -63,11 +63,11 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       console.log('🧹 Cleaned form data before save:', cleanedFormData)
       
       await onSave(cleanedFormData)
-      toast.success(t('profile.messages.updateSuccess'))
+      toast.success(t('profile:messages.updateSuccess'))
       onClose()
     } catch (error: any) {
       console.error('❌ Error updating profile:', error)
-      toast.error(error.message || t('profile.errors.updateFailed'))
+      toast.error(error.message || t('profile:errors.updateFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -84,46 +84,46 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
         <ModalHeader className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <User className="size-5 text-primary-600" />
-            <span>{t('profile.actions.editPersonalInfo')}</span>
+            <span>{t('profile:actions.editPersonalInfo')}</span>
           </div>
         </ModalHeader>
         
         <ModalBody>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Input
-              label={t('profile.fields.firstName')}
+              label={t('profile:fields.firstName')}
               value={formData.firstName}
               onChange={(e) => handleInputChange('firstName', e.target.value)}
               startContent={<User className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile.fields.lastName')}
+              label={t('profile:fields.lastName')}
               value={formData.lastName}
               onChange={(e) => handleInputChange('lastName', e.target.value)}
               startContent={<User className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile.fields.phone')}
+              label={t('profile:fields.phone')}
               value={formData.phone}
               onChange={(e) => handleInputChange('phone', e.target.value)}
               startContent={<Phone className="size-4 text-gray-400" />}
             />
             <Input
-              label={t('profile.fields.location')}
+              label={t('profile:fields.location')}
               value={formData.location}
               onChange={(e) => handleInputChange('location', e.target.value)}
               startContent={<MapPin className="size-4 text-gray-400" />}
             />
             <Input
               type="date"
-              label={t('profile.fields.dateOfBirth')}
+              label={t('profile:fields.dateOfBirth')}
               value={formData.dateOfBirth}
               onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
               startContent={<Calendar className="size-4 text-gray-400" />}
             />
             <div className="md:col-span-2">
               <Textarea
-                label={t('profile.fields.bio')}
+                label={t('profile:fields.bio')}
                 value={formData.bio}
                 onChange={(e) => handleInputChange('bio', e.target.value)}
                 maxLength={500}
@@ -136,14 +136,14 @@ export const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
         <ModalFooter>
           <Button variant="flat" onPress={onClose} disabled={isLoading}>
-            {t('common.buttons.cancel')}
+            {t('common:buttons.cancel')}
           </Button>
           <Button 
             className="bg-main text-white hover:bg-main/90"
             onPress={handleSave} 
             isLoading={isLoading}
           >
-            {t('common.buttons.save')}
+            {t('common:buttons.save')}
           </Button>
         </ModalFooter>
       </ModalContent>

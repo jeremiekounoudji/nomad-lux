@@ -86,21 +86,7 @@
     "passwordChangeSuccess": "Password changed successfully",
     "imageUploadSuccess": "Profile image uploaded successfully"
   },
-  "password": {
-    "description": "Choose a new password for your account",
-    "fields": {
-      "currentPassword": "Current Password",
-      "newPassword": "New Password",
-      "confirmPassword": "Confirm New Password"
-    },
-    "errors": {
-      "currentPasswordRequired": "Current password is required",
-      "newPasswordRequired": "New password is required",
-      "passwordTooShort": "Password must be at least 6 characters long",
-      "passwordsDoNotMatch": "Passwords do not match",
-      "changeFailed": "Failed to change password"
-    }
-  },
+
   "errors": {
     "title": "Error Loading Profile",
     "loadFailed": "Failed to load profile information",
@@ -183,10 +169,19 @@
   },
   "password": {
     "formTitle": "Change Password Form",
+   
+     "description": "Choose a new password for your account",
     "fields": {
-      "current": "Current Password",
-      "new": "New Password",
-      "confirm": "Confirm Password"
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password"
+    },
+    "errors": {
+      "currentPasswordRequired": "Current password is required",
+      "newPasswordRequired": "New password is required",
+      "passwordTooShort": "Password must be at least 6 characters long",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "changeFailed": "Failed to change password"
     },
     "placeholders": {
       "current": "Enter your current password",

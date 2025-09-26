@@ -105,7 +105,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
           <div className="space-y-4">
             {/* New Password */}
             <Input
-              label={t('profile:password.fields.newPassword')}
+              label={t('profile.password.fields.newPassword')}
               type={showPasswords.new ? 'text' : 'password'}
               value={formData.newPassword}
               onChange={(e) => handleInputChange('newPassword', e.target.value)}
@@ -127,7 +127,7 @@ export const PasswordChangeModal: React.FC<PasswordChangeModalProps> = ({
 
             {/* Confirm Password */}
             <Input
-              label={t('profile:password.fields.confirmPassword')}
+              label={t('profile.password.fields.confirmPassword')}
               type={showPasswords.confirm ? 'text' : 'password'}
               value={formData.confirmPassword}
               onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
